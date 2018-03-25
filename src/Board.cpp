@@ -15,17 +15,11 @@ Board::Board()
 #ifdef DEBUG
     clock_t start = clock();
 #endif
-    fenPosition = STARTPOS;
-    SetBoard(fenPosition);
+    SetBoard(STARTPOS);
 #ifdef DEBUG
     PrintBoard();
     cout << double( clock() - start ) / (double)CLOCKS_PER_SEC << " seconds." << endl;
 #endif
-}
-
-Board::~Board()
-{
-
 }
 
 void Board::CleanUp()

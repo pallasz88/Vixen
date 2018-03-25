@@ -5,6 +5,7 @@
 #include <iostream>
 #include <random>
 
+using namespace std;
 using namespace Vixen;
 
 Hash* Hash::instance = NULL;

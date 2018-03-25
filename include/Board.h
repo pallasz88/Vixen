@@ -34,7 +34,7 @@ namespace Vixen
     private:
         static Board* instance;
         Board();
-        ~Board();
+        ~Board() = default;
         BitBoards bitBoards;
         std::string enpassant;
         std::string fenPosition;
