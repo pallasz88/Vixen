@@ -1,0 +1,10 @@
+include/Board.h
+include/Cordinate.h
+include/Hash.h
+include/MoveGenerator.h
+include/defs.h
+src/Board.cpp
+src/Cordinate.cpp
+src/Hash.cpp
+src/MoveGenerator.cpp
+src/main.cpp
