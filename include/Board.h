@@ -30,11 +30,24 @@ namespace Vixen
 
     class DLL_EXPORT Board
     {
+    public:
+        static Board *GetInstance();
+        void CleanUp();
+
+        BitBoards GetBitBoards() const;
+        bool IsWhiteToMove() const;
+        void PrintBoard() const;
+        void SetBoard(const std::string& fenPosition);
 
     private:
         static Board* instance;
+
         Board();
         ~Board() = default;
+        Board(Board const&) = delete;
+        Board(Board&&) = delete;
+        Board& operator=(Board const&) = delete;
+
         BitBoards bitBoards;
         std::string enpassant;
         std::string fenPosition;
@@ -47,18 +60,6 @@ namespace Vixen
         void ParseSideToMovePart(std::string& splittedFen);
         void ParseCastlingRightPart(std::string& splittedFen);
         void SplitFenPosition(std::vector<std::string>& fenParts);
-
-
-    public:
-        static Board *GetInstance();
-        void CleanUp();
-        Board(Board const&) = delete;
-        Board& operator=(Board const&) = delete;
-
-        BitBoards GetBitBoards() const;
-        bool IsWhiteToMove() const;
-        void PrintBoard() const;
-        void SetBoard(const std::string& fenPosition);
 
     };
 }

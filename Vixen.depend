@@ -3516,7 +3516,7 @@
 	<boost/algorithm/string.hpp>
 	<ctime>
 
-1522008202 c:\users\palla\documents\project\vixen\include\board.h
+1522093954 c:\users\palla\documents\project\vixen\include\board.h
 	<vector>
 	<string>
 
@@ -6854,7 +6854,168 @@
 	"defs.h"
 	<iostream>
 
-1522005371 c:\users\palla\documents\project\vixen\include\movegenerator.h
+1522093900 c:\users\palla\documents\project\vixen\include\movegenerator.h
 	<vector>
 	<string>
+
+1522008313 source:c:\users\palla\documents\project\vixen\src\hash.cpp
+	"Hash.h"
+	"Board.h"
+	"defs.h"
+	<iostream>
+	<random>
+
+1522093588 c:\users\palla\documents\project\vixen\include\hash.h
+	<cstdint>
+	<cstring>
+
+1522006368 source:c:\users\palla\documents\project\vixen\src\unittest.cpp
+	<UnitTest++.h>
+	"Board.h"
+	"defs.h"
+
+1521887025 c:\users\palla\documents\project\vixen\extensions\unittest++\unittest++.h
+	"UnitTestPP.h"
+
+1521887025 c:\users\palla\documents\project\vixen\extensions\unittest++\unittestpp.h
+	"Config.h"
+	"TestMacros.h"
+	"CheckMacros.h"
+	"RequireMacros.h"
+	"TestRunner.h"
+	"TimeConstraint.h"
+	"ReportAssert.h"
+
+1521887024 c:\users\palla\documents\project\vixen\extensions\unittest++\config.h
+
+1521887025 c:\users\palla\documents\project\vixen\extensions\unittest++\testmacros.h
+	"Config.h"
+	"TestSuite.h"
+	"ExceptionMacros.h"
+	"ExecuteTest.h"
+	"AssertException.h"
+	"TestDetails.h"
+	"MemoryOutStream.h"
+	"Posix/SignalTranslator.h"
+
+1521887025 c:\users\palla\documents\project\vixen\extensions\unittest++\testsuite.h
+
+1521887024 c:\users\palla\documents\project\vixen\extensions\unittest++\exceptionmacros.h
+	"Config.h"
+
+1521887024 c:\users\palla\documents\project\vixen\extensions\unittest++\executetest.h
+	"Config.h"
+	"ExceptionMacros.h"
+	"TestDetails.h"
+	"TestResults.h"
+	"MemoryOutStream.h"
+	"AssertException.h"
+	"RequiredCheckException.h"
+	"CurrentTest.h"
+	"ReportAssertImpl.h"
+	"Posix/SignalTranslator.h"
+
+1521887025 c:\users\palla\documents\project\vixen\extensions\unittest++\testdetails.h
+	"HelperMacros.h"
+
+1521887024 c:\users\palla\documents\project\vixen\extensions\unittest++\helpermacros.h
+	"Config.h"
+
+1521887025 c:\users\palla\documents\project\vixen\extensions\unittest++\testresults.h
+	"HelperMacros.h"
+
+1521887024 c:\users\palla\documents\project\vixen\extensions\unittest++\memoryoutstream.h
+	"Config.h"
+	"HelperMacros.h"
+	<sstream>
+	<cstddef>
+
+1521887024 c:\users\palla\documents\project\vixen\extensions\unittest++\assertexception.h
+	"Config.h"
+	"HelperMacros.h"
+	<exception>
+
+1521887025 c:\users\palla\documents\project\vixen\extensions\unittest++\requiredcheckexception.h
+	"Config.h"
+	"HelperMacros.h"
+	<exception>
+
+1521887024 c:\users\palla\documents\project\vixen\extensions\unittest++\currenttest.h
+	"HelperMacros.h"
+
+1521887025 c:\users\palla\documents\project\vixen\extensions\unittest++\reportassertimpl.h
+	"Config.h"
+	"HelperMacros.h"
+	<csetjmp>
+
+1521887025 c:\users\palla\documents\project\vixen\extensions\unittest++\posix\signaltranslator.h
+	<setjmp.h>
+	<signal.h>
+
+1521887024 c:\users\palla\documents\project\vixen\extensions\unittest++\checkmacros.h
+	"HelperMacros.h"
+	"ExceptionMacros.h"
+	"Checks.h"
+	"AssertException.h"
+	"RequiredCheckException.h"
+	"MemoryOutStream.h"
+	"TestDetails.h"
+	"CurrentTest.h"
+	"ReportAssertImpl.h"
+
+1521887024 c:\users\palla\documents\project\vixen\extensions\unittest++\checks.h
+	"Config.h"
+	"TestResults.h"
+	"MemoryOutStream.h"
+
+1521887025 c:\users\palla\documents\project\vixen\extensions\unittest++\requiremacros.h
+	"RequiredCheckTestReporter.h"
+
+1521887025 c:\users\palla\documents\project\vixen\extensions\unittest++\requiredchecktestreporter.h
+	"HelperMacros.h"
+	"ThrowingTestReporter.h"
+
+1521887025 c:\users\palla\documents\project\vixen\extensions\unittest++\throwingtestreporter.h
+	"TestReporter.h"
+
+1521887025 c:\users\palla\documents\project\vixen\extensions\unittest++\testreporter.h
+	"HelperMacros.h"
+
+1521887025 c:\users\palla\documents\project\vixen\extensions\unittest++\testrunner.h
+	"Test.h"
+	"TestList.h"
+	"CurrentTest.h"
+
+1521887025 c:\users\palla\documents\project\vixen\extensions\unittest++\test.h
+	"TestDetails.h"
+
+1521887025 c:\users\palla\documents\project\vixen\extensions\unittest++\testlist.h
+	"HelperMacros.h"
+
+1521887025 c:\users\palla\documents\project\vixen\extensions\unittest++\timeconstraint.h
+	"TimeHelpers.h"
+	"HelperMacros.h"
+	"TestDetails.h"
+
+1521887025 c:\users\palla\documents\project\vixen\extensions\unittest++\timehelpers.h
+	"Config.h"
+	"Posix/TimeHelpers.h"
+	"Win32/TimeHelpers.h"
+
+1521887025 c:\users\palla\documents\project\vixen\extensions\unittest++\posix\timehelpers.h
+	<sys/time.h>
+
+1521887025 c:\users\palla\documents\project\vixen\extensions\unittest++\win32\timehelpers.h
+	"../Config.h"
+	"../HelperMacros.h"
+
+1521887024 c:\users\palla\documents\project\vixen\extensions\unittest++\reportassert.h
+	"HelperMacros.h"
+
+1522005771 source:c:\users\palla\documents\project\vixen\src\main.cpp
+	"defs.h"
+	"Board.h"
+	"MoveGenerator.h"
+	"Hash.h"
+	<iostream>
 

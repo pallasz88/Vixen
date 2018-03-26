@@ -12,14 +12,17 @@ namespace Vixen
     public:
         static MoveGenerator* GetInstance();
         void CleanUp();
-        MoveGenerator(MoveGenerator const&) = delete;
-        MoveGenerator& operator=(MoveGenerator const&) = delete;
 
     private:
+        MoveGenerator();
+        ~MoveGenerator() = default;
+        MoveGenerator(MoveGenerator const&) = delete;
+        MoveGenerator(MoveGenerator&&) = delete;
+        MoveGenerator& operator=(MoveGenerator const&) = delete;
+
         std::vector<std::string> moveList;
         static MoveGenerator *instance;
 
-        MoveGenerator();
         void GeneratePawnMoves();
         void GenerateKnightMoves();
         void PrintMoveList();
