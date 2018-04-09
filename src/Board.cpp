@@ -1,4 +1,5 @@
 #include "Board.h"
+#include "MoveGenerator.h"
 #include "defs.h"
 
 #include <iostream>
@@ -53,6 +54,7 @@ void Board::SetBoard(const string& fenPosition)
     enpassant = parsedPosition[3];
     fiftyMoves = stoi(parsedPosition[4]);
     fullMovesNum = stoi(parsedPosition[5]);
+    //CURRENT_MOVES()->ResetMoveList();
 }
 
 void Board::SplitFenPosition(vector<string>& fenParts)
@@ -71,49 +73,44 @@ void Board::PrintBoard() const
     for (int i = MAX_SHIFT_NUM; i >= 0; i--)
     {
         if ((~bitBoards.occupied >> i)&1)
-        {
             cout << "|   ";
-        }
-        else
-        {
-            if ((bitBoards.P >> i)&1)
-                cout << "| P ";
 
-            else if((bitBoards.p >> i)&1)
-                cout << "| p ";
+        else if ((bitBoards.P >> i)&1)
+            cout << "| P ";
 
-            else if((bitBoards.K >> i)&1)
-                cout << "| K ";
+        else if((bitBoards.p >> i)&1)
+            cout << "| p ";
 
-            else if((bitBoards.k >> i)&1)
-                cout << "| k ";
+        else if((bitBoards.K >> i)&1)
+            cout << "| K ";
 
-            else if((bitBoards.Q >> i)&1)
-                cout << "| Q ";
+        else if((bitBoards.k >> i)&1)
+            cout << "| k ";
 
-            else if((bitBoards.q >> i)&1)
-                cout << "| q ";
+        else if((bitBoards.Q >> i)&1)
+            cout << "| Q ";
 
-            else if((bitBoards.R >> i)&1)
-                cout << "| R ";
+        else if((bitBoards.q >> i)&1)
+            cout << "| q ";
 
-            else if((bitBoards.r >> i)&1)
-                cout << "| r ";
+        else if((bitBoards.R >> i)&1)
+            cout << "| R ";
 
-            else if((bitBoards.N >> i)&1)
-                cout << "| N ";
+        else if((bitBoards.r >> i)&1)
+            cout << "| r ";
 
-            else if((bitBoards.n >> i)&1)
-                cout << "| n ";
+        else if((bitBoards.N >> i)&1)
+            cout << "| N ";
 
-            else if((bitBoards.B >> i)&1)
-                cout << "| B ";
+        else if((bitBoards.n >> i)&1)
+            cout << "| n ";
 
-            else if((bitBoards.b >> i)&1)
-                cout << "| b ";
+        else if((bitBoards.B >> i)&1)
+            cout << "| B ";
 
+        else if((bitBoards.b >> i)&1)
+            cout << "| b ";
 
-        }
         if (i%8 == 0)
         {
             cout << "| " << i/8 + 1 << endl;

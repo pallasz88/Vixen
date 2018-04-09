@@ -1,49 +1,68 @@
-#include <UnitTest++.h>
+#define BOOST_TEST_MODULE boost_test_sequence
+#include <boost/test/included/unit_test.hpp>
 #include "Board.h"
+#include "MoveGenerator.h"
 #include "defs.h"
 
-TEST(Test_Startposition)
+BOOST_AUTO_TEST_CASE(Test_Startposition)
 {
-    CHECK_EQUAL(                  8, CURRENT_BOARD()->GetBitBoards().K);
-    CHECK_EQUAL(                 16, CURRENT_BOARD()->GetBitBoards().Q);
-    CHECK_EQUAL(                129, CURRENT_BOARD()->GetBitBoards().R);
-    CHECK_EQUAL(                 36, CURRENT_BOARD()->GetBitBoards().B);
-    CHECK_EQUAL(                 66, CURRENT_BOARD()->GetBitBoards().N);
-    CHECK_EQUAL(              RANK2, CURRENT_BOARD()->GetBitBoards().P);
+    BOOST_CHECK_EQUAL(CURRENT_BOARD()->GetBitBoards().K, 8U);
+    BOOST_CHECK_EQUAL(CURRENT_BOARD()->GetBitBoards().Q, 16U);
+    BOOST_CHECK_EQUAL(CURRENT_BOARD()->GetBitBoards().R, 129U);
+    BOOST_CHECK_EQUAL(CURRENT_BOARD()->GetBitBoards().B, 36U);
+    BOOST_CHECK_EQUAL(CURRENT_BOARD()->GetBitBoards().N, 66U);
+    BOOST_CHECK_EQUAL(CURRENT_BOARD()->GetBitBoards().P, (uint64_t)RANK2);
 
-    CHECK_EQUAL(              RANK7, CURRENT_BOARD()->GetBitBoards().p);
-    CHECK_EQUAL(4755801206503243776, CURRENT_BOARD()->GetBitBoards().n);
-    CHECK_EQUAL(2594073385365405696, CURRENT_BOARD()->GetBitBoards().b);
-    //CHECK_EQUAL(9295429630892703744, CURRENT_BOARD()->GetBitBoards().r);
-    CHECK_EQUAL(1152921504606846976, CURRENT_BOARD()->GetBitBoards().q);
-    CHECK_EQUAL( 576460752303423488, CURRENT_BOARD()->GetBitBoards().k);
+    BOOST_CHECK_EQUAL(CURRENT_BOARD()->GetBitBoards().p, (uint64_t)RANK7);
+    BOOST_CHECK_EQUAL(CURRENT_BOARD()->GetBitBoards().n, 4755801206503243776U);
+    BOOST_CHECK_EQUAL(CURRENT_BOARD()->GetBitBoards().b, 2594073385365405696U);
+    BOOST_CHECK_EQUAL(CURRENT_BOARD()->GetBitBoards().r, 9295429630892703744U);
+    BOOST_CHECK_EQUAL(CURRENT_BOARD()->GetBitBoards().q, 1152921504606846976U);
+    BOOST_CHECK_EQUAL(CURRENT_BOARD()->GetBitBoards().k, 576460752303423488U);
 
-    CHECK_EQUAL(true, CURRENT_BOARD()->IsWhiteToMove());
+    BOOST_CHECK_EQUAL(CURRENT_BOARD()->IsWhiteToMove(), true);
 }
 
-TEST(Test_SetPosition)
+BOOST_AUTO_TEST_CASE(Test_SetPosition)
 {
     CURRENT_BOARD()->SetBoard(TESTPOS1);
     CURRENT_BOARD()->PrintBoard();
 
-    CHECK_EQUAL(           2, CURRENT_BOARD()->GetBitBoards().K);
-    CHECK_EQUAL(      524288, CURRENT_BOARD()->GetBitBoards().Q);
-    CHECK_EQUAL(         132, CURRENT_BOARD()->GetBitBoards().R);
-    CHECK_EQUAL(    67109376, CURRENT_BOARD()->GetBitBoards().B);
-    CHECK_EQUAL(        4096, CURRENT_BOARD()->GetBitBoards().N);
-    CHECK_EQUAL(103081542656, CURRENT_BOARD()->GetBitBoards().P);
+    BOOST_CHECK_EQUAL(CURRENT_BOARD()->GetBitBoards().K, 2U);
+    BOOST_CHECK_EQUAL(CURRENT_BOARD()->GetBitBoards().Q, 524288U);
+    BOOST_CHECK_EQUAL(CURRENT_BOARD()->GetBitBoards().R, 132U);
+    BOOST_CHECK_EQUAL(CURRENT_BOARD()->GetBitBoards().B, 67109376U);
+    BOOST_CHECK_EQUAL(CURRENT_BOARD()->GetBitBoards().N, 4096U);
+    BOOST_CHECK_EQUAL(CURRENT_BOARD()->GetBitBoards().P, 103081542656U);
 
-    CHECK_EQUAL(   3802523525709824, CURRENT_BOARD()->GetBitBoards().p);
-    CHECK_EQUAL(          536870912, CURRENT_BOARD()->GetBitBoards().n);
-    CHECK_EQUAL(   5066549580791808, CURRENT_BOARD()->GetBitBoards().b);
-    CHECK_EQUAL(2594073385365405696, CURRENT_BOARD()->GetBitBoards().r);
-    CHECK_EQUAL(1152921504606846976, CURRENT_BOARD()->GetBitBoards().q);
-    CHECK_EQUAL( 144115188075855872, CURRENT_BOARD()->GetBitBoards().k);
+    BOOST_CHECK_EQUAL(CURRENT_BOARD()->GetBitBoards().p, 3802523525709824U);
+    BOOST_CHECK_EQUAL(CURRENT_BOARD()->GetBitBoards().n, 536870912U);
+    BOOST_CHECK_EQUAL(CURRENT_BOARD()->GetBitBoards().b, 5066549580791808U);
+    BOOST_CHECK_EQUAL(CURRENT_BOARD()->GetBitBoards().r, 2594073385365405696U);
+    BOOST_CHECK_EQUAL(CURRENT_BOARD()->GetBitBoards().q, 1152921504606846976U);
+    BOOST_CHECK_EQUAL(CURRENT_BOARD()->GetBitBoards().k, 144115188075855872U);
 
-    CHECK_EQUAL(true, CURRENT_BOARD()->IsWhiteToMove());
+    BOOST_CHECK_EQUAL(CURRENT_BOARD()->IsWhiteToMove(), true);
 }
 
-int main()
+BOOST_AUTO_TEST_CASE(Test_pawnmovement)
 {
-    return UnitTest::RunAllTests();
+    CURRENT_BOARD()->SetBoard("8/8/8/8/3P4/8/8/8 w - - 0 1");
+    CURRENT_BOARD()->PrintBoard();
+    std::vector<std::string> expectedMoveList{"d4d5"};
+    BOOST_TEST(CURRENT_MOVES()->GetMoveList() == expectedMoveList, boost::test_tools::per_element());
+
+    CURRENT_MOVES()->CleanUp();
+
+    CURRENT_BOARD()->SetBoard("8/8/2npQ3/3P4/8/8/8/8 w - - 0 1");
+    CURRENT_BOARD()->PrintBoard();
+    std::vector<std::string> expectedMoveList2{"d5c6"};
+    BOOST_TEST(CURRENT_MOVES()->GetMoveList() == expectedMoveList2, boost::test_tools::per_element());
+
+    CURRENT_MOVES()->CleanUp();
+
+    CURRENT_BOARD()->SetBoard("8/8/5k2/8/2pP4/8/8/4K3 b - d3 0 1");
+    CURRENT_BOARD()->PrintBoard();
+    std::vector<std::string> expectedMoveList3{"c4c3", "c4d3"};
+    BOOST_TEST(CURRENT_MOVES()->GetMoveList() == expectedMoveList3, boost::test_tools::per_element());
 }

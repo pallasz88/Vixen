@@ -4,6 +4,7 @@
 
 #include <vector>
 #include <string>
+#include <boost\thread.hpp>
 
 namespace Vixen
 {
@@ -12,6 +13,9 @@ namespace Vixen
     public:
         static MoveGenerator* GetInstance();
         void CleanUp();
+        void PrintMoveList();
+        const std::vector<std::string>& GetMoveList() const { return moveList; }
+        void ResetMoveList() noexcept { moveList.clear(); }
 
     private:
         MoveGenerator();
@@ -22,9 +26,9 @@ namespace Vixen
 
         std::vector<std::string> moveList;
         static MoveGenerator *instance;
+        boost::mutex mutex;
 
         void GeneratePawnMoves();
         void GenerateKnightMoves();
-        void PrintMoveList();
     };
 }

@@ -38,6 +38,7 @@ namespace Vixen
         bool IsWhiteToMove() const;
         void PrintBoard() const;
         void SetBoard(const std::string& fenPosition);
+        const std::string& GetEnPassant() const { return enpassant; }
 
     private:
         static Board* instance;

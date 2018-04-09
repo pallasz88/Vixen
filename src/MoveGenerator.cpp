@@ -4,18 +4,18 @@
 
 #include <iostream>
 
-using namespace std;
-using namespace Vixen;
+Vixen::MoveGenerator* Vixen::MoveGenerator::instance = NULL;
 
-MoveGenerator* MoveGenerator::instance = NULL;
-
-MoveGenerator::MoveGenerator()
+Vixen::MoveGenerator::MoveGenerator()
 {
-    GeneratePawnMoves();
-    GenerateKnightMoves();
+    boost::thread pawn(GeneratePawnMoves, this);
+    boost::thread knight(GenerateKnightMoves, this);
+    pawn.join();
+    knight.join();
+    //PrintMoveList();
 }
 
-MoveGenerator* MoveGenerator::GetInstance()
+Vixen::MoveGenerator* Vixen::MoveGenerator::GetInstance()
 {
     if(!instance)
         instance = new MoveGenerator();
@@ -23,53 +23,69 @@ MoveGenerator* MoveGenerator::GetInstance()
     return instance;
 }
 
-void MoveGenerator::CleanUp()
+void Vixen::MoveGenerator::CleanUp()
 {
     if(instance)
         delete instance;
+
+    instance = nullptr;
 }
 
-void MoveGenerator::GeneratePawnMoves()
+void Vixen::MoveGenerator::GeneratePawnMoves()
 {
+    boost::lock_guard<boost::mutex> guard(mutex);
     BitBoards board = Board::GetInstance()->GetBitBoards();
+    std::string enPassantSquare = Vixen::Board::GetInstance()->GetEnPassant();
     for(int square = H1; square < A8; ++square)
     {
-        if((board.P >> square) & 1)
+        if( Vixen::Board::GetInstance()->IsWhiteToMove() )
         {
-            if( (~board.occupied) >> (square+8) & 1 )
-                moveList.push_back(squares[square] + squares[square+8]);
+            if((board.P >> square) & 1 )
+            {
+                if( (~board.occupied) >> (square+8) & 1 )
+                    moveList.push_back(squares[square] + squares[square+8]);
 
-            if( ((board.P & RANK2) >> square) & 1 && (~board.occupied) >> (square+16) & 1 )
-                moveList.push_back(squares[square] + squares[square+16]);
+                if( ((board.P & RANK2) >> square) & 1 && (~board.occupied) >> (square+16) & 1 )
+                    moveList.push_back(squares[square] + squares[square+16]);
 
-            if( board.black >> (square+7) & 1 )
-                moveList.push_back(squares[square] + squares[square+7]);
+                if( board.black >> (square+7) & 1 )
+                    moveList.push_back(squares[square] + squares[square+7]);
 
-            if( board.black >> (square+9) & 1 )
-                moveList.push_back(squares[square] + squares[square+9]);
+                if( board.black >> (square+9) & 1 )
+                    moveList.push_back(squares[square] + squares[square+9]);
+
+                if( enPassantSquare != "-" )
+                    moveList.push_back(squares[square] + enPassantSquare);
+            }
         }
-
-
-        if((board.p >> square) & 1)
+        else
         {
-            if( (~board.occupied) >> (square-8) & 1 )
-                moveList.push_back(squares[square] + squares[square-8]);
+            if((board.p >> square) & 1)
+            {
+                if( (~board.occupied) >> (square-8) & 1 )
+                    moveList.push_back(squares[square] + squares[square-8]);
 
-            if( ((board.p & RANK7) >> square) & 1 && (~board.occupied) >> (square-16) & 1 )
-                moveList.push_back(squares[square] + squares[square-16]);
+                if( ((board.p & RANK7) >> square) & 1 && (~board.occupied) >> (square-16) & 1 )
+                    moveList.push_back(squares[square] + squares[square-16]);
 
-            if( board.white >> (square-7) & 1 )
-                moveList.push_back(squares[square] + squares[square-7]);
+                if( board.white >> (square-7) & 1 )
+                    moveList.push_back(squares[square] + squares[square-7]);
 
-            if( board.white >> (square-9) & 1 )
-                moveList.push_back(squares[square] + squares[square-9]);
+                if( board.white >> (square-9) & 1 )
+                    moveList.push_back(squares[square] + squares[square-9]);
+
+                if( enPassantSquare != "-" )
+                    moveList.push_back(squares[square] + enPassantSquare);
+            }
         }
     }
+
     return;
 }
 
-void MoveGenerator::GenerateKnightMoves()
+void Vixen::MoveGenerator::GenerateKnightMoves()
 {
+    boost::lock_guard<boost::mutex> guard(mutex);
     BitBoards board = Board::GetInstance()->GetBitBoards();
     for(int square = H1; square < A8; ++square)
     {
@@ -96,13 +112,12 @@ void MoveGenerator::GenerateKnightMoves()
 
         }
     }
-    PrintMoveList();
     return;
 }
 
 
-void MoveGenerator::PrintMoveList()
+void Vixen::MoveGenerator::PrintMoveList()
 {
     for(auto& x : moveList)
-        cout << x << endl;
+        std::cout << x << std::endl;
 }
