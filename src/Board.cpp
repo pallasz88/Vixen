@@ -6,12 +6,7 @@
 #include <boost/algorithm/string.hpp>
 #include <ctime>
 
-using namespace std;
-using namespace Vixen;
-
-Board* Board::instance = NULL;
-
-Board::Board()
+Vixen::Board::Board()
 {
 #ifdef DEBUG
     clock_t start = clock();
@@ -19,34 +14,15 @@ Board::Board()
     SetBoard(STARTPOS);
 #ifdef DEBUG
     PrintBoard();
-    cout << double( clock() - start ) / (double)CLOCKS_PER_SEC << " seconds." << endl;
+    std::cout << double( clock() - start ) / (double)CLOCKS_PER_SEC << " seconds." << std::endl;
 #endif
 }
 
-void Board::CleanUp()
-{
-    if(instance)
-        delete instance;
-}
-
-Board* Board::GetInstance()
-{
-    if(!instance)
-        instance = new Board;
-
-    return instance;
-}
-
-BitBoards Board::GetBitBoards() const
-{
-    return bitBoards;
-}
-
-void Board::SetBoard(const string& fenPosition)
+void Vixen::Board::SetBoard(const std::string& fenPosition)
 {
     this->fenPosition = fenPosition;
     InitBitBoards(bitBoards);
-    vector<string> parsedPosition;
+    std::vector<std::string> parsedPosition;
     SplitFenPosition(parsedPosition);
     ParseFenPiecePart(parsedPosition[0]);
     ParseSideToMovePart(parsedPosition[1]);
@@ -54,79 +30,76 @@ void Board::SetBoard(const string& fenPosition)
     enpassant = parsedPosition[3];
     fiftyMoves = stoi(parsedPosition[4]);
     fullMovesNum = stoi(parsedPosition[5]);
-    //CURRENT_MOVES()->ResetMoveList();
+    generator.reset();
+    generator = std::make_unique<Vixen::MoveGenerator>(*this);
+    hashBoard = std::make_unique<Vixen::Hash>(*this);
 }
 
-void Board::SplitFenPosition(vector<string>& fenParts)
+void Vixen::Board::SplitFenPosition(std::vector<std::string>& fenParts)
 {
     boost::split(fenParts, fenPosition, boost::is_any_of(" "));
 }
 
-bool Board::IsWhiteToMove() const
+void Vixen::Board::PrintBoard() const
 {
-    return whiteToMove;
-}
-
-void Board::PrintBoard() const
-{
-    cout << endl << "*********************************" << endl;
+    std::cout << std::endl << "*********************************" << std::endl;
     for (int i = MAX_SHIFT_NUM; i >= 0; i--)
     {
         if ((~bitBoards.occupied >> i)&1)
-            cout << "|   ";
+            std::cout << "|   ";
 
         else if ((bitBoards.P >> i)&1)
-            cout << "| P ";
+            std::cout << "| P ";
 
         else if((bitBoards.p >> i)&1)
-            cout << "| p ";
+            std::cout << "| p ";
 
         else if((bitBoards.K >> i)&1)
-            cout << "| K ";
+            std::cout << "| K ";
 
         else if((bitBoards.k >> i)&1)
-            cout << "| k ";
+            std::cout << "| k ";
 
         else if((bitBoards.Q >> i)&1)
-            cout << "| Q ";
+            std::cout << "| Q ";
 
         else if((bitBoards.q >> i)&1)
-            cout << "| q ";
+            std::cout << "| q ";
 
         else if((bitBoards.R >> i)&1)
-            cout << "| R ";
+            std::cout << "| R ";
 
         else if((bitBoards.r >> i)&1)
-            cout << "| r ";
+            std::cout << "| r ";
 
         else if((bitBoards.N >> i)&1)
-            cout << "| N ";
+            std::cout << "| N ";
 
         else if((bitBoards.n >> i)&1)
-            cout << "| n ";
+            std::cout << "| n ";
 
         else if((bitBoards.B >> i)&1)
-            cout << "| B ";
+            std::cout << "| B ";
 
         else if((bitBoards.b >> i)&1)
-            cout << "| b ";
+            std::cout << "| b ";
 
         if (i%8 == 0)
         {
-            cout << "| " << i/8 + 1 << endl;
-            cout << "*********************************" << endl;
+            std::cout << "| " << i/8 + 1 << std::endl;
+            std::cout << "*********************************" << std::endl;
         }
     }
 
-    cout << "  ";
+    std::cout << "  ";
     for (int i = 0; i < 8; ++i)
     {
-        cout << static_cast<char>('a' + i) << "   ";
+        std::cout << static_cast<char>('a' + i) << "   ";
     }
-    cout << endl << endl;
+    std::cout << std::endl << std::endl;
 }
 
-void Board::ParseFenPiecePart(string& parsedPosition)
+void Vixen::Board::ParseFenPiecePart(const std::string& parsedPosition)
 {
     int i = MAX_SHIFT_NUM;
     uint64_t shiftMe = 1;
@@ -183,7 +156,7 @@ void Board::ParseFenPiecePart(string& parsedPosition)
             i -= it-'0'-1;
             break;
         default:
-            cerr << "ERROR IN FEN: PIECE POSITION" << endl;
+            std::cerr << "ERROR IN FEN: PIECE POSITION" << std::endl;
             return;
         }
         i--;
@@ -203,7 +176,7 @@ void Board::ParseFenPiecePart(string& parsedPosition)
     bitBoards.occupied = bitBoards.black | bitBoards.white;
 }
 
-void Board::ParseSideToMovePart(string& parsedPosition)
+void Vixen::Board::ParseSideToMovePart(const std::string& parsedPosition)
 {
     if( parsedPosition == "w" )
         whiteToMove = true;
@@ -212,11 +185,11 @@ void Board::ParseSideToMovePart(string& parsedPosition)
         whiteToMove = false;
 
     else
-        cerr << "ERROR IN FEN: SIDE TO MOVE" << endl;
+        std::cerr << "ERROR IN FEN: SIDE TO MOVE" << std::endl;
 
 }
 
-void Board::ParseCastlingRightPart(string& parsedPosition)
+void Vixen::Board::ParseCastlingRightPart(const std::string& parsedPosition)
 {
     castlingRights = 0;
     uint64_t shiftMe = 1;
@@ -240,7 +213,7 @@ void Board::ParseCastlingRightPart(string& parsedPosition)
             castlingRights = 0;
             break;
         default:
-            cerr << "ERROR IN FEN: CASTLING" << endl;
+            std::cerr << "ERROR IN FEN: CASTLING" << std::endl;
             break;
         }
     }

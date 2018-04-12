@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1523303712 source:c:\users\palla\documents\project\vixen\src\board.cpp
+1523569176 source:c:\users\palla\documents\project\vixen\src\board.cpp
 	"Board.h"
 	"MoveGenerator.h"
 	"defs.h"
@@ -7,11 +7,14 @@
 	<boost/algorithm/string.hpp>
 	<ctime>
 
-1523307126 c:\users\palla\documents\project\vixen\include\board.h
+1523571399 c:\users\palla\documents\project\vixen\include\board.h
+	"MoveGenerator.h"
+	"Hash.h"
+	<memory>
 	<vector>
 	<string>
 
-1523304273 c:\users\palla\documents\project\vixen\include\movegenerator.h
+1523397039 c:\users\palla\documents\project\vixen\include\movegenerator.h
 	<vector>
 	<string>
 	<boost\thread.hpp>
@@ -6548,7 +6551,7 @@
 
 1514720949 c:\users\palla\documents\project\vixen\extensions\boost\thread\detail\atomic_redef_macros.hpp
 
-1522005689 c:\users\palla\documents\project\vixen\include\defs.h
+1523568479 c:\users\palla\documents\project\vixen\include\defs.h
 	<vector>
 	<string>
 
@@ -7333,18 +7336,18 @@
 	<boost/algorithm/string/finder.hpp>
 	<boost/algorithm/string/formatter.hpp>
 
-1522008313 source:c:\users\palla\documents\project\vixen\src\hash.cpp
+1523571072 source:c:\users\palla\documents\project\vixen\src\hash.cpp
 	"Hash.h"
 	"Board.h"
 	"defs.h"
 	<iostream>
 	<random>
 
-1522093588 c:\users\palla\documents\project\vixen\include\hash.h
+1523570911 c:\users\palla\documents\project\vixen\include\hash.h
 	<cstdint>
 	<cstring>
 
-1523306712 source:c:\users\palla\documents\project\vixen\src\unittest.cpp
+1523395516 source:c:\users\palla\documents\project\vixen\src\unittest.cpp
 	<boost/test/included/unit_test.hpp>
 	"Board.h"
 	"MoveGenerator.h"
@@ -8878,9 +8881,20 @@
 1514720811 c:\users\palla\documents\project\vixen\extensions\boost\swap.hpp
 	<boost/core/swap.hpp>
 
-1523306932 source:c:\users\palla\documents\project\vixen\src\movegenerator.cpp
+1523569690 source:c:\users\palla\documents\project\vixen\src\movegenerator.cpp
 	"MoveGenerator.h"
 	"Board.h"
 	"defs.h"
 	<iostream>
+
+1523571177 source:c:\users\palla\documents\project\vixen\src\main.cpp
+	"defs.h"
+	"Board.h"
+	"MoveGenerator.h"
+	"Hash.h"
+	"exchndl.h"
+	<iostream>
+
+1507123988 c:\users\palla\documents\project\vixen\extensions\include\exchndl.h
+	<windows.h>
 

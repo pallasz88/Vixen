@@ -5,32 +5,13 @@
 #include <iostream>
 #include <random>
 
-using namespace std;
-using namespace Vixen;
-
-Hash* Hash::instance = NULL;
-
-Hash::Hash()
+Vixen::Hash::Hash(const Board& board)
 {
     InitZobrist();
-    ComputeHash();
+    ComputeHash(board);
 }
 
-Hash* Hash::GetInstance()
-{
-    if(!instance)
-        instance = new Hash();
-
-    return instance;
-}
-
-void Hash::CleanUp()
-{
-    if(instance)
-        delete instance;
-}
-
-void Hash::InitZobrist()
+void Vixen::Hash::InitZobrist()
 {
     hash = 0;
     memset( &zobristHashKey, 0x00, sizeof( zobristHashKey ) );
@@ -39,16 +20,16 @@ void Hash::InitZobrist()
             zobristHashKey[i][j] = GenerateBigRandom();
 }
 
-uint64_t Hash::GenerateBigRandom()
+uint64_t Vixen::Hash::GenerateBigRandom()
 {
-    static default_random_engine generator(random_device{}());
-    static uniform_int_distribution<uint64_t> distribution(0,UINTMAX_MAX);
+    static std::default_random_engine generator(std::random_device{}());
+    static std::uniform_int_distribution<uint64_t> distribution(0,UINTMAX_MAX);
     return distribution(generator);
 }
 
-void Hash::ComputeHash()
+void Vixen::Hash::ComputeHash(const Board& board)
 {
-    BitBoards bitBoards = Board::GetInstance()->GetBitBoards();
+    BitBoards bitBoards = board.GetBitBoards();
     for (int i = MAX_SHIFT_NUM; i >= 0; i--)
     {
         if ((bitBoards.occupied >> i)&1)
@@ -93,15 +74,17 @@ void Hash::ComputeHash()
     }
 }
 
-uint64_t Hash::GetHash() const
+uint64_t Vixen::Hash::GetHash() const
 {
-    cout << hash << endl;
+#ifdef DEBUG
+    std::cout << hash << std::endl;
+#endif // DEBUG
     return hash;
 }
 
-void Hash::PrintZobrist()
+void Vixen::Hash::PrintZobrist()
 {
     for (int i = H1; i < A8; ++i)
         for (int j = 0; j < 12; ++j)
-            cout << "(" << i << "," << j << "): " << zobristHashKey[i][j] << endl;
+            std::cout << "(" << i << "," << j << "): " << zobristHashKey[i][j] << std::endl;
 }

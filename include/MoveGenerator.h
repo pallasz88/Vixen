@@ -8,27 +8,25 @@
 
 namespace Vixen
 {
+    class Board;
+
     class DLL_EXPORT MoveGenerator
     {
     public:
-        static MoveGenerator* GetInstance();
-        void CleanUp();
+        MoveGenerator(const Board&);
+        ~MoveGenerator() = default;
+        MoveGenerator(MoveGenerator const&) = default;
+        MoveGenerator(MoveGenerator&&) = default;
+
         void PrintMoveList();
         const std::vector<std::string>& GetMoveList() const { return moveList; }
-        void ResetMoveList() noexcept { moveList.clear(); }
 
     private:
-        MoveGenerator();
-        ~MoveGenerator() = default;
-        MoveGenerator(MoveGenerator const&) = delete;
-        MoveGenerator(MoveGenerator&&) = delete;
-        MoveGenerator& operator=(MoveGenerator const&) = delete;
-
         std::vector<std::string> moveList;
         static MoveGenerator *instance;
         boost::mutex mutex;
 
-        void GeneratePawnMoves();
-        void GenerateKnightMoves();
+        void GeneratePawnMoves(const Board&);
+        void GenerateKnightMoves(const Board&);
     };
 }

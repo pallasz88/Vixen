@@ -7,28 +7,27 @@
 
 namespace Vixen
 {
+    class Board;
+
     class DLL_EXPORT Hash
     {
     public:
         uint64_t GetHash() const;
 
-        static Hash *GetInstance();
         void CleanUp();
+        Hash(const Board&);
+        ~Hash() = default;
+        Hash(Hash const&) = delete;
+        Hash(Hash&&) = delete;
 
     private:
-        static Hash* instance;
         uint64_t hash;
         uint64_t zobristHashKey[64][12];
         void PrintZobrist();
 
-        Hash();
-        ~Hash() = default;
-        Hash(Hash const&) = delete;
-        Hash(Hash&&) = delete;
-        Hash& operator=(Hash const&) = delete;
 
         uint64_t GenerateBigRandom();
         void InitZobrist();
-        void ComputeHash();
+        void ComputeHash(const Board&);
     };
 }

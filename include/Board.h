@@ -2,6 +2,9 @@
 
 #define DLL_EXPORT __declspec(dllexport)
 
+#include "MoveGenerator.h"
+#include "Hash.h"
+#include <memory>
 #include <vector>
 #include <string>
 
@@ -31,24 +34,20 @@ namespace Vixen
     class DLL_EXPORT Board
     {
     public:
-        static Board *GetInstance();
-        void CleanUp();
-
-        BitBoards GetBitBoards() const;
-        bool IsWhiteToMove() const;
+        inline BitBoards GetBitBoards() const { return bitBoards; }
+        inline MoveGenerator& GetMoveGenerator() const { return *generator; }
+        inline bool IsWhiteToMove() const { return whiteToMove; }
+        inline const std::string& GetEnPassant() const { return enpassant; }
         void PrintBoard() const;
         void SetBoard(const std::string& fenPosition);
-        const std::string& GetEnPassant() const { return enpassant; }
-
-    private:
-        static Board* instance;
-
         Board();
         ~Board() = default;
-        Board(Board const&) = delete;
-        Board(Board&&) = delete;
-        Board& operator=(Board const&) = delete;
+        Board(Board const&) = default;
+        Board(Board&&) = default;
 
+    private:
+        std::unique_ptr<MoveGenerator> generator;
+        std::unique_ptr<Hash> hashBoard;
         BitBoards bitBoards;
         std::string enpassant;
         std::string fenPosition;
@@ -57,9 +56,9 @@ namespace Vixen
         int castlingRights;
         int fiftyMoves;
 
-        void ParseFenPiecePart(std::string& splittedFen);
-        void ParseSideToMovePart(std::string& splittedFen);
-        void ParseCastlingRightPart(std::string& splittedFen);
+        void ParseFenPiecePart(const std::string& splittedFen);
+        void ParseSideToMovePart(const std::string& splittedFen);
+        void ParseCastlingRightPart(const std::string& splittedFen);
         void SplitFenPosition(std::vector<std::string>& fenParts);
 
     };
