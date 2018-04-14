@@ -65,3 +65,37 @@ BOOST_AUTO_TEST_CASE(Test_pawnmovement)
     std::vector<std::string> expectedMoveList3{"c4c3", "c4d3"};
     BOOST_TEST(board.GetMoveGenerator().GetMoveList() == expectedMoveList3, boost::test_tools::per_element());
 }
+
+BOOST_AUTO_TEST_CASE(Test_knightmovement)
+{
+    Vixen::Board board;
+    board.SetBoard("8/8/8/8/3N4/8/8/8 w - - 0 1");
+    board.PrintBoard();
+    std::vector<std::string> expectedMoveList{"d4e6", "d4c6", "d4c2", "d4e2", "d4f5", "d4b5", "d4b3", "d4f3"};
+    BOOST_TEST(board.GetMoveGenerator().GetMoveList() == expectedMoveList, boost::test_tools::per_element());
+
+    board.SetBoard("N6N/8/8/1N4N1/8/8/8/N6N w - - 0 1");
+    board.PrintBoard();
+    std::vector<std::string> expectedMoveList2{ "h1g3", "h1f2",
+                                                "a1b3", "a1c2",
+                                                "g5h7", "g5f7", "g5f3", "g5h3", "g5e6", "g5e4",
+                                                "b5c7", "b5a7", "b5a3", "b5c3", "b5d6", "b5d4",
+                                                "h8g6", "h8f7",
+                                                "a8b6", "a8c7"};
+    BOOST_TEST(board.GetMoveGenerator().GetMoveList() == expectedMoveList2, boost::test_tools::per_element());
+
+    board.SetBoard("8/8/8/8/3n4/8/8/8 b - - 0 1");
+    board.PrintBoard();
+    std::vector<std::string> expectedMoveList3{"d4e6", "d4c6", "d4c2", "d4e2", "d4f5", "d4b5", "d4b3", "d4f3"};
+    BOOST_TEST(board.GetMoveGenerator().GetMoveList() == expectedMoveList3, boost::test_tools::per_element());
+
+    board.SetBoard("n6n/8/8/1n4n1/8/6B1/5QK1/n6n b - - 0 1");
+    board.PrintBoard();
+    std::vector<std::string> expectedMoveList4{ "h1g3", "h1f2",
+                                                "a1b3", "a1c2",
+                                                "g5h7", "g5f7", "g5f3", "g5h3", "g5e6", "g5e4",
+                                                "b5c7", "b5a7", "b5a3", "b5c3", "b5d6", "b5d4",
+                                                "h8g6", "h8f7",
+                                                "a8b6", "a8c7"};
+    BOOST_TEST(board.GetMoveGenerator().GetMoveList() == expectedMoveList4, boost::test_tools::per_element());
+}

@@ -16,12 +16,14 @@
 				<Compiler>
 					<Add option="-Wall" />
 					<Add option="-std=c++14" />
+					<Add option="-pg" />
 					<Add option="-g" />
 					<Add option="-DDEBUG" />
 					<Add directory="Extensions" />
 					<Add directory="include" />
 				</Compiler>
 				<Linker>
+					<Add option="-pg -lgmon" />
 					<Add library="bin/Debug/libboost_system-mgw72-mt-d-x64-1_66.dll.a" />
 					<Add library="bin/Debug/libboost_thread-mgw72-mt-d-x64-1_66.dll.a" />
 				</Linker>
@@ -59,7 +61,6 @@
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
-					<Add option="-std=c++14" />
 					<Add option="-g" />
 					<Add option="-DDEBUG" />
 					<Add directory="include" />
@@ -67,6 +68,7 @@
 					<Add directory="Extensions/include" />
 				</Compiler>
 				<Linker>
+					<Add option="-O2" />
 					<Add option="bin\Debug\exchndl.dll" />
 					<Add library="bin/Debug/libVixen.a" />
 					<Add library="bin/Debug/libboost_system-mgw72-mt-d-x64-1_66.dll.a" />
