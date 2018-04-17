@@ -8,6 +8,17 @@
 #define TESTPOS2 "rnbqkb1r/pp1ppppp/5n2/8/3p1B2/4P3/PPP2PPP/RN1QKBNR w KQkq - 0 4"
 #define MAX_SHIFT_NUM 63
 
+inline unsigned long long BIT(unsigned x)
+{
+    unsigned long long shiftMe = 1;
+    return shiftMe << x;
+}
+
+template<class T, class U> inline bool IsBitSet(const T& x, const U& y)
+{
+    return 0 != (x & y);
+}
+
 enum Ranks
 {
     RANK1  = 255U,

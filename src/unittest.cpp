@@ -64,6 +64,16 @@ BOOST_AUTO_TEST_CASE(Test_pawnmovement)
     board.PrintBoard();
     std::vector<std::string> expectedMoveList3{"c4c3", "c4d3"};
     BOOST_TEST(board.GetMoveGenerator().GetMoveList() == expectedMoveList3, boost::test_tools::per_element());
+
+    board.SetBoard("8/8/8/7p/p6P/P6p/8/8 w - - 0 1");
+    board.PrintBoard();
+    std::vector<std::string> expectedMoveList4;
+    BOOST_TEST(board.GetMoveGenerator().GetMoveList() == expectedMoveList4, boost::test_tools::per_element());
+
+    board.SetBoard("8/8/8/7p/p6P/P6p/7P/8 b - - 0 1");
+    board.PrintBoard();
+    std::vector<std::string> expectedMoveList5;
+    BOOST_TEST(board.GetMoveGenerator().GetMoveList() == expectedMoveList5, boost::test_tools::per_element());
 }
 
 BOOST_AUTO_TEST_CASE(Test_knightmovement)
@@ -98,4 +108,34 @@ BOOST_AUTO_TEST_CASE(Test_knightmovement)
                                                 "h8g6", "h8f7",
                                                 "a8b6", "a8c7"};
     BOOST_TEST(board.GetMoveGenerator().GetMoveList() == expectedMoveList4, boost::test_tools::per_element());
+}
+
+BOOST_AUTO_TEST_CASE(Test_bishopmovement)
+{
+    Vixen::Board board;
+    board.SetBoard("8/8/8/8/3B4/8/8/8 w - - 0 1");
+    board.PrintBoard();
+    std::vector<std::string> expectedMoveList{"d4c5", "d4b6", "d4a7", "d4e5", "d4f6", "d4g7", "d4h8", "d4c3", "d4b2", "d4a1", "d4e3", "d4f2", "d4g1"};
+    BOOST_TEST(board.GetMoveGenerator().GetMoveList() == expectedMoveList, boost::test_tools::per_element());
+
+    board.SetBoard("8/Bp4pB/1P4P1/8/8/1p4p1/BP4PB/8 w - - 0 1");
+    board.PrintBoard();
+    std::vector<std::string> expectedMoveList2{"h2g3", "h2g1", "a2b3", "a2b1", "h7g8", "a7b8"};
+    BOOST_TEST(board.GetMoveGenerator().GetMoveList() == expectedMoveList2, boost::test_tools::per_element());
+
+    board.SetBoard("8/8/8/8/3b4/8/8/8 b - - 0 1");
+    board.PrintBoard();
+    std::vector<std::string> expectedMoveList3{"d4c5", "d4b6", "d4a7", "d4e5", "d4f6", "d4g7", "d4h8", "d4c3", "d4b2", "d4a1", "d4e3", "d4f2", "d4g1"};
+    BOOST_TEST(board.GetMoveGenerator().GetMoveList() == expectedMoveList3, boost::test_tools::per_element());
+
+    board.SetBoard("8/bp4pb/1P4P1/8/8/1p4p1/bP4Pb/8 b - - 0 1");
+    board.PrintBoard();
+    std::vector<std::string> expectedMoveList4{"h2g1", "a2b1", "h7g8", "h7g6", "a7b8", "a7b6"};
+    BOOST_TEST(board.GetMoveGenerator().GetMoveList() == expectedMoveList4, boost::test_tools::per_element());
+}
+
+BOOST_AUTO_TEST_CASE(Test_bit)
+{
+    BOOST_TEST(256U == BIT(8));
+    BOOST_TEST(1099511627776U == BIT(40));
 }

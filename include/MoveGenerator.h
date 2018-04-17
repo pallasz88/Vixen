@@ -28,5 +28,6 @@ namespace Vixen
 
         void GeneratePawnMoves(const Board&);
         void GenerateKnightMoves(const Board&);
+        void GenerateBishopMoves(const Board&);
     };
 }

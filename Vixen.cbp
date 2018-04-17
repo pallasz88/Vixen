@@ -24,8 +24,7 @@
 				</Compiler>
 				<Linker>
 					<Add option="-pg -lgmon" />
-					<Add library="bin/Debug/libboost_system-mgw72-mt-d-x64-1_66.dll.a" />
-					<Add library="bin/Debug/libboost_thread-mgw72-mt-d-x64-1_66.dll.a" />
+					<Add library="Extensions/lib/libboost_system-mgw72-mt-x64-1_66.dll.a" />
 				</Linker>
 			</Target>
 			<Target title="Release">
@@ -53,7 +52,8 @@
 				</Compiler>
 				<Linker>
 					<Add library="bin/Debug/libVixen.a" />
-					<Add library="bin/Debug/libboost_system-mgw72-mt-d-x64-1_66.dll.a" />
+					<Add library="Extensions/lib/libboost_system-mgw72-mt-x64-1_66.dll.a" />
+					<Add library="Extensions/lib/libboost_unit_test_framework-mgw72-mt-x64-1_66.dll.a" />
 				</Linker>
 			</Target>
 			<Target title="Vixen">
@@ -65,13 +65,13 @@
 					<Add option="-DDEBUG" />
 					<Add directory="include" />
 					<Add directory="Extensions" />
-					<Add directory="Extensions/include" />
+					<Add directory="Extensions/drmingw" />
 				</Compiler>
 				<Linker>
 					<Add option="-O2" />
 					<Add option="bin\Debug\exchndl.dll" />
 					<Add library="bin/Debug/libVixen.a" />
-					<Add library="bin/Debug/libboost_system-mgw72-mt-d-x64-1_66.dll.a" />
+					<Add library="Extensions/lib/libboost_system-mgw72-mt-x64-1_66.dll.a" />
 				</Linker>
 			</Target>
 		</Build>
