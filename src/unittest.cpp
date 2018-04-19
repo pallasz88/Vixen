@@ -4,6 +4,12 @@
 #include "MoveGenerator.h"
 #include "defs.h"
 
+BOOST_AUTO_TEST_CASE(Test_bit)
+{
+    BOOST_TEST(256U == BIT(8));
+    BOOST_TEST(1099511627776U == BIT(40));
+}
+
 BOOST_AUTO_TEST_CASE(Test_Startposition)
 {
     Vixen::Board board;
@@ -134,8 +140,27 @@ BOOST_AUTO_TEST_CASE(Test_bishopmovement)
     BOOST_TEST(board.GetMoveGenerator().GetMoveList() == expectedMoveList4, boost::test_tools::per_element());
 }
 
-BOOST_AUTO_TEST_CASE(Test_bit)
+BOOST_AUTO_TEST_CASE(Test_rookmovement)
 {
-    BOOST_TEST(256U == BIT(8));
-    BOOST_TEST(1099511627776U == BIT(40));
+    Vixen::Board board;
+    board.SetBoard("8/8/8/8/3R4/8/8/8 w - - 0 1");
+    board.PrintBoard();
+    std::vector<std::string> expectedMoveList{"d4d5", "d4d6", "d4d7", "d4d8", "d4c4", "d4b4", "d4a4", "d4e4", "d4f4", "d4g4", "d4h4", "d4d3", "d4d2", "d4d1"};
+    BOOST_TEST(board.GetMoveGenerator().GetMoveList() == expectedMoveList, boost::test_tools::per_element());
+
+    board.SetBoard("r1b5/1p1p4/1P1P4/BP6/1P6/p1p2p1p/P1P2P1P/1B5R w - - 0 1");
+    board.PrintBoard();
+    std::vector<std::string> expectedMoveList2{"h1g1", "h1f1", "h1e1", "h1d1", "h1c1"};
+    BOOST_TEST(board.GetMoveGenerator().GetMoveList() == expectedMoveList2, boost::test_tools::per_element());
+
+
+    board.SetBoard("8/8/8/8/3r4/8/8/8 b - - 0 1");
+    board.PrintBoard();
+    std::vector<std::string> expectedMoveList3{"d4d5", "d4d6", "d4d7", "d4d8", "d4c4", "d4b4", "d4a4", "d4e4", "d4f4", "d4g4", "d4h4", "d4d3", "d4d2", "d4d1"};
+    BOOST_TEST(board.GetMoveGenerator().GetMoveList() == expectedMoveList3, boost::test_tools::per_element());
+
+    board.SetBoard("r1b5/1p1p4/1P1P4/BP6/1P6/p1p2p1p/P1P2P1P/1B5R b - - 0 1");
+    board.PrintBoard();
+    std::vector<std::string> expectedMoveList4{"a8b8", "a8a7", "a8a6", "a8a5",};
+    BOOST_TEST(board.GetMoveGenerator().GetMoveList() == expectedMoveList4, boost::test_tools::per_element());
 }
