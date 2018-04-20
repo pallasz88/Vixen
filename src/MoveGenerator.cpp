@@ -10,6 +10,7 @@ Vixen::MoveGenerator::MoveGenerator(const Vixen::Board& board)
     GenerateKnightMoves(board);
     GenerateBishopMoves(board);
     GenerateRookMoves(board);
+    GenerateQueenMoves(board);
 #ifdef DEBUG
     PrintMoveList();
 #endif // DEBUG
@@ -402,6 +403,248 @@ void Vixen::MoveGenerator::GenerateRookMoves(const Board& board)
                     {
                         moveList.push_back(squares[square] + squares[square-8*i]);
                         if( (BIT(square-8*i) & (RANK1 | bitBoards.white)) > 0 )
+                            break;
+
+                        else
+                            ++i;
+                    }
+                }
+            }
+        }
+    }
+}
+
+void Vixen::MoveGenerator::GenerateQueenMoves(const Board& board)
+{
+    Vixen::BitBoards bitBoards = board.GetBitBoards();
+    for(int square = H1; square <= A8; ++square)
+    {
+        if( board.IsWhiteToMove() )
+        {
+            if((bitBoards.Q >> square) & 1)
+            {
+                if((BIT(square) & RANK8) == 0)
+                {
+                    unsigned i = 1;
+                    while( (~bitBoards.white) >> (square+8*i) & 1 )
+                    {
+                        moveList.push_back(squares[square] + squares[square+8*i]);
+                        if( (BIT(square+8*i) & (RANK8 | bitBoards.black)) > 0 )
+                            break;
+
+                        else
+                            ++i;
+                    }
+                }
+
+                if((BIT(square) & FILEA) == 0)
+                {
+                    unsigned i = 1;
+                    while( (~bitBoards.white) >> (square+1*i) & 1 )
+                    {
+                        moveList.push_back(squares[square] + squares[square+1*i]);
+                        if( (BIT(square+1*i) & (FILEA | bitBoards.black)) > 0 )
+                            break;
+
+                        else
+                            ++i;
+                    }
+                }
+
+                if((BIT(square) & FILEH) == 0)
+                {
+                    unsigned i = 1;
+                    while( (~bitBoards.white) >> (square-1*i) & 1 )
+                    {
+                        moveList.push_back(squares[square] + squares[square-1*i]);
+                        if( (BIT(square-1*i) & (FILEH | bitBoards.black)) > 0 )
+                            break;
+
+                        else
+                            ++i;
+                    }
+                }
+
+                if((BIT(square) & RANK1) == 0)
+                {
+                    unsigned i = 1;
+                    while( (~bitBoards.white) >> (square-8*i) & 1 )
+                    {
+                        moveList.push_back(squares[square] + squares[square-8*i]);
+                        if( (BIT(square-8*i) & (RANK1 | bitBoards.black)) > 0 )
+                            break;
+
+                        else
+                            ++i;
+                    }
+                }
+
+                if(square < 55 && (BIT(square) & FILEA) == 0)
+                {
+                    unsigned i = 1;
+                    while( (~bitBoards.white) >> (square+9*i) & 1 )
+                    {
+                        moveList.push_back(squares[square] + squares[square+9*i]);
+                        if( (BIT(square+9*i) & (FILEA | RANK8 | bitBoards.black)) > 0 )
+                            break;
+
+                        else
+                            ++i;
+                    }
+                }
+
+                if(square < 56 && (BIT(square) & FILEH) == 0)
+                {
+                    unsigned i = 1;
+                    while( (~bitBoards.white) >> (square+7*i) & 1 )
+                    {
+                        moveList.push_back(squares[square] + squares[square+7*i]);
+                        if( (BIT(square+7*i) & (FILEH | RANK8 | bitBoards.black)) > 0 )
+                            break;
+
+                        else
+                            ++i;
+                    }
+                }
+
+                if(square > 7 && (BIT(square) & FILEA) == 0 )
+                {
+                    unsigned i = 1;
+                    while( (~bitBoards.white) >> (square-7*i) & 1 )
+                    {
+                        moveList.push_back(squares[square] + squares[square-7*i]);
+                        if( (BIT(square-7*i) & (FILEA | RANK1 | bitBoards.black ) ) > 0)
+                            break;
+
+                        else
+                            ++i;
+                    }
+                }
+
+                if(square > 8 && (BIT(square) & FILEH) == 0)
+                {
+                    unsigned i = 1;
+                    while( (~bitBoards.white) >> (square-9*i) & 1 )
+                    {
+                        moveList.push_back(squares[square] + squares[square-9*i]);
+                        if( (BIT(square-9*i) & (FILEH | RANK1 | bitBoards.black)) > 0)
+                            break;
+
+                        else
+                            ++i;
+                    }
+                }
+            }
+        }
+        else
+        {
+            if((bitBoards.q >> square) & 1)
+            {
+                if((BIT(square) & RANK8) == 0)
+                {
+                    unsigned i = 1;
+                    while( (~bitBoards.black) >> (square+8*i) & 1 )
+                    {
+                        moveList.push_back(squares[square] + squares[square+8*i]);
+                        if( (BIT(square+8*i) & (RANK8 | bitBoards.white)) > 0 )
+                            break;
+
+                        else
+                            ++i;
+                    }
+                }
+
+                if((BIT(square) & FILEA) == 0)
+                {
+                    unsigned i = 1;
+                    while( (~bitBoards.black) >> (square+1*i) & 1 )
+                    {
+                        moveList.push_back(squares[square] + squares[square+1*i]);
+                        if( (BIT(square+1*i) & (FILEA | bitBoards.white)) > 0 )
+                            break;
+
+                        else
+                            ++i;
+                    }
+                }
+
+                if((BIT(square) & FILEH) == 0)
+                {
+                    unsigned i = 1;
+                    while( (~bitBoards.black) >> (square-1*i) & 1 )
+                    {
+                        moveList.push_back(squares[square] + squares[square-1*i]);
+                        if( (BIT(square-1*i) & (FILEH | bitBoards.white)) > 0 )
+                            break;
+
+                        else
+                            ++i;
+                    }
+                }
+
+                if((BIT(square) & RANK1) == 0)
+                {
+                    unsigned i = 1;
+                    while( (~bitBoards.black) >> (square-8*i) & 1 )
+                    {
+                        moveList.push_back(squares[square] + squares[square-8*i]);
+                        if( (BIT(square-8*i) & (RANK1 | bitBoards.white)) > 0 )
+                            break;
+
+                        else
+                            ++i;
+                    }
+                }
+
+                if(square < 55 && (BIT(square) & FILEA) == 0)
+                {
+                    unsigned i = 1;
+                    while( (~bitBoards.black) >> (square+9*i) & 1 )
+                    {
+                        moveList.push_back(squares[square] + squares[square+9*i]);
+                        if( (BIT(square+9*i) & (FILEA | RANK8 | bitBoards.white)) > 0 )
+                            break;
+
+                        else
+                            ++i;
+                    }
+                }
+
+                if(square < 56 && (BIT(square) & FILEH) == 0)
+                {
+                    unsigned i = 1;
+                    while( (~bitBoards.black) >> (square+7*i) & 1 )
+                    {
+                        moveList.push_back(squares[square] + squares[square+7*i]);
+                        if( (BIT(square+7*i) & (FILEH | RANK8 | bitBoards.white)) > 0 )
+                            break;
+
+                        else
+                            ++i;
+                    }
+                }
+
+                if(square > 7 && (BIT(square) & FILEA) == 0 )
+                {
+                    unsigned i = 1;
+                    while( (~bitBoards.black) >> (square-7*i) & 1 )
+                    {
+                        moveList.push_back(squares[square] + squares[square-7*i]);
+                        if( (BIT(square-7*i) & (FILEA | RANK1 | bitBoards.white ) ) > 0)
+                            break;
+
+                        else
+                            ++i;
+                    }
+                }
+
+                if(square > 8 && (BIT(square) & FILEH) == 0)
+                {
+                    unsigned i = 1;
+                    while( (~bitBoards.black) >> (square-9*i) & 1 )
+                    {
+                        moveList.push_back(squares[square] + squares[square-9*i]);
+                        if( (BIT(square-9*i) & (FILEH | RANK1 | bitBoards.white)) > 0)
                             break;
 
                         else
