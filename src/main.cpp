@@ -1,7 +1,4 @@
-#include "defs.h"
-#include "Board.h"
-#include "MoveGenerator.h"
-#include "Hash.h"
+#include "board.h"
 #include "exchndl.h"
 
 #include <iostream>
