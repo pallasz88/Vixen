@@ -12,12 +12,6 @@ BOOST_AUTO_TEST_CASE(Test_bit)
     BOOST_TEST(1U == BIT(H1));
     BOOST_TEST(128U == BIT(A1));
     BOOST_TEST(1099511627776U == BIT(H6));
-
-    /*unsigned i = 3;
-    FlipBit(i, 2);
-    BOOST_TEST(i == 7U);
-    FlipBit(i, 2);
-    BOOST_TEST(i == 3U);*/
 }
 
 BOOST_AUTO_TEST_CASE(Test_Startposition)
@@ -212,23 +206,23 @@ BOOST_AUTO_TEST_CASE(Test_attacked_squares)
     board.PrintBoard();
     BitBoards bitBoards = board.GetBitBoards();
 
-    BOOST_TEST(Vixen::IsSquareWhiteControlled(bitBoards, G4) == true);
-    BOOST_TEST(Vixen::IsSquareWhiteControlled(bitBoards, G5) == true);
-    BOOST_TEST(Vixen::IsSquareWhiteControlled(bitBoards, G6) == true);
-    BOOST_TEST(Vixen::IsSquareWhiteControlled(bitBoards, G7) == true);
-    BOOST_TEST(Vixen::IsSquareWhiteControlled(bitBoards, A1) == false);
-    BOOST_TEST(Vixen::IsSquareWhiteControlled(bitBoards, B1) == true);
-    BOOST_TEST(Vixen::IsSquareWhiteControlled(bitBoards, H7) == true);
+    BOOST_TEST(Vixen::IsSquareWhiteControlled(bitBoards, G4));
+    BOOST_TEST(Vixen::IsSquareWhiteControlled(bitBoards, G5));
+    BOOST_TEST(Vixen::IsSquareWhiteControlled(bitBoards, G6));
+    BOOST_TEST(Vixen::IsSquareWhiteControlled(bitBoards, G7));
+    BOOST_TEST(!Vixen::IsSquareWhiteControlled(bitBoards, A1));
+    BOOST_TEST(Vixen::IsSquareWhiteControlled(bitBoards, B1));
+    BOOST_TEST(Vixen::IsSquareWhiteControlled(bitBoards, H7));
 
     board.SetBoard("N6N/8/8/1N4N1/8/8/8/N6N w - - 0 1");
     board.PrintBoard();
     bitBoards = board.GetBitBoards();
 
-    BOOST_TEST(Vixen::IsSquareWhiteControlled(bitBoards, D4) == true);
-    BOOST_TEST(Vixen::IsSquareWhiteControlled(bitBoards, E4) == true);
-    BOOST_TEST(Vixen::IsSquareWhiteControlled(bitBoards, F7) == true);
-    BOOST_TEST(Vixen::IsSquareWhiteControlled(bitBoards, G3) == true);
-    BOOST_TEST(Vixen::IsSquareWhiteControlled(bitBoards, D7) == false);
-    BOOST_TEST(Vixen::IsSquareWhiteControlled(bitBoards, C2) == true);
-    BOOST_TEST(Vixen::IsSquareWhiteControlled(bitBoards, C3) == true);
+    BOOST_TEST(Vixen::IsSquareWhiteControlled(bitBoards, D4));
+    BOOST_TEST(Vixen::IsSquareWhiteControlled(bitBoards, E4));
+    BOOST_TEST(Vixen::IsSquareWhiteControlled(bitBoards, F7));
+    BOOST_TEST(Vixen::IsSquareWhiteControlled(bitBoards, G3));
+    BOOST_TEST(!Vixen::IsSquareWhiteControlled(bitBoards, D7));
+    BOOST_TEST(Vixen::IsSquareWhiteControlled(bitBoards, C2));
+    BOOST_TEST(Vixen::IsSquareWhiteControlled(bitBoards, C3));
 }

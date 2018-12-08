@@ -1,8 +1,7 @@
 cmake_minimum_required(VERSION 3.12)
 project(Vixen C CXX)
 
-set(CMAKE_CXX_STANDARD 14)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
+set(CMAKE_CXX_STANDARD 17)
 
 set(SOURCE_FILES board.h
                  board.cpp
@@ -30,3 +29,8 @@ if(Boost_FOUND)
 endif()
 
 install(TARGETS Vixen DESTINATION bin)
+get_filename_component(UTF_BASE_NAME_DEBUG ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY_DEBUG} NAME_WE)
+install(FILES ../../Extensions/lib/${UTF_BASE_NAME_DEBUG}.a
+  DESTINATION bin
+  CONFIGURATIONS Debug
+)

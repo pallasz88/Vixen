@@ -33,13 +33,8 @@ void Vixen::Board::SetBoard(const std::string& fenPosition)
     fullMovesNum = stoi(parsedPosition[5]);
     generator.reset();
     hashBoard.reset();
-#ifdef __cplusplus_201402L
     generator = std::make_unique<Vixen::MoveGenerator>(*this);
     hashBoard = std::make_unique<Vixen::Hash>(*this);
-#else
-	generator = std::make_shared<Vixen::MoveGenerator>(*this);
-	hashBoard = std::make_shared<Vixen::Hash>(*this);
-#endif
 }
 
 void Vixen::Board::SplitFenPosition(std::vector<std::string>& fenParts)
@@ -231,7 +226,7 @@ void Vixen::InitBitBoards(BitBoards& bitBoards)
     memset( &bitBoards, 0x00, sizeof( bitBoards ) );
 }
 
-bool Vixen::IsSquareWhiteControlled(BitBoards& bitBoards, int square)
+bool Vixen::IsSquareWhiteControlled(BitBoards &bitBoards, unsigned int square)
 {
     if(square < A7 && (BIT(square) & FILEA) == 0)
     {
@@ -410,10 +405,5 @@ bool Vixen::IsSquareWhiteControlled(BitBoards& bitBoards, int square)
         return true;
 
     return false;
-}
-
-bool Vixen::IsSquareBlackControlled()
-{
-	return false;
 }
 

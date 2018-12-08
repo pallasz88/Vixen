@@ -28,49 +28,56 @@ namespace Vixen
         uint64_t occupied;
         uint64_t white;
         uint64_t black;
-        uint64_t wattacked;
-        uint64_t battacked;
     };
 
     void InitBitBoards(BitBoards& bitBoards);
 
-	VIXEN_API bool IsSquareWhiteControlled(BitBoards& bitBoards, int square);
-
-    bool IsSquareBlackControlled();
+	VIXEN_API bool IsSquareWhiteControlled(BitBoards &bitBoards, unsigned int square);
 
     class VIXEN_API Board
 	{
     public:
-        inline BitBoards GetBitBoards() const { return bitBoards; }
-        inline MoveGenerator& GetMoveGenerator() const { return *generator; }
-        inline bool IsWhiteToMove() const { return whiteToMove; }
-        inline const std::string& GetEnPassant() const { return enpassant; }
-        void PrintBoard() const;
-        void SetBoard(const std::string& fenPosition);
-        Board();
-        ~Board() = default;
-        Board(Board const&) = default;
-        Board(Board&&) = default;
+
+		Board();
+
+		inline BitBoards GetBitBoards() const { return bitBoards; }
+
+		inline MoveGenerator& GetMoveGenerator() const { return *generator; }
+
+		inline bool IsWhiteToMove() const { return whiteToMove; }
+
+		inline std::string GetEnPassant() const { return enpassant; }
+
+		void PrintBoard() const;
+
+		void SetBoard(const std::string& fenPosition);
 
     private:
-#ifdef __cplusplus_201402L
+
         std::unique_ptr<MoveGenerator> generator;
+
         std::unique_ptr<Hash> hashBoard;
-#else
-		std::shared_ptr<MoveGenerator> generator;
-		std::shared_ptr<Hash> hashBoard;
-#endif
+
         BitBoards bitBoards;
+
         std::string enpassant;
+
         std::string fenPosition;
+
         int fullMovesNum;
+
         bool whiteToMove;
+
         int castlingRights;
+
         int fiftyMoves;
 
         void ParseFenPiecePart(const std::string& splittedFen);
+
         void ParseSideToMovePart(const std::string& splittedFen);
+
         void ParseCastlingRightPart(const std::string& splittedFen);
+
         void SplitFenPosition(std::vector<std::string>& fenParts);
 
     };

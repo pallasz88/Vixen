@@ -8,6 +8,7 @@
 #define TESTPOS1 "2rq1rk1/3bppbp/p5p1/1ppPP3/2n2B2/2P1Q1PP/P2N1PB1/R4RK1 w - - 1 18"
 #define TESTPOS2 "rnbqkb1r/pp1ppppp/5n2/8/3p1B2/4P3/PPP2PPP/RN1QKBNR w KQkq - 0 4"
 #define MAX_SHIFT_NUM 63
+#define DEBUG
 
 namespace Vixen
 {

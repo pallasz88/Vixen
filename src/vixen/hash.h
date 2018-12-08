@@ -11,19 +11,29 @@ namespace Vixen
     class VIXEN_API Hash
     {
     public:
-        uint64_t GetHash() const;
 
-        Hash(const Board&);
+        explicit Hash(const Board&);
+
         ~Hash() = default;
+
         Hash(Hash const&) = delete;
+
         Hash(Hash&&) = delete;
 
+        uint64_t GetHash() const;
+
     private:
+
         uint64_t hash;
+
         uint64_t zobristHashKey[64][12];
+
         void PrintZobrist();
+
         uint64_t GenerateBigRandom();
+
         void InitZobrist();
+
         void ComputeHash(const Board&);
     };
 }

@@ -21,61 +21,51 @@ void Vixen::MoveGenerator::GeneratePawnMoves(const Vixen::Board& board)
 {
     BitBoards bitBoards = board.GetBitBoards();
     std::string enPassantSquare = board.GetEnPassant();
-    for(int square = H2; square <= A7; ++square)
-    {
-        if( board.IsWhiteToMove() )
-        {
-            if((bitBoards.P >> square) & 1 )
-            {
-                if( (~bitBoards.occupied) >> (square+8) & 1 )
-                {
-                    moveList.push_back(squares[square] + squares[square+8]);
-                    if( ((bitBoards.P & RANK2) >> square) & 1 && (~bitBoards.occupied) >> (square+16) & 1 )
-                        moveList.push_back(squares[square] + squares[square+16]);
+    for(unsigned square = H2; square <= A7; ++square) {
+        if (board.IsWhiteToMove()) {
+            if ((bitBoards.P >> square) & 1) {
+                if ((~bitBoards.occupied) >> (square + 8) & 1) {
+                    moveList.push_back(squares[square] + squares[square + 8]);
+                    if (((bitBoards.P & RANK2) >> square) & 1 && (~bitBoards.occupied) >> (square + 16) & 1)
+                        moveList.push_back(squares[square] + squares[square + 16]);
 
                 }
 
-                if( bitBoards.black >> (square+7) & 1 && !(((bitBoards.P & FILEH) >> square ) & 1) )
-                    moveList.push_back(squares[square] + squares[square+7]);
+                if (bitBoards.black >> (square + 7) & 1 && !(((bitBoards.P & FILEH) >> square) & 1))
+                    moveList.push_back(squares[square] + squares[square + 7]);
 
-                if( bitBoards.black >> (square+9) & 1 && !(((bitBoards.P & FILEA) >> square ) & 1) )
-                    moveList.push_back(squares[square] + squares[square+9]);
+                if (bitBoards.black >> (square + 9) & 1 && !(((bitBoards.P & FILEA) >> square) & 1))
+                    moveList.push_back(squares[square] + squares[square + 9]);
 
-                if( enPassantSquare != "-" )
+                if (enPassantSquare != "-")
                     moveList.push_back(squares[square] + enPassantSquare);
             }
-        }
-        else
-        {
-            if((bitBoards.p >> square) & 1)
-            {
-                if( (~bitBoards.occupied) >> (square-8) & 1 )
-                {
-                    moveList.push_back(squares[square] + squares[square-8]);
-                    if( ((bitBoards.p & RANK7) >> square) & 1 && (~bitBoards.occupied) >> (square-16) & 1 )
-                        moveList.push_back(squares[square] + squares[square-16]);
+        } else {
+            if ((bitBoards.p >> square) & 1) {
+                if ((~bitBoards.occupied) >> (square - 8) & 1) {
+                    moveList.push_back(squares[square] + squares[square - 8]);
+                    if (((bitBoards.p & RANK7) >> square) & 1 && (~bitBoards.occupied) >> (square - 16) & 1)
+                        moveList.push_back(squares[square] + squares[square - 16]);
 
                 }
 
-                if( bitBoards.white >> (square-7) & 1 && !(((bitBoards.p & FILEA) >> square ) & 1) )
-                    moveList.push_back(squares[square] + squares[square-7]);
+                if (bitBoards.white >> (square - 7) & 1 && !(((bitBoards.p & FILEA) >> square) & 1))
+                    moveList.push_back(squares[square] + squares[square - 7]);
 
-                if( bitBoards.white >> (square-9) & 1 && !(((bitBoards.p & FILEH) >> square ) & 1) )
-                    moveList.push_back(squares[square] + squares[square-9]);
+                if (bitBoards.white >> (square - 9) & 1 && !(((bitBoards.p & FILEH) >> square) & 1))
+                    moveList.push_back(squares[square] + squares[square - 9]);
 
-                if( enPassantSquare != "-" )
+                if (enPassantSquare != "-")
                     moveList.push_back(squares[square] + enPassantSquare);
             }
         }
     }
-
-    return;
 }
 
 void Vixen::MoveGenerator::GenerateKnightMoves(const Vixen::Board& board)
 {
     BitBoards bitBoards = board.GetBitBoards();
-    for(int square = H1; square <= A8; ++square)
+    for(unsigned square = H1; square <= A8; ++square)
     {
         if( board.IsWhiteToMove() )
         {
@@ -152,13 +142,12 @@ void Vixen::MoveGenerator::GenerateKnightMoves(const Vixen::Board& board)
             }
         }
     }
-    return;
 }
 
 void Vixen::MoveGenerator::GenerateBishopMoves(const Board& board)
 {
     BitBoards bitBoards = board.GetBitBoards();
-    for(int square = H1; square <= A8; ++square)
+    for(unsigned square = H1; square <= A8; ++square)
     {
         if( board.IsWhiteToMove() )
         {
@@ -288,7 +277,7 @@ void Vixen::MoveGenerator::GenerateBishopMoves(const Board& board)
 void Vixen::MoveGenerator::GenerateRookMoves(const Board& board)
 {
     Vixen::BitBoards bitBoards = board.GetBitBoards();
-    for(int square = H1; square <= A8; ++square)
+    for(unsigned square = H1; square <= A8; ++square)
     {
         if( board.IsWhiteToMove() )
         {
@@ -418,7 +407,7 @@ void Vixen::MoveGenerator::GenerateRookMoves(const Board& board)
 void Vixen::MoveGenerator::GenerateQueenMoves(const Board& board)
 {
     Vixen::BitBoards bitBoards = board.GetBitBoards();
-    for(int square = H1; square <= A8; ++square)
+    for(unsigned square = H1; square <= A8; ++square)
     {
         if( board.IsWhiteToMove() )
         {
@@ -660,7 +649,7 @@ void Vixen::MoveGenerator::GenerateQueenMoves(const Board& board)
 void Vixen::MoveGenerator::GenerateKingMoves(const Board& board)
 {
     Vixen::BitBoards bitBoards = board.GetBitBoards();
-    for(int square = H1; square <= A8; ++square)
+    for(unsigned square = H1; square <= A8; ++square)
     {
         if( board.IsWhiteToMove() )
         {

@@ -9,6 +9,9 @@ Vixen::Hash::Hash(const Board& board)
 {
     InitZobrist();
     ComputeHash(board);
+#ifdef DEBUG
+    std::cout << hash << std::endl;
+#endif
 }
 
 void Vixen::Hash::InitZobrist()
@@ -76,9 +79,6 @@ void Vixen::Hash::ComputeHash(const Board& board)
 
 uint64_t Vixen::Hash::GetHash() const
 {
-#ifdef DEBUG
-    std::cout << hash << std::endl;
-#endif // DEBUG
     return hash;
 }
 

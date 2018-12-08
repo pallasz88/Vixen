@@ -1,4 +1,6 @@
 #include "board.h"
+#include "move_generator.h"
+#include "hash.h"
 #include "exchndl.h"
 
 #include <iostream>
