@@ -12,13 +12,13 @@ namespace Vixen
     {
     public:
 
-        explicit Hash(const Board&);
+        explicit Hash(const Board &);
 
         ~Hash() = default;
 
-        Hash(Hash const&) = delete;
+        Hash(Hash const &) = delete;
 
-        Hash(Hash&&) = delete;
+        Hash(Hash &&) = delete;
 
         uint64_t GetHash() const;
 
@@ -34,6 +34,6 @@ namespace Vixen
 
         void InitZobrist();
 
-        void ComputeHash(const Board&);
+        void ComputeHash(const Board &);
     };
 }

@@ -1,56 +1,37 @@
 #pragma once
 
 #include <memory>
-#include <vector>
-#include <string>
 #include "defs.h"
 
 namespace Vixen
 {
-	class Hash;
+    class Hash;
 
-	class MoveGenerator;
+    class MoveGenerator;
 
-    struct BitBoards
-    {
-        uint64_t p;
-        uint64_t r;
-        uint64_t b;
-        uint64_t n;
-        uint64_t q;
-        uint64_t k;
-        uint64_t P;
-        uint64_t R;
-        uint64_t B;
-        uint64_t N;
-        uint64_t Q;
-        uint64_t K;
-        uint64_t occupied;
-        uint64_t white;
-        uint64_t black;
-    };
-
-    void InitBitBoards(BitBoards& bitBoards);
-
-	VIXEN_API bool IsSquareWhiteControlled(BitBoards &bitBoards, unsigned int square);
+    void InitBitBoards(BitBoards &bitBoards);
 
     class VIXEN_API Board
-	{
+    {
     public:
 
-		Board();
+        Board();
 
-		inline BitBoards GetBitBoards() const { return bitBoards; }
+        inline BitBoards GetBitBoards() const
+        { return bitBoards; }
 
-		inline MoveGenerator& GetMoveGenerator() const { return *generator; }
+        inline MoveGenerator &GetMoveGenerator() const
+        { return *generator; }
 
-		inline bool IsWhiteToMove() const { return whiteToMove; }
+        inline bool IsWhiteToMove() const
+        { return whiteToMove; }
 
-		inline std::string GetEnPassant() const { return enpassant; }
+        inline std::string GetEnPassant() const
+        { return enpassant; }
 
-		void PrintBoard() const;
+        void PrintBoard() const;
 
-		void SetBoard(const std::string& fenPosition);
+        void SetBoard(const std::string &fenPosition);
 
     private:
 
@@ -72,13 +53,13 @@ namespace Vixen
 
         int fiftyMoves;
 
-        void ParseFenPiecePart(const std::string& splittedFen);
+        void ParseFenPiecePart(const std::string &splittedFen);
 
-        void ParseSideToMovePart(const std::string& splittedFen);
+        void ParseSideToMovePart(const std::string &splittedFen);
 
-        void ParseCastlingRightPart(const std::string& splittedFen);
+        void ParseCastlingRightPart(const std::string &splittedFen);
 
-        void SplitFenPosition(std::vector<std::string>& fenParts);
+        void SplitFenPosition(std::vector<std::string> &fenParts);
 
     };
 }

@@ -1,7 +1,5 @@
 #pragma once
 
-#include <vector>
-#include <string>
 #include "defs.h"
 
 namespace Vixen
@@ -12,26 +10,27 @@ namespace Vixen
     {
     public:
 
-        explicit MoveGenerator(const Board&);
+        explicit MoveGenerator(const Board &);
 
         void PrintMoveList();
 
-        std::vector<std::string> GetMoveList() const { return moveList; }
+        std::vector<std::string> GetMoveList() const
+        { return moveList; }
 
     private:
 
         std::vector<std::string> moveList;
 
-        void GeneratePawnMoves(const Board&);
+        void GeneratePawnMoves(const BitBoards &);
 
-        void GenerateKnightMoves(const Board&);
+        void GenerateKnightMoves(const BitBoards &);
 
-        void GenerateBishopMoves(const Board&);
+        void GenerateBishopMoves(const BitBoards &);
 
-        void GenerateRookMoves(const Board&);
+        void GenerateRookMoves(const BitBoards &);
 
-        void GenerateQueenMoves(const Board&);
+        void GenerateQueenMoves(const BitBoards &);
 
-        void GenerateKingMoves(const Board&);
+        void GenerateKingMoves(const BitBoards &);
     };
 }

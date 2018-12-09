@@ -3,8 +3,6 @@
 #include "hash.h"
 #include "exchndl.h"
 
-#include <iostream>
-
 int main()
 {
     ExcHndlInit();
