@@ -75,4 +75,7 @@ namespace Vixen
                     "h8", "g8", "f8", "e8", "d8", "c8", "b8", "a8"
             };
 
+    const std::array<char, 12> pieceKeys = {'P', 'N', 'B', 'R', 'Q', 'K',
+                                            'p', 'n', 'b', 'r', 'q', 'k'};
+
 }

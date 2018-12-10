@@ -33,5 +33,4 @@ install(TARGETS Vixen DESTINATION bin)
 get_filename_component(UTF_BASE_NAME_DEBUG ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY_DEBUG} NAME_WE)
 install(FILES ../../Extensions/lib/${UTF_BASE_NAME_DEBUG}.a
         DESTINATION bin
-        CONFIGURATIONS Debug
-        )
+        CONFIGURATIONS Debug)

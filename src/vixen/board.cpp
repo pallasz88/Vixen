@@ -31,8 +31,6 @@ namespace Vixen
         enpassant = parsedPosition[3];
         fiftyMoves = stoi(parsedPosition[4]);
         fullMovesNum = stoi(parsedPosition[5]);
-        generator.reset();
-        hashBoard.reset();
         generator = std::make_unique<MoveGenerator>(*this);
         hashBoard = std::make_unique<Hash>(*this);
     }
@@ -108,7 +106,7 @@ namespace Vixen
                     std::cerr << "ERROR IN FEN: PIECE POSITION" << std::endl;
                     return;
             }
-            i--;
+            --i;
         }
         bitBoards['S'] = bitBoards['k'] |
                          bitBoards['q'] |

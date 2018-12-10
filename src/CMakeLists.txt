@@ -5,7 +5,8 @@ set(CMAKE_CXX_STANDARD 17)
 
 set(SOURCE_FILES main.cpp)
 
-set(DRMINGW_LIBS dbghelp.dll
+set(DRMINGW_LIBS
+        dbghelp.dll
         exchndl.dll
         mgwhelp.dll
         symsrv.dll

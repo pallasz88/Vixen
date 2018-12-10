@@ -17,7 +17,7 @@ BOOST_AUTO_TEST_CASE(Test_bit)
 BOOST_AUTO_TEST_CASE(Test_Startposition)
 {
     Vixen::Board board;
-    const BitBoards &bitBoards = board.GetBitBoards();
+    const auto &bitBoards = board.GetBitBoards();
     BOOST_CHECK_EQUAL(bitBoards.at('K'), 8U);
     BOOST_CHECK_EQUAL(bitBoards.at('Q'), 16U);
     BOOST_CHECK_EQUAL(bitBoards.at('R'), 129U);
@@ -41,7 +41,7 @@ BOOST_AUTO_TEST_CASE(Test_SetPosition)
     board.SetBoard(TESTPOS1);
     board.PrintBoard();
 
-    const BitBoards &boards = board.GetBitBoards();
+    auto boards = board.GetBitBoards();
     BOOST_CHECK_EQUAL(boards.at('K'), 2U);
     BOOST_CHECK_EQUAL(boards.at('Q'), 524288U);
     BOOST_CHECK_EQUAL(boards.at('R'), 132U);
@@ -57,9 +57,29 @@ BOOST_AUTO_TEST_CASE(Test_SetPosition)
     BOOST_CHECK_EQUAL(boards.at('k'), 144115188075855872U);
 
     BOOST_CHECK_EQUAL(board.IsWhiteToMove(), true);
+
+    board.SetBoard(TESTPOS2);
+    board.PrintBoard();
+
+    boards = board.GetBitBoards();
+    BOOST_CHECK_EQUAL(boards.at('K'), 8U);
+    BOOST_CHECK_EQUAL(boards.at('Q'), 16U);
+    BOOST_CHECK_EQUAL(boards.at('R'), 129U);
+    BOOST_CHECK_EQUAL(boards.at('B'), 67108868U);
+    BOOST_CHECK_EQUAL(boards.at('N'), 66U);
+    BOOST_CHECK_EQUAL(boards.at('P'), 583424U);
+
+    BOOST_CHECK_EQUAL(boards.at('p'), 62768920074911744U);
+    BOOST_CHECK_EQUAL(boards.at('n'), 4611690416473899008U);
+    BOOST_CHECK_EQUAL(boards.at('b'), 2594073385365405696U);
+    BOOST_CHECK_EQUAL(boards.at('r'), 9295429630892703744U);
+    BOOST_CHECK_EQUAL(boards.at('q'), 1152921504606846976U);
+    BOOST_CHECK_EQUAL(boards.at('k'), 576460752303423488U);
+
+    BOOST_CHECK_EQUAL(board.IsWhiteToMove(), true);
 }
 
-BOOST_AUTO_TEST_CASE(Test_pawnmovement)
+/*BOOST_AUTO_TEST_CASE(Test_pawnmovement)
 {
     Vixen::Board board;
     board.SetBoard("8/8/8/8/3P4/8/8/8 w - - 0 1");
@@ -208,3 +228,4 @@ BOOST_AUTO_TEST_CASE(Test_kingmovement)
     BOOST_TEST(board.GetMoveGenerator().GetMoveList() == expectedMoveList3, boost::test_tools::per_element());
 
 }
+*/

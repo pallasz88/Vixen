@@ -1,7 +1,5 @@
 #pragma once
 
-#include <cstdint>
-#include <cstring>
 #include "defs.h"
 
 namespace Vixen
@@ -14,23 +12,15 @@ namespace Vixen
 
         explicit Hash(const Board &);
 
-        ~Hash() = default;
-
-        Hash(Hash const &) = delete;
-
-        Hash(Hash &&) = delete;
-
-        uint64_t GetHash() const;
+        BitBoard GetHash() const;
 
     private:
 
-        uint64_t hash;
+        BitBoard hash;
 
-        uint64_t zobristHashKey[64][12];
+        std::map<int, std::map<char, BitBoard>> zobristHashKey;
 
-        void PrintZobrist();
-
-        uint64_t GenerateBigRandom();
+        BitBoard GenerateBigRandom();
 
         void InitZobrist();
 
