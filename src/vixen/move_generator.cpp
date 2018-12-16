@@ -31,17 +31,18 @@ namespace Vixen
 
     void MoveGenerator::GenerateBishopMoves(const BitBoards &board)
     {
-
+        // TODO: Implement Bishop Magic
     }
 
     void MoveGenerator::GenerateRookMoves(const BitBoards &board)
     {
-
+        // TODO: Implement Rook Magic
     }
 
     void MoveGenerator::GenerateQueenMoves(const BitBoards &board)
     {
-
+        // TODO: Implement Bishop Magic
+        // TODO: Implement Rook Magic
     }
 
     void MoveGenerator::GenerateKingMoves(const BitBoards &board)

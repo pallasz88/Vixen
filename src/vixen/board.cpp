@@ -1,6 +1,8 @@
 #include "board.h"
 #include "move_generator.h"
 #include "hash.h"
+#include "slider.h"
+#include "anti_slider.h"
 
 #include <iostream>
 #include <boost/algorithm/string.hpp>
@@ -13,6 +15,9 @@ namespace Vixen
         clock_t start = clock();
 #endif
         SetBoard(STARTPOS);
+        InitMagics();
+        InitKnightKingAttack();
+        std::cout << Magic<Slider::BISHOP>::GetAttack(F4, ~bitBoards[' ']) << std::endl;
 #ifdef DEBUG
         PrintBoard();
         std::cout << double(clock() - start) / (double) CLOCKS_PER_SEC << " seconds." << std::endl;
@@ -71,7 +76,6 @@ namespace Vixen
     void Board::ParseFenPiecePart(const std::string &parsedPosition)
     {
         int i = MAX_SHIFT_NUM;
-        uint64_t shiftMe = 1;
         for (auto &it : parsedPosition)
         {
             switch (it)
@@ -88,7 +92,7 @@ namespace Vixen
                 case 'k':
                 case 'Q':
                 case 'q':
-                    bitBoards[it] |= shiftMe << i;
+                    bitBoards[it] |= static_cast<BitBoard>(1) << i;
                     break;
                 case '/':
                     continue;
@@ -182,7 +186,7 @@ namespace Vixen
         bitBoards['q'] = 0;
         bitBoards['F'] = 0;
         bitBoards['S'] = 0;
-        bitBoards['A'] = 0;
+        bitBoards[' '] = 0;
     }
 
 }

@@ -25,5 +25,8 @@ namespace Vixen
         void InitZobrist();
 
         void ComputeHash(const Board &);
+
+        const std::array<char, 12> pieceKeys = {'P', 'N', 'B', 'R', 'Q', 'K',
+                                                'p', 'n', 'b', 'r', 'q', 'k'};
     };
 }

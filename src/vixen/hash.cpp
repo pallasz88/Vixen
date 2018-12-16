@@ -18,9 +18,9 @@ namespace Vixen
     void Hash::InitZobrist()
     {
         hash = 0;
-        for (int squareKey = H1; squareKey < A8; ++squareKey)
+        for (int square = H1; A8 >= square; ++square)
             for (auto &pieceKey : pieceKeys)
-                zobristHashKey[squareKey][pieceKey] = GenerateBigRandom();
+                zobristHashKey[square][pieceKey] = GenerateBigRandom();
     }
 
     BitBoard Hash::GenerateBigRandom()
@@ -33,13 +33,13 @@ namespace Vixen
     void Hash::ComputeHash(const Board &board)
     {
         BitBoards bitBoards = board.GetBitBoards();
-        for (int i = MAX_SHIFT_NUM; i >= 0; i--)
+        for (int square = MAX_SHIFT_NUM; square >= 0; --square)
         {
             for (const auto &pieceKey : pieceKeys)
             {
-                if (~(bitBoards[' '] >> i) & 1)
-                    if ((bitBoards[pieceKey] >> i) & 1)
-                        hash ^= zobristHashKey[i][pieceKey];
+                if (~(bitBoards[' '] >> square) & 1)
+                    if ((bitBoards[pieceKey] >> square) & 1)
+                        hash ^= zobristHashKey[square][pieceKey];
             }
         }
     }

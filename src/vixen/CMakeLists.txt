@@ -4,13 +4,17 @@ project(Vixen C CXX)
 set(CMAKE_CXX_STANDARD 17)
 
 set(SOURCE_FILES
+        anti_slider.h
+        anti_slider.cpp
         board.h
         board.cpp
         defs.h
         hash.h
         hash.cpp
         move_generator.h
-        move_generator.cpp)
+        move_generator.cpp
+        slider.cpp
+        slider.h)
 
 set(Boost_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../Extensions)
 set(BOOST_LIBRARYDIR ${CMAKE_CURRENT_SOURCE_DIR}/../../Extensions/lib)
