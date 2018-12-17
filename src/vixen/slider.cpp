@@ -31,16 +31,16 @@ namespace Vixen
 
     void InitMagics()
     {
-        for (unsigned square = 0; square < SQUARE_NUMBER; ++square)
+        for (int square = 0; square < SQUARE_NUMBER; ++square)
         {
-            RookTable[square].shift = static_cast<unsigned>(SQUARE_NUMBER - RookBits[square]);
+            RookTable[square].shift = SQUARE_NUMBER - RookBits[square];
             RookTable[square].magic = RookMagic[square];
             RookTable[square].InitSlidingAttack(square);
         }
 
-        for (unsigned square = 0; square < SQUARE_NUMBER; ++square)
+        for (int square = 0; square < SQUARE_NUMBER; ++square)
         {
-            BishopTable[square].shift = static_cast<unsigned>(SQUARE_NUMBER - BishopBits[square]);
+            BishopTable[square].shift = SQUARE_NUMBER - BishopBits[square];
             BishopTable[square].magic = BishopMagic[square];
             BishopTable[square].InitSlidingAttack(square);
         }
@@ -53,6 +53,7 @@ namespace Vixen
         memset(RookAttacks, 0ULL, sizeof(BitBoard) * RookAttackTableSize);
         attacks = (slider == Slider::BISHOP) ? BishopAttacks : RookAttacks;
         mask = SlidingAttack(square);
+        attacks[square] = mask;
     }
 
     template<Slider slider>
@@ -74,21 +75,25 @@ namespace Vixen
     }
 
     template<Slider slider>
-    BitBoard Magic<slider>::SlidingAttack(unsigned square)
+    BitBoard Magic<slider>::SlidingAttack(int square)
     {
         BitBoard result = 0ULL;
-        const int bishopDirections[4][2] =
-                {{-1, -1},
-                 {-1, 1},
-                 {1,  -1},
-                 {1,  1}};
-        for (auto bishopDirection : bishopDirections)
+        const int directions[4][2] = {{-1, -1},
+                                      {-1, 1},
+                                      {1,  -1},
+                                      {1,  1}};
+        const int directions[4][2] = {{-1, 0},
+                                      {0,  -1},
+                                      {1,  0},
+                                      {0,  1}};
+        for (const auto &direction : directions)
         {
-            for (int newSquare = GetNextSquare(square, bishopDirection);
-                 IsValidSquare(newSquare % 8, newSquare / 8);
-                 newSquare = GetNextSquare(newSquare, bishopDirection))
-                result |= 1ULL << newSquare;
 
+            for (int coordinates[2] = {square / 8 + direction[0],
+                                       square % 8 + direction[1]};
+                 IsValidSquare(coordinates[0], coordinates[1]);
+                 coordinates[0] += direction[0], coordinates[1] += direction[1])
+                result |= 1ULL << (8 * coordinates[0] + coordinates[1]);
         }
 
         return result;

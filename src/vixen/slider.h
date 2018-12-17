@@ -23,13 +23,13 @@ namespace Vixen
 
         BitBoard magic;     // magic 64-bit factor
 
-        unsigned shift;     // shift right
+        int shift;          // shift right
 
         BitBoard GetIndex(BitBoard occupied);
 
         void InitSlidingAttack(unsigned square);
 
-        BitBoard SlidingAttack(unsigned square);
+        BitBoard SlidingAttack(int square);
 
     public:
 

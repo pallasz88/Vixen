@@ -24,11 +24,6 @@ namespace Vixen
         return static_cast<BitBoard >(1) << square;
     }
 
-    inline int GetNextSquare(int square, const int direction[])
-    {
-        return square % 8 + direction[0] + (square / 8 + direction[1]) * 8;
-    }
-
     inline bool IsValidSquare(int file, int rank)
     {
         return file >= 0 && rank >= 0 && file < 8 && rank < 8;
