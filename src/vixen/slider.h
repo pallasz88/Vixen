@@ -14,8 +14,8 @@ namespace Vixen
         BISHOP, ROOK
     };
 
-    template<Slider>
-    class Magic
+
+    struct Magic
     {
         BitBoard *attacks;  // pointer to attack_table for each particular square
 
@@ -25,22 +25,33 @@ namespace Vixen
 
         int shift;          // shift right
 
-        BitBoard GetIndex(BitBoard occupied);
+    };
 
-        void InitSlidingAttack(unsigned square);
-
-        BitBoard SlidingAttack(int square);
+    class SliderAttacks{
 
     public:
 
-        static BitBoard GetAttack(unsigned square, BitBoard occupied);
+        explicit SliderAttacks(BitBoard occupied);
 
-        friend void InitMagics();
+        BitBoard GetBishopAttack(unsigned square, BitBoard occupied);
+
+        BitBoard GetRookAttack(unsigned square, BitBoard occupied);
+
+    private:
+
+        void InitMagics(BitBoard occupied);
+
+        Magic BishopTable[SQUARE_NUMBER];
+
+        Magic RookTable[SQUARE_NUMBER];
+
+        int GetIndex(BitBoard occupied, const Magic &table);
+
+        template <Slider slider>
+        void InitSlidingAttack(int square, BitBoard occupied);
+
+        BitBoard SlidingAttack(int square, SliderDirections directions, BitBoard occupied);
     };
 
-    void InitMagics();
 
-    extern Magic<Slider::BISHOP> BishopTable[SQUARE_NUMBER];
-
-    extern Magic<Slider::ROOK> RookTable[SQUARE_NUMBER];
 }

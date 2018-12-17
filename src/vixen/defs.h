@@ -19,7 +19,11 @@ namespace Vixen
 
     typedef std::map<char, BitBoard> BitBoards;
 
-    inline BitBoard BIT(unsigned square)
+    typedef std::array<std::array<int, 2>, 4> SliderDirections;
+
+    typedef std::array<std::array<int, 2>, 8> AntiSliderDirections;
+
+    inline BitBoard BIT(int square)
     {
         return static_cast<BitBoard >(1) << square;
     }
@@ -33,6 +37,10 @@ namespace Vixen
     inline bool IsBitSet(const T &x, const U &y)
     {
         return 0 != (x & y);
+    }
+
+    inline int PopCount(BitBoard b) {
+        return __builtin_popcountll(b);
     }
 
     enum Ranks

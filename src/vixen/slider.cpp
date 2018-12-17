@@ -29,77 +29,100 @@ namespace Vixen
             6, 5, 5, 5, 5, 5, 5, 6
     };
 
-    void InitMagics()
+    void SliderAttacks::InitMagics(BitBoard occupied)
     {
         for (int square = 0; square < SQUARE_NUMBER; ++square)
         {
             RookTable[square].shift = SQUARE_NUMBER - RookBits[square];
             RookTable[square].magic = RookMagic[square];
-            RookTable[square].InitSlidingAttack(square);
+            InitSlidingAttack<Slider::ROOK>(square, occupied);
         }
 
         for (int square = 0; square < SQUARE_NUMBER; ++square)
         {
             BishopTable[square].shift = SQUARE_NUMBER - BishopBits[square];
             BishopTable[square].magic = BishopMagic[square];
-            BishopTable[square].InitSlidingAttack(square);
+            InitSlidingAttack<Slider::BISHOP>(square, occupied);
         }
     }
 
     template<Slider slider>
-    void Magic<slider>::InitSlidingAttack(unsigned square)
+    void SliderAttacks::InitSlidingAttack(int square, BitBoard occupied)
     {
-        memset(BishopAttacks, 0ULL, sizeof(BitBoard) * BishopAttackTableSize);
-        memset(RookAttacks, 0ULL, sizeof(BitBoard) * RookAttackTableSize);
-        attacks = (slider == Slider::BISHOP) ? BishopAttacks : RookAttacks;
-        mask = SlidingAttack(square);
-        attacks[square] = mask;
+        BitBoard edges = FILEA | FILEH | RANK1 | RANK8;
+
+        if (SliderDirections directions = {{{-1, -1}, {-1, 1}, {1, -1}, {1, 1}}}; slider == Slider::BISHOP)
+        {
+            BishopTable[square].shift = static_cast<unsigned>(SQUARE_NUMBER - RookBits[square]);
+            BishopTable[0].attacks = BishopAttacks;
+            BishopTable[square].mask = SlidingAttack(square, directions, occupied) & ~edges;
+            if (square != SQUARE_NUMBER - 1)
+                BishopTable[square + 1].attacks =
+                        BishopTable[square].attacks + (1 << PopCount(BishopTable[square].mask));
+
+            do
+            {
+                int index = GetIndex(occupied, BishopTable[square]);
+                BishopTable[square].attacks[index] = SlidingAttack(square, directions, occupied);
+                occupied = (occupied - BishopTable[square].mask) & BishopTable[square].mask;
+            } while (occupied);
+        }
+
+        if (SliderDirections directions = {{{-1, 0}, {0, -1}, {1, 0}, {0, 1}}}; slider == Slider::ROOK)
+        {
+            RookTable[square].shift = static_cast<unsigned>(SQUARE_NUMBER - RookBits[square]);
+            RookTable[0].attacks = RookAttacks;
+            RookTable[square].mask = SlidingAttack(square, directions, occupied) & ~edges;
+
+            if (square != SQUARE_NUMBER - 1)
+                RookTable[square + 1].attacks =
+                        RookTable[square].attacks + (1 << PopCount(RookTable[square].mask));
+
+            do
+            {
+                int index = GetIndex(occupied, RookTable[square]);
+                RookTable[square].attacks[index] = SlidingAttack(square, directions, occupied);
+                occupied = (occupied - RookTable[square].mask) & RookTable[square].mask;
+            } while (occupied);
+        }
     }
 
-    template<Slider slider>
-    BitBoard Magic<slider>::GetIndex(BitBoard occupied)
+    int SliderAttacks::GetIndex(BitBoard occupied, const Magic &table)
     {
-        return ((occupied & mask) * magic) >> shift;
+        return ((occupied & table.mask) * table.magic) >> table.shift;
     }
 
-    template<>
-    BitBoard Magic<Slider::BISHOP>::GetAttack(unsigned square, BitBoard occupied)
+    BitBoard SliderAttacks::GetBishopAttack(unsigned square, BitBoard occupied)
     {
-        return BishopTable[square].attacks[BishopTable[square].GetIndex(occupied)];
+        return BishopTable[square].attacks[GetIndex(occupied, BishopTable[square])];
     }
 
-    template<>
-    BitBoard Magic<Slider::ROOK>::GetAttack(unsigned square, BitBoard occupied)
+    BitBoard SliderAttacks::GetRookAttack(unsigned square, BitBoard occupied)
     {
-        return RookTable[square].attacks[RookTable[square].GetIndex(occupied)];
+        return RookTable[square].attacks[GetIndex(occupied, RookTable[square])];
     }
 
-    template<Slider slider>
-    BitBoard Magic<slider>::SlidingAttack(int square)
+    BitBoard SliderAttacks::SlidingAttack(int square, SliderDirections directions, BitBoard occupied)
     {
         BitBoard result = 0ULL;
-        const int directions[4][2] = {{-1, -1},
-                                      {-1, 1},
-                                      {1,  -1},
-                                      {1,  1}};
-        const int directions[4][2] = {{-1, 0},
-                                      {0,  -1},
-                                      {1,  0},
-                                      {0,  1}};
         for (const auto &direction : directions)
         {
-
             for (int coordinates[2] = {square / 8 + direction[0],
                                        square % 8 + direction[1]};
                  IsValidSquare(coordinates[0], coordinates[1]);
                  coordinates[0] += direction[0], coordinates[1] += direction[1])
+            {
                 result |= 1ULL << (8 * coordinates[0] + coordinates[1]);
+                if (IsBitSet(occupied, BIT(8 * coordinates[0] + coordinates[1])))
+                    break;
+            }
         }
 
         return result;
     }
 
-    Magic<Slider::BISHOP> BishopTable[SQUARE_NUMBER];
-
-    Magic<Slider::ROOK> RookTable[SQUARE_NUMBER];
+    SliderAttacks::SliderAttacks(BitBoard occupied)
+    {
+        InitMagics(occupied);
+    }
 }
