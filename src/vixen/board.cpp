@@ -17,7 +17,7 @@ namespace Vixen
         SetBoard(TESTPOS2);
         SliderAttacks sliderAttacks(~bitBoards[' ']);
         InitKnightKingAttack();
-        std::cout << sliderAttacks.GetBishopAttack(24, ~bitBoards[' ']) << std::endl;
+        std::cout << sliderAttacks.GetRookAttack(E3, ~bitBoards[' ']) << std::endl;
 #ifdef DEBUG
         PrintBoard();
         std::cout << double(clock() - start) / (double) CLOCKS_PER_SEC << " seconds." << std::endl;

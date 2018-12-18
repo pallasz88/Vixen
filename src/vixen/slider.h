@@ -47,8 +47,8 @@ namespace Vixen
 
         int GetIndex(BitBoard occupied, const Magic &table);
 
-        template <Slider slider>
-        void InitSlidingAttack(int square, BitBoard occupied);
+        void InitSlidingAttack(int square, BitBoard occupied, SliderDirections directions, Magic *table,
+                                       const int shiftTable[]);
 
         BitBoard SlidingAttack(int square, SliderDirections directions, BitBoard occupied);
     };
