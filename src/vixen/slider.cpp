@@ -7,58 +7,34 @@ namespace Vixen
 
     BitBoard RookAttacks[RookAttackTableSize];
 
-    int RookBits[SQUARE_NUMBER] = {
-            12, 11, 11, 11, 11, 11, 11, 12,
-            11, 10, 10, 10, 10, 10, 10, 11,
-            11, 10, 10, 10, 10, 10, 10, 11,
-            11, 10, 10, 10, 10, 10, 10, 11,
-            11, 10, 10, 10, 10, 10, 10, 11,
-            11, 10, 10, 10, 10, 10, 10, 11,
-            11, 10, 10, 10, 10, 10, 10, 11,
-            12, 11, 11, 11, 11, 11, 11, 12
-    };
-
-    int BishopBits[SQUARE_NUMBER] = {
-            6, 5, 5, 5, 5, 5, 5, 6,
-            5, 5, 5, 5, 5, 5, 5, 5,
-            5, 5, 7, 7, 7, 7, 5, 5,
-            5, 5, 7, 9, 9, 7, 5, 5,
-            5, 5, 7, 9, 9, 7, 5, 5,
-            5, 5, 7, 7, 7, 7, 5, 5,
-            5, 5, 5, 5, 5, 5, 5, 5,
-            6, 5, 5, 5, 5, 5, 5, 6
-    };
-
-    void SliderAttacks::InitMagics(BitBoard occupied)
+    SliderAttacks::SliderAttacks()
     {
-        for (int square = 0; square < SQUARE_NUMBER; ++square)
-        {
-            SliderDirections directions = {{{-1, 0}, {0, -1}, {1, 0}, {0, 1}}};
-            RookTable[square].shift = SQUARE_NUMBER - RookBits[square];
-            RookTable[square].magic = RookMagic[square];
-            InitSlidingAttack(square, occupied, directions, RookTable, RookBits);
-        }
+        InitMagics();
+    }
 
+    void SliderAttacks::InitMagics()
+    {
+        RookTable[0].attacks = RookAttacks;
+        BishopTable[0].attacks = BishopAttacks;
         for (int square = 0; square < SQUARE_NUMBER; ++square)
         {
-            SliderDirections directions = {{{-1, -1}, {-1, 1}, {1, -1}, {1, 1}}};
-            BishopTable[square].shift = SQUARE_NUMBER - BishopBits[square];
-            BishopTable[square].magic = BishopMagic[square];
-            InitSlidingAttack(square, occupied, directions, BishopTable, BishopBits);
+            InitSlidingAttack<Slider::ROOK>(square, rookDirections, RookTable);
+            InitSlidingAttack<Slider::BISHOP>(square, bishopDirections, BishopTable);
         }
     }
 
-    void SliderAttacks::InitSlidingAttack(int square, BitBoard occupied, SliderDirections directions, Magic *table,
-                                          const int shiftTable[])
+    template<Slider slider>
+    void SliderAttacks::InitSlidingAttack(int square, SliderDirections directions, Magic *table)
     {
         BitBoard edges = FILEA | FILEH | RANK1 | RANK8;
+        BitBoard occupied = EMPTYBOARD;
 
-        table[square].shift = static_cast<unsigned>(SQUARE_NUMBER - shiftTable[square]);
-        table[0].attacks = BishopAttacks;
+        table[square].magic = slider == Slider::BISHOP ? BishopMagic[square] : RookMagic[square];
         table[square].mask = SlidingAttack(square, directions, occupied) & ~edges;
+        table[square].shift = SQUARE_NUMBER - PopCount(table[square].mask);
+
         if (square != SQUARE_NUMBER - 1)
-            table[square + 1].attacks =
-                    table[square].attacks + (1 << PopCount(table[square].mask));
+            table[square + 1].attacks = table[square].attacks + (1 << PopCount(table[square].mask));
 
         do
         {
@@ -66,6 +42,29 @@ namespace Vixen
             table[square].attacks[index] = SlidingAttack(square, directions, occupied);
             occupied = (occupied - table[square].mask) & table[square].mask;
         } while (occupied);
+    }
+
+    BitBoard SliderAttacks::SlidingAttack(int square, SliderDirections directions, BitBoard occupied)
+    {
+        BitBoard result = EMPTYBOARD;
+        for (const auto &direction : directions)
+        {
+            for (int file = square / 8 + direction[0], rank = square % 8 + direction[1];
+                 IsValidCoordinate(file, rank);
+                 GetNextCoordinate(file, rank, direction))
+            {
+                result |= 1ULL << (8 * file + rank);
+                if (IsBitSet(occupied, BIT(8 * file + rank)))
+                    break;
+            }
+        }
+
+        return result;
+    }
+
+    void SliderAttacks::GetNextCoordinate(int &file, int &rank, const Direction &direction) const
+    {
+        file += direction[0], rank += direction[1];
     }
 
     int SliderAttacks::GetIndex(BitBoard occupied, const Magic &table)
@@ -83,27 +82,8 @@ namespace Vixen
         return RookTable[square].attacks[GetIndex(occupied, RookTable[square])];
     }
 
-    BitBoard SliderAttacks::SlidingAttack(int square, SliderDirections directions, BitBoard occupied)
+    BitBoard SliderAttacks::GetQueenAttack(unsigned square, Vixen::BitBoard occupied)
     {
-        BitBoard result = 0ULL;
-        for (const auto &direction : directions)
-        {
-            for (int coordinates[2] = {square / 8 + direction[0],
-                                       square % 8 + direction[1]};
-                 IsValidSquare(coordinates[0], coordinates[1]);
-                 coordinates[0] += direction[0], coordinates[1] += direction[1])
-            {
-                result |= 1ULL << (8 * coordinates[0] + coordinates[1]);
-                if (IsBitSet(occupied, BIT(8 * coordinates[0] + coordinates[1])))
-                    break;
-            }
-        }
-
-        return result;
-    }
-
-    SliderAttacks::SliderAttacks(BitBoard occupied)
-    {
-        InitMagics(occupied);
+        return GetBishopAttack(square, occupied) | GetRookAttack(square, occupied);
     }
 }

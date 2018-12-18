@@ -18,19 +18,19 @@ BOOST_AUTO_TEST_CASE(Test_Startposition)
 {
     Vixen::Board board;
     const auto &bitBoards = board.GetBitBoards();
-    BOOST_CHECK_EQUAL(bitBoards.at('K'), 8U);
-    BOOST_CHECK_EQUAL(bitBoards.at('Q'), 16U);
-    BOOST_CHECK_EQUAL(bitBoards.at('R'), 129U);
-    BOOST_CHECK_EQUAL(bitBoards.at('B'), 36U);
-    BOOST_CHECK_EQUAL(bitBoards.at('N'), 66U);
-    BOOST_CHECK_EQUAL(bitBoards.at('P'), (uint64_t) RANK2);
+    BOOST_CHECK_EQUAL(bitBoards.at('K'), 8ULL);
+    BOOST_CHECK_EQUAL(bitBoards.at('Q'), 16ULL);
+    BOOST_CHECK_EQUAL(bitBoards.at('R'), 129ULL);
+    BOOST_CHECK_EQUAL(bitBoards.at('B'), 36ULL);
+    BOOST_CHECK_EQUAL(bitBoards.at('N'), 66ULL);
+    BOOST_CHECK_EQUAL(bitBoards.at('P'), RANK2);
 
-    BOOST_CHECK_EQUAL(bitBoards.at('p'), (uint64_t) RANK7);
-    BOOST_CHECK_EQUAL(bitBoards.at('n'), 4755801206503243776U);
-    BOOST_CHECK_EQUAL(bitBoards.at('b'), 2594073385365405696U);
-    BOOST_CHECK_EQUAL(bitBoards.at('r'), 9295429630892703744U);
-    BOOST_CHECK_EQUAL(bitBoards.at('q'), 1152921504606846976U);
-    BOOST_CHECK_EQUAL(bitBoards.at('k'), 576460752303423488U);
+    BOOST_CHECK_EQUAL(bitBoards.at('p'), RANK7);
+    BOOST_CHECK_EQUAL(bitBoards.at('n'), 4755801206503243776ULL);
+    BOOST_CHECK_EQUAL(bitBoards.at('b'), 2594073385365405696ULL);
+    BOOST_CHECK_EQUAL(bitBoards.at('r'), 9295429630892703744ULL);
+    BOOST_CHECK_EQUAL(bitBoards.at('q'), 1152921504606846976ULL);
+    BOOST_CHECK_EQUAL(bitBoards.at('k'), 576460752303423488ULL);
 
     BOOST_CHECK_EQUAL(board.IsWhiteToMove(), true);
 }
@@ -42,19 +42,19 @@ BOOST_AUTO_TEST_CASE(Test_SetPosition)
     board.PrintBoard();
 
     auto boards = board.GetBitBoards();
-    BOOST_CHECK_EQUAL(boards.at('K'), 2U);
-    BOOST_CHECK_EQUAL(boards.at('Q'), 524288U);
-    BOOST_CHECK_EQUAL(boards.at('R'), 132U);
-    BOOST_CHECK_EQUAL(boards.at('B'), 67109376U);
-    BOOST_CHECK_EQUAL(boards.at('N'), 4096U);
-    BOOST_CHECK_EQUAL(boards.at('P'), 103081542656U);
+    BOOST_CHECK_EQUAL(boards.at('K'), 2ULL);
+    BOOST_CHECK_EQUAL(boards.at('Q'), 524288ULL);
+    BOOST_CHECK_EQUAL(boards.at('R'), 132ULL);
+    BOOST_CHECK_EQUAL(boards.at('B'), 67109376ULL);
+    BOOST_CHECK_EQUAL(boards.at('N'), 4096ULL);
+    BOOST_CHECK_EQUAL(boards.at('P'), 103081542656ULL);
 
-    BOOST_CHECK_EQUAL(boards.at('p'), 3802523525709824U);
-    BOOST_CHECK_EQUAL(boards.at('n'), 536870912U);
-    BOOST_CHECK_EQUAL(boards.at('b'), 5066549580791808U);
-    BOOST_CHECK_EQUAL(boards.at('r'), 2594073385365405696U);
-    BOOST_CHECK_EQUAL(boards.at('q'), 1152921504606846976U);
-    BOOST_CHECK_EQUAL(boards.at('k'), 144115188075855872U);
+    BOOST_CHECK_EQUAL(boards.at('p'), 3802523525709824ULL);
+    BOOST_CHECK_EQUAL(boards.at('n'), 536870912ULL);
+    BOOST_CHECK_EQUAL(boards.at('b'), 5066549580791808ULL);
+    BOOST_CHECK_EQUAL(boards.at('r'), 2594073385365405696ULL);
+    BOOST_CHECK_EQUAL(boards.at('q'), 1152921504606846976ULL);
+    BOOST_CHECK_EQUAL(boards.at('k'), 144115188075855872ULL);
 
     BOOST_CHECK_EQUAL(board.IsWhiteToMove(), true);
 
@@ -62,19 +62,19 @@ BOOST_AUTO_TEST_CASE(Test_SetPosition)
     board.PrintBoard();
 
     boards = board.GetBitBoards();
-    BOOST_CHECK_EQUAL(boards.at('K'), 8U);
-    BOOST_CHECK_EQUAL(boards.at('Q'), 16U);
-    BOOST_CHECK_EQUAL(boards.at('R'), 129U);
-    BOOST_CHECK_EQUAL(boards.at('B'), 67108868U);
-    BOOST_CHECK_EQUAL(boards.at('N'), 66U);
-    BOOST_CHECK_EQUAL(boards.at('P'), 583424U);
+    BOOST_CHECK_EQUAL(boards.at('K'), 8ULL);
+    BOOST_CHECK_EQUAL(boards.at('Q'), 16ULL);
+    BOOST_CHECK_EQUAL(boards.at('R'), 129ULL);
+    BOOST_CHECK_EQUAL(boards.at('B'), 67108868ULL);
+    BOOST_CHECK_EQUAL(boards.at('N'), 66ULL);
+    BOOST_CHECK_EQUAL(boards.at('P'), 583424ULL);
 
-    BOOST_CHECK_EQUAL(boards.at('p'), 62768920074911744U);
-    BOOST_CHECK_EQUAL(boards.at('n'), 4611690416473899008U);
-    BOOST_CHECK_EQUAL(boards.at('b'), 2594073385365405696U);
-    BOOST_CHECK_EQUAL(boards.at('r'), 9295429630892703744U);
-    BOOST_CHECK_EQUAL(boards.at('q'), 1152921504606846976U);
-    BOOST_CHECK_EQUAL(boards.at('k'), 576460752303423488U);
+    BOOST_CHECK_EQUAL(boards.at('p'), 62768920074911744ULL);
+    BOOST_CHECK_EQUAL(boards.at('n'), 4611690416473899008ULL);
+    BOOST_CHECK_EQUAL(boards.at('b'), 2594073385365405696ULL);
+    BOOST_CHECK_EQUAL(boards.at('r'), 9295429630892703744ULL);
+    BOOST_CHECK_EQUAL(boards.at('q'), 1152921504606846976ULL);
+    BOOST_CHECK_EQUAL(boards.at('k'), 576460752303423488ULL);
 
     BOOST_CHECK_EQUAL(board.IsWhiteToMove(), true);
 }

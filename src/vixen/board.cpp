@@ -14,10 +14,10 @@ namespace Vixen
 #ifdef DEBUG
         clock_t start = clock();
 #endif
-        SetBoard(TESTPOS2);
-        SliderAttacks sliderAttacks(~bitBoards[' ']);
+        SetBoard(STARTPOS);
+        SliderAttacks sliderAttacks;
         InitKnightKingAttack();
-        std::cout << sliderAttacks.GetRookAttack(E3, ~bitBoards[' ']) << std::endl;
+        std::cout << sliderAttacks.GetQueenAttack(C7, ~bitBoards[' ']) << std::endl;
 #ifdef DEBUG
         PrintBoard();
         std::cout << double(clock() - start) / (double) CLOCKS_PER_SEC << " seconds." << std::endl;

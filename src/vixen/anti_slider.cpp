@@ -19,10 +19,10 @@ namespace Vixen
                 int knightRank = square / 8 + knightOffset[direction][1];
                 int kingFile = square % 8 + kingOffset[direction][0];
                 int kingRank = square / 8 + kingOffset[direction][1];
-                if (IsValidSquare(knightFile, knightRank))
+                if (IsValidCoordinate(knightFile, knightRank))
                     knightAttack[square] |= 1ULL << (8 * knightRank + knightFile);
 
-                if (IsValidSquare(kingFile, kingRank))
+                if (IsValidCoordinate(kingFile, kingRank))
                     kingAttack[square] |= 1ULL << (8 * kingRank + kingFile);
 
             }
