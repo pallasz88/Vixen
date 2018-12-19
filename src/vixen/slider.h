@@ -4,9 +4,9 @@
 
 namespace Vixen
 {
-    extern BitBoard BishopAttacks[BishopAttackTableSize];
+    extern BitBoard BishopAttacks[BISHOP_ATTACK_TABLE_SIZE];
 
-    extern BitBoard RookAttacks[RookAttackTableSize];
+    extern BitBoard RookAttacks[ROOK_ATTACK_TABLE_SIZE];
 
     struct Magic
     {
@@ -25,7 +25,8 @@ namespace Vixen
         BISHOP, ROOK
     };
 
-    class SliderAttacks{
+    class VIXEN_API SliderAttacks
+    {
 
     public:
 

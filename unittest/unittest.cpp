@@ -4,6 +4,7 @@
 #include "board.h"
 #include "move_generator.h"
 #include "hash.h"
+#include "slider.h"
 
 using namespace Vixen;
 
@@ -17,7 +18,7 @@ BOOST_AUTO_TEST_CASE(Test_bit)
 BOOST_AUTO_TEST_CASE(Test_Startposition)
 {
     Vixen::Board board;
-    const auto &bitBoards = board.GetBitBoards();
+    auto bitBoards = board.GetBitBoards();
     BOOST_CHECK_EQUAL(bitBoards.at('K'), 8ULL);
     BOOST_CHECK_EQUAL(bitBoards.at('Q'), 16ULL);
     BOOST_CHECK_EQUAL(bitBoards.at('R'), 129ULL);
@@ -77,6 +78,26 @@ BOOST_AUTO_TEST_CASE(Test_SetPosition)
     BOOST_CHECK_EQUAL(boards.at('k'), 576460752303423488ULL);
 
     BOOST_CHECK_EQUAL(board.IsWhiteToMove(), true);
+}
+
+BOOST_AUTO_TEST_CASE(Test_SliderAttacks)
+{
+    Vixen::Board board;
+    auto bitBoards = board.GetBitBoards();
+    SliderAttacks attacks;
+    BOOST_CHECK_EQUAL(attacks.GetRookAttack(D4, ~bitBoards.at(' ')), 4521264543698944ULL);
+    BOOST_CHECK_EQUAL(attacks.GetBishopAttack(D4, ~bitBoards.at(' ')), 36666685564404736ULL);
+    BOOST_CHECK_EQUAL(attacks.GetQueenAttack(D4, ~bitBoards.at(' ')), 41187950108103680ULL);
+
+    BOOST_CHECK_EQUAL(attacks.GetRookAttack(H1, ~bitBoards.at(' ')), 258ULL);
+    BOOST_CHECK_EQUAL(attacks.GetBishopAttack(H1, ~bitBoards.at(' ')), 512ULL);
+    BOOST_CHECK_EQUAL(attacks.GetQueenAttack(H1, ~bitBoards.at(' ')), 770ULL);
+
+    board.SetBoard(TESTPOS2);
+    bitBoards = board.GetBitBoards();
+    BOOST_CHECK_EQUAL(attacks.GetRookAttack(D4, ~bitBoards.at(' ')), 4521264493367312ULL);
+    BOOST_CHECK_EQUAL(attacks.GetBishopAttack(D4, ~bitBoards.at(' ')), 36103735610982400ULL);
+    BOOST_CHECK_EQUAL(attacks.GetQueenAttack(D4, ~bitBoards.at(' ')), 40625000104349712ULL);
 }
 
 /*BOOST_AUTO_TEST_CASE(Test_pawnmovement)

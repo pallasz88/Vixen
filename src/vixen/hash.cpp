@@ -33,7 +33,7 @@ namespace Vixen
     void Hash::ComputeHash(const Board &board)
     {
         BitBoards bitBoards = board.GetBitBoards();
-        for (int square = MAX_SHIFT_NUM; square >= 0; --square)
+        for (int square = MAX_SQUARE_INDEX; square >= 0; --square)
         {
             for (const auto &pieceKey : pieceKeys)
             {

@@ -8,10 +8,9 @@ namespace Vixen
 
     void InitKnightKingAttack()
     {
-
         AntiSliderDirections knightOffset = {{{-2, -1}, {-2, 1}, {-1, -2}, {-1, 2}, {1, -2}, {1, 2}, {2, -1}, {2, 1}}};
         AntiSliderDirections kingOffset = {{{-1, -1}, {-1, 0}, {-1, 1}, {0, -1}, {0, 1}, {1, -1}, {1, 0}, {1, 1}}};
-        for (int square = 0; square < SQUARE_NUMBER; ++square)
+        for (auto square = 0; square < SQUARE_NUMBER; ++square)
         {
             for (int direction = 0; direction < 8; ++direction)
             {

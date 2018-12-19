@@ -1,8 +1,6 @@
 #include "board.h"
 #include "move_generator.h"
 #include "hash.h"
-#include "slider.h"
-#include "anti_slider.h"
 
 #include <iostream>
 #include <boost/algorithm/string.hpp>
@@ -15,9 +13,6 @@ namespace Vixen
         clock_t start = clock();
 #endif
         SetBoard(STARTPOS);
-        SliderAttacks sliderAttacks;
-        InitKnightKingAttack();
-        std::cout << sliderAttacks.GetQueenAttack(C7, ~bitBoards[' ']) << std::endl;
 #ifdef DEBUG
         PrintBoard();
         std::cout << double(clock() - start) / (double) CLOCKS_PER_SEC << " seconds." << std::endl;
@@ -48,7 +43,7 @@ namespace Vixen
     void Board::PrintBoard() const
     {
         std::cout << std::endl << "*********************************" << std::endl;
-        for (int i = MAX_SHIFT_NUM; i >= 0; i--)
+        for (int i = MAX_SQUARE_INDEX; i >= 0; i--)
         {
             for (auto &it : bitBoards)
             {
@@ -75,10 +70,10 @@ namespace Vixen
 
     void Board::ParseFenPiecePart(const std::string &parsedPosition)
     {
-        int i = MAX_SHIFT_NUM;
-        for (auto &it : parsedPosition)
+        unsigned squareIndex = MAX_SQUARE_INDEX;
+        for (const auto &fenChar : parsedPosition)
         {
-            switch (it)
+            switch (fenChar)
             {
                 case 'P':
                 case 'p':
@@ -92,7 +87,7 @@ namespace Vixen
                 case 'k':
                 case 'Q':
                 case 'q':
-                    bitBoards[it] |= static_cast<BitBoard>(1) << i;
+                    SetBit(bitBoards[fenChar], squareIndex);
                     break;
                 case '/':
                     continue;
@@ -104,13 +99,13 @@ namespace Vixen
                 case '6':
                 case '7':
                 case '8':
-                    i -= it - '0' - 1;
+                    squareIndex -= fenChar - '1';
                     break;
                 default:
                     std::cerr << "ERROR IN FEN: PIECE POSITION" << std::endl;
                     return;
             }
-            --i;
+            --squareIndex;
         }
         bitBoards['S'] = bitBoards['k'] |
                          bitBoards['q'] |
@@ -143,22 +138,21 @@ namespace Vixen
     void Board::ParseCastlingRightPart(const std::string &parsedPosition)
     {
         castlingRights = 0;
-        uint64_t shiftMe = 1;
         for (auto &it : parsedPosition)
         {
             switch (it)
             {
                 case 'K':
-                    castlingRights |= shiftMe << 3;
+                    SetBit(castlingRights, 3);
                     break;
                 case 'Q':
-                    castlingRights |= shiftMe << 2;
+                    SetBit(castlingRights, 2);
                     break;
                 case 'k':
-                    castlingRights |= shiftMe << 1;
+                    SetBit(castlingRights, 1);
                     break;
                 case 'q':
-                    castlingRights |= shiftMe;
+                    SetBit(castlingRights, 0);
                     break;
                 case '-':
                     castlingRights = 0;
@@ -172,21 +166,21 @@ namespace Vixen
 
     void InitBitBoards(BitBoards &bitBoards)
     {
-        bitBoards['P'] = 0;
-        bitBoards['p'] = 0;
-        bitBoards['B'] = 0;
-        bitBoards['b'] = 0;
-        bitBoards['N'] = 0;
-        bitBoards['n'] = 0;
-        bitBoards['K'] = 0;
-        bitBoards['k'] = 0;
-        bitBoards['r'] = 0;
-        bitBoards['R'] = 0;
-        bitBoards['Q'] = 0;
-        bitBoards['q'] = 0;
-        bitBoards['F'] = 0;
-        bitBoards['S'] = 0;
-        bitBoards[' '] = 0;
+        bitBoards['P'] = EMPTY_BOARD;
+        bitBoards['p'] = EMPTY_BOARD;
+        bitBoards['B'] = EMPTY_BOARD;
+        bitBoards['b'] = EMPTY_BOARD;
+        bitBoards['N'] = EMPTY_BOARD;
+        bitBoards['n'] = EMPTY_BOARD;
+        bitBoards['K'] = EMPTY_BOARD;
+        bitBoards['k'] = EMPTY_BOARD;
+        bitBoards['r'] = EMPTY_BOARD;
+        bitBoards['R'] = EMPTY_BOARD;
+        bitBoards['Q'] = EMPTY_BOARD;
+        bitBoards['q'] = EMPTY_BOARD;
+        bitBoards['F'] = EMPTY_BOARD;
+        bitBoards['S'] = EMPTY_BOARD;
+        bitBoards[' '] = EMPTY_BOARD;
     }
 
 }
