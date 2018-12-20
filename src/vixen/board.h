@@ -29,7 +29,16 @@ namespace Vixen
         { return whiteToMove; }
 
         inline std::string GetEnPassant() const
-        { return enpassant; }
+        { return enPassant; }
+
+        inline int GetCastlingRights() const
+        { return castlingRights; }
+
+        inline int GetMovesNum() const
+        { return historyMovesNum; }
+
+        inline bool Is50MoveRule() const
+        { return fiftyMoves >= 100; }
 
         void PrintBoard() const;
 
@@ -43,11 +52,11 @@ namespace Vixen
 
         BitBoards bitBoards;
 
-        std::string enpassant;
+        std::string enPassant;
 
         std::string fenPosition;
 
-        int fullMovesNum;
+        int historyMovesNum;
 
         bool whiteToMove;
 

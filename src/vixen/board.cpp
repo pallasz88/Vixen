@@ -28,9 +28,9 @@ namespace Vixen
         ParseFenPiecePart(parsedPosition[0]);
         ParseSideToMovePart(parsedPosition[1]);
         ParseCastlingRightPart(parsedPosition[2]);
-        enpassant = parsedPosition[3];
+        enPassant = parsedPosition[3];
         fiftyMoves = stoi(parsedPosition[4]);
-        fullMovesNum = stoi(parsedPosition[5]);
+        historyMovesNum = stoi(parsedPosition[5]);
         generator = std::make_unique<MoveGenerator>(*this);
         hashBoard = std::make_unique<Hash>(*this);
     }
@@ -42,7 +42,7 @@ namespace Vixen
 
     void Board::PrintBoard() const
     {
-        std::cout << std::endl << "*********************************" << std::endl;
+        std::cout << std::endl << "+---+---+---+---+---+---+---+---+" << std::endl;
         for (int i = MAX_SQUARE_INDEX; i >= 0; i--)
         {
             for (auto &it : bitBoards)
@@ -56,7 +56,7 @@ namespace Vixen
             if (i % 8 == 0)
             {
                 std::cout << "| " << i / 8 + 1 << std::endl;
-                std::cout << "*********************************" << std::endl;
+                std::cout << "+---+---+---+---+---+---+---+---+" << std::endl;
             }
         }
 

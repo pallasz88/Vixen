@@ -22,7 +22,7 @@ namespace Vixen
 
     enum class Slider
     {
-        BISHOP, ROOK
+        BISHOP, ROOK, QUEEN
     };
 
     class VIXEN_API SliderAttacks

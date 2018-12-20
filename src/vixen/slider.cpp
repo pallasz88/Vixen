@@ -26,15 +26,15 @@ namespace Vixen
     template<Slider slider>
     void SliderAttacks::InitSlidingAttack(int square, SliderDirections directions, Magic *table)
     {
-        BitBoard edges = ((FILEA | FILEH) & ~(FILEH << square / 8)) |
-                         ((RANK1 | RANK8) & ~(RANK1 << 8 * (square % 8)));
-        BitBoard occupied = EMPTY_BOARD;
+        BitBoard edges = ((FILEA | FILEH) & ~(FILEH << square % 8)) |
+                         ((RANK1 | RANK8) & ~(RANK1 << 8 * (square / 8)));
+        auto occupied = EMPTY_BOARD;
 
         table[square].magic = slider == Slider::BISHOP ? BishopMagic[square] : RookMagic[square];
         table[square].mask = SlidingAttack(square, directions, occupied) & ~edges;
         table[square].shift = SQUARE_NUMBER - PopCount(table[square].mask);
 
-        if (square != SQUARE_NUMBER - 1)
+        if (square != MAX_SQUARE_INDEX)
             table[square + 1].attacks = table[square].attacks + (1 << PopCount(table[square].mask));
 
         do
@@ -47,7 +47,7 @@ namespace Vixen
 
     BitBoard SliderAttacks::SlidingAttack(int square, SliderDirections directions, BitBoard occupied)
     {
-        BitBoard attacks = EMPTY_BOARD;
+        auto attacks = EMPTY_BOARD;
         for (const auto &direction : directions)
         {
             for (int file = square / 8 + direction[0], rank = square % 8 + direction[1];

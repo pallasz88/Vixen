@@ -93,6 +93,10 @@ BOOST_AUTO_TEST_CASE(Test_SliderAttacks)
     BOOST_CHECK_EQUAL(attacks.GetBishopAttack(H1, ~bitBoards.at(' ')), 512ULL);
     BOOST_CHECK_EQUAL(attacks.GetQueenAttack(H1, ~bitBoards.at(' ')), 770ULL);
 
+    BOOST_CHECK_EQUAL(attacks.GetRookAttack(D8, ~bitBoards.at(' ')), 2886807361144487936ULL);
+    BOOST_CHECK_EQUAL(attacks.GetBishopAttack(D8, ~bitBoards.at(' ')), 11258999068426240ULL);
+    BOOST_CHECK_EQUAL(attacks.GetQueenAttack(D8, ~bitBoards.at(' ')), 2898066360212914176ULL);
+
     board.SetBoard(TESTPOS2);
     bitBoards = board.GetBitBoards();
     BOOST_CHECK_EQUAL(attacks.GetRookAttack(D4, ~bitBoards.at(' ')), 4521264493367312ULL);

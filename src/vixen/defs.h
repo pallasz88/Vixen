@@ -21,22 +21,24 @@ namespace Vixen
 
     typedef std::array<Direction, 8> AntiSliderDirections;
 
-    static constexpr int MAX_SQUARE_INDEX = 63;
+    typedef int Move;
 
-    static constexpr int SQUARE_NUMBER = 64;
+    constexpr int MAX_SQUARE_INDEX = 63;
 
-    static constexpr int BISHOP_ATTACK_TABLE_SIZE = 0x1480;
+    constexpr int SQUARE_NUMBER = 64;
 
-    static constexpr int ROOK_ATTACK_TABLE_SIZE = 0x19000;
+    constexpr int BISHOP_ATTACK_TABLE_SIZE = 0x1480;
 
-    static constexpr BitBoard EMPTY_BOARD = 0ULL;
+    constexpr int ROOK_ATTACK_TABLE_SIZE = 0x19000;
 
-    inline BitBoard BIT(int square)
+    constexpr BitBoard EMPTY_BOARD = 0ULL;
+
+    constexpr BitBoard BIT(int square)
     {
         return static_cast<BitBoard>(1) << square;
     }
 
-    inline bool IsValidCoordinate(int file, int rank)
+    constexpr bool IsValidCoordinate(int file, int rank)
     {
         return file >= 0 && rank >= 0 && file < 8 && rank < 8;
     }
@@ -53,7 +55,7 @@ namespace Vixen
         x |= 1ULL << y;
     }
 
-    inline int PopCount(BitBoard b)
+    constexpr int PopCount(BitBoard b)
     {
         return __builtin_popcountll(b);
     }

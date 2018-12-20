@@ -2,7 +2,7 @@
 
 #include <vector>
 #include <string>
-#include "defs.h"
+#include "slider.h"
 
 namespace Vixen
 {
@@ -16,23 +16,21 @@ namespace Vixen
 
         void PrintMoveList();
 
-        std::vector<std::string> GetMoveList() const
+        inline std::vector<std::string> GetMoveList() const
         { return moveList; }
 
     private:
 
         std::vector<std::string> moveList;
 
-        void GeneratePawnMoves(const BitBoards &);
+        void GenerateAllMoves(const BitBoards &bitBoards);
 
-        void GenerateKnightMoves(const BitBoards &);
+        template <Slider slider>
+        void GenerateSliderMoves(const BitBoards &bitBoards, BitBoard targets);
 
-        void GenerateBishopMoves(const BitBoards &);
+        void GenerateQuietMoves(const BitBoards &bitBoards, BitBoard targets);
 
-        void GenerateRookMoves(const BitBoards &);
+        void GenerateCaptureMoves(const BitBoards &bitBoards, BitBoard targets);
 
-        void GenerateQueenMoves(const BitBoards &);
-
-        void GenerateKingMoves(const BitBoards &);
     };
 }
