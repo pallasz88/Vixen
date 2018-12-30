@@ -28,7 +28,7 @@ namespace Vixen
         inline bool IsWhiteToMove() const
         { return whiteToMove; }
 
-        inline std::string GetEnPassant() const
+        inline auto GetEnPassant() const
         { return enPassant; }
 
         inline int GetCastlingRights() const
@@ -52,7 +52,7 @@ namespace Vixen
 
         BitBoards bitBoards;
 
-        std::string enPassant;
+        BitBoard enPassant;
 
         std::string fenPosition;
 

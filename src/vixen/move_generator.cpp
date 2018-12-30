@@ -8,7 +8,11 @@ namespace Vixen
     MoveGenerator::MoveGenerator(const Board &board)
     {
         auto bitBoards = board.GetBitBoards();
-        GenerateAllMoves(bitBoards);
+        auto enPassant = board.GetEnPassant();
+        InitKnightKingAttack();
+        InitPawnAttack();
+        board.IsWhiteToMove() ? GenerateAllMoves<Colors::WHITE>(bitBoards, enPassant)
+                              : GenerateAllMoves<Colors::BLACK>(bitBoards, enPassant);
 #ifdef DEBUG
         PrintMoveList();
 #endif // DEBUG
@@ -20,39 +24,111 @@ namespace Vixen
             std::cout << move << std::endl;
     }
 
-    void MoveGenerator::GenerateAllMoves(const BitBoards &bitBoards)
+    template<Colors sideToMove>
+    void MoveGenerator::GenerateAllMoves(const BitBoards &bitBoards, BitBoard enPassant)
     {
-        auto targets = EMPTY_BOARD; // TODO: calculate targets for below functions to work with
-        // TODO: targets are enemy pieces in case of CAPTURE moves and empty square if QUIET move is being calculated
-        GenerateQuietMoves(bitBoards, targets);
-        GenerateCaptureMoves(bitBoards, targets);
+        auto enemies = sideToMove == Colors::WHITE ? bitBoards.at('S') : bitBoards.at('F');
+        auto empties = bitBoards.at(' ');
+        GenerateCaptureMoves<sideToMove>(bitBoards, enemies, enPassant);
+        GenerateQuietMoves<sideToMove>(bitBoards, empties);
+    }
+
+    template<Colors sideToMove>
+    void MoveGenerator::GenerateQuietMoves(const BitBoards &bitBoards, BitBoard targets)
+    {
+        auto pawns = sideToMove == Colors::WHITE ? bitBoards.at('P') : bitBoards.at('p');
+        auto kings = sideToMove == Colors::WHITE ? bitBoards.at('K') : bitBoards.at('k');
+        auto knights = sideToMove == Colors::WHITE ? bitBoards.at('N') : bitBoards.at('n');
+        auto bishops = sideToMove == Colors::WHITE ? bitBoards.at('B') : bitBoards.at('b');
+        auto rooks = sideToMove == Colors::WHITE ? bitBoards.at('R') : bitBoards.at('r');
+        auto queens = sideToMove == Colors::WHITE ? bitBoards.at('Q') : bitBoards.at('q');
+        auto blockers = ~bitBoards.at(' ');
+
+        auto pawnOffset = sideToMove == Colors::WHITE ? 8 : -8;
+        auto promotionRanks = sideToMove == Colors::WHITE ? RANK8 : RANK1;
+        auto doublePushStart = sideToMove == Colors::WHITE ? RANK3 : RANK6;
+
+        auto onePawnPush = PushPawns<sideToMove>(pawns) & ~blockers & ~promotionRanks;
+        auto doublePawnPush = ((onePawnPush & doublePushStart) << pawnOffset) & ~blockers;
+
+        GeneratePawnMoves(pawnOffset, onePawnPush);
+        GeneratePawnMoves(2 * pawnOffset, doublePawnPush);
+        GenerateAntiSliderMoves(targets, knights, knightAttack);
+        GenerateAntiSliderMoves(targets, kings, kingAttack);
+        GenerateSliderMoves<Slider::BISHOP>(bishops | queens, blockers, targets);
+        GenerateSliderMoves<Slider::ROOK>(rooks | queens, blockers, targets);
+    }
+
+    void MoveGenerator::GeneratePawnMoves(int pawnOffset, BitBoard pawnPushed)
+    {
+        while (pawnPushed)
+        {
+            auto to = GetPosition(pawnPushed);
+            moveList.emplace_back(MakeMove(to - pawnOffset, to));
+        }
+    }
+
+    template<Colors sideToMove>
+    void MoveGenerator::GenerateCaptureMoves(const BitBoards &bitBoards, BitBoard targets, BitBoard enPassant)
+    {
+        auto pawns = sideToMove == Colors::WHITE ? bitBoards.at('P') : bitBoards.at('p');
+        auto kings = sideToMove == Colors::WHITE ? bitBoards.at('K') : bitBoards.at('k');
+        auto knights = sideToMove == Colors::WHITE ? bitBoards.at('N') : bitBoards.at('n');
+        auto bishops = sideToMove == Colors::WHITE ? bitBoards.at('B') : bitBoards.at('b');
+        auto rooks = sideToMove == Colors::WHITE ? bitBoards.at('R') : bitBoards.at('r');
+        auto queens = sideToMove == Colors::WHITE ? bitBoards.at('Q') : bitBoards.at('q');
+        auto blockers = ~bitBoards.at(' ');
+        GenerateAntiSliderMoves(targets | enPassant, pawns, pawnAttack[static_cast<int>(sideToMove)]);
+        GenerateAntiSliderMoves(targets, knights, knightAttack);
+        GenerateAntiSliderMoves(targets, kings, kingAttack);
+        GenerateSliderMoves<Slider::BISHOP>(bishops | queens, blockers, targets);
+        GenerateSliderMoves<Slider::ROOK>(rooks | queens, blockers, targets);
+    }
+
+    void MoveGenerator::GenerateAntiSliderMoves(BitBoard targets, BitBoard pieces, const BitBoard *attackBoard)
+    {
+        auto attacks = EMPTY_BOARD;
+        while (pieces)
+        {
+            unsigned int from = GetPosition(pieces);
+            attacks |= attackBoard[from];
+            attacks &= targets;
+            while (attacks)
+            {
+                auto to = GetPosition(attacks);
+                moveList.emplace_back(MakeMove(from, to));
+            }
+        }
     }
 
     template<Slider slider>
-    void MoveGenerator::GenerateSliderMoves(const BitBoards &bitBoards, BitBoard targets)
+    void MoveGenerator::GenerateSliderMoves(BitBoard pieces, BitBoard blockers, BitBoard targets)
     {
         SliderAttacks sliders;
-        BitBoard blockers = ~bitBoards.at(' ');
-        unsigned position = D8; // TODO: Get position for all sliding piece types
-        BitBoard attacks =
-                slider == Slider::BISHOP ? sliders.GetBishopAttack(position, blockers) :
-                slider == Slider::QUEEN ? sliders.GetQueenAttack(position, blockers) :
-                sliders.GetRookAttack(position, blockers); // TODO: calculate attacks for all pieces
-        attacks &= targets;
-        std::cout << attacks << std::endl;
+        auto attacks = EMPTY_BOARD;
+        while (pieces)
+        {
+            unsigned int from = GetPosition(pieces);
+            attacks |= slider == Slider::BISHOP ? sliders.GetBishopAttack(from, blockers) :
+                       sliders.GetRookAttack(from, blockers);
+            attacks &= targets;
+            while (attacks)
+            {
+                auto to = GetPosition(attacks);
+                moveList.emplace_back(MakeMove(from, to));
+            }
+        }
     }
 
-    void MoveGenerator::GenerateQuietMoves(const BitBoards &bitBoards, BitBoard targets)
+    unsigned MoveGenerator::GetPosition(BitBoard &bitBoard) const
     {
-        GenerateSliderMoves<Slider::BISHOP>(bitBoards, targets);
-        GenerateSliderMoves<Slider::ROOK>(bitBoards, targets);
-        GenerateSliderMoves<Slider::QUEEN>(bitBoards, targets);
+        auto from = static_cast<unsigned>(TrailingZeroCount(bitBoard));
+        bitBoard &= bitBoard - 1;
+        return from;
     }
 
-    void MoveGenerator::GenerateCaptureMoves(const BitBoards &bitBoards, BitBoard targets)
+    std::string MoveGenerator::MakeMove(unsigned int from, unsigned to)
     {
-        GenerateSliderMoves<Slider::BISHOP>(bitBoards, targets);
-        GenerateSliderMoves<Slider::ROOK>(bitBoards, targets);
-        GenerateSliderMoves<Slider::QUEEN>(bitBoards, targets);
+        return SquareToNotation(from) + SquareToNotation(to);
     }
 }

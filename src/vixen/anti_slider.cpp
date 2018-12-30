@@ -2,6 +2,8 @@
 
 namespace Vixen
 {
+    BitBoard pawnAttack[COLOR_NUMBER][SQUARE_NUMBER];
+
     BitBoard knightAttack[SQUARE_NUMBER];
 
     BitBoard kingAttack[SQUARE_NUMBER];
@@ -23,6 +25,27 @@ namespace Vixen
 
                 if (IsValidCoordinate(kingFile, kingRank))
                     kingAttack[square] |= 1ULL << (8 * kingRank + kingFile);
+
+            }
+        }
+    }
+
+    void InitPawnAttack()
+    {
+        PawnDirections pawnDirections = {{{-1, 1}, {1, 1}}};
+        for (auto square = 0; square < SQUARE_NUMBER; ++square)
+        {
+            for (int direction = 0; direction < 2; ++direction)
+            {
+                int pawnFile = square % 8 + pawnDirections[direction][0];
+                int pawnRank = square / 8 + pawnDirections[direction][1];
+                if (IsValidCoordinate(pawnFile, pawnRank))
+                    pawnAttack[static_cast<int>(Colors::WHITE)][square] |= 1ULL << (8 * pawnRank + pawnFile);
+
+                pawnFile = square % 8 - pawnDirections[direction][0];
+                pawnRank = square / 8 - pawnDirections[direction][1];
+                if (IsValidCoordinate(pawnFile, pawnRank))
+                    pawnAttack[static_cast<int>(Colors::BLACK)][square] |= 1ULL << (8 * pawnRank + pawnFile);
 
             }
         }

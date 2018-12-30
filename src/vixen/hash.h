@@ -6,7 +6,7 @@ namespace Vixen
 {
     class Board;
 
-    class VIXEN_API Hash
+    class Hash
     {
     public:
 

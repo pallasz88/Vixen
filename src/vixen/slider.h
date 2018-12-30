@@ -22,7 +22,7 @@ namespace Vixen
 
     enum class Slider
     {
-        BISHOP, ROOK, QUEEN
+        BISHOP, ROOK
     };
 
     class VIXEN_API SliderAttacks
@@ -49,7 +49,7 @@ namespace Vixen
 
         BitBoard SlidingAttack(int square, SliderDirections directions, BitBoard occupied);
 
-        void GetNextCoordinate(int &file, int &rank, const Direction &direction) const;
+        void GetNextCoordinate(int &file, int &rank, const Direction &direction) const noexcept;
 
         Magic BishopTable[SQUARE_NUMBER];
 
@@ -97,6 +97,4 @@ namespace Vixen
                 0x0400000260142410ull, 0x0800633408100500ull, 0xFC087E8E4BB2F736ull, 0x43FF9E4EF4CA2C89ull
         };
     };
-
-
 }

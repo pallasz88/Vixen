@@ -1,4 +1,3 @@
-#include <iostream>
 #include "slider.h"
 
 namespace Vixen
@@ -55,7 +54,7 @@ namespace Vixen
                  GetNextCoordinate(file, rank, direction))
             {
                 SetBit(attacks, static_cast<unsigned >(8 * file + rank));
-                if (IsBitSet(occupied, BIT(8 * file + rank)))
+                if (IsBitSet(occupied, SquareToBitBoard(8 * file + rank)))
                     break;
             }
         }
@@ -63,7 +62,7 @@ namespace Vixen
         return attacks;
     }
 
-    void SliderAttacks::GetNextCoordinate(int &file, int &rank, const Direction &direction) const
+    void SliderAttacks::GetNextCoordinate(int &file, int &rank, const Direction &direction) const noexcept
     {
         file += direction[0], rank += direction[1];
     }

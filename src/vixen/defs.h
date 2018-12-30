@@ -3,7 +3,7 @@
 #include <map>
 
 #define VIXEN_API __declspec(dllexport)
-#define STARTPOS "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+#define START_POSITION "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 #define TESTPOS1 "2rq1rk1/3bppbp/p5p1/1ppPP3/2n2B2/2P1Q1PP/P2N1PB1/R4RK1 w - - 1 18"
 #define TESTPOS2 "rnbqkb1r/pp1ppppp/5n2/8/3p1B2/4P3/PPP2PPP/RN1QKBNR w KQkq - 0 4"
 #define DEBUG
@@ -11,59 +11,12 @@
 namespace Vixen
 {
 
-    typedef uint64_t BitBoard;
-
-    typedef std::map<char, BitBoard> BitBoards;
-
-    typedef std::array<int, 2> Direction;
-
-    typedef std::array<Direction, 4> SliderDirections;
-
-    typedef std::array<Direction, 8> AntiSliderDirections;
-
-    typedef int Move;
-
-    constexpr int MAX_SQUARE_INDEX = 63;
-
-    constexpr int SQUARE_NUMBER = 64;
-
-    constexpr int BISHOP_ATTACK_TABLE_SIZE = 0x1480;
-
-    constexpr int ROOK_ATTACK_TABLE_SIZE = 0x19000;
-
-    constexpr BitBoard EMPTY_BOARD = 0ULL;
-
-    constexpr BitBoard BIT(int square)
-    {
-        return static_cast<BitBoard>(1) << square;
-    }
-
-    constexpr bool IsValidCoordinate(int file, int rank)
-    {
-        return file >= 0 && rank >= 0 && file < 8 && rank < 8;
-    }
-
-    template<class T, class U>
-    inline bool IsBitSet(const T &x, const U &y)
-    {
-        return 0 != (x & y);
-    }
-
-    template<class T>
-    inline void SetBit(T &x, unsigned y)
-    {
-        x |= 1ULL << y;
-    }
-
-    constexpr int PopCount(BitBoard b)
-    {
-        return __builtin_popcountll(b);
-    }
-
     enum Ranks
     {
         RANK1 = 255ULL,
         RANK2 = 65280ULL,
+        RANK3 = 16711680ULL,
+        RANK6 = 280375465082880ULL,
         RANK7 = 71776119061217280ULL,
         RANK8 = 18374686479671623680ULL,
         RANK12 = 65535ULL,
@@ -94,5 +47,95 @@ namespace Vixen
         H7, G7, F7, E7, D7, C7, B7, A7,
         H8, G8, F8, E8, D8, C8, B8, A8
     };
+
+    enum class Colors
+    {
+        WHITE, BLACK
+    };
+
+    enum class PawnDirection
+    {
+        UP, DOWN
+    };
+
+    typedef uint64_t BitBoard;
+
+    typedef std::map<char, BitBoard> BitBoards;
+
+    typedef std::array<int, 2> Direction;
+
+    typedef std::array<Direction, 4> SliderDirections;
+
+    typedef std::array<Direction, 8> AntiSliderDirections;
+
+    typedef std::array<Direction, 2> PawnDirections;
+
+    constexpr int MAX_SQUARE_INDEX = 63;
+
+    constexpr int SQUARE_NUMBER = 64;
+
+    constexpr int COLOR_NUMBER = 2;
+
+    constexpr int BISHOP_ATTACK_TABLE_SIZE = 0x1480;
+
+    constexpr int ROOK_ATTACK_TABLE_SIZE = 0x19000;
+
+    constexpr BitBoard EMPTY_BOARD = 0ULL;
+
+    constexpr BitBoard SquareToBitBoard(int square)
+    {
+        if (square < 0)
+            return EMPTY_BOARD;
+        return static_cast<BitBoard>(1) << square;
+    }
+
+    constexpr bool IsValidCoordinate(int file, int rank)
+    {
+        return file >= 0 && rank >= 0 && file < 8 && rank < 8;
+    }
+
+    template<class T, class U>
+    inline bool IsBitSet(const T &x, const U &y)
+    {
+        return 0 != (x & y);
+    }
+
+    template<class T>
+    inline void SetBit(T &x, unsigned y)
+    {
+        x |= 1ULL << y;
+    }
+
+    template <Colors pawnColor>
+    inline BitBoard PushPawns(BitBoard x)
+    {
+        return pawnColor == Colors::WHITE ? x << 8 : x >> 8;
+    }
+
+    constexpr int PopCount(BitBoard b)
+    {
+        return __builtin_popcountll(b);
+    }
+
+    constexpr int TrailingZeroCount(BitBoard bitBoard)
+    {
+        return __builtin_ctzll(bitBoard);
+    }
+
+    inline auto SquareToNotation(unsigned square)
+    {
+        std::string notation;
+        notation.push_back(static_cast<char>(7 - square % 8 + 'a'));
+        notation.push_back(static_cast<char>(square / 8 + '1'));
+        return notation;
+    }
+
+    inline auto NotationToSquare(const std::string &notation)
+    {
+        if (notation.at(0) < 'a' || notation.at(0) > 'h' ||
+            notation.at(1) < '1' || notation.at(1) > '8')
+            return -1;
+        return 7 - (notation.at(0) - 'a') + 8 * (notation.at(1) - '1');
+    }
 
 }

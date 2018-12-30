@@ -12,7 +12,7 @@ namespace Vixen
 #ifdef DEBUG
         clock_t start = clock();
 #endif
-        SetBoard(STARTPOS);
+        SetBoard(START_POSITION);
 #ifdef DEBUG
         PrintBoard();
         std::cout << double(clock() - start) / (double) CLOCKS_PER_SEC << " seconds." << std::endl;
@@ -28,7 +28,7 @@ namespace Vixen
         ParseFenPiecePart(parsedPosition[0]);
         ParseSideToMovePart(parsedPosition[1]);
         ParseCastlingRightPart(parsedPosition[2]);
-        enPassant = parsedPosition[3];
+        enPassant = SquareToBitBoard(NotationToSquare(parsedPosition[3]));
         fiftyMoves = stoi(parsedPosition[4]);
         historyMovesNum = stoi(parsedPosition[5]);
         generator = std::make_unique<MoveGenerator>(*this);
@@ -45,7 +45,7 @@ namespace Vixen
         std::cout << std::endl << "+---+---+---+---+---+---+---+---+" << std::endl;
         for (int i = MAX_SQUARE_INDEX; i >= 0; i--)
         {
-            for (auto &it : bitBoards)
+            for (const auto &it : bitBoards)
             {
                 if (((it.second >> i) & 1) && it.first != 'F' && it.first != 'S')
                 {
@@ -138,7 +138,7 @@ namespace Vixen
     void Board::ParseCastlingRightPart(const std::string &parsedPosition)
     {
         castlingRights = 0;
-        for (auto &it : parsedPosition)
+        for (const auto &it : parsedPosition)
         {
             switch (it)
             {
