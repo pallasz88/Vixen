@@ -16,17 +16,23 @@ namespace Vixen
 
     private:
 
-        BitBoard hash;
+        PositionKey positionKey;
 
-        std::map<int, std::map<char, BitBoard>> zobristHashKey;
+        PieceHashKeys pieceHashKeys;
+
+        SideHashKey sideHashKey;
+
+        CastleHashKeys castleHashKeys;
 
         BitBoard GenerateBigRandom();
 
-        void InitZobrist();
+        void InitZobristKeys();
 
-        void ComputeHash(const Board &);
+        void ComputePositionKey(const Board &board);
 
         const std::array<char, 12> pieceKeys = {'P', 'N', 'B', 'R', 'Q', 'K',
                                                 'p', 'n', 'b', 'r', 'q', 'k'};
+
+        char enPassantKey = ' ';
     };
 }

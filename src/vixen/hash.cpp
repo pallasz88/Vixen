@@ -8,19 +8,29 @@ namespace Vixen
 {
     Hash::Hash(const Board &board)
     {
-        InitZobrist();
-        ComputeHash(board);
+        InitZobristKeys();
+        ComputePositionKey(board);
 #ifdef DEBUG
-        std::cout << hash << std::endl;
+        std::cout << positionKey << std::endl;
 #endif
     }
 
-    void Hash::InitZobrist()
+    void Hash::InitZobristKeys()
     {
-        hash = 0;
-        for (int square = H1; A8 >= square; ++square)
-            for (auto &pieceKey : pieceKeys)
-                zobristHashKey[square][pieceKey] = GenerateBigRandom();
+        for (int square = H1; square <= MAX_SQUARE_INDEX; ++square)
+        {
+            pieceHashKeys[square][enPassantKey] = GenerateBigRandom();
+            for (const auto &pieceKey : pieceKeys)
+                pieceHashKeys[square][pieceKey] = GenerateBigRandom();
+        }
+
+        sideHashKey = GenerateBigRandom();
+
+        for (auto &castleHashKey : castleHashKeys)
+        {
+            castleHashKey = GenerateBigRandom();
+        }
+
     }
 
     BitBoard Hash::GenerateBigRandom()
@@ -30,22 +40,31 @@ namespace Vixen
         return distribution(generator);
     }
 
-    void Hash::ComputeHash(const Board &board)
+    void Hash::ComputePositionKey(const Board &board)
     {
+        positionKey = 0;
         BitBoards bitBoards = board.GetBitBoards();
-        for (int square = MAX_SQUARE_INDEX; square >= 0; --square)
+        for (int square = H1; square <= MAX_SQUARE_INDEX; ++square)
         {
             for (const auto &pieceKey : pieceKeys)
             {
-                if (~(bitBoards[' '] >> square) & 1)
-                    if ((bitBoards[pieceKey] >> square) & 1)
-                        hash ^= zobristHashKey[square][pieceKey];
+                if (IsBitSet(bitBoards.at(pieceKey), square))
+                    positionKey ^= pieceHashKeys[square][pieceKey];
             }
         }
+
+        auto enPassant = board.GetEnPassant();
+        if (enPassant != EMPTY_BOARD)
+            positionKey ^= pieceHashKeys[TrailingZeroCount(enPassant)][enPassantKey];
+
+        if (board.IsWhiteToMove())
+            positionKey ^= sideHashKey;
+
+        positionKey ^= castleHashKeys.at(board.GetCastlingRights());
     }
 
     BitBoard Hash::GetHash() const
     {
-        return hash;
+        return positionKey;
     }
 }

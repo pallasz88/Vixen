@@ -53,11 +53,6 @@ namespace Vixen
         WHITE, BLACK
     };
 
-    enum class PawnDirection
-    {
-        UP, DOWN
-    };
-
     typedef uint64_t BitBoard;
 
     typedef std::map<char, BitBoard> BitBoards;
@@ -69,6 +64,14 @@ namespace Vixen
     typedef std::array<Direction, 8> AntiSliderDirections;
 
     typedef std::array<Direction, 2> PawnDirections;
+
+    typedef std::map<int, std::map<char, BitBoard>> PieceHashKeys;
+
+    typedef uint64_t SideHashKey;
+
+    typedef uint64_t PositionKey;
+
+    typedef std::array<BitBoard, 16> CastleHashKeys;
 
     constexpr int MAX_SQUARE_INDEX = 63;
 
@@ -94,27 +97,27 @@ namespace Vixen
         return file >= 0 && rank >= 0 && file < 8 && rank < 8;
     }
 
-    template<class T, class U>
-    inline bool IsBitSet(const T &x, const U &y)
+    template<class T>
+    inline bool IsBitSet(const T &bits, int position)
     {
-        return 0 != (x & y);
+        return bits & (1ULL << position);
     }
 
     template<class T>
-    inline void SetBit(T &x, unsigned y)
+    inline void SetBit(T &bitBoard, unsigned position)
     {
-        x |= 1ULL << y;
+        bitBoard |= 1ULL << position;
     }
 
     template <Colors pawnColor>
-    inline BitBoard PushPawns(BitBoard x)
+    inline BitBoard PushPawns(BitBoard pawns)
     {
-        return pawnColor == Colors::WHITE ? x << 8 : x >> 8;
+        return pawnColor == Colors::WHITE ? pawns << 8 : pawns >> 8;
     }
 
-    constexpr int PopCount(BitBoard b)
+    constexpr int PopCount(BitBoard bitBoard)
     {
-        return __builtin_popcountll(b);
+        return __builtin_popcountll(bitBoard);
     }
 
     constexpr int TrailingZeroCount(BitBoard bitBoard)

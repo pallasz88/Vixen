@@ -28,10 +28,10 @@ namespace Vixen
         inline bool IsWhiteToMove() const
         { return whiteToMove; }
 
-        inline auto GetEnPassant() const
+        inline BitBoard GetEnPassant() const
         { return enPassant; }
 
-        inline int GetCastlingRights() const
+        inline unsigned GetCastlingRights() const
         { return castlingRights; }
 
         inline int GetMovesNum() const
@@ -60,7 +60,7 @@ namespace Vixen
 
         bool whiteToMove;
 
-        int castlingRights;
+        unsigned castlingRights;
 
         int fiftyMoves;
 

@@ -43,27 +43,27 @@ namespace Vixen
     void Board::PrintBoard() const
     {
         std::cout << std::endl << "+---+---+---+---+---+---+---+---+" << std::endl;
-        for (int i = MAX_SQUARE_INDEX; i >= 0; i--)
+        for (int squareIndex = MAX_SQUARE_INDEX; squareIndex >= H1; --squareIndex)
         {
-            for (const auto &it : bitBoards)
+            for (const auto &item : bitBoards)
             {
-                if (((it.second >> i) & 1) && it.first != 'F' && it.first != 'S')
+                if (IsBitSet(item.second, squareIndex) && item.first != 'F' && item.first != 'S')
                 {
-                    std::cout << "| " << it.first << " ";
+                    std::cout << "| " << item.first << " ";
                     break;
                 }
             }
-            if (i % 8 == 0)
+            if (squareIndex % 8 == 0)
             {
-                std::cout << "| " << i / 8 + 1 << std::endl;
+                std::cout << "| " << squareIndex / 8 + 1 << std::endl;
                 std::cout << "+---+---+---+---+---+---+---+---+" << std::endl;
             }
         }
 
         std::cout << "  ";
-        for (int i = 0; i < 8; ++i)
+        for (int rank = 0; rank < 8; ++rank)
         {
-            std::cout << static_cast<char>('a' + i) << "   ";
+            std::cout << static_cast<char>('a' + rank) << "   ";
         }
         std::cout << std::endl << std::endl;
     }

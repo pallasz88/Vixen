@@ -54,7 +54,7 @@ namespace Vixen
                  GetNextCoordinate(file, rank, direction))
             {
                 SetBit(attacks, static_cast<unsigned >(8 * file + rank));
-                if (IsBitSet(occupied, SquareToBitBoard(8 * file + rank)))
+                if (IsBitSet(occupied, 8 * file + rank))
                     break;
             }
         }
