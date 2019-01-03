@@ -9,13 +9,9 @@ namespace Vixen
 {
     Board::Board()
     {
-#ifdef DEBUG
-        clock_t start = clock();
-#endif
         SetBoard(START_POSITION);
 #ifdef DEBUG
         PrintBoard();
-        std::cout << double(clock() - start) / (double) CLOCKS_PER_SEC << " seconds." << std::endl;
 #endif
     }
 
@@ -76,17 +72,17 @@ namespace Vixen
             switch (fenChar)
             {
                 case 'P':
-                case 'p':
                 case 'N':
-                case 'n':
                 case 'B':
-                case 'b':
                 case 'R':
-                case 'r':
-                case 'K':
-                case 'k':
                 case 'Q':
+                case 'K':
+                case 'p':
+                case 'n':
+                case 'b':
+                case 'r':
                 case 'q':
+                case 'k':
                     SetBit(bitBoards[fenChar], squareIndex);
                     break;
                 case '/':
@@ -143,16 +139,16 @@ namespace Vixen
             switch (it)
             {
                 case 'K':
-                    SetBit(castlingRights, 3);
+                    SetBit(castlingRights, WKCA);
                     break;
                 case 'Q':
-                    SetBit(castlingRights, 2);
+                    SetBit(castlingRights, WQCA);
                     break;
                 case 'k':
-                    SetBit(castlingRights, 1);
+                    SetBit(castlingRights, BKCA);
                     break;
                 case 'q':
-                    SetBit(castlingRights, 0);
+                    SetBit(castlingRights, BQCA);
                     break;
                 case '-':
                     castlingRights = 0;

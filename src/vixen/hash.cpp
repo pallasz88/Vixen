@@ -60,7 +60,7 @@ namespace Vixen
         if (board.IsWhiteToMove())
             positionKey ^= sideHashKey;
 
-        positionKey ^= castleHashKeys.at(board.GetCastlingRights());
+        positionKey ^= castleHashKeys.at(static_cast<uint8_t>(board.GetCastlingRights()));
     }
 
     BitBoard Hash::GetHash() const

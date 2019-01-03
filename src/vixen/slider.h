@@ -32,11 +32,11 @@ namespace Vixen
 
         explicit SliderAttacks();
 
-        BitBoard GetBishopAttack(unsigned square, BitBoard occupied);
+        BitBoard GetBishopAttack(int square, BitBoard occupied);
 
-        BitBoard GetRookAttack(unsigned square, BitBoard occupied);
+        BitBoard GetRookAttack(int square, BitBoard occupied);
 
-        BitBoard GetQueenAttack(unsigned square, BitBoard occupied);
+        BitBoard GetQueenAttack(int square, BitBoard occupied);
 
     private:
 

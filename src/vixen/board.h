@@ -31,7 +31,7 @@ namespace Vixen
         inline BitBoard GetEnPassant() const
         { return enPassant; }
 
-        inline unsigned GetCastlingRights() const
+        inline int GetCastlingRights() const
         { return castlingRights; }
 
         inline int GetMovesNum() const
@@ -60,7 +60,7 @@ namespace Vixen
 
         bool whiteToMove;
 
-        unsigned castlingRights;
+        int castlingRights;
 
         int fiftyMoves;
 

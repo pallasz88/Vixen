@@ -48,10 +48,48 @@ namespace Vixen
         H8, G8, F8, E8, D8, C8, B8, A8
     };
 
+    enum MoveTypes
+    {
+        QUIET_MOVE,
+
+        DOUBLE_PAWN_PUSH,
+
+        KING_CASTLE,
+
+        QUEEN_CASTLE,
+
+        CAPTURE,
+
+        ENPASSANT_CAPTURE,
+
+        KNIGHT_PROMOTION = 8,
+
+        BISHOP_PROMOTION,
+
+        ROOK_PROMOTION,
+
+        QUEEN_PROMOTION,
+
+        KNIGHT_PROMO_CAPTURE = 12,
+
+        BISHOP_PROMO_CAPTURE,
+
+        ROOK_PROMO_CAPTURE,
+
+        QUEEN_PROMO_CAPTURE
+    };
+
+    enum CastlingRights
+    {
+        BQCA, BKCA, WQCA, WKCA
+    };
+
     enum class Colors
     {
         WHITE, BLACK
     };
+
+    typedef uint16_t Move;
 
     typedef uint64_t BitBoard;
 
@@ -104,15 +142,28 @@ namespace Vixen
     }
 
     template<class T>
-    inline void SetBit(T &bitBoard, unsigned position)
+    inline void SetBit(T &bitBoard, int position)
     {
         bitBoard |= 1ULL << position;
     }
 
-    template <Colors pawnColor>
+    template<Colors pawnColor>
     inline BitBoard PushPawns(BitBoard pawns)
     {
-        return pawnColor == Colors::WHITE ? pawns << 8 : pawns >> 8;
+        int pawnPush = 8;
+        return pawnColor == Colors::WHITE ? pawns << pawnPush : pawns >> pawnPush;
+    }
+
+    template<Colors pawnColor>
+    inline BitBoard PawnCaptureLeft(BitBoard pawns)
+    {
+        return pawnColor == Colors::WHITE ? pawns << 9 : pawns >> 9;
+    }
+
+    template<Colors pawnColor>
+    inline BitBoard PawnCaptureRight(BitBoard pawns)
+    {
+        return pawnColor == Colors::WHITE ? pawns << 7 : pawns >> 7;
     }
 
     constexpr int PopCount(BitBoard bitBoard)

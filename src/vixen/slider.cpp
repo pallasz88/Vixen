@@ -72,17 +72,17 @@ namespace Vixen
         return ((occupied & table.mask) * table.magic) >> table.shift;
     }
 
-    BitBoard SliderAttacks::GetBishopAttack(unsigned square, BitBoard occupied)
+    BitBoard SliderAttacks::GetBishopAttack(int square, BitBoard occupied)
     {
         return BishopTable[square].attacks[GetIndex(occupied, BishopTable[square])];
     }
 
-    BitBoard SliderAttacks::GetRookAttack(unsigned square, BitBoard occupied)
+    BitBoard SliderAttacks::GetRookAttack(int square, BitBoard occupied)
     {
         return RookTable[square].attacks[GetIndex(occupied, RookTable[square])];
     }
 
-    BitBoard SliderAttacks::GetQueenAttack(unsigned square, Vixen::BitBoard occupied)
+    BitBoard SliderAttacks::GetQueenAttack(int square, Vixen::BitBoard occupied)
     {
         return GetBishopAttack(square, occupied) | GetRookAttack(square, occupied);
     }

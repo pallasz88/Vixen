@@ -22,26 +22,40 @@ namespace Vixen
 
     private:
 
-        std::vector<std::string> moveList;
-
-        template<Colors sideTomMove>
-        void GenerateAllMoves(const BitBoards &bitBoards, BitBoard enPassant);
-
-        template<Slider slider>
-        void GenerateSliderMoves(BitBoard pieces, BitBoard blockers, BitBoard targets);
+        std::vector<Move> moveList;
 
         template<Colors sideToMove>
-        void GenerateQuietMoves(const BitBoards &bitBoards, BitBoard targets);
+        void GenerateAllMoves(const BitBoards &bitBoards, BitBoard enPassant, int castlingRights);
+
+        template<Colors sideToMove>
+        void GenerateQuietMoves(const BitBoards &bitBoards, BitBoard targets, int castlingRights);
 
         template<Colors sideToMove>
         void GenerateCaptureMoves(const BitBoards &bitBoards, BitBoard targets, BitBoard enPassant);
 
-        std::string MakeMove(unsigned int from, unsigned to);
+        template<Slider slider>
+        void GenerateSliderMoves(BitBoard pieces, BitBoard blockers, BitBoard targets, uint8_t moveType);
 
-        unsigned GetPosition(BitBoard &bitBoard) const;
+        void GenerateAntiSliderMoves(BitBoard targets, BitBoard pieces, const BitBoard *attackBoard,
+                                     uint8_t moveType);
 
-        void GenerateAntiSliderMoves(BitBoard targets, BitBoard pieces, const BitBoard *attackBoard);
+        void GeneratePawnMoves(int pawnOffset, BitBoard pawnPushed, uint8_t moveType);
 
-        void GeneratePawnMoves(int pawnOffset, BitBoard pawnPushed);
+        void GeneratePawnPromotionMoves(int offset, BitBoard promotion);
+
+        void GeneratePawnPromotionCaptureMoves(int offset, BitBoard promotion);
+
+        template <Colors sideToMove>
+        void GenerateCastlingMoves(const BitBoards &bitBoards, int castlingRights);
+
+        Move CreateMove(uint8_t from, uint8_t to, uint8_t moveType);
+
+        uint8_t GetPosition(BitBoard &bitBoard) const;
+
+        template <Colors sideToMove>
+        bool IsSquareAttacked(int square, const BitBoards &bitBoards);
+
+        template <Colors sideToMove>
+        bool IsInCheck(const BitBoards &bitBoards);
     };
 }

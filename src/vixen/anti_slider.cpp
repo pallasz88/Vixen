@@ -21,10 +21,10 @@ namespace Vixen
                 int kingFile = square % 8 + kingOffset[direction][0];
                 int kingRank = square / 8 + kingOffset[direction][1];
                 if (IsValidCoordinate(knightFile, knightRank))
-                    knightAttack[square] |= 1ULL << (8 * knightRank + knightFile);
+                    SetBit(knightAttack[square], 8 * knightRank + knightFile);
 
                 if (IsValidCoordinate(kingFile, kingRank))
-                    kingAttack[square] |= 1ULL << (8 * kingRank + kingFile);
+                    SetBit(kingAttack[square], 8 * kingRank + kingFile);
 
             }
         }
@@ -40,13 +40,12 @@ namespace Vixen
                 int pawnFile = square % 8 + pawnDirections[direction][0];
                 int pawnRank = square / 8 + pawnDirections[direction][1];
                 if (IsValidCoordinate(pawnFile, pawnRank))
-                    pawnAttack[static_cast<int>(Colors::WHITE)][square] |= 1ULL << (8 * pawnRank + pawnFile);
+                    SetBit(pawnAttack[static_cast<int>(Colors::WHITE)][square], 8 * pawnRank + pawnFile);
 
                 pawnFile = square % 8 - pawnDirections[direction][0];
                 pawnRank = square / 8 - pawnDirections[direction][1];
                 if (IsValidCoordinate(pawnFile, pawnRank))
-                    pawnAttack[static_cast<int>(Colors::BLACK)][square] |= 1ULL << (8 * pawnRank + pawnFile);
-
+                    SetBit(pawnAttack[static_cast<int>(Colors::BLACK)][square], 8 * pawnRank + pawnFile);
             }
         }
     }
