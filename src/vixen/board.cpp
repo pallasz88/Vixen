@@ -3,13 +3,27 @@
 #include "hash.h"
 
 #include <iostream>
+#include <bitset>
 #include <boost/algorithm/string.hpp>
 
 namespace Vixen
 {
+    constexpr int castlePermission[SQUARE_NUMBER] = {
+            11, 15, 15, 3, 15, 15, 15, 7,
+            15, 15, 15, 15, 15, 15, 15, 15,
+            15, 15, 15, 15, 15, 15, 15, 15,
+            15, 15, 15, 15, 15, 15, 15, 15,
+            15, 15, 15, 15, 15, 15, 15, 15,
+            15, 15, 15, 15, 15, 15, 15, 15,
+            15, 15, 15, 15, 15, 15, 15, 15,
+            14, 15, 15, 12, 15, 15, 15, 13
+    };
+
     Board::Board()
     {
         SetBoard(START_POSITION);
+        InitKnightKingAttack();
+        InitPawnAttack();
 #ifdef DEBUG
         PrintBoard();
 #endif
@@ -19,6 +33,7 @@ namespace Vixen
     {
         this->fenPosition = fenPosition;
         InitBitBoards(bitBoards);
+        memset(pieceList, ' ', SQUARE_NUMBER);
         std::vector<std::string> parsedPosition;
         SplitFenPosition(parsedPosition);
         ParseFenPiecePart(parsedPosition[0]);
@@ -27,8 +42,14 @@ namespace Vixen
         enPassant = SquareToBitBoard(NotationToSquare(parsedPosition[3]));
         fiftyMoves = stoi(parsedPosition[4]);
         historyMovesNum = stoi(parsedPosition[5]);
-        generator = std::make_unique<MoveGenerator>(*this);
         hashBoard = std::make_unique<Hash>(*this);
+        ClearHistory();
+    }
+
+    void Board::ClearHistory()
+    {
+        if (!history.empty())
+            history = std::stack<History>();
     }
 
     void Board::SplitFenPosition(std::vector<std::string> &fenParts)
@@ -38,6 +59,7 @@ namespace Vixen
 
     void Board::PrintBoard() const
     {
+        //Timer t("print");
         std::cout << std::endl << "+---+---+---+---+---+---+---+---+" << std::endl;
         for (int squareIndex = MAX_SQUARE_INDEX; squareIndex >= H1; --squareIndex)
         {
@@ -62,6 +84,11 @@ namespace Vixen
             std::cout << static_cast<char>('a' + rank) << "   ";
         }
         std::cout << std::endl << std::endl;
+        auto enPassant_ = (enPassant != EMPTY_BOARD) ? SquareToNotation(TrailingZeroCount(enPassant)) : "-";
+        std::cout << "En passant square: " << enPassant_ << std::endl;
+        std::cout << "Castling rights: " << std::bitset<4>(static_cast<unsigned >(castlingRights)) << std::endl;
+        std::cout << "Position key: " << std::hex << hashBoard->GetHash() << std::dec << std::endl;
+        std::cout << std::endl << std::endl;
     }
 
     void Board::ParseFenPiecePart(const std::string &parsedPosition)
@@ -84,6 +111,7 @@ namespace Vixen
                 case 'q':
                 case 'k':
                     SetBit(bitBoards[fenChar], squareIndex);
+                    pieceList[squareIndex] = fenChar;
                     break;
                 case '/':
                     continue;
@@ -139,16 +167,16 @@ namespace Vixen
             switch (it)
             {
                 case 'K':
-                    SetBit(castlingRights, WKCA);
+                    SetBit(castlingRights, 3);
                     break;
                 case 'Q':
-                    SetBit(castlingRights, WQCA);
+                    SetBit(castlingRights, 2);
                     break;
                 case 'k':
-                    SetBit(castlingRights, BKCA);
+                    SetBit(castlingRights, 1);
                     break;
                 case 'q':
-                    SetBit(castlingRights, BQCA);
+                    SetBit(castlingRights, 0);
                     break;
                 case '-':
                     castlingRights = 0;
@@ -177,6 +205,177 @@ namespace Vixen
         bitBoards['F'] = EMPTY_BOARD;
         bitBoards['S'] = EMPTY_BOARD;
         bitBoards[' '] = EMPTY_BOARD;
+    }
+
+
+    bool Board::MakeMove(Vixen::Move move)
+    {
+        //Timer t("make");
+        int from = move & 0x3F;
+        int to = (move >> 6) & 0x3F;
+        int moveType = move >> 12;
+        int enPassantSquare = whiteToMove ? to - 8 : to + 8;
+        char movingPieceLetter = GetPieceBoard(from);
+        char capturedPieceLetter = GetPieceBoard(to);
+        char enemyLetter = whiteToMove ? 'S' : 'F';
+        char usLetter = whiteToMove ? 'F' : 'S';
+
+        history.emplace(enPassant,
+                        castlingRights,
+                        fiftyMoves,
+                        move,
+                        movingPieceLetter,
+                        capturedPieceLetter,
+                        hashBoard->GetHash());
+
+        ++fiftyMoves;
+
+        if (enPassant != EMPTY_BOARD)
+            hashBoard->HashEnPassant(enPassant);
+
+        if (moveType == KING_CASTLE)
+        {
+            whiteToMove ? bitBoards['R'] ^= SquareToBitBoard(H1) | SquareToBitBoard(F1)
+                        : bitBoards['r'] ^= SquareToBitBoard(H8) | SquareToBitBoard(D8);
+            whiteToMove ? bitBoards[usLetter] ^= SquareToBitBoard(H1) | SquareToBitBoard(F1)
+                        : bitBoards[usLetter] ^= SquareToBitBoard(H8) | SquareToBitBoard(D8);
+        }
+
+        else if (moveType == QUEEN_CASTLE)
+        {
+            whiteToMove ? bitBoards['R'] ^= SquareToBitBoard(A1) | SquareToBitBoard(D1)
+                        : bitBoards['r'] ^= SquareToBitBoard(A8) | SquareToBitBoard(D8);
+            whiteToMove ? bitBoards[usLetter] ^= SquareToBitBoard(A1) | SquareToBitBoard(D1)
+                        : bitBoards[usLetter] ^= SquareToBitBoard(A8) | SquareToBitBoard(D8);
+        }
+
+        else if (moveType == ENPASSANT)
+            whiteToMove ? bitBoards['p'] ^= SquareToBitBoard(to - 8)
+                        : bitBoards['P'] ^= SquareToBitBoard(to + 8);
+
+        else if (moveType & CAPTURE)
+        {
+            fiftyMoves = 0;
+            hashBoard->HashPiece(to, capturedPieceLetter);
+            bitBoards.at(capturedPieceLetter) ^= SquareToBitBoard(to);
+            bitBoards.at(enemyLetter) ^= SquareToBitBoard(to);
+        }
+
+        else if (moveType & DOUBLE_PAWN_PUSH)
+        {
+            SetBit(enPassant, enPassantSquare);
+            hashBoard->HashEnPassant(enPassant);
+        }
+
+        if (tolower(movingPieceLetter) == 'p')
+            fiftyMoves = 0;
+
+        hashBoard->HashPiece(from, movingPieceLetter);
+        bitBoards.at(movingPieceLetter) ^= SquareToBitBoard(from) | SquareToBitBoard(to);
+        bitBoards.at(usLetter) ^= SquareToBitBoard(from) | SquareToBitBoard(to);
+        bitBoards[' '] = ~(bitBoards['F'] | bitBoards['S']);
+        pieceList[from] = ' ';
+        pieceList[to] = movingPieceLetter;
+
+        if (moveType & PROMOTION)
+        {
+            std::string promotions = "nbrq";
+            char promotion = promotions.at(static_cast<uint8_t>(moveType & 3));
+            if (whiteToMove)
+                promotion = static_cast<char>(toupper(promotion));
+            bitBoards.at(movingPieceLetter) ^= SquareToBitBoard(to);
+            bitBoards.at(promotion) ^= SquareToBitBoard(to);
+            hashBoard->HashPiece(to, promotion);
+        }
+        else
+            hashBoard->HashPiece(to, movingPieceLetter);
+
+        if (moveType == KING_CASTLE || moveType == QUEEN_CASTLE)
+        {
+            hashBoard->HashCastling(*this);
+            castlingRights &= castlePermission[from];
+            castlingRights &= castlePermission[to];
+            hashBoard->HashCastling(*this);
+        }
+
+        whiteToMove = !whiteToMove;
+        hashBoard->HashSide();
+        ++historyMovesNum;
+
+        if (whiteToMove ? MoveGenerator::IsInCheck<Colors::BLACK>(bitBoards, sliders)
+                        : MoveGenerator::IsInCheck<Colors::WHITE>(bitBoards, sliders))
+        {
+            TakeBack();
+            return false;
+        }
+        return true;
+    }
+
+    void Board::TakeBack()
+    {
+        if (history.empty())
+            throw "Empty history";
+
+        //Timer t("take");
+        History lastPosition = history.top();
+        history.pop();
+
+        int from = lastPosition.move & 0x3F;
+        int to = (lastPosition.move >> 6) & 0x3F;
+        int moveType = lastPosition.move >> 12;
+        char movingPieceLetter = lastPosition.movedPiece;
+        char capturedPieceLetter = lastPosition.capturedPiece;
+        char enemyLetter = whiteToMove ? 'F' : 'S';
+        char usLetter = whiteToMove ? 'S' : 'F';
+
+        --historyMovesNum;
+        whiteToMove = !whiteToMove;
+        fiftyMoves = lastPosition.fiftyMoves;
+        enPassant = lastPosition.enPassant;
+        castlingRights = lastPosition.castlingRights;
+        hashBoard->SetHash(lastPosition.hash);
+
+        if (moveType & PROMOTION)
+        {
+            std::string promotions = "nbrq";
+            char promotion = promotions.at(static_cast<uint8_t>(moveType & 3));
+            if (whiteToMove)
+                promotion = static_cast<char>(toupper(promotion));
+            bitBoards.at(promotion) ^= SquareToBitBoard(to);
+            bitBoards.at(movingPieceLetter) ^= SquareToBitBoard(to);
+        }
+
+        else if (moveType == KING_CASTLE)
+        {
+            whiteToMove ? bitBoards['R'] ^= SquareToBitBoard(H1) | SquareToBitBoard(F1)
+                        : bitBoards['r'] ^= SquareToBitBoard(H8) | SquareToBitBoard(D8);
+            whiteToMove ? bitBoards[usLetter] ^= SquareToBitBoard(H1) | SquareToBitBoard(F1)
+                        : bitBoards[usLetter] ^= SquareToBitBoard(H8) | SquareToBitBoard(D8);
+        }
+
+        else if (moveType == QUEEN_CASTLE)
+        {
+            whiteToMove ? bitBoards['R'] ^= SquareToBitBoard(A1) | SquareToBitBoard(D1)
+                        : bitBoards['r'] ^= SquareToBitBoard(A8) | SquareToBitBoard(D8);
+            whiteToMove ? bitBoards[usLetter] ^= SquareToBitBoard(A1) | SquareToBitBoard(D1)
+                        : bitBoards[usLetter] ^= SquareToBitBoard(A8) | SquareToBitBoard(D8);
+        }
+
+        bitBoards.at(movingPieceLetter) ^= SquareToBitBoard(to) | SquareToBitBoard(from);
+        bitBoards.at(usLetter) ^= SquareToBitBoard(to) | SquareToBitBoard(from);
+        bitBoards[' '] ^= SquareToBitBoard(to) | SquareToBitBoard(from);
+        pieceList[from] = movingPieceLetter;
+
+        if (moveType & CAPTURE)
+        {
+            bitBoards.at(capturedPieceLetter) ^= SquareToBitBoard(to);
+            bitBoards.at(enemyLetter) ^= SquareToBitBoard(to);
+            bitBoards.at(' ') ^= SquareToBitBoard(to);
+            pieceList[to] = capturedPieceLetter;
+        }
+        else
+            pieceList[to] = ' ';
+
     }
 
 }

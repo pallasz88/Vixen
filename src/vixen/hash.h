@@ -12,7 +12,19 @@ namespace Vixen
 
         explicit Hash(const Board &);
 
-        BitBoard GetHash() const;
+        inline PositionKey GetHash() const
+        { return positionKey; }
+
+        inline void SetHash(BitBoard hash)
+        { positionKey = hash; }
+
+        void HashEnPassant(BitBoard enPassant);
+
+        void HashCastling(const Board &board);
+
+        void HashPiece(int square, const char &pieceKey);
+
+        void HashSide();
 
     private:
 

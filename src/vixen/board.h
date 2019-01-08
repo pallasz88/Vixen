@@ -3,15 +3,44 @@
 #include <memory>
 #include <vector>
 #include <string>
+#include <stack>
 #include "defs.h"
+#include "slider.h"
 
 namespace Vixen
 {
     class Hash;
 
-    class MoveGenerator;
-
     void InitBitBoards(BitBoards &bitBoards);
+
+    struct History
+    {
+        BitBoard enPassant;
+
+        int castlingRights;
+
+        int fiftyMoves;
+
+        Move move;
+
+        char movedPiece;
+
+        char capturedPiece;
+
+        PositionKey hash;
+
+        explicit History(BitBoard enPassant, int castlingRights,
+                         int fiftyMoves, Move move, char moved, char captured,
+                         PositionKey hash) : enPassant(enPassant),
+                                             castlingRights(castlingRights),
+                                             fiftyMoves(fiftyMoves),
+                                             move(move),
+                                             movedPiece(moved),
+                                             capturedPiece(captured),
+                                             hash(hash)
+        {}
+
+    };
 
     class VIXEN_API Board
     {
@@ -22,9 +51,6 @@ namespace Vixen
         inline BitBoards GetBitBoards() const
         { return bitBoards; }
 
-        inline MoveGenerator &GetMoveGenerator() const
-        { return *generator; }
-
         inline bool IsWhiteToMove() const
         { return whiteToMove; }
 
@@ -34,35 +60,40 @@ namespace Vixen
         inline int GetCastlingRights() const
         { return castlingRights; }
 
-        inline int GetMovesNum() const
-        { return historyMovesNum; }
-
-        inline bool Is50MoveRule() const
-        { return fiftyMoves >= 100; }
+        inline SliderAttacks GetSlider() const
+        { return sliders; }
 
         void PrintBoard() const;
 
         void SetBoard(const std::string &fenPosition);
 
+        bool MakeMove(Move move);
+
+        void TakeBack();
+
     private:
 
-        std::unique_ptr<MoveGenerator> generator;
+        SliderAttacks sliders;
 
         std::unique_ptr<Hash> hashBoard;
 
+        std::string fenPosition;
+
         BitBoards bitBoards;
+
+        char pieceList[SQUARE_NUMBER];
 
         BitBoard enPassant;
 
-        std::string fenPosition;
+        int castlingRights;
 
         int historyMovesNum;
 
+        int fiftyMoves;
+
         bool whiteToMove;
 
-        int castlingRights;
-
-        int fiftyMoves;
+        std::stack<History> history;
 
         void ParseFenPiecePart(const std::string &splittedFen);
 
@@ -72,5 +103,9 @@ namespace Vixen
 
         void SplitFenPosition(std::vector<std::string> &fenParts);
 
+        inline auto GetPieceBoard(int position)
+        { return pieceList[position]; }
+
+        void ClearHistory();
     };
 }

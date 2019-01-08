@@ -296,3 +296,36 @@ BOOST_AUTO_TEST_CASE(Test_huge_amunt_of_moves)
     board.PrintBoard();
     BOOST_TEST(board.GetMoveGenerator().GetMoveList().size() == 48);
 }
+
+BOOST_AUTO_TEST_CASE(Test_making_moves)
+{
+    Vixen::Board board;
+    board.SetBoard("8/8/8/8/3P4/8/8/8 w - - 0 1");
+    board.MakeMove(2332);
+    board.PrintBoard();
+    BOOST_TEST(board.GetBitBoards().at('P') == 68719476736ULL);
+
+    board.SetBoard("1n1qb1r1/2P2P2/8/8/8/8/8/8 w - - 0 1");
+    BOOST_TEST(board.MakeMove(65266));
+    board.PrintBoard();
+    BOOST_TEST(board.GetBitBoards().at('P') == 9007199254740992ULL);
+    BOOST_TEST(board.GetBitBoards().at('Q') == 576460752303423488ULL);
+    BOOST_TEST(board.GetBitBoards().at('b') == EMPTY_BOARD);
+    BOOST_TEST(board.GetBitBoards().at(' ') == 11952553411041296383ULL);
+    BOOST_TEST(board.GetBitBoards().at('F') == 585467951558164480ULL);
+    BOOST_TEST(board.GetBitBoards().at('S') == 5908722711110090752ULL);
+
+    board.SetBoard("r3k2r/8/8/8/8/p6p/P6P/R3K2R w KQkq - 0 1");
+    BOOST_TEST(board.MakeMove(8259));
+    board.PrintBoard();
+    BOOST_TEST(board.GetBitBoards().at('K') == 2ULL);
+    BOOST_TEST(board.GetBitBoards().at('R') == 132ULL);
+    BOOST_TEST(board.GetBitBoards().at(' ') == 8574853690504937081ULL);
+    BOOST_TEST(board.GetBitBoards().at('F') == 33158ULL);
+    BOOST_TEST(board.GetBitBoards().at('S') == 9871890383204581376ULL);
+    BOOST_TEST(board.GetCastlingRights() == 0b0011);
+
+    board.SetBoard("R6R/3Q4/1Q4Q1/4Q3/2Q4Q/Q4Q2/pp1Q4/kBNN1KB1 b - - 0 1");
+    BOOST_TEST(!board.MakeMove(16775));
+    board.PrintBoard();
+}

@@ -1,12 +1,33 @@
 #pragma once
 
+#include <chrono>
 #include <map>
+#include <iostream>
 
 #define VIXEN_API __declspec(dllexport)
 #define START_POSITION "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 #define TESTPOS1 "2rq1rk1/3bppbp/p5p1/1ppPP3/2n2B2/2P1Q1PP/P2N1PB1/R4RK1 w - - 1 18"
 #define TESTPOS2 "rnbqkb1r/pp1ppppp/5n2/8/3p1B2/4P3/PPP2PPP/RN1QKBNR w KQkq - 0 4"
-#define DEBUG
+
+//#define DEBUG
+
+struct Timer
+{
+    std::chrono::system_clock::time_point start;
+
+    std::string name;
+
+    explicit Timer(std::string &&name) : start(std::chrono::high_resolution_clock::now()),
+                                         name(std::move(name))
+    {
+    }
+
+    ~Timer()
+    {
+        auto end = std::chrono::high_resolution_clock::now();
+        std::cout << "Execution of " << name <<  " took " << ((end - start) / 100000).count() << " time." << std::endl;
+    }
+};
 
 namespace Vixen
 {
@@ -54,13 +75,15 @@ namespace Vixen
 
         DOUBLE_PAWN_PUSH,
 
-        KING_CASTLE,
+        KING_CASTLE = 2,
 
         QUEEN_CASTLE,
 
         CAPTURE,
 
-        ENPASSANT_CAPTURE,
+        ENPASSANT,
+
+        PROMOTION = 8,
 
         KNIGHT_PROMOTION = 8,
 
@@ -81,7 +104,7 @@ namespace Vixen
 
     enum CastlingRights
     {
-        BQCA, BKCA, WQCA, WKCA
+        BQCA = 1, BKCA = 2, WQCA = 4, WKCA = 8
     };
 
     enum class Colors
@@ -176,7 +199,7 @@ namespace Vixen
         return __builtin_ctzll(bitBoard);
     }
 
-    inline auto SquareToNotation(unsigned square)
+    inline auto SquareToNotation(int square)
     {
         std::string notation;
         notation.push_back(static_cast<char>(7 - square % 8 + 'a'));

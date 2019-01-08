@@ -10,9 +10,6 @@ namespace Vixen
     {
         InitZobristKeys();
         ComputePositionKey(board);
-#ifdef DEBUG
-        std::cout << positionKey << std::endl;
-#endif
     }
 
     void Hash::InitZobristKeys()
@@ -44,27 +41,43 @@ namespace Vixen
     {
         positionKey = 0;
         BitBoards bitBoards = board.GetBitBoards();
+
         for (int square = H1; square <= MAX_SQUARE_INDEX; ++square)
         {
             for (const auto &pieceKey : pieceKeys)
             {
                 if (IsBitSet(bitBoards.at(pieceKey), square))
-                    positionKey ^= pieceHashKeys[square][pieceKey];
+                    HashPiece(square, pieceKey);
             }
         }
 
         auto enPassant = board.GetEnPassant();
         if (enPassant != EMPTY_BOARD)
-            positionKey ^= pieceHashKeys[TrailingZeroCount(enPassant)][enPassantKey];
+            HashEnPassant(enPassant);
 
         if (board.IsWhiteToMove())
-            positionKey ^= sideHashKey;
+            HashSide();
 
+        HashCastling(board);
+    }
+
+    inline void Hash::HashCastling(const Board &board)
+    {
         positionKey ^= castleHashKeys.at(static_cast<uint8_t>(board.GetCastlingRights()));
     }
 
-    BitBoard Hash::GetHash() const
+    inline void Hash::HashSide()
     {
-        return positionKey;
+        positionKey ^= sideHashKey;
+    }
+
+    inline void Hash::HashPiece(int square, const char &pieceKey)
+    {
+        positionKey ^= pieceHashKeys[square][pieceKey];
+    }
+
+    inline void Hash::HashEnPassant(BitBoard enPassant)
+    {
+        positionKey ^= pieceHashKeys[TrailingZeroCount(enPassant)][enPassantKey];
     }
 }
