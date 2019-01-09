@@ -112,6 +112,11 @@ namespace Vixen
         WHITE, BLACK
     };
 
+    enum class Slider
+    {
+        BISHOP, ROOK
+    };
+
     typedef uint16_t Move;
 
     typedef uint64_t BitBoard;

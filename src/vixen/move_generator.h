@@ -2,12 +2,13 @@
 
 #include <vector>
 #include <string>
-#include "slider.h"
 #include "anti_slider.h"
 
 namespace Vixen
 {
     class Board;
+    
+    class SliderAttacks;
 
     class VIXEN_API MoveGenerator
     {
@@ -18,28 +19,27 @@ namespace Vixen
         inline auto GetMoveList() const
         { return moveList; }
 
-        template <Colors sideToMove>
-        static bool IsInCheck(const BitBoards &bitBoards, const SliderAttacks &sliders);
+        static std::vector<Move> GetAllMoves(const Board &board);
 
         template<Colors sideToMove>
-        void GenerateAllMoves(const Vixen::BitBoards &bitBoards, Vixen::BitBoard enPassant, int castlingRights,
-                              const SliderAttacks &sliders);
+        void GenerateAllMoves(const Vixen::Board &board);
 
         static BitBoard Perft(int depth, Board &board);
 
         static BitBoard PerftTest(int depth, Board &board);
+
+        template<Colors sideToMove>
+        static bool IsInCheck(const BitBoards &bitBoards, const SliderAttacks &sliders);
 
     private:
 
         std::vector<Move> moveList;
 
         template<Colors sideToMove>
-        void GenerateQuietMoves(const BitBoards &bitBoards, BitBoard targets, int castlingRights,
-                                const SliderAttacks &sliders);
+        void GenerateQuietMoves(const Board &board, BitBoard targets);
 
         template<Colors sideToMove>
-        void GenerateCaptureMoves(const BitBoards &bitBoards, BitBoard targets, BitBoard enPassant,
-                                  const SliderAttacks &sliders);
+        void GenerateCaptureMoves(const Board &board, BitBoard targets);
 
         template<Slider slider>
         void GenerateSliderMoves(BitBoard pieces, BitBoard blockers, BitBoard targets, uint8_t moveType,
@@ -54,14 +54,14 @@ namespace Vixen
 
         void GeneratePawnPromotionCaptureMoves(int offset, BitBoard promotion);
 
-        template <Colors sideToMove>
+        template<Colors sideToMove>
         void GenerateCastlingMoves(const BitBoards &bitBoards, int castlingRights, const SliderAttacks &sliders);
 
         Move CreateMove(uint8_t from, uint8_t to, uint8_t moveType);
 
         uint8_t GetPosition(BitBoard &bitBoard) const;
 
-        template <Colors sideToMove>
+        template<Colors sideToMove>
         static bool IsSquareAttacked(int square, const BitBoards &bitBoards, SliderAttacks sliders);
     };
 }

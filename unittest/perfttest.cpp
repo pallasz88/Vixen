@@ -3,16 +3,37 @@
 
 #include <boost/test/included/unit_test.hpp>
 #include "board.h"
-#include "hash.h"
 #include "move_generator.h"
+#include "hash.h"
 
 using namespace Vixen;
 
-BOOST_AUTO_TEST_CASE(Test_start_position)
+struct F
 {
+    F() : board(Board())
+    {
+        BOOST_TEST_MESSAGE("setup fixture");
+    }
+
+    ~F()
+    { BOOST_TEST_MESSAGE("teardown fixture"); }
+
     Board board;
-    //board.SetBoard("rnbq1k1r/pp1Pbppp/2p5/8/2B5/8/PPP1NnPP/RNBQK2R w KQ - 1 8");
-    board.PrintBoard();
-    Timer t("perft");
-    BOOST_TEST(MoveGenerator::PerftTest(5, board) == 4865609);
-}
+};
+
+BOOST_FIXTURE_TEST_SUITE(Test_perft, F)
+
+    BOOST_AUTO_TEST_CASE(Test_start_position)
+    {
+        board.PrintBoard();
+        BOOST_TEST(MoveGenerator::PerftTest(4, board) == 197281);
+    }
+
+    BOOST_AUTO_TEST_CASE(Test_kiwipete_position)
+    {
+        board.SetBoard("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1");
+        board.PrintBoard();
+        BOOST_TEST(MoveGenerator::PerftTest(2, board) == 2039);
+    }
+
+BOOST_AUTO_TEST_SUITE_END()

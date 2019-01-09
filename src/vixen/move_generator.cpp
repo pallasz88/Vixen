@@ -28,14 +28,8 @@ namespace Vixen
         if (depth == 0)
             return 1;
 
-        board.IsWhiteToMove() ? generator.GenerateAllMoves<Colors::WHITE>(board.GetBitBoards(),
-                                                                          board.GetEnPassant(),
-                                                                          board.GetCastlingRights(),
-                                                                          board.GetSlider())
-                              : generator.GenerateAllMoves<Colors::BLACK>(board.GetBitBoards(),
-                                                                          board.GetEnPassant(),
-                                                                          board.GetCastlingRights(),
-                                                                          board.GetSlider());
+        board.IsWhiteToMove() ? generator.GenerateAllMoves<Colors::WHITE>(board)
+                              : generator.GenerateAllMoves<Colors::BLACK>(board);
         for (const auto &move: generator.GetMoveList())
         {
             if (!board.MakeMove(move))
@@ -63,14 +57,8 @@ namespace Vixen
             return 1;
         }
 
-        board.IsWhiteToMove() ? generator.GenerateAllMoves<Colors::WHITE>(board.GetBitBoards(),
-                                                                          board.GetEnPassant(),
-                                                                          board.GetCastlingRights(),
-                                                                          board.GetSlider())
-                              : generator.GenerateAllMoves<Colors::BLACK>(board.GetBitBoards(),
-                                                                          board.GetEnPassant(),
-                                                                          board.GetCastlingRights(),
-                                                                          board.GetSlider());
+        board.IsWhiteToMove() ? generator.GenerateAllMoves<Colors::WHITE>(board)
+                              : generator.GenerateAllMoves<Colors::BLACK>(board);
         for (const auto &move: generator.GetMoveList())
         {
             if (!board.MakeMove(move))
@@ -82,28 +70,29 @@ namespace Vixen
     }
 
     template<Colors sideToMove>
-    void
-    MoveGenerator::GenerateAllMoves(const Vixen::BitBoards &bitBoards, Vixen::BitBoard enPassant, int castlingRights,
-                                    const SliderAttacks &sliders)
+    void MoveGenerator::GenerateAllMoves(const Vixen::Board &board)
     {
         //Timer t("gene");
-        auto enemies = sideToMove == Colors::WHITE ? bitBoards.at('S') : bitBoards.at('F');
-        auto empties = bitBoards.at(' ');
-        GenerateCaptureMoves<sideToMove>(bitBoards, enemies, enPassant, sliders);
-        GenerateQuietMoves<sideToMove>(bitBoards, empties, castlingRights, sliders);
+        auto boards = board.GetBitBoards();
+        auto enemies = sideToMove == Colors::WHITE ? boards.at('S') : boards.at('F');
+        auto empties = boards.at(' ');
+        GenerateCaptureMoves<sideToMove>(board, enemies);
+        GenerateQuietMoves<sideToMove>(board, empties);
     }
 
     template<Colors sideToMove>
-    void MoveGenerator::GenerateQuietMoves(const BitBoards &bitBoards, BitBoard targets, int castlingRights,
-                                           const SliderAttacks &sliders)
+    void MoveGenerator::GenerateQuietMoves(const Board &board, BitBoard targets)
     {
-        auto pawns = sideToMove == Colors::WHITE ? bitBoards.at('P') : bitBoards.at('p');
-        auto kings = sideToMove == Colors::WHITE ? bitBoards.at('K') : bitBoards.at('k');
-        auto knights = sideToMove == Colors::WHITE ? bitBoards.at('N') : bitBoards.at('n');
-        auto bishops = sideToMove == Colors::WHITE ? bitBoards.at('B') : bitBoards.at('b');
-        auto rooks = sideToMove == Colors::WHITE ? bitBoards.at('R') : bitBoards.at('r');
-        auto queens = sideToMove == Colors::WHITE ? bitBoards.at('Q') : bitBoards.at('q');
-        auto blockers = ~bitBoards.at(' ');
+        auto castlingRights = board.GetCastlingRights();
+        auto boards = board.GetBitBoards();
+        auto sliders = board.GetSlider();
+        auto pawns = sideToMove == Colors::WHITE ? boards.at('P') : boards.at('p');
+        auto kings = sideToMove == Colors::WHITE ? boards.at('K') : boards.at('k');
+        auto knights = sideToMove == Colors::WHITE ? boards.at('N') : boards.at('n');
+        auto bishops = sideToMove == Colors::WHITE ? boards.at('B') : boards.at('b');
+        auto rooks = sideToMove == Colors::WHITE ? boards.at('R') : boards.at('r');
+        auto queens = sideToMove == Colors::WHITE ? boards.at('Q') : boards.at('q');
+        auto blockers = ~boards.at(' ');
 
         auto pawnOffset = sideToMove == Colors::WHITE ? 8 : -8;
         auto promotionRanks = sideToMove == Colors::WHITE ? RANK8 : RANK1;
@@ -123,21 +112,23 @@ namespace Vixen
         GenerateSliderMoves<Slider::BISHOP>(bishops | queens, blockers, targets, QUIET_MOVE, sliders);
         GenerateSliderMoves<Slider::ROOK>(rooks | queens, blockers, targets, QUIET_MOVE, sliders);
 
-        GenerateCastlingMoves<sideToMove>(bitBoards, castlingRights, sliders);
+        GenerateCastlingMoves<sideToMove>(boards, castlingRights, sliders);
 
     }
 
     template<Colors sideToMove>
-    void MoveGenerator::GenerateCaptureMoves(const BitBoards &bitBoards, BitBoard targets, BitBoard enPassant,
-                                             const SliderAttacks &sliders)
+    void MoveGenerator::GenerateCaptureMoves(const Board &board, BitBoard targets)
     {
-        auto pawns = sideToMove == Colors::WHITE ? bitBoards.at('P') : bitBoards.at('p');
-        auto kings = sideToMove == Colors::WHITE ? bitBoards.at('K') : bitBoards.at('k');
-        auto knights = sideToMove == Colors::WHITE ? bitBoards.at('N') : bitBoards.at('n');
-        auto bishops = sideToMove == Colors::WHITE ? bitBoards.at('B') : bitBoards.at('b');
-        auto rooks = sideToMove == Colors::WHITE ? bitBoards.at('R') : bitBoards.at('r');
-        auto queens = sideToMove == Colors::WHITE ? bitBoards.at('Q') : bitBoards.at('q');
-        auto blockers = ~bitBoards.at(' ');
+        auto boards = board.GetBitBoards();
+        auto sliders = board.GetSlider();
+        auto enPassant = board.GetEnPassant();
+        auto pawns = sideToMove == Colors::WHITE ? boards.at('P') : boards.at('p');
+        auto kings = sideToMove == Colors::WHITE ? boards.at('K') : boards.at('k');
+        auto knights = sideToMove == Colors::WHITE ? boards.at('N') : boards.at('n');
+        auto bishops = sideToMove == Colors::WHITE ? boards.at('B') : boards.at('b');
+        auto rooks = sideToMove == Colors::WHITE ? boards.at('R') : boards.at('r');
+        auto queens = sideToMove == Colors::WHITE ? boards.at('Q') : boards.at('q');
+        auto blockers = ~boards.at(' ');
 
         auto pawnLeftCapture = sideToMove == Colors::WHITE ? 9 : -9;
         auto pawnRightCapture = sideToMove == Colors::WHITE ? 7 : -7;
@@ -302,5 +293,13 @@ namespace Vixen
         auto kingBoard = sideToMove == Colors::WHITE ? bitBoards.at('K') : bitBoards.at('k');
         int kingSquare = TrailingZeroCount(kingBoard);
         return IsSquareAttacked<sideToMove>(kingSquare, bitBoards, sliders);
+    }
+
+    std::vector<Move> MoveGenerator::GetAllMoves(const Board &board)
+    {
+        MoveGenerator generator;
+        board.IsWhiteToMove() ? generator.GenerateAllMoves<Colors::WHITE>(board)
+                              : generator.GenerateAllMoves<Colors::BLACK>(board);
+        return generator.GetMoveList();
     }
 }

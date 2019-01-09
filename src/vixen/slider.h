@@ -20,11 +20,6 @@ namespace Vixen
 
     };
 
-    enum class Slider
-    {
-        BISHOP, ROOK
-    };
-
     class VIXEN_API SliderAttacks
     {
 
