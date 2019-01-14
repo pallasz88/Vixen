@@ -60,24 +60,4 @@ namespace Vixen
 
         HashCastling(board);
     }
-
-    inline void Hash::HashCastling(const Board &board)
-    {
-        positionKey ^= castleHashKeys.at(static_cast<uint8_t>(board.GetCastlingRights()));
-    }
-
-    inline void Hash::HashSide()
-    {
-        positionKey ^= sideHashKey;
-    }
-
-    inline void Hash::HashPiece(int square, const char &pieceKey)
-    {
-        positionKey ^= pieceHashKeys[square][pieceKey];
-    }
-
-    inline void Hash::HashEnPassant(BitBoard enPassant)
-    {
-        positionKey ^= pieceHashKeys[TrailingZeroCount(enPassant)][enPassantKey];
-    }
 }

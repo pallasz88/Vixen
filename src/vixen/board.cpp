@@ -1,6 +1,7 @@
 #include "board.h"
 #include "move_generator.h"
 #include "hash.h"
+#include "timer.h"
 
 #include <iostream>
 #include <bitset>
@@ -210,15 +211,13 @@ namespace Vixen
 
     bool Board::MakeMove(Vixen::Move move)
     {
-        //Timer t("make");
+        //Timer<boost::chrono::nanoseconds> t("make");
         int from = move & 0x3F;
         int to = (move >> 6) & 0x3F;
         int moveType = move >> 12;
         int enPassantSquare = whiteToMove ? to - 8 : to + 8;
         char movingPieceLetter = GetPieceBoard(from);
         char capturedPieceLetter = GetPieceBoard(to);
-        char enemyLetter = whiteToMove ? 'S' : 'F';
-        char usLetter = whiteToMove ? 'F' : 'S';
 
         history.emplace(enPassant,
                         castlingRights,
@@ -235,30 +234,40 @@ namespace Vixen
 
         if (moveType == KING_CASTLE)
         {
-            whiteToMove ? bitBoards['R'] ^= SquareToBitBoard(H1) | SquareToBitBoard(F1)
-                        : bitBoards['r'] ^= SquareToBitBoard(H8) | SquareToBitBoard(D8);
-            whiteToMove ? bitBoards[usLetter] ^= SquareToBitBoard(H1) | SquareToBitBoard(F1)
-                        : bitBoards[usLetter] ^= SquareToBitBoard(H8) | SquareToBitBoard(D8);
+            if (whiteToMove)
+            {
+                RemovePiece(H1, 'R');
+                AddPiece(F1, 'R');
+            }
+            else
+            {
+                RemovePiece(H8, 'r');
+                AddPiece(F8, 'r');
+            }
         }
 
         else if (moveType == QUEEN_CASTLE)
         {
-            whiteToMove ? bitBoards['R'] ^= SquareToBitBoard(A1) | SquareToBitBoard(D1)
-                        : bitBoards['r'] ^= SquareToBitBoard(A8) | SquareToBitBoard(D8);
-            whiteToMove ? bitBoards[usLetter] ^= SquareToBitBoard(A1) | SquareToBitBoard(D1)
-                        : bitBoards[usLetter] ^= SquareToBitBoard(A8) | SquareToBitBoard(D8);
+            if (whiteToMove)
+            {
+                RemovePiece(A1, 'R');
+                AddPiece(D1, 'R');
+            }
+            else
+            {
+                RemovePiece(A8, 'r');
+                AddPiece(D8, 'r');
+            }
         }
 
         else if (moveType == ENPASSANT)
-            whiteToMove ? bitBoards['p'] ^= SquareToBitBoard(to - 8)
-                        : bitBoards['P'] ^= SquareToBitBoard(to + 8);
+            whiteToMove ? RemovePiece(to - 8, 'p')
+                        : RemovePiece(to + 8, 'P');
 
         else if (moveType & CAPTURE)
         {
             fiftyMoves = 0;
-            hashBoard->HashPiece(to, capturedPieceLetter);
-            bitBoards.at(capturedPieceLetter) ^= SquareToBitBoard(to);
-            bitBoards.at(enemyLetter) ^= SquareToBitBoard(to);
+            RemovePiece(to, capturedPieceLetter);
         }
 
         else if (moveType & DOUBLE_PAWN_PUSH)
@@ -270,12 +279,7 @@ namespace Vixen
         if (tolower(movingPieceLetter) == 'p')
             fiftyMoves = 0;
 
-        hashBoard->HashPiece(from, movingPieceLetter);
-        bitBoards.at(movingPieceLetter) ^= SquareToBitBoard(from) | SquareToBitBoard(to);
-        bitBoards.at(usLetter) ^= SquareToBitBoard(from) | SquareToBitBoard(to);
-        bitBoards[' '] = ~(bitBoards['F'] | bitBoards['S']);
-        pieceList[from] = ' ';
-        pieceList[to] = movingPieceLetter;
+        RemovePiece(from, movingPieceLetter);
 
         if (moveType & PROMOTION)
         {
@@ -283,12 +287,10 @@ namespace Vixen
             char promotion = promotions.at(static_cast<uint8_t>(moveType & 3));
             if (whiteToMove)
                 promotion = static_cast<char>(toupper(promotion));
-            bitBoards.at(movingPieceLetter) ^= SquareToBitBoard(to);
-            bitBoards.at(promotion) ^= SquareToBitBoard(to);
-            hashBoard->HashPiece(to, promotion);
+            AddPiece(to, promotion);
         }
         else
-            hashBoard->HashPiece(to, movingPieceLetter);
+            AddPiece(to, movingPieceLetter);
 
         if (moveType == KING_CASTLE || moveType == QUEEN_CASTLE)
         {
@@ -316,7 +318,7 @@ namespace Vixen
         if (history.empty())
             throw "Empty history";
 
-        //Timer t("take");
+        //Timer<boost::chrono::nanoseconds> t("take");
         History lastPosition = history.top();
         history.pop();
 
@@ -325,8 +327,6 @@ namespace Vixen
         int moveType = lastPosition.move >> 12;
         char movingPieceLetter = lastPosition.movedPiece;
         char capturedPieceLetter = lastPosition.capturedPiece;
-        char enemyLetter = whiteToMove ? 'F' : 'S';
-        char usLetter = whiteToMove ? 'S' : 'F';
 
         --historyMovesNum;
         whiteToMove = !whiteToMove;
@@ -341,41 +341,66 @@ namespace Vixen
             char promotion = promotions.at(static_cast<uint8_t>(moveType & 3));
             if (whiteToMove)
                 promotion = static_cast<char>(toupper(promotion));
-            bitBoards.at(promotion) ^= SquareToBitBoard(to);
-            bitBoards.at(movingPieceLetter) ^= SquareToBitBoard(to);
+            AddPiece(to, promotion);
         }
 
         else if (moveType == KING_CASTLE)
         {
-            whiteToMove ? bitBoards['R'] ^= SquareToBitBoard(H1) | SquareToBitBoard(F1)
-                        : bitBoards['r'] ^= SquareToBitBoard(H8) | SquareToBitBoard(D8);
-            whiteToMove ? bitBoards[usLetter] ^= SquareToBitBoard(H1) | SquareToBitBoard(F1)
-                        : bitBoards[usLetter] ^= SquareToBitBoard(H8) | SquareToBitBoard(D8);
+            if (whiteToMove)
+            {
+                RemovePiece(F1, 'R');
+                AddPiece(H1, 'R');
+            }
+            else
+            {
+                RemovePiece(F8, 'r');
+                AddPiece(H8, 'r');
+            }
         }
 
         else if (moveType == QUEEN_CASTLE)
         {
-            whiteToMove ? bitBoards['R'] ^= SquareToBitBoard(A1) | SquareToBitBoard(D1)
-                        : bitBoards['r'] ^= SquareToBitBoard(A8) | SquareToBitBoard(D8);
-            whiteToMove ? bitBoards[usLetter] ^= SquareToBitBoard(A1) | SquareToBitBoard(D1)
-                        : bitBoards[usLetter] ^= SquareToBitBoard(A8) | SquareToBitBoard(D8);
+            if (whiteToMove)
+            {
+                RemovePiece(D1, 'R');
+                AddPiece(A1, 'R');
+            }
+            else
+            {
+                RemovePiece(D8, 'r');
+                AddPiece(A8, 'r');
+            }
         }
 
-        bitBoards.at(movingPieceLetter) ^= SquareToBitBoard(to) | SquareToBitBoard(from);
-        bitBoards.at(usLetter) ^= SquareToBitBoard(to) | SquareToBitBoard(from);
-        bitBoards[' '] ^= SquareToBitBoard(to) | SquareToBitBoard(from);
-        pieceList[from] = movingPieceLetter;
+        RemovePiece(to, movingPieceLetter);
+        AddPiece(from, movingPieceLetter);
 
-        if (moveType & CAPTURE)
-        {
-            bitBoards.at(capturedPieceLetter) ^= SquareToBitBoard(to);
-            bitBoards.at(enemyLetter) ^= SquareToBitBoard(to);
-            bitBoards.at(' ') ^= SquareToBitBoard(to);
-            pieceList[to] = capturedPieceLetter;
-        }
-        else
-            pieceList[to] = ' ';
+        if (moveType == ENPASSANT)
+            whiteToMove ? AddPiece(to - 8, 'p')
+                        : AddPiece(to + 8, 'P');
 
+        else if (moveType & CAPTURE)
+            AddPiece(to, capturedPieceLetter);
+
+
+    }
+
+    void Board::RemovePiece(int position, char pieceType)
+    {
+        pieceList[position] = ' ';
+        ClearBit(bitBoards.at(pieceType), position);
+        hashBoard->HashPiece(position, pieceType);
+        islower(pieceType) ? ClearBit(bitBoards.at('S'), position) : ClearBit(bitBoards.at('F'), position);
+        ToggleBit(bitBoards.at(' '), position);
+    }
+
+    void Board::AddPiece(int position, char pieceType)
+    {
+        pieceList[position] = pieceType;
+        SetBit(bitBoards.at(pieceType), position);
+        hashBoard->HashPiece(position, pieceType);
+        islower(pieceType) ? SetBit(bitBoards.at('S'), position) : SetBit(bitBoards.at('F'), position);
+        ToggleBit(bitBoards.at(' '), position);
     }
 
 }

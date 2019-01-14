@@ -67,6 +67,10 @@ namespace Vixen
 
         void SetBoard(const std::string &fenPosition);
 
+        void RemovePiece(int position, char pieceType);
+
+        void AddPiece(int position, char pieceType);
+
         bool MakeMove(Move move);
 
         void TakeBack();

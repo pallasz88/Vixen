@@ -3,12 +3,11 @@
 #include <vector>
 #include <string>
 #include "anti_slider.h"
+#include "slider.h"
 
 namespace Vixen
 {
     class Board;
-    
-    class SliderAttacks;
 
     class VIXEN_API MoveGenerator
     {
@@ -64,4 +63,30 @@ namespace Vixen
         template<Colors sideToMove>
         static bool IsSquareAttacked(int square, const BitBoards &bitBoards, SliderAttacks sliders);
     };
+
+    template<Colors sideToMove>
+    bool MoveGenerator::IsSquareAttacked(int square, const BitBoards &bitBoards, SliderAttacks sliders)
+    {
+        auto blockers = ~bitBoards.at(' ');
+        auto pawns = sideToMove == Colors::WHITE ? bitBoards.at('p') : bitBoards.at('P');
+        auto knights = sideToMove == Colors::WHITE ? bitBoards.at('n') : bitBoards.at('N');
+        auto bishops = sideToMove == Colors::WHITE ? bitBoards.at('b') : bitBoards.at('B');
+        auto rooks = sideToMove == Colors::WHITE ? bitBoards.at('r') : bitBoards.at('R');
+        auto queens = sideToMove == Colors::WHITE ? bitBoards.at('q') : bitBoards.at('Q');
+        auto kings = sideToMove == Colors::WHITE ? bitBoards.at('k') : bitBoards.at('K');
+
+        return pawnAttack[static_cast<int>(sideToMove)][square] & pawns ||
+               knightAttack[square] & knights ||
+               sliders.GetBishopAttack(square, blockers) & (bishops | queens) ||
+               sliders.GetRookAttack(square, blockers) & (rooks | queens) ||
+               kingAttack[square] & kings;
+    }
+
+    template<Colors sideToMove>
+    bool MoveGenerator::IsInCheck(const BitBoards &bitBoards, const SliderAttacks &sliders)
+    {
+        auto kingBoard = sideToMove == Colors::WHITE ? bitBoards.at('K') : bitBoards.at('k');
+        int kingSquare = TrailingZeroCount(kingBoard);
+        return IsSquareAttacked<sideToMove>(kingSquare, bitBoards, sliders);
+    }
 }

@@ -1,25 +1,12 @@
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MODULE Vixen_chess
 
-#include <boost/test/included/unit_test.hpp>
-#include "board.h"
+#include "fixture.h"
 #include "move_generator.h"
 #include "hash.h"
 
+
 using namespace Vixen;
-
-struct F
-{
-    F() : board(Board())
-    {
-        BOOST_TEST_MESSAGE("setup fixture");
-    }
-
-    ~F()
-    { BOOST_TEST_MESSAGE("teardown fixture"); }
-
-    Board board;
-};
 
 BOOST_AUTO_TEST_CASE(Test_bit)
 {
@@ -33,7 +20,7 @@ BOOST_AUTO_TEST_CASE(Test_bit)
     BOOST_TEST(17 == TrailingZeroCount(4620710852818501632ULL));
 }
 
-BOOST_FIXTURE_TEST_SUITE(Test_unit, F)
+BOOST_FIXTURE_TEST_SUITE(Test_unit, Fixture)
 
     BOOST_AUTO_TEST_CASE(Test_Startposition)
     {
@@ -333,6 +320,43 @@ BOOST_FIXTURE_TEST_SUITE(Test_unit, F)
         board.SetBoard("R6R/3Q4/1Q4Q1/4Q3/2Q4Q/Q4Q2/pp1Q4/kBNN1KB1 b - - 0 1");
         BOOST_TEST(!board.MakeMove(16775));
         board.PrintBoard();
+
+        board.SetBoard("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1");
+        BOOST_TEST(board.MakeMove(8259));
+        board.PrintBoard();
+        BOOST_TEST(board.GetBitBoards().at('K') == 2ULL);
+        BOOST_TEST(board.GetBitBoards().at('R') == 132ULL);
+        BOOST_TEST(board.GetBitBoards().at(' ') == 8521146841253412985ULL);
+        BOOST_TEST(board.GetBitBoards().at('F') == 103215857542ULL);
+        BOOST_TEST(board.GetBitBoards().at('S') == 9925597129240281088ULL);
+        BOOST_TEST(board.GetCastlingRights() == 0b0011);
+
+        board.TakeBack();
+        board.PrintBoard();
+        BOOST_TEST(board.GetBitBoards().at('K') == 8ULL);
+        BOOST_TEST(board.GetBitBoards().at('R') == 129ULL);
+        BOOST_TEST(board.GetBitBoards().at(' ') == 8521146841253412982ULL);
+        BOOST_TEST(board.GetBitBoards().at('F') == 103215857545ULL);
+        BOOST_TEST(board.GetBitBoards().at('S') == 9925597129240281088ULL);
+        BOOST_TEST(board.GetCastlingRights() == 0b1111);
+
+        board.MakeMove(6095);
+        board.MakeMove(21982);
+        board.PrintBoard();
+        BOOST_TEST(board.GetBitBoards().at('P') == 68853720832ULL);
+        BOOST_TEST(board.GetBitBoards().at('p') == 50676490932649984ULL);
+        BOOST_TEST(board.GetBitBoards().at(' ') == 8521146842318798966ULL);
+        BOOST_TEST(board.GetBitBoards().at('F') == 103215824777ULL);
+        BOOST_TEST(board.GetBitBoards().at('S') == 9925597128174927872ULL);
+
+        board.TakeBack();
+        board.PrintBoard();
+        BOOST_TEST(board.GetBitBoards().at('P') == 71001204480ULL);
+        BOOST_TEST(board.GetBitBoards().at('p') == 50676491998003200ULL);
+        BOOST_TEST(board.GetBitBoards().at(' ') == 8521146839105962102ULL);
+        BOOST_TEST(board.GetBitBoards().at('F') == 105363308425ULL);
+        BOOST_TEST(board.GetBitBoards().at('S') == 9925597129240281088ULL);
+
     }
 
 BOOST_AUTO_TEST_SUITE_END()

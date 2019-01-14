@@ -1,8 +1,6 @@
 #pragma once
 
-#include <chrono>
 #include <map>
-#include <iostream>
 
 #define VIXEN_API __declspec(dllexport)
 #define START_POSITION "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
@@ -10,24 +8,6 @@
 #define TESTPOS2 "rnbqkb1r/pp1ppppp/5n2/8/3p1B2/4P3/PPP2PPP/RN1QKBNR w KQkq - 0 4"
 
 //#define DEBUG
-
-struct Timer
-{
-    std::chrono::system_clock::time_point start;
-
-    std::string name;
-
-    explicit Timer(std::string &&name) : start(std::chrono::high_resolution_clock::now()),
-                                         name(std::move(name))
-    {
-    }
-
-    ~Timer()
-    {
-        auto end = std::chrono::high_resolution_clock::now();
-        std::cout << "Execution of " << name <<  " took " << ((end - start) / 100000).count() << " time." << std::endl;
-    }
-};
 
 namespace Vixen
 {
@@ -175,22 +155,35 @@ namespace Vixen
         bitBoard |= 1ULL << position;
     }
 
+    template <class T>
+    inline void ClearBit(T &bitBoard, int position)
+    {
+        bitBoard &= ~(1ULL << position);
+    }
+
+    template <class T>
+    inline void ToggleBit(T &bitBoard, int position)
+    {
+        bitBoard ^= 1ULL << position;
+    }
+
     template<Colors pawnColor>
     inline BitBoard PushPawns(BitBoard pawns)
     {
-        int pawnPush = 8;
-        return pawnColor == Colors::WHITE ? pawns << pawnPush : pawns >> pawnPush;
+        return pawnColor == Colors::WHITE ? pawns << 8 : pawns >> 8;
     }
 
     template<Colors pawnColor>
     inline BitBoard PawnCaptureLeft(BitBoard pawns)
     {
+        pawns &= ~FILEH;
         return pawnColor == Colors::WHITE ? pawns << 9 : pawns >> 9;
     }
 
     template<Colors pawnColor>
     inline BitBoard PawnCaptureRight(BitBoard pawns)
     {
+        pawns &= ~FILEA;
         return pawnColor == Colors::WHITE ? pawns << 7 : pawns >> 7;
     }
 

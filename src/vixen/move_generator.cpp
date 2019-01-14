@@ -1,5 +1,7 @@
 #include "move_generator.h"
 #include "board.h"
+#include "timer.h"
+#include <iostream>
 
 namespace Vixen
 {
@@ -72,7 +74,7 @@ namespace Vixen
     template<Colors sideToMove>
     void MoveGenerator::GenerateAllMoves(const Vixen::Board &board)
     {
-        //Timer t("gene");
+        //Timer<boost::chrono::microseconds> t("gene");
         auto boards = board.GetBitBoards();
         auto enemies = sideToMove == Colors::WHITE ? boards.at('S') : boards.at('F');
         auto empties = boards.at(' ');
@@ -102,6 +104,7 @@ namespace Vixen
         auto doublePawnPush = PushPawns<sideToMove>((onePawnPush & doublePushStart)) & ~blockers;
         auto pawnPromotion = PushPawns<sideToMove>(pawns) & ~blockers & promotionRanks;
 
+        //Timer<boost::chrono::microseconds> t("quiet");
         GeneratePawnMoves(pawnOffset, onePawnPush, QUIET_MOVE);
         GeneratePawnMoves(2 * pawnOffset, doublePawnPush, DOUBLE_PAWN_PUSH);
         GeneratePawnPromotionMoves(pawnOffset, pawnPromotion);
@@ -137,6 +140,7 @@ namespace Vixen
         auto pawnPromotionRight = PawnCaptureRight<sideToMove>(pawns) & blockers & promotionRanks;
         enPassant &= sideToMove == Colors::WHITE ? RANK6 : RANK3;
 
+        //Timer<boost::chrono::microseconds> t("capture");
         GeneratePawnPromotionCaptureMoves(pawnLeftCapture, pawnPromotionLeft);
         GeneratePawnPromotionCaptureMoves(pawnRightCapture, pawnPromotionRight);
         GenerateAntiSliderMoves(targets & ~promotionRanks, pawns, pawnAttack[static_cast<int>(sideToMove)], CAPTURE);
@@ -152,6 +156,7 @@ namespace Vixen
     void MoveGenerator::GenerateSliderMoves(BitBoard pieces, BitBoard blockers, BitBoard targets, uint8_t moveType,
                                             SliderAttacks sliders)
     {
+        //Timer<boost::chrono::nanoseconds> t("slider");
         auto attacks = EMPTY_BOARD;
         while (pieces)
         {
@@ -170,6 +175,7 @@ namespace Vixen
     void MoveGenerator::GenerateAntiSliderMoves(BitBoard targets, BitBoard pieces, const BitBoard *attackBoard,
                                                 uint8_t moveType)
     {
+        //Timer<boost::chrono::nanoseconds> t("anti_slider");
         auto attacks = EMPTY_BOARD;
         while (pieces)
         {
@@ -267,32 +273,6 @@ namespace Vixen
         auto from = static_cast<uint8_t>(TrailingZeroCount(bitBoard));
         bitBoard &= bitBoard - 1;
         return from;
-    }
-
-    template<Colors sideToMove>
-    bool MoveGenerator::IsSquareAttacked(int square, const BitBoards &bitBoards, SliderAttacks sliders)
-    {
-        auto blockers = ~bitBoards.at(' ');
-        auto pawns = sideToMove == Colors::WHITE ? bitBoards.at('p') : bitBoards.at('P');
-        auto knights = sideToMove == Colors::WHITE ? bitBoards.at('n') : bitBoards.at('N');
-        auto bishops = sideToMove == Colors::WHITE ? bitBoards.at('b') : bitBoards.at('B');
-        auto rooks = sideToMove == Colors::WHITE ? bitBoards.at('r') : bitBoards.at('R');
-        auto queens = sideToMove == Colors::WHITE ? bitBoards.at('q') : bitBoards.at('Q');
-        auto kings = sideToMove == Colors::WHITE ? bitBoards.at('k') : bitBoards.at('K');
-
-        return pawnAttack[static_cast<int>(sideToMove)][square] & pawns ||
-               knightAttack[square] & knights ||
-               sliders.GetBishopAttack(square, blockers) & (bishops | queens) ||
-               sliders.GetRookAttack(square, blockers) & (rooks | queens) ||
-               kingAttack[square] & kings;
-    }
-
-    template<Colors sideToMove>
-    bool MoveGenerator::IsInCheck(const BitBoards &bitBoards, const SliderAttacks &sliders)
-    {
-        auto kingBoard = sideToMove == Colors::WHITE ? bitBoards.at('K') : bitBoards.at('k');
-        int kingSquare = TrailingZeroCount(kingBoard);
-        return IsSquareAttacked<sideToMove>(kingSquare, bitBoards, sliders);
     }
 
     std::vector<Move> MoveGenerator::GetAllMoves(const Board &board)

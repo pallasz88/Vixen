@@ -1,11 +1,9 @@
 #pragma once
 
-#include "defs.h"
+#include "board.h"
 
 namespace Vixen
 {
-    class Board;
-
     class Hash
     {
     public:
@@ -22,7 +20,7 @@ namespace Vixen
 
         void HashCastling(const Board &board);
 
-        void HashPiece(int square, const char &pieceKey);
+        void HashPiece(int square, char pieceKey);
 
         void HashSide();
 
@@ -47,4 +45,24 @@ namespace Vixen
 
         char enPassantKey = ' ';
     };
+
+    inline void Hash::HashCastling(const Board &board)
+    {
+        positionKey ^= castleHashKeys.at(static_cast<uint8_t>(board.GetCastlingRights()));
+    }
+
+    inline void Hash::HashSide()
+    {
+        positionKey ^= sideHashKey;
+    }
+
+    inline void Hash::HashPiece(int square, char pieceKey)
+    {
+        positionKey ^= pieceHashKeys[square][pieceKey];
+    }
+
+    inline void Hash::HashEnPassant(BitBoard enPassant)
+    {
+        positionKey ^= pieceHashKeys[TrailingZeroCount(enPassant)][enPassantKey];
+    }
 }
