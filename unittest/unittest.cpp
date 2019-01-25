@@ -89,30 +89,29 @@ BOOST_FIXTURE_TEST_SUITE(Test_unit, Fixture)
 
         BOOST_CHECK_EQUAL(board.IsWhiteToMove(), true);
     }
-
+/*
     BOOST_AUTO_TEST_CASE(Test_SliderAttacks)
     {
         auto bitBoards = board.GetBitBoards();
-        auto attacks = board.GetSlider();
-        BOOST_CHECK_EQUAL(attacks.GetRookAttack(D4, ~bitBoards.at(' ')), 4521264543698944ULL);
-        BOOST_CHECK_EQUAL(attacks.GetBishopAttack(D4, ~bitBoards.at(' ')), 36666685564404736ULL);
-        BOOST_CHECK_EQUAL(attacks.GetQueenAttack(D4, ~bitBoards.at(' ')), 41187950108103680ULL);
+        BOOST_CHECK_EQUAL(GetRookAttack(D4, ~bitBoards.at(' ')), 4521264543698944ULL);
+        BOOST_CHECK_EQUAL(GetBishopAttack(D4, ~bitBoards.at(' ')), 36666685564404736ULL);
+        BOOST_CHECK_EQUAL(GetQueenAttack(D4, ~bitBoards.at(' ')), 41187950108103680ULL);
 
-        BOOST_CHECK_EQUAL(attacks.GetRookAttack(H1, ~bitBoards.at(' ')), 258ULL);
-        BOOST_CHECK_EQUAL(attacks.GetBishopAttack(H1, ~bitBoards.at(' ')), 512ULL);
-        BOOST_CHECK_EQUAL(attacks.GetQueenAttack(H1, ~bitBoards.at(' ')), 770ULL);
+        BOOST_CHECK_EQUAL(GetRookAttack(H1, ~bitBoards.at(' ')), 258ULL);
+        BOOST_CHECK_EQUAL(GetBishopAttack(H1, ~bitBoards.at(' ')), 512ULL);
+        BOOST_CHECK_EQUAL(GetQueenAttack(H1, ~bitBoards.at(' ')), 770ULL);
 
-        BOOST_CHECK_EQUAL(attacks.GetRookAttack(D8, ~bitBoards.at(' ')), 2886807361144487936ULL);
-        BOOST_CHECK_EQUAL(attacks.GetBishopAttack(D8, ~bitBoards.at(' ')), 11258999068426240ULL);
-        BOOST_CHECK_EQUAL(attacks.GetQueenAttack(D8, ~bitBoards.at(' ')), 2898066360212914176ULL);
+        BOOST_CHECK_EQUAL(GetRookAttack(D8, ~bitBoards.at(' ')), 2886807361144487936ULL);
+        BOOST_CHECK_EQUAL(GetBishopAttack(D8, ~bitBoards.at(' ')), 11258999068426240ULL);
+        BOOST_CHECK_EQUAL(GetQueenAttack(D8, ~bitBoards.at(' ')), 2898066360212914176ULL);
 
         board.SetBoard(TESTPOS2);
         bitBoards = board.GetBitBoards();
-        BOOST_CHECK_EQUAL(attacks.GetRookAttack(D4, ~bitBoards.at(' ')), 4521264493367312ULL);
-        BOOST_CHECK_EQUAL(attacks.GetBishopAttack(D4, ~bitBoards.at(' ')), 36103735610982400ULL);
-        BOOST_CHECK_EQUAL(attacks.GetQueenAttack(D4, ~bitBoards.at(' ')), 40625000104349712ULL);
+        BOOST_CHECK_EQUAL(GetRookAttack(D4, ~bitBoards.at(' ')), 4521264493367312ULL);
+        BOOST_CHECK_EQUAL(GetBishopAttack(D4, ~bitBoards.at(' ')), 36103735610982400ULL);
+        BOOST_CHECK_EQUAL(GetQueenAttack(D4, ~bitBoards.at(' ')), 40625000104349712ULL);
     }
-
+*/
     BOOST_AUTO_TEST_CASE(Test_pawnmovement)
     {
         board.SetBoard("8/8/8/8/3P4/8/8/8 w - - 0 1");
@@ -307,6 +306,15 @@ BOOST_FIXTURE_TEST_SUITE(Test_unit, Fixture)
         BOOST_TEST(board.GetBitBoards().at('F') == 585467951558164480ULL);
         BOOST_TEST(board.GetBitBoards().at('S') == 5908722711110090752ULL);
 
+        board.TakeBack();
+        board.PrintBoard();
+        BOOST_TEST(board.GetBitBoards().at('P') == 10133099161583616ULL);
+        BOOST_TEST(board.GetBitBoards().at('Q') == EMPTY_BOARD);
+        BOOST_TEST(board.GetBitBoards().at('b') == 576460752303423488ULL);
+        BOOST_TEST(board.GetBitBoards().at(' ') == 11951427511134453759ULL);
+        BOOST_TEST(board.GetBitBoards().at('F') == 10133099161583616ULL);
+        BOOST_TEST(board.GetBitBoards().at('S') == 6485183463413514240ULL);
+
         board.SetBoard("r3k2r/8/8/8/8/p6p/P6P/R3K2R w KQkq - 0 1");
         BOOST_TEST(board.MakeMove(8259));
         board.PrintBoard();
@@ -321,6 +329,7 @@ BOOST_FIXTURE_TEST_SUITE(Test_unit, Fixture)
         BOOST_TEST(!board.MakeMove(16775));
         board.PrintBoard();
 
+        // CASTLING
         board.SetBoard("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1");
         BOOST_TEST(board.MakeMove(8259));
         board.PrintBoard();
@@ -340,6 +349,7 @@ BOOST_FIXTURE_TEST_SUITE(Test_unit, Fixture)
         BOOST_TEST(board.GetBitBoards().at('S') == 9925597129240281088ULL);
         BOOST_TEST(board.GetCastlingRights() == 0b1111);
 
+        // ENPASSANT
         board.MakeMove(6095);
         board.MakeMove(21982);
         board.PrintBoard();
@@ -357,6 +367,14 @@ BOOST_FIXTURE_TEST_SUITE(Test_unit, Fixture)
         BOOST_TEST(board.GetBitBoards().at('F') == 105363308425ULL);
         BOOST_TEST(board.GetBitBoards().at('S') == 9925597129240281088ULL);
 
+        board.TakeBack();
+        board.MakeMove(17417);
+        board.MakeMove(3771);
+        board.PrintBoard();
+        BOOST_TEST(MoveGenerator::PerftTest(2, board) == 1790);
+        board.TakeBack();
+        board.TakeBack();
+        board.PrintBoard();
     }
 
 BOOST_AUTO_TEST_SUITE_END()

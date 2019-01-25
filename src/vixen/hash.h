@@ -10,10 +10,10 @@ namespace Vixen
 
         explicit Hash(const Board &);
 
-        inline PositionKey GetHash() const
+        PositionKey GetHash() const
         { return positionKey; }
 
-        inline void SetHash(BitBoard hash)
+        void SetHash(BitBoard hash)
         { positionKey = hash; }
 
         void HashEnPassant(BitBoard enPassant);

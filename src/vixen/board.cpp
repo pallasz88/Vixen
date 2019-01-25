@@ -4,20 +4,21 @@
 #include "timer.h"
 
 #include <iostream>
+#include <exception>
 #include <bitset>
 #include <boost/algorithm/string.hpp>
 
 namespace Vixen
 {
     constexpr int castlePermission[SQUARE_NUMBER] = {
-            11, 15, 15, 3, 15, 15, 15, 7,
+            7, 15, 15, 3, 15, 15, 15, 11,
             15, 15, 15, 15, 15, 15, 15, 15,
             15, 15, 15, 15, 15, 15, 15, 15,
             15, 15, 15, 15, 15, 15, 15, 15,
             15, 15, 15, 15, 15, 15, 15, 15,
             15, 15, 15, 15, 15, 15, 15, 15,
             15, 15, 15, 15, 15, 15, 15, 15,
-            14, 15, 15, 12, 15, 15, 15, 13
+            13, 15, 15, 12, 15, 15, 15, 14
     };
 
     Board::Board()
@@ -25,6 +26,7 @@ namespace Vixen
         SetBoard(START_POSITION);
         InitKnightKingAttack();
         InitPawnAttack();
+        InitMagics();
 #ifdef DEBUG
         PrintBoard();
 #endif
@@ -60,7 +62,6 @@ namespace Vixen
 
     void Board::PrintBoard() const
     {
-        //Timer t("print");
         std::cout << std::endl << "+---+---+---+---+---+---+---+---+" << std::endl;
         for (int squareIndex = MAX_SQUARE_INDEX; squareIndex >= H1; --squareIndex)
         {
@@ -216,8 +217,8 @@ namespace Vixen
         int to = (move >> 6) & 0x3F;
         int moveType = move >> 12;
         int enPassantSquare = whiteToMove ? to - 8 : to + 8;
-        char movingPieceLetter = GetPieceBoard(from);
-        char capturedPieceLetter = GetPieceBoard(to);
+        char movingPieceLetter = pieceList[from];
+        char capturedPieceLetter = pieceList[to];
 
         history.emplace(enPassant,
                         castlingRights,
@@ -230,82 +231,47 @@ namespace Vixen
         ++fiftyMoves;
 
         if (enPassant != EMPTY_BOARD)
+        {
             hashBoard->HashEnPassant(enPassant);
-
-        if (moveType == KING_CASTLE)
-        {
-            if (whiteToMove)
-            {
-                RemovePiece(H1, 'R');
-                AddPiece(F1, 'R');
-            }
-            else
-            {
-                RemovePiece(H8, 'r');
-                AddPiece(F8, 'r');
-            }
-        }
-
-        else if (moveType == QUEEN_CASTLE)
-        {
-            if (whiteToMove)
-            {
-                RemovePiece(A1, 'R');
-                AddPiece(D1, 'R');
-            }
-            else
-            {
-                RemovePiece(A8, 'r');
-                AddPiece(D8, 'r');
-            }
-        }
-
-        else if (moveType == ENPASSANT)
-            whiteToMove ? RemovePiece(to - 8, 'p')
-                        : RemovePiece(to + 8, 'P');
-
-        else if (moveType & CAPTURE)
-        {
-            fiftyMoves = 0;
-            RemovePiece(to, capturedPieceLetter);
-        }
-
-        else if (moveType & DOUBLE_PAWN_PUSH)
-        {
-            SetBit(enPassant, enPassantSquare);
-            hashBoard->HashEnPassant(enPassant);
+            enPassant = EMPTY_BOARD;
         }
 
         if (tolower(movingPieceLetter) == 'p')
             fiftyMoves = 0;
 
+        if (moveType & CAPTURE)
+        {
+            MakeCapture(to, capturedPieceLetter);
+            if (moveType == ENPASSANT)
+                whiteToMove ? RemovePiece(to - 8, 'p') : RemovePiece(to + 8, 'P');
+        }
+
+        else if (moveType == DOUBLE_PAWN_PUSH)
+            MakeDoublePawnPush(enPassantSquare);
+
+        else if (moveType == KING_CASTLE)
+            whiteToMove ? MoveCastlingWhiteRook(H1, F1) : MoveCastlingBlackRook(H8, F8);
+
+        else if (moveType == QUEEN_CASTLE)
+            whiteToMove ? MoveCastlingWhiteRook(A1, D1) : MoveCastlingBlackRook(A8, D8);
+
         RemovePiece(from, movingPieceLetter);
+        AddPiece(to, movingPieceLetter);
+        UpdateCastlingRights(from, to);
 
         if (moveType & PROMOTION)
         {
-            std::string promotions = "nbrq";
-            char promotion = promotions.at(static_cast<uint8_t>(moveType & 3));
-            if (whiteToMove)
-                promotion = static_cast<char>(toupper(promotion));
+            char promotion = whiteToMove ? "NBRQ"[moveType & 3] : "nbrq"[moveType & 3];
+            RemovePiece(to, movingPieceLetter);
             AddPiece(to, promotion);
-        }
-        else
-            AddPiece(to, movingPieceLetter);
-
-        if (moveType == KING_CASTLE || moveType == QUEEN_CASTLE)
-        {
-            hashBoard->HashCastling(*this);
-            castlingRights &= castlePermission[from];
-            castlingRights &= castlePermission[to];
-            hashBoard->HashCastling(*this);
         }
 
         whiteToMove = !whiteToMove;
         hashBoard->HashSide();
         ++historyMovesNum;
 
-        if (whiteToMove ? MoveGenerator::IsInCheck<Colors::BLACK>(bitBoards, sliders)
-                        : MoveGenerator::IsInCheck<Colors::WHITE>(bitBoards, sliders))
+        if (whiteToMove ? MoveGenerator::IsInCheck<Colors::BLACK>(bitBoards)
+                        : MoveGenerator::IsInCheck<Colors::WHITE>(bitBoards))
         {
             TakeBack();
             return false;
@@ -313,12 +279,44 @@ namespace Vixen
         return true;
     }
 
+    void Board::UpdateCastlingRights(int from, int to)
+    {
+        hashBoard->HashCastling(*this);
+        castlingRights &= castlePermission[from];
+        castlingRights &= castlePermission[to];
+        hashBoard->HashCastling(*this);
+    }
+
+    void Board::MoveCastlingWhiteRook(int from, int to)
+    {
+        RemovePiece(from, 'R');
+        AddPiece(to, 'R');
+    }
+
+    void Board::MoveCastlingBlackRook(int from, int to)
+    {
+        RemovePiece(from, 'r');
+        AddPiece(to, 'r');
+    }
+
+    void Board::MakeDoublePawnPush(int enPassantSquare)
+    {
+        SetBit(enPassant, enPassantSquare);
+        hashBoard->HashEnPassant(enPassant);
+    }
+
+    void Board::MakeCapture(int to, char capturedPieceLetter)
+    {
+        fiftyMoves = 0;
+        RemovePiece(to, capturedPieceLetter);
+    }
+
     void Board::TakeBack()
     {
-        if (history.empty())
-            throw "Empty history";
-
         //Timer<boost::chrono::nanoseconds> t("take");
+        if (history.empty())
+            throw std::runtime_error("Empty history");
+
         History lastPosition = history.top();
         history.pop();
 
@@ -335,41 +333,17 @@ namespace Vixen
         castlingRights = lastPosition.castlingRights;
         hashBoard->SetHash(lastPosition.hash);
 
-        if (moveType & PROMOTION)
-        {
-            std::string promotions = "nbrq";
-            char promotion = promotions.at(static_cast<uint8_t>(moveType & 3));
-            if (whiteToMove)
-                promotion = static_cast<char>(toupper(promotion));
-            AddPiece(to, promotion);
-        }
-
-        else if (moveType == KING_CASTLE)
-        {
-            if (whiteToMove)
-            {
-                RemovePiece(F1, 'R');
-                AddPiece(H1, 'R');
-            }
-            else
-            {
-                RemovePiece(F8, 'r');
-                AddPiece(H8, 'r');
-            }
-        }
+        if (moveType == KING_CASTLE)
+            whiteToMove ? MoveCastlingWhiteRook(F1, H1) : MoveCastlingBlackRook(F8, H8);
 
         else if (moveType == QUEEN_CASTLE)
+            whiteToMove ? MoveCastlingWhiteRook(D1, A1) : MoveCastlingBlackRook(D8, A8);
+
+        else if (moveType & PROMOTION)
         {
-            if (whiteToMove)
-            {
-                RemovePiece(D1, 'R');
-                AddPiece(A1, 'R');
-            }
-            else
-            {
-                RemovePiece(D8, 'r');
-                AddPiece(A8, 'r');
-            }
+            char promotion = whiteToMove ? "NBRQ"[moveType & 3] : "nbrq"[moveType & 3];
+            RemovePiece(to, promotion);
+            AddPiece(to, movingPieceLetter);
         }
 
         RemovePiece(to, movingPieceLetter);
@@ -382,7 +356,7 @@ namespace Vixen
         else if (moveType & CAPTURE)
             AddPiece(to, capturedPieceLetter);
 
-
+        //IsBoard();
     }
 
     void Board::RemovePiece(int position, char pieceType)
@@ -390,8 +364,8 @@ namespace Vixen
         pieceList[position] = ' ';
         ClearBit(bitBoards.at(pieceType), position);
         hashBoard->HashPiece(position, pieceType);
-        islower(pieceType) ? ClearBit(bitBoards.at('S'), position) : ClearBit(bitBoards.at('F'), position);
-        ToggleBit(bitBoards.at(' '), position);
+        ClearBit(bitBoards.at(islower(pieceType) ? 'S' : 'F'), position);
+        SetBit(bitBoards.at(' '), position);
     }
 
     void Board::AddPiece(int position, char pieceType)
@@ -399,8 +373,17 @@ namespace Vixen
         pieceList[position] = pieceType;
         SetBit(bitBoards.at(pieceType), position);
         hashBoard->HashPiece(position, pieceType);
-        islower(pieceType) ? SetBit(bitBoards.at('S'), position) : SetBit(bitBoards.at('F'), position);
-        ToggleBit(bitBoards.at(' '), position);
+        SetBit(bitBoards.at(islower(pieceType) ? 'S' : 'F'), position);
+        ClearBit(bitBoards.at(' '), position);
+    }
+
+    bool Board::IsBoard() const
+    {
+        for (int square = 0; square < SQUARE_NUMBER; ++square)
+        {
+            if (!IsBitSet(bitBoards.at(pieceList[square]), square))
+                throw std::runtime_error("Board is not ok: " + std::to_string(square) + pieceList[square]);
+        }
     }
 
 }

@@ -15,7 +15,7 @@ namespace Vixen
 
         void PrintMoveList();
 
-        inline auto GetMoveList() const
+        auto GetMoveList() const
         { return moveList; }
 
         static std::vector<Move> GetAllMoves(const Board &board);
@@ -28,21 +28,20 @@ namespace Vixen
         static BitBoard PerftTest(int depth, Board &board);
 
         template<Colors sideToMove>
-        static bool IsInCheck(const BitBoards &bitBoards, const SliderAttacks &sliders);
+        static bool IsInCheck(const BitBoards &bitBoards);
 
     private:
 
         std::vector<Move> moveList;
 
         template<Colors sideToMove>
-        void GenerateQuietMoves(const Board &board, BitBoard targets);
+        void GenerateQuietMoves(const Board &board);
 
         template<Colors sideToMove>
-        void GenerateCaptureMoves(const Board &board, BitBoard targets);
+        void GenerateCaptureMoves(const Board &board);
 
         template<Slider slider>
-        void GenerateSliderMoves(BitBoard pieces, BitBoard blockers, BitBoard targets, uint8_t moveType,
-                                 SliderAttacks sliders);
+        void GenerateSliderMoves(BitBoard pieces, BitBoard blockers, BitBoard targets, uint8_t moveType);
 
         void GenerateAntiSliderMoves(BitBoard targets, BitBoard pieces, const BitBoard *attackBoard,
                                      uint8_t moveType);
@@ -54,18 +53,18 @@ namespace Vixen
         void GeneratePawnPromotionCaptureMoves(int offset, BitBoard promotion);
 
         template<Colors sideToMove>
-        void GenerateCastlingMoves(const BitBoards &bitBoards, int castlingRights, const SliderAttacks &sliders);
+        void GenerateCastlingMoves(const Board &board);
 
-        Move CreateMove(uint8_t from, uint8_t to, uint8_t moveType);
+        Move CreateMove(int from, int to, uint8_t moveType);
 
-        uint8_t GetPosition(BitBoard &bitBoard) const;
+        int GetPosition(BitBoard &bitBoard) const;
 
         template<Colors sideToMove>
-        static bool IsSquareAttacked(int square, const BitBoards &bitBoards, SliderAttacks sliders);
+        static bool IsSquareAttacked(int square, const BitBoards &bitBoards);
     };
 
     template<Colors sideToMove>
-    bool MoveGenerator::IsSquareAttacked(int square, const BitBoards &bitBoards, SliderAttacks sliders)
+    bool MoveGenerator::IsSquareAttacked(int square, const BitBoards &bitBoards)
     {
         auto blockers = ~bitBoards.at(' ');
         auto pawns = sideToMove == Colors::WHITE ? bitBoards.at('p') : bitBoards.at('P');
@@ -77,16 +76,16 @@ namespace Vixen
 
         return pawnAttack[static_cast<int>(sideToMove)][square] & pawns ||
                knightAttack[square] & knights ||
-               sliders.GetBishopAttack(square, blockers) & (bishops | queens) ||
-               sliders.GetRookAttack(square, blockers) & (rooks | queens) ||
+               GetBishopAttack(square, blockers) & (bishops | queens) ||
+               GetRookAttack(square, blockers) & (rooks | queens) ||
                kingAttack[square] & kings;
     }
 
     template<Colors sideToMove>
-    bool MoveGenerator::IsInCheck(const BitBoards &bitBoards, const SliderAttacks &sliders)
+    bool MoveGenerator::IsInCheck(const BitBoards &bitBoards)
     {
         auto kingBoard = sideToMove == Colors::WHITE ? bitBoards.at('K') : bitBoards.at('k');
         int kingSquare = TrailingZeroCount(kingBoard);
-        return IsSquareAttacked<sideToMove>(kingSquare, bitBoards, sliders);
+        return IsSquareAttacked<sideToMove>(kingSquare, bitBoards);
     }
 }

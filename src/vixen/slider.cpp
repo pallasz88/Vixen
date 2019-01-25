@@ -6,12 +6,11 @@ namespace Vixen
 
     BitBoard RookAttacks[ROOK_ATTACK_TABLE_SIZE];
 
-    SliderAttacks::SliderAttacks()
-    {
-        InitMagics();
-    }
+    Magic BishopTable[SQUARE_NUMBER];
 
-    void SliderAttacks::InitMagics()
+    Magic RookTable[SQUARE_NUMBER];
+
+    void InitMagics()
     {
         RookTable[0].attacks = RookAttacks;
         BishopTable[0].attacks = BishopAttacks;
@@ -23,7 +22,7 @@ namespace Vixen
     }
 
     template<Slider slider>
-    void SliderAttacks::InitSlidingAttack(int square, SliderDirections directions, Magic *table)
+    void InitSlidingAttack(int square, SliderDirections directions, Magic *table)
     {
         BitBoard edges = ((FILEA | FILEH) & ~(FILEH << square % 8)) |
                          ((RANK1 | RANK8) & ~(RANK1 << 8 * (square / 8)));
@@ -44,7 +43,7 @@ namespace Vixen
         } while (occupied);
     }
 
-    BitBoard SliderAttacks::SlidingAttack(int square, SliderDirections directions, BitBoard occupied)
+    BitBoard SlidingAttack(int square, SliderDirections directions, BitBoard occupied)
     {
         auto attacks = EMPTY_BOARD;
         for (const auto &direction : directions)
@@ -53,37 +52,12 @@ namespace Vixen
                  IsValidCoordinate(file, rank);
                  GetNextCoordinate(file, rank, direction))
             {
-                SetBit(attacks, static_cast<unsigned >(8 * file + rank));
+                SetBit(attacks, 8 * file + rank);
                 if (IsBitSet(occupied, 8 * file + rank))
                     break;
             }
         }
 
         return attacks;
-    }
-
-    void SliderAttacks::GetNextCoordinate(int &file, int &rank, const Direction &direction) const noexcept
-    {
-        file += direction[0], rank += direction[1];
-    }
-
-    int SliderAttacks::GetIndex(BitBoard occupied, const Magic &table)
-    {
-        return ((occupied & table.mask) * table.magic) >> table.shift;
-    }
-
-    BitBoard SliderAttacks::GetBishopAttack(int square, BitBoard occupied)
-    {
-        return BishopTable[square].attacks[GetIndex(occupied, BishopTable[square])];
-    }
-
-    BitBoard SliderAttacks::GetRookAttack(int square, BitBoard occupied)
-    {
-        return RookTable[square].attacks[GetIndex(occupied, RookTable[square])];
-    }
-
-    BitBoard SliderAttacks::GetQueenAttack(int square, Vixen::BitBoard occupied)
-    {
-        return GetBishopAttack(square, occupied) | GetRookAttack(square, occupied);
     }
 }

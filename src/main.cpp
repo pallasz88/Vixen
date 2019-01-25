@@ -9,8 +9,10 @@ int main()
 {
     ExcHndlInit();
     Vixen::Board board;
-    //board.SetBoard("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1");
+    //std::cout << "Size of board in bytes: " << sizeof(board) << std::endl;
+    //board.SetBoard("8/8/8/8/3P4/8/8/8 w - - 0 1");
+    //board.MakeMove(2332);
+    std::cout << Vixen::MoveGenerator::PerftTest(6, board) << std::endl;
     board.PrintBoard();
-    std::cout << Vixen::MoveGenerator::PerftTest(5, board) << std::endl;
     return 0;
 }

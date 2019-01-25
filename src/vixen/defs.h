@@ -97,7 +97,7 @@ namespace Vixen
         BISHOP, ROOK
     };
 
-    typedef uint16_t Move;
+    typedef int Move;
 
     typedef uint64_t BitBoard;
 
@@ -159,12 +159,6 @@ namespace Vixen
     inline void ClearBit(T &bitBoard, int position)
     {
         bitBoard &= ~(1ULL << position);
-    }
-
-    template <class T>
-    inline void ToggleBit(T &bitBoard, int position)
-    {
-        bitBoard ^= 1ULL << position;
     }
 
     template<Colors pawnColor>

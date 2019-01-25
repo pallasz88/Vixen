@@ -17,6 +17,8 @@ namespace Vixen
     {
         BitBoard enPassant;
 
+        PositionKey hash;
+
         int castlingRights;
 
         int fiftyMoves;
@@ -27,17 +29,19 @@ namespace Vixen
 
         char capturedPiece;
 
-        PositionKey hash;
-
-        explicit History(BitBoard enPassant, int castlingRights,
-                         int fiftyMoves, Move move, char moved, char captured,
+        explicit History(BitBoard enPassant,
+                         int castlingRights,
+                         int fiftyMoves,
+                         Move move,
+                         char moved,
+                         char captured,
                          PositionKey hash) : enPassant(enPassant),
+                                             hash(hash),
                                              castlingRights(castlingRights),
                                              fiftyMoves(fiftyMoves),
                                              move(move),
                                              movedPiece(moved),
-                                             capturedPiece(captured),
-                                             hash(hash)
+                                             capturedPiece(captured)
         {}
 
     };
@@ -48,20 +52,17 @@ namespace Vixen
 
         Board();
 
-        inline BitBoards GetBitBoards() const
+        BitBoards GetBitBoards() const
         { return bitBoards; }
 
-        inline bool IsWhiteToMove() const
+        bool IsWhiteToMove() const
         { return whiteToMove; }
 
-        inline BitBoard GetEnPassant() const
+        BitBoard GetEnPassant() const
         { return enPassant; }
 
-        inline int GetCastlingRights() const
+        int GetCastlingRights() const
         { return castlingRights; }
-
-        inline SliderAttacks GetSlider() const
-        { return sliders; }
 
         void PrintBoard() const;
 
@@ -75,17 +76,17 @@ namespace Vixen
 
         void TakeBack();
 
+        bool IsBoard() const;
+
     private:
 
-        SliderAttacks sliders;
-
-        std::unique_ptr<Hash> hashBoard;
+        std::stack<History> history;
 
         std::string fenPosition;
 
-        BitBoards bitBoards;
-
         char pieceList[SQUARE_NUMBER];
+
+        BitBoards bitBoards;
 
         BitBoard enPassant;
 
@@ -97,7 +98,7 @@ namespace Vixen
 
         bool whiteToMove;
 
-        std::stack<History> history;
+        std::unique_ptr<Hash> hashBoard;
 
         void ParseFenPiecePart(const std::string &splittedFen);
 
@@ -107,9 +108,18 @@ namespace Vixen
 
         void SplitFenPosition(std::vector<std::string> &fenParts);
 
-        inline auto GetPieceBoard(int position)
-        { return pieceList[position]; }
-
         void ClearHistory();
+
+        void MakeCapture(int to, char capturedPieceLetter);
+
+        void MakeDoublePawnPush(int enPassantSquare);
+
+        void MoveCastlingWhiteRook(int from, int to);
+
+        void MoveCastlingBlackRook(int from, int to);
+
+        void UpdateCastlingRights(int from, int to);
+
+        friend class MoveGenerator;
     };
 }

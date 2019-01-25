@@ -4,10 +4,6 @@
 
 namespace Vixen
 {
-    extern BitBoard BishopAttacks[BISHOP_ATTACK_TABLE_SIZE];
-
-    extern BitBoard RookAttacks[ROOK_ATTACK_TABLE_SIZE];
-
     struct Magic
     {
         BitBoard *attacks;  // pointer to attack_table for each particular square
@@ -17,44 +13,24 @@ namespace Vixen
         BitBoard magic;     // magic 64-bit factor
 
         int shift;          // shift right
-
     };
 
-    class VIXEN_API SliderAttacks
+    extern BitBoard BishopAttacks[BISHOP_ATTACK_TABLE_SIZE];
+
+    extern BitBoard RookAttacks[ROOK_ATTACK_TABLE_SIZE];
+
+    extern Magic BishopTable[SQUARE_NUMBER];
+
+    extern Magic RookTable[SQUARE_NUMBER];
+
+    namespace
     {
 
-    public:
+        constexpr SliderDirections rookDirections = {{{-1, 0}, {0, -1}, {1, 0}, {0, 1}}};
 
-        explicit SliderAttacks();
+        constexpr SliderDirections bishopDirections = {{{-1, -1}, {-1, 1}, {1, -1}, {1, 1}}};
 
-        BitBoard GetBishopAttack(int square, BitBoard occupied);
-
-        BitBoard GetRookAttack(int square, BitBoard occupied);
-
-        BitBoard GetQueenAttack(int square, BitBoard occupied);
-
-    private:
-
-        void InitMagics();
-
-        int GetIndex(BitBoard occupied, const Magic &table);
-
-        template<Slider slider>
-        void InitSlidingAttack(int square, SliderDirections directions, Magic *table);
-
-        BitBoard SlidingAttack(int square, SliderDirections directions, BitBoard occupied);
-
-        void GetNextCoordinate(int &file, int &rank, const Direction &direction) const noexcept;
-
-        Magic BishopTable[SQUARE_NUMBER];
-
-        Magic RookTable[SQUARE_NUMBER];
-
-        static constexpr SliderDirections rookDirections = {{{-1, 0}, {0, -1}, {1, 0}, {0, 1}}};
-
-        static constexpr SliderDirections bishopDirections = {{{-1, -1}, {-1, 1}, {1, -1}, {1, 1}}};
-
-        static constexpr BitBoard RookMagic[SQUARE_NUMBER] = {
+        constexpr BitBoard RookMagic[SQUARE_NUMBER] = {
                 0xA180022080400230ull, 0x0040100040022000ull, 0x0080088020001002ull, 0x0080080280841000ull,
                 0x4200042010460008ull, 0x04800A0003040080ull, 0x0400110082041008ull, 0x008000A041000880ull,
                 0x10138001A080C010ull, 0x0000804008200480ull, 0x00010011012000C0ull, 0x0022004128102200ull,
@@ -73,7 +49,7 @@ namespace Vixen
                 0x411FFFDDFFDBF4D6ull, 0x0801000804000603ull, 0x0003FFEF27EEBE74ull, 0x7645FFFECBFEA79Eull
         };
 
-        static constexpr BitBoard BishopMagic[SQUARE_NUMBER] = {
+        constexpr BitBoard BishopMagic[SQUARE_NUMBER] = {
                 0xFFEDF9FD7CFCFFFFull, 0xFC0962854A77F576ull, 0x5822022042000000ull, 0x2CA804A100200020ull,
                 0x0204042200000900ull, 0x2002121024000002ull, 0xFC0A66C64A7EF576ull, 0x7FFDFDFCBD79FFFFull,
                 0xFC0846A64A34FFF6ull, 0xFC087A874A3CF7F6ull, 0x1001080204002100ull, 0x1810080489021800ull,
@@ -91,5 +67,37 @@ namespace Vixen
                 0xFFFFFCFCFD79EDFFull, 0xFC0863FCCB147576ull, 0x040C000022013020ull, 0x2000104000420600ull,
                 0x0400000260142410ull, 0x0800633408100500ull, 0xFC087E8E4BB2F736ull, 0x43FF9E4EF4CA2C89ull
         };
-    };
+    }
+
+    inline void GetNextCoordinate(int &file, int &rank, const Direction &direction)
+    {
+        file += direction[0], rank += direction[1];
+    }
+
+    inline int GetIndex(BitBoard occupied, const Magic &table)
+    {
+        return static_cast<int>(((occupied & table.mask) * table.magic) >> table.shift);
+    }
+
+    inline BitBoard GetBishopAttack(int square, BitBoard occupied)
+    {
+        return BishopTable[square].attacks[GetIndex(occupied, BishopTable[square])];
+    }
+
+    inline BitBoard GetRookAttack(int square, BitBoard occupied)
+    {
+        return RookTable[square].attacks[GetIndex(occupied, RookTable[square])];
+    }
+
+    inline BitBoard GetQueenAttack(int square, Vixen::BitBoard occupied)
+    {
+        return GetBishopAttack(square, occupied) | GetRookAttack(square, occupied);
+    }
+
+    void InitMagics();
+
+    template<Slider slider>
+    void InitSlidingAttack(int square, SliderDirections directions, Magic *table);
+
+    BitBoard SlidingAttack(int square, SliderDirections directions, BitBoard occupied);
 }
