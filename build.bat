@@ -1,6 +1,9 @@
 @echo off
 
-cmake -D CMAKE_CXX_COMPILER=g++ -D CMAKE_BUILD_TYPE=Debug -G "MinGW Makefiles" .
+mkdir build
+cd build
+
+cmake -D CMAKE_CXX_COMPILER=g++ -D CMAKE_BUILD_TYPE=Debug -G "MinGW Makefiles" ..
 cmake --build . --target main -- -j %NUMBER_OF_PROCESSORS%
 
 if %errorlevel% neq 0 (
@@ -15,4 +18,9 @@ if %errorlevel% neq 0 (
     exit /b %errorlevel% 
 )
 
-mingw32-make install
+cmake --build . --target perfttest -- -j %NUMBER_OF_PROCESSORS%
+
+if %errorlevel% neq 0 (
+    echo **ERROR** perfttest compilation failed
+    exit /b %errorlevel% 
+)
