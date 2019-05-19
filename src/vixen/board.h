@@ -59,7 +59,7 @@ namespace Vixen
         { return whiteToMove; }
 
         BitBoard GetEnPassant() const
-        { return enPassant; }
+        { return enPassantBitBoard; }
 
         int GetCastlingRights() const
         { return castlingRights; }
@@ -76,7 +76,9 @@ namespace Vixen
 
         void TakeBack();
 
-        bool IsBoard() const;
+        bool IsBoardConsistent() const;
+
+        void SumUpBitBoards();
 
     private:
 
@@ -88,7 +90,7 @@ namespace Vixen
 
         BitBoards bitBoards;
 
-        BitBoard enPassant;
+        BitBoard enPassantBitBoard;
 
         int castlingRights;
 

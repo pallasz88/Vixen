@@ -42,7 +42,8 @@ namespace Vixen
         ParseFenPiecePart(parsedPosition[0]);
         ParseSideToMovePart(parsedPosition[1]);
         ParseCastlingRightPart(parsedPosition[2]);
-        enPassant = SquareToBitBoard(NotationToSquare(parsedPosition[3]));
+        SumUpBitBoards();
+        enPassantBitBoard = SquareToBitBoard(NotationToSquare(parsedPosition[3]));
         fiftyMoves = stoi(parsedPosition[4]);
         historyMovesNum = stoi(parsedPosition[5]);
         hashBoard = std::make_unique<Hash>(*this);
@@ -82,14 +83,14 @@ namespace Vixen
 
         std::cout << "  ";
         for (int rank = 0; rank < 8; ++rank)
-        {
             std::cout << static_cast<char>('a' + rank) << "   ";
-        }
+
         std::cout << std::endl << std::endl;
-        auto enPassant_ = (enPassant != EMPTY_BOARD) ? SquareToNotation(TrailingZeroCount(enPassant)) : "-";
-        std::cout << "En passant square: " << enPassant_ << std::endl;
+        auto enPassantSquare = (enPassantBitBoard != EMPTY_BOARD) ? SquareToNotation(TrailingZeroCount(enPassantBitBoard)) : "-";
+        std::cout << "En passant square: " << enPassantSquare << std::endl;
         std::cout << "Castling rights: " << std::bitset<4>(static_cast<unsigned >(castlingRights)) << std::endl;
         std::cout << "Position key: " << std::hex << hashBoard->GetHash() << std::dec << std::endl;
+        std::cout << "Fen position: " << fenPosition << std::endl;
         std::cout << std::endl << std::endl;
     }
 
@@ -133,6 +134,10 @@ namespace Vixen
             }
             --squareIndex;
         }
+    }
+
+    void Board::SumUpBitBoards()
+    {
         bitBoards['S'] = bitBoards['k'] |
                          bitBoards['q'] |
                          bitBoards['r'] |
@@ -220,7 +225,7 @@ namespace Vixen
         char movingPieceLetter = pieceList[from];
         char capturedPieceLetter = pieceList[to];
 
-        history.emplace(enPassant,
+        history.emplace(enPassantBitBoard,
                         castlingRights,
                         fiftyMoves,
                         move,
@@ -230,10 +235,10 @@ namespace Vixen
 
         ++fiftyMoves;
 
-        if (enPassant != EMPTY_BOARD)
+        if (enPassantBitBoard != EMPTY_BOARD)
         {
-            hashBoard->HashEnPassant(enPassant);
-            enPassant = EMPTY_BOARD;
+            hashBoard->HashEnPassant(enPassantBitBoard);
+            enPassantBitBoard = EMPTY_BOARD;
         }
 
         if (tolower(movingPieceLetter) == 'p')
@@ -301,8 +306,8 @@ namespace Vixen
 
     void Board::MakeDoublePawnPush(int enPassantSquare)
     {
-        SetBit(enPassant, enPassantSquare);
-        hashBoard->HashEnPassant(enPassant);
+        SetBit(enPassantBitBoard, enPassantSquare);
+        hashBoard->HashEnPassant(enPassantBitBoard);
     }
 
     void Board::MakeCapture(int to, char capturedPieceLetter)
@@ -329,7 +334,7 @@ namespace Vixen
         --historyMovesNum;
         whiteToMove = !whiteToMove;
         fiftyMoves = lastPosition.fiftyMoves;
-        enPassant = lastPosition.enPassant;
+        enPassantBitBoard = lastPosition.enPassant;
         castlingRights = lastPosition.castlingRights;
         hashBoard->SetHash(lastPosition.hash);
 
@@ -356,7 +361,7 @@ namespace Vixen
         else if (moveType & CAPTURE)
             AddPiece(to, capturedPieceLetter);
 
-        //IsBoard();
+        //IsBoardConsistent();
     }
 
     void Board::RemovePiece(int position, char pieceType)
@@ -377,7 +382,7 @@ namespace Vixen
         ClearBit(bitBoards.at(' '), position);
     }
 
-    bool Board::IsBoard() const
+    bool Board::IsBoardConsistent() const
     {
         for (int square = 0; square < SQUARE_NUMBER; ++square)
         {
