@@ -19,6 +19,8 @@ add_executable(main ${SOURCE_FILES})
 target_link_libraries(main Vixen ${CMAKE_CURRENT_SOURCE_DIR}/../Extensions/drmingw/lib/exchndl.dll)
 
 install(TARGETS main DESTINATION bin)
+if (CMAKE_HOST_WIN32)
 foreach (files ${DRMINGW_LIBS})
     install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../Extensions/drmingw/lib/${files} DESTINATION bin)
 endforeach ()
+endif()

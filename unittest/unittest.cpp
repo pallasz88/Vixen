@@ -291,29 +291,29 @@ BOOST_FIXTURE_TEST_SUITE(Test_unit, Fixture)
 
     BOOST_AUTO_TEST_CASE(Test_making_moves)
     {
-        board.SetBoard("8/8/8/8/3P4/8/8/8 w - - 0 1");
+        board.SetBoard("7k/8/8/8/3P4/8/8/7K w - - 0 1");
         board.MakeMove(2332);
         board.PrintBoard();
         BOOST_TEST(board.GetBitBoards().at('P') == 68719476736ULL);
 
-        board.SetBoard("1n1qb1r1/2P2P2/8/8/8/8/8/8 w - - 0 1");
+        board.SetBoard("1n1qb1r1/2P2P2/8/k7/8/8/8/4K3 w - - 0 1");
         BOOST_TEST(board.MakeMove(65266));
         board.PrintBoard();
         BOOST_TEST(board.GetBitBoards().at('P') == 9007199254740992ULL);
         BOOST_TEST(board.GetBitBoards().at('Q') == 576460752303423488ULL);
         BOOST_TEST(board.GetBitBoards().at('b') == EMPTY_BOARD);
-        BOOST_TEST(board.GetBitBoards().at(' ') == 11952553411041296383ULL);
-        BOOST_TEST(board.GetBitBoards().at('F') == 585467951558164480ULL);
-        BOOST_TEST(board.GetBitBoards().at('S') == 5908722711110090752ULL);
+        BOOST_TEST(board.GetBitBoards().at(' ') == 11952552861285482487ULL);
+        BOOST_TEST(board.GetBitBoards().at('F') == 585467951558164488ULL);
+        BOOST_TEST(board.GetBitBoards().at('S') == 5908723260865904640ULL);
 
         board.TakeBack();
         board.PrintBoard();
         BOOST_TEST(board.GetBitBoards().at('P') == 10133099161583616ULL);
         BOOST_TEST(board.GetBitBoards().at('Q') == EMPTY_BOARD);
         BOOST_TEST(board.GetBitBoards().at('b') == 576460752303423488ULL);
-        BOOST_TEST(board.GetBitBoards().at(' ') == 11951427511134453759ULL);
-        BOOST_TEST(board.GetBitBoards().at('F') == 10133099161583616ULL);
-        BOOST_TEST(board.GetBitBoards().at('S') == 6485183463413514240ULL);
+        BOOST_TEST(board.GetBitBoards().at(' ') == 11951426961378639863ULL);
+        BOOST_TEST(board.GetBitBoards().at('F') == 10133099161583624ULL);
+        BOOST_TEST(board.GetBitBoards().at('S') == 6485184013169328128ULL);
 
         board.SetBoard("r3k2r/8/8/8/8/p6p/P6P/R3K2R w KQkq - 0 1");
         BOOST_TEST(board.MakeMove(8259));
