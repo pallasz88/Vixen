@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.13)
 project(Vixen C CXX)
 
+MESSAGE("STATUS: Building Vixen")
+
 set(CMAKE_CXX_STANDARD 17)
 
 set(SOURCE_FILES
@@ -15,7 +17,9 @@ set(SOURCE_FILES
         move_generator.cpp
         slider.cpp
         slider.h
-        timer.h)
+        timer.h
+        userinterface.h
+        userinterface.cpp)
 
 set(Boost_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../Extensions)
 set(BOOST_LIBRARYDIR ${CMAKE_CURRENT_SOURCE_DIR}/../../Extensions/lib)
@@ -35,7 +39,3 @@ if (Boost_FOUND)
 endif ()
 
 install(TARGETS Vixen DESTINATION bin)
-get_filename_component(UTF_BASE_NAME_DEBUG ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY_DEBUG} NAME_WE)
-install(FILES ../../Extensions/lib/${UTF_BASE_NAME_DEBUG}.dll.a
-        DESTINATION bin
-        CONFIGURATIONS Debug)

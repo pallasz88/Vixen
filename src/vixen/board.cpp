@@ -86,7 +86,8 @@ namespace Vixen
             std::cout << static_cast<char>('a' + rank) << "   ";
 
         std::cout << std::endl << std::endl;
-        auto enPassantSquare = (enPassantBitBoard != EMPTY_BOARD) ? SquareToNotation(TrailingZeroCount(enPassantBitBoard)) : "-";
+        auto enPassantSquare = (enPassantBitBoard != EMPTY_BOARD) ? SquareToNotation(
+                TrailingZeroCount(enPassantBitBoard)) : "-";
         std::cout << "En passant square: " << enPassantSquare << std::endl;
         std::cout << "Castling rights: " << std::bitset<4>(static_cast<unsigned >(castlingRights)) << std::endl;
         std::cout << "Position key: " << std::hex << hashBoard->GetHash() << std::dec << std::endl;

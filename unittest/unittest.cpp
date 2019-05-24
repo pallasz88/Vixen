@@ -377,4 +377,13 @@ BOOST_FIXTURE_TEST_SUITE(Test_unit, Fixture)
         board.PrintBoard();
     }
 
+    BOOST_AUTO_TEST_CASE(Test_userinterface)
+    {
+        board.SetBoard("7k/8/8/8/3P4/8/8/7K w - - 0 1");
+        board.MakeMove(2332);
+        user.TakeBackMove(board);
+        board.PrintBoard();
+        BOOST_TEST(board.GetBitBoards().at('P') == 268435456ULL);
+    }
+
 BOOST_AUTO_TEST_SUITE_END()

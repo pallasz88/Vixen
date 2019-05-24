@@ -1,13 +1,14 @@
 #pragma once
 
 #include <boost/test/included/unit_test.hpp>
+#include "userinterface.h"
 #include "board.h"
 
 namespace Vixen
 {
     struct Fixture
     {
-        Fixture() : board(Board())
+        Fixture() : board(Board()), user(UserInterface())
         {
             BOOST_TEST_MESSAGE("setup fixture");
         }
@@ -18,5 +19,7 @@ namespace Vixen
         }
 
         Board board;
+
+        UserInterface user;
     };
 }

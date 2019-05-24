@@ -159,7 +159,7 @@ namespace Vixen
         bitBoard |= 1ULL << position;
     }
 
-    template <class T>
+    template<class T>
     inline void ClearBit(T &bitBoard, int position)
     {
         bitBoard &= ~(1ULL << position);
