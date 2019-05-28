@@ -21,21 +21,7 @@ set(SOURCE_FILES
         userinterface.h
         userinterface.cpp)
 
-set(Boost_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../Extensions)
-set(BOOST_LIBRARYDIR ${CMAKE_CURRENT_SOURCE_DIR}/../../Extensions/lib)
-set(Boost_USE_STATIC_LIBS OFF)
-set(Boost_USE_MULTITHREADED ON)
-set(Boost_USE_STATIC_RUNTIME OFF)
-find_package(Boost 1.69 COMPONENTS unit_test_framework chrono REQUIRED)
-
-if (Boost_FOUND)
-    message(status "** Boost Include: ${Boost_INCLUDE_DIR}")
-    message(status "** Boost Libraries: ${Boost_LIBRARY_DIRS}")
-    message(status "** Boost Libraries: ${Boost_LIBRARIES}")
-    include_directories(${Boost_INCLUDE_DIRS})
-    link_directories(${Boost_LIBRARY_DIRS})
-    add_library(Vixen SHARED ${SOURCE_FILES})
-    target_link_libraries(Vixen ${Boost_LIBRARIES})
-endif ()
+add_library(Vixen SHARED ${SOURCE_FILES})
+target_link_libraries(Vixen)
 
 install(TARGETS Vixen DESTINATION bin)

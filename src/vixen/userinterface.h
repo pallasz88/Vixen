@@ -17,8 +17,10 @@ namespace Vixen
     {
     public:
 
-        void MakeMove(std::string move, Board &board);
+        void WaitUserInput(Board &board);
 
-        void TakeBackMove(Board &board);
+        static void MakeMove(std::string &&move, Board &board);
+
+        static void TakeBackMove(Board &board);
     };
 }
