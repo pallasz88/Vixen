@@ -15,8 +15,7 @@ int main()
     ExcHndlInit();
 #endif
     Vixen::Board board;
-    Vixen::UserInterface userInterface;
-    boost::thread t(&Vixen::UserInterface::WaitUserInput, &userInterface, std::ref(board));
+    boost::thread t(&Vixen::UserInterface::WaitUserInput, std::ref(board));
     board.PrintBoard();
     t.join();
     return 0;

@@ -41,6 +41,12 @@ namespace Vixen
                     std::cerr << "ERROR HAPPENED: " << error.what() << "\n";
                 }
 
+            else if (command == "list")
+            {
+                MoveGenerator generator;
+                generator.PrintMoveList();
+            }
+
             else
                 std::cerr << "UNKNOWN COMMAND: " << command << "\n";
         }
@@ -59,7 +65,7 @@ namespace Vixen
         int decodedMove = to << 6 | from;
         std::vector<Move> moves = MoveGenerator::GetAllMoves(board);
 
-        for(const auto& pseudoMove : moves)
+        for (const auto &pseudoMove : moves)
             if ((pseudoMove & 0xFFF) == decodedMove)
             {
                 if (!board.MakeMove(pseudoMove))

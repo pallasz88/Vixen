@@ -73,7 +73,6 @@ namespace Vixen
     template<Colors sideToMove>
     void MoveGenerator::GenerateAllMoves(const Vixen::Board &board)
     {
-        //Timer<boost::chrono::nanoseconds> t("generate moves");
         GenerateCaptureMoves<sideToMove>(board);
         GenerateQuietMoves<sideToMove>(board);
     }
@@ -81,7 +80,6 @@ namespace Vixen
     template<Colors sideToMove>
     void MoveGenerator::GenerateQuietMoves(const Board &board)
     {
-        //Timer<boost::chrono::nanoseconds> t("generate quiet");
         auto targets = board.bitBoards.at(' ');
         auto pawns = sideToMove == Colors::WHITE ? board.bitBoards.at('P') : board.bitBoards.at('p');
         auto kings = sideToMove == Colors::WHITE ? board.bitBoards.at('K') : board.bitBoards.at('k');
@@ -115,7 +113,6 @@ namespace Vixen
     template<Colors sideToMove>
     void MoveGenerator::GenerateCaptureMoves(const Board &board)
     {
-        //Timer<boost::chrono::nanoseconds> t("generate capture");
         auto targets = sideToMove == Colors::WHITE ? board.bitBoards.at('S') : board.bitBoards.at('F');
         auto enPassant = board.GetEnPassant();
         auto pawns = sideToMove == Colors::WHITE ? board.bitBoards.at('P') : board.bitBoards.at('p');
@@ -215,7 +212,6 @@ namespace Vixen
     template<Colors sideToMove>
     void MoveGenerator::GenerateCastlingMoves(const Board &board)
     {
-        //Timer<boost::chrono::nanoseconds> t("generate castling");
         int castlingRights = board.castlingRights;
         if (sideToMove == Colors::WHITE)
         {

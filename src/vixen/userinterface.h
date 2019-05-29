@@ -17,7 +17,7 @@ namespace Vixen
     {
     public:
 
-        void WaitUserInput(Board &board);
+        static void WaitUserInput(Board &board);
 
         static void MakeMove(std::string &&move, Board &board);
 

@@ -21,7 +21,13 @@ namespace Vixen
             13, 15, 15, 12, 15, 15, 15, 14
     };
 
-    Board::Board()
+    Board::Board() :
+            pieceList{0},
+            enPassantBitBoard(EMPTY_BOARD),
+            castlingRights(0),
+            historyMovesNum(0),
+            fiftyMoves(0),
+            whiteToMove(false)
     {
         SetBoard(START_POSITION);
         InitKnightKingAttack();
@@ -218,7 +224,6 @@ namespace Vixen
 
     bool Board::MakeMove(Vixen::Move move)
     {
-        //Timer<boost::chrono::nanoseconds> t("make");
         int from = move & 0x3F;
         int to = (move >> 6) & 0x3F;
         int moveType = move >> 12;
@@ -319,7 +324,6 @@ namespace Vixen
 
     void Board::TakeBack()
     {
-        //Timer<boost::chrono::nanoseconds> t("take");
         if (history.empty())
             throw std::runtime_error("Empty history");
 

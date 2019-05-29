@@ -147,42 +147,45 @@ namespace Vixen
         return file >= 0 && rank >= 0 && file < 8 && rank < 8;
     }
 
-    template<class T>
-    inline bool IsBitSet(const T &bits, int position)
+    namespace
     {
-        return bits & (1ULL << position);
-    }
+        template<class T>
+        inline bool IsBitSet(const T &bits, int position)
+        {
+            return bits & (1LL << position);
+        }
 
-    template<class T>
-    inline void SetBit(T &bitBoard, int position)
-    {
-        bitBoard |= 1ULL << position;
-    }
+        template<class T>
+        inline void SetBit(T &bitBoard, int position)
+        {
+            bitBoard |= 1ULL << position;
+        }
 
-    template<class T>
-    inline void ClearBit(T &bitBoard, int position)
-    {
-        bitBoard &= ~(1ULL << position);
-    }
+        template<class T>
+        inline void ClearBit(T &bitBoard, int position)
+        {
+            bitBoard &= ~(1ULL << position);
+        }
 
-    template<Colors pawnColor>
-    inline BitBoard PushPawns(BitBoard pawns)
-    {
-        return pawnColor == Colors::WHITE ? pawns << 8 : pawns >> 8;
-    }
+        template<Colors pawnColor>
+        inline BitBoard PushPawns(BitBoard pawns)
+        {
+            return pawnColor == Colors::WHITE ? pawns << 8 : pawns >> 8;
+        }
 
-    template<Colors pawnColor>
-    inline BitBoard PawnCaptureLeft(BitBoard pawns)
-    {
-        pawns &= ~FILEH;
-        return pawnColor == Colors::WHITE ? pawns << 9 : pawns >> 9;
-    }
+        template<Colors pawnColor>
+        inline BitBoard PawnCaptureLeft(BitBoard pawns)
+        {
+            pawns &= ~FILEH;
+            return pawnColor == Colors::WHITE ? pawns << 9 : pawns >> 9;
+        }
 
-    template<Colors pawnColor>
-    inline BitBoard PawnCaptureRight(BitBoard pawns)
-    {
-        pawns &= ~FILEA;
-        return pawnColor == Colors::WHITE ? pawns << 7 : pawns >> 7;
+        template<Colors pawnColor>
+        inline BitBoard PawnCaptureRight(BitBoard pawns)
+        {
+            pawns &= ~FILEA;
+            return pawnColor == Colors::WHITE ? pawns << 7 : pawns >> 7;
+        }
     }
 
     constexpr int PopCount(BitBoard bitBoard)
