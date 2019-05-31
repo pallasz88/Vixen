@@ -22,5 +22,9 @@ namespace Vixen
         static void MakeMove(std::string &&move, Board &board);
 
         static void TakeBackMove(Board &board);
+
+        static void PrintMoveList(Board &board);
+
+        static void PrintHelp();
     };
 }

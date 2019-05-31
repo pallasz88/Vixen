@@ -16,7 +16,6 @@ int main()
 #endif
     Vixen::Board board;
     boost::thread t(&Vixen::UserInterface::WaitUserInput, std::ref(board));
-    board.PrintBoard();
     t.join();
     return 0;
 }

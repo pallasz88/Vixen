@@ -18,8 +18,6 @@ namespace Vixen
         auto GetMoveList() const
         { return moveList; }
 
-        static std::vector<Move> GetAllMoves(const Board &board);
-
         template<Colors sideToMove>
         void GenerateAllMoves(const Vixen::Board &board);
 
@@ -62,6 +60,13 @@ namespace Vixen
         template<Colors sideToMove>
         static bool IsSquareAttacked(int square, const BitBoards &bitBoards);
     };
+
+    template<Colors sideToMove>
+    void MoveGenerator::GenerateAllMoves(const Vixen::Board &board)
+    {
+        GenerateCaptureMoves<sideToMove>(board);
+        GenerateQuietMoves<sideToMove>(board);
+    }
 
     template<Colors sideToMove>
     bool MoveGenerator::IsSquareAttacked(int square, const BitBoards &bitBoards)

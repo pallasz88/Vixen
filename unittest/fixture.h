@@ -8,7 +8,7 @@ namespace Vixen
 {
     struct Fixture
     {
-        Fixture() : board(Board()), user(UserInterface())
+        Fixture() : board(Board())
         {
             BOOST_TEST_MESSAGE("setup fixture");
         }
@@ -19,7 +19,5 @@ namespace Vixen
         }
 
         Board board;
-
-        UserInterface user;
     };
 }

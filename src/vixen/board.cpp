@@ -22,13 +22,14 @@ namespace Vixen
     };
 
     Board::Board() :
-            pieceList{0},
+            pieceList{' '},
             enPassantBitBoard(EMPTY_BOARD),
             castlingRights(0),
             historyMovesNum(0),
             fiftyMoves(0),
             whiteToMove(false)
     {
+        AddMoveGenerator();
         SetBoard(START_POSITION);
         InitKnightKingAttack();
         InitPawnAttack();
@@ -38,11 +39,10 @@ namespace Vixen
 #endif
     }
 
-    void Board::SetBoard(const std::string &fenPosition)
+    void Board::SetBoard(const std::string &position)
     {
-        this->fenPosition = fenPosition;
+        this->fenPosition = position;
         InitBitBoards(bitBoards);
-        memset(pieceList, ' ', SQUARE_NUMBER);
         std::vector<std::string> parsedPosition;
         SplitFenPosition(parsedPosition);
         ParseFenPiecePart(parsedPosition[0]);
@@ -52,8 +52,18 @@ namespace Vixen
         enPassantBitBoard = SquareToBitBoard(NotationToSquare(parsedPosition[3]));
         fiftyMoves = stoi(parsedPosition[4]);
         historyMovesNum = stoi(parsedPosition[5]);
-        hashBoard = std::make_unique<Hash>(*this);
+        AddHashBoard();
         ClearHistory();
+    }
+
+    void Board::AddMoveGenerator()
+    {
+        moveGenerator = std::make_shared<MoveGenerator>();
+    }
+
+    void Board::AddHashBoard()
+    {
+        hashBoard = std::make_unique<Hash>(*this);
     }
 
     void Board::ClearHistory()
@@ -394,6 +404,14 @@ namespace Vixen
             if (!IsBitSet(bitBoards.at(pieceList[square]), square))
                 throw std::runtime_error("Board is not ok: " + std::to_string(square) + pieceList[square]);
         }
+    }
+
+    std::vector<Move> Board::GetAllMoves()
+    {
+        moveGenerator.reset(new MoveGenerator);
+        IsWhiteToMove() ? moveGenerator->GenerateAllMoves<Colors::WHITE>(*this)
+                        : moveGenerator->GenerateAllMoves<Colors::BLACK>(*this);
+        return moveGenerator->GetMoveList();
     }
 
 }

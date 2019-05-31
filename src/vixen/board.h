@@ -4,12 +4,15 @@
 #include <vector>
 #include <string>
 #include <stack>
+#include <memory>
 #include "defs.h"
 #include "slider.h"
 
 namespace Vixen
 {
     class Hash;
+
+    class MoveGenerator;
 
     void InitBitBoards(BitBoards &bitBoards);
 
@@ -80,6 +83,8 @@ namespace Vixen
 
         void SumUpBitBoards();
 
+        std::vector<Move> GetAllMoves();
+
     private:
 
         std::stack<History> history;
@@ -101,6 +106,12 @@ namespace Vixen
         bool whiteToMove;
 
         std::unique_ptr<Hash> hashBoard;
+
+        std::shared_ptr<MoveGenerator> moveGenerator;
+
+        void AddMoveGenerator();
+
+        void AddHashBoard();
 
         void ParseFenPiecePart(const std::string &splittedFen);
 

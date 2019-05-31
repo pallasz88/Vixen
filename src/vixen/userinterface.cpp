@@ -11,11 +11,14 @@ namespace Vixen
         while (true)
         {
             std::string command;
-
+            std::cout << "Vixen >";
             std::getline(std::cin, command);
 
             if (command == "quit")
                 return;
+
+            else if (command == "help")
+                PrintHelp();
 
             else if (command == "print")
                 board.PrintBoard();
@@ -29,7 +32,10 @@ namespace Vixen
                     MakeMove(command.substr(5), board);
                 } catch (std::runtime_error &error)
                 {
-                    std::cerr << "ERROR HAPPENED: " << error.what() << "\n";
+                    std::cerr << error.what() << "\n";
+                } catch (std::out_of_range &error)
+                {
+                    std::cerr << "INVALID MOVE FORMAT. Use for example e2e4.\n";
                 }
 
             else if (command == "undo")
@@ -42,10 +48,7 @@ namespace Vixen
                 }
 
             else if (command == "list")
-            {
-                MoveGenerator generator;
-                generator.PrintMoveList();
-            }
+                PrintMoveList(board);
 
             else
                 std::cerr << "UNKNOWN COMMAND: " << command << "\n";
@@ -63,7 +66,7 @@ namespace Vixen
         int from = NotationToSquare(move.substr(0, 2));
         int to = NotationToSquare(move.substr(2));
         int decodedMove = to << 6 | from;
-        std::vector<Move> moves = MoveGenerator::GetAllMoves(board);
+        std::vector<Move> moves = board.GetAllMoves();
 
         for (const auto &pseudoMove : moves)
             if ((pseudoMove & 0xFFF) == decodedMove)
@@ -84,5 +87,36 @@ namespace Vixen
     void UserInterface::TakeBackMove(Board &board)
     {
         board.TakeBack();
+    }
+
+    void UserInterface::PrintMoveList(Board &board)
+    {
+        for (const auto &move : board.GetAllMoves())
+        {
+            if (board.MakeMove(move))
+            {
+                std::cout << SquareToNotation(move & 0x3F)
+                          << SquareToNotation((move & 0xFC0) >> 6);
+                if ((move >> 12) & PROMOTION)
+                    std::cout << "nbrq"[static_cast<int>((move >> 12) & 3)];
+
+                std::cout << ", ";
+                board.TakeBack();
+            }
+        }
+        std::cout << "\n";
+    }
+
+    void UserInterface::PrintHelp()
+    {
+        std::cout << "Welcome to Vixen C++ chess engine!\n";
+        std::cout << "\nUse the below listed commands to interact with engine from consol:\n";
+        std::cout << "\thelp:\t\tprint this help\n";
+        std::cout << "\tquit:\t\tclose program\n";
+        std::cout << "\tprint:\t\tprint current position\n";
+        std::cout << "\treset:\t\treset board to starting position\n";
+        std::cout << "\tmove <MOVE>:\tprovide MOVE in algebraic notation like e2e4!\n";
+        std::cout << "\tundo:\t\tundo previous move\n";
+        std::cout << "\tlist:\t\tlist all available moves from current position\n";
     }
 }

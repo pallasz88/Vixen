@@ -5,19 +5,6 @@
 
 namespace Vixen
 {
-    void MoveGenerator::PrintMoveList()
-    {
-        for (const auto &move : moveList)
-        {
-            std::cout << SquareToNotation(move & 0x3F)
-                      << SquareToNotation(move & 0xFC0 >> 6);
-            if ((move >> 12) & PROMOTION)
-                std::cout << "nbrq"[static_cast<int>((move >> 12) & 3)];
-
-            std::cout << std::endl;
-        }
-    }
-
     BitBoard leafs = 0;
 
     BitBoard MoveGenerator::PerftTest(int depth, Board &board)
@@ -68,13 +55,6 @@ namespace Vixen
             board.TakeBack();
         }
         return nodes;
-    }
-
-    template<Colors sideToMove>
-    void MoveGenerator::GenerateAllMoves(const Vixen::Board &board)
-    {
-        GenerateCaptureMoves<sideToMove>(board);
-        GenerateQuietMoves<sideToMove>(board);
     }
 
     template<Colors sideToMove>
@@ -259,13 +239,5 @@ namespace Vixen
         int from = TrailingZeroCount(bitBoard);
         bitBoard &= bitBoard - 1;
         return from;
-    }
-
-    std::vector<Move> MoveGenerator::GetAllMoves(const Board &board)
-    {
-        MoveGenerator generator;
-        board.IsWhiteToMove() ? generator.GenerateAllMoves<Colors::WHITE>(board)
-                              : generator.GenerateAllMoves<Colors::BLACK>(board);
-        return generator.GetMoveList();
     }
 }
