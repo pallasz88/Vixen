@@ -9,28 +9,52 @@ namespace Vixen
 {
     class Board;
 
+    /**
+     * Generates all pseudo-legal moves from Board class position.
+     */
     class VIXEN_API MoveGenerator
     {
     public:
 
-        void PrintMoveList();
-
+        /**
+         * Returns pseudo-legal move list.
+         * @return moveList
+         */
         auto GetMoveList() const
         { return moveList; }
 
+        /**
+         * Fills moveList by generating all pseudo moves.
+         * @tparam sideToMove
+         * @param board
+         */
         template<Colors sideToMove>
         void GenerateAllMoves(const Vixen::Board &board);
 
-        static BitBoard Perft(int depth, Board &board);
-
+        /**
+         * Helper function to validate move generation:
+         *  - Perft method: https://www.chessprogramming.org/Perft
+         *  - Perft results: https://www.chessprogramming.org/Perft_Results
+         * @param depth
+         * @param board
+         * @return visited node number
+         */
         static BitBoard PerftTest(int depth, Board &board);
 
+        /**
+         * This function returns if king is in check.
+         * @tparam sideToMove
+         * @param bitBoards
+         * @return Check on board
+         */
         template<Colors sideToMove>
         static bool IsInCheck(const BitBoards &bitBoards);
 
     private:
 
         std::vector<Move> moveList;
+
+        static BitBoard Perft(int depth, Board &board);
 
         template<Colors sideToMove>
         void GenerateQuietMoves(const Board &board);

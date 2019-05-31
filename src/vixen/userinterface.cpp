@@ -20,6 +20,9 @@ namespace Vixen
             else if (command == "help")
                 PrintHelp();
 
+            else if (command.substr(0, 8) == "position")
+                board.SetBoard(command.substr(10));
+
             else if (command == "print")
                 board.PrintBoard();
 
@@ -113,6 +116,7 @@ namespace Vixen
         std::cout << "\nUse the below listed commands to interact with engine from consol:\n";
         std::cout << "\thelp:\t\tprint this help\n";
         std::cout << "\tquit:\t\tclose program\n";
+        std::cout << "\tposition:\tset FEN position\n";
         std::cout << "\tprint:\t\tprint current position\n";
         std::cout << "\treset:\t\treset board to starting position\n";
         std::cout << "\tmove <MOVE>:\tprovide MOVE in algebraic notation like e2e4!\n";

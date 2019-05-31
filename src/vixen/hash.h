@@ -4,24 +4,55 @@
 
 namespace Vixen
 {
+    /**
+     * Creates unique hash values from board positions.
+     */
     class Hash
     {
     public:
 
-        explicit Hash(const Board &);
+        /**
+         * Constructor
+         * @param board
+         */
+        explicit Hash(const Board &board);
 
+        /**
+         * Returns position key.
+         */
         PositionKey GetHash() const
         { return positionKey; }
 
+        /**
+         * Sets hash value. In case undoing move it is faster
+         * to recover hash from stack than recalculate it.
+         * @param hash
+         */
         void SetHash(BitBoard hash)
         { positionKey = hash; }
 
+        /**
+         * For differentiating boards where enpassant is available or not.
+         * @param enPassant
+         */
         void HashEnPassant(BitBoard enPassant);
 
+        /**
+         * For differentiating boards where castling is available or not.
+         * @param board
+         */
         void HashCastling(const Board &board);
 
+        /**
+         * For hashing piece positions
+         * @param square
+         * @param pieceKey
+         */
         void HashPiece(int square, char pieceKey);
 
+        /**
+         * For differentiating boards where white's or black's turn.
+         */
         void HashSide();
 
     private:
