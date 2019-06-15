@@ -4,9 +4,9 @@
 #include "move_generator.h"
 #include "board.h"
 
-namespace Vixen
+namespace Vixen::UserInterface
 {
-    void UserInterface::WaitUserInput(Vixen::Board &board)
+    void WaitUserInput(Vixen::Board &board)
     {
         while (true)
         {
@@ -32,7 +32,7 @@ namespace Vixen
             else if (command.substr(0, 4) == "move")
                 try
                 {
-                    MakeMove(command.substr(5), board);
+                    UserInterface::MakeMove(command.substr(5), board);
                 } catch (std::runtime_error &error)
                 {
                     std::cerr << error.what() << "\n";
@@ -58,7 +58,7 @@ namespace Vixen
         }
     }
 
-    void UserInterface::MakeMove(std::string &&move, Vixen::Board &board)
+    void MakeMove(std::string &&move, Vixen::Board &board)
     {
         bool isLegal = false;
         std::cout << "Your move is: " << move << "\n";
@@ -87,12 +87,12 @@ namespace Vixen
 
     }
 
-    void UserInterface::TakeBackMove(Board &board)
+    void TakeBackMove(Board &board)
     {
         board.TakeBack();
     }
 
-    void UserInterface::PrintMoveList(Board &board)
+    void PrintMoveList(Board &board)
     {
         for (const auto &move : board.GetAllMoves())
         {
@@ -110,7 +110,7 @@ namespace Vixen
         std::cout << "\n";
     }
 
-    void UserInterface::PrintHelp()
+    void PrintHelp()
     {
         std::cout << "Welcome to Vixen C++ chess engine!\n";
         std::cout << "\nUse the below listed commands to interact with engine from consol:\n";
