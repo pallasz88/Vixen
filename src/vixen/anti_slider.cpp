@@ -1,6 +1,6 @@
 #include "anti_slider.h"
 
-namespace Vixen
+namespace Vixen::AntSliderUtils
 {
     BitBoard pawnAttack[COLOR_NUMBER][SQUARE_NUMBER];
 

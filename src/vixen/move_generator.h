@@ -77,11 +77,11 @@ namespace Vixen
             auto queens = sideToMove == Colors::WHITE ? bitBoards.at('q') : bitBoards.at('Q');
             auto kings = sideToMove == Colors::WHITE ? bitBoards.at('k') : bitBoards.at('K');
 
-            return pawnAttack[static_cast<int>(sideToMove)][square] & pawns ||
-                   knightAttack[square] & knights ||
-                   GetBishopAttack(square, blockers) & (bishops | queens) ||
-                   GetRookAttack(square, blockers) & (rooks | queens) ||
-                   kingAttack[square] & kings;
+            return AntSliderUtils::pawnAttack[static_cast<int>(sideToMove)][square] & pawns ||
+                   AntSliderUtils::knightAttack[square] & knights ||
+                   SliderUtils::GetBishopAttack(square, blockers) & (bishops | queens) ||
+                   SliderUtils::GetRookAttack(square, blockers) & (rooks | queens) ||
+                   AntSliderUtils::kingAttack[square] & kings;
         }
 
         /**

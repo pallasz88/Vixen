@@ -1,6 +1,6 @@
 #include "slider.h"
 
-namespace Vixen
+namespace Vixen::SliderUtils
 {
     BitBoard BishopAttacks[BISHOP_ATTACK_TABLE_SIZE];
 
@@ -28,7 +28,7 @@ namespace Vixen
                          ((RANK1 | RANK8) & ~(RANK1 << 8 * (square / 8)));
         auto occupied = EMPTY_BOARD;
 
-        table[square].magic = slider == Slider::BISHOP ? BishopMagic[square] : RookMagic[square];
+        table[square].magic = slider == Slider::BISHOP ? SliderUtils::BishopMagic[square] : RookMagic[square];
         table[square].mask = SlidingAttack(square, directions, occupied) & ~edges;
         table[square].shift = SQUARE_NUMBER - PopCount(table[square].mask);
 

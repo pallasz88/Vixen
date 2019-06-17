@@ -2,7 +2,7 @@
 
 #include "defs.h"
 
-namespace Vixen
+namespace Vixen::AntSliderUtils
 {
     extern BitBoard pawnAttack[COLOR_NUMBER][SQUARE_NUMBER];
 

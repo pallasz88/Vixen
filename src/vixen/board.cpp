@@ -31,9 +31,9 @@ namespace Vixen
     {
         AddMoveGenerator();
         SetBoard(START_POSITION);
-        InitKnightKingAttack();
-        InitPawnAttack();
-        InitMagics();
+        AntSliderUtils::InitKnightKingAttack();
+        AntSliderUtils::InitPawnAttack();
+        SliderUtils::InitMagics();
 #ifdef DEBUG
         PrintBoard();
 #endif

@@ -92,8 +92,8 @@ namespace Vixen
         GeneratePawnMoves(2 * pawnOffset, doublePawnPush, DOUBLE_PAWN_PUSH);
         GeneratePawnPromotionMoves(pawnOffset, pawnPromotion);
 
-        GenerateAntiSliderMoves(targets, knights, knightAttack, QUIET_MOVE);
-        GenerateAntiSliderMoves(targets, kings, kingAttack, QUIET_MOVE);
+        GenerateAntiSliderMoves(targets, knights, AntSliderUtils::knightAttack, QUIET_MOVE);
+        GenerateAntiSliderMoves(targets, kings, AntSliderUtils::kingAttack, QUIET_MOVE);
 
         GenerateSliderMoves<Slider::BISHOP>(bishops | queens, blockers, targets, QUIET_MOVE);
         GenerateSliderMoves<Slider::ROOK>(rooks | queens, blockers, targets, QUIET_MOVE);
@@ -123,11 +123,11 @@ namespace Vixen
 
         GeneratePawnPromotionCaptureMoves(pawnLeftCapture, pawnPromotionLeft);
         GeneratePawnPromotionCaptureMoves(pawnRightCapture, pawnPromotionRight);
-        GenerateAntiSliderMoves(targets & ~promotionRanks, pawns, pawnAttack[static_cast<int>(sideToMove)], CAPTURE);
-        GenerateAntiSliderMoves(enPassant, pawns, pawnAttack[static_cast<int>(sideToMove)], ENPASSANT);
+        GenerateAntiSliderMoves(targets & ~promotionRanks, pawns, AntSliderUtils::pawnAttack[static_cast<int>(sideToMove)], CAPTURE);
+        GenerateAntiSliderMoves(enPassant, pawns, AntSliderUtils::pawnAttack[static_cast<int>(sideToMove)], ENPASSANT);
 
-        GenerateAntiSliderMoves(targets, knights, knightAttack, CAPTURE);
-        GenerateAntiSliderMoves(targets, kings, kingAttack, CAPTURE);
+        GenerateAntiSliderMoves(targets, knights, AntSliderUtils::knightAttack, CAPTURE);
+        GenerateAntiSliderMoves(targets, kings, AntSliderUtils::kingAttack, CAPTURE);
         GenerateSliderMoves<Slider::BISHOP>(bishops | queens, blockers, targets, CAPTURE);
         GenerateSliderMoves<Slider::ROOK>(rooks | queens, blockers, targets, CAPTURE);
     }
@@ -139,8 +139,8 @@ namespace Vixen
         while (pieces)
         {
             int from = GetPosition(pieces);
-            attacks |= slider == Slider::BISHOP ? GetBishopAttack(from, blockers)
-                                                : GetRookAttack(from, blockers);
+            attacks |= slider == Slider::BISHOP ? SliderUtils::GetBishopAttack(from, blockers)
+                                                : SliderUtils::GetRookAttack(from, blockers);
             attacks &= targets;
             while (attacks)
             {
