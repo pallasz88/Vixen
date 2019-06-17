@@ -214,4 +214,16 @@ namespace Vixen
         return 7 - (notation.at(0) - 'a') + 8 * (notation.at(1) - '1');
     }
 
+    inline int GetPosition(BitBoard &bitBoard)
+    {
+        int from = TrailingZeroCount(bitBoard);
+        bitBoard &= bitBoard - 1;
+        return from;
+    }
+
+    inline Move CreateMove(int from, int to, uint8_t moveType)
+    {
+        return moveType << 12 | to << 6 | from;
+    }
+
 }

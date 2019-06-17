@@ -5,56 +5,67 @@
 
 namespace Vixen
 {
-    BitBoard leafs = 0;
-
-    BitBoard MoveGenerator::PerftTest(int depth, Board &board)
+    namespace Test
     {
-        BitBoard nodes = 0;
-        MoveGenerator generator;
+        BitBoard leafs = 0;
 
-        if (depth == 0)
-            return 1;
-
-        board.IsWhiteToMove() ? generator.GenerateAllMoves<Colors::WHITE>(board)
-                              : generator.GenerateAllMoves<Colors::BLACK>(board);
-        for (const auto &move: generator.GetMoveList())
+        /**
+         * Helper function to validate move generation:
+         *  - Perft method: https://www.chessprogramming.org/Perft
+         *  - Perft results: https://www.chessprogramming.org/Perft_Results
+         * @param depth
+         * @param board
+         * @return visited node number
+         */
+        BitBoard PerftTest(int depth, Board &board)
         {
-            if (!board.MakeMove(move))
-                continue;
+            BitBoard nodes = 0;
+            MoveGenerator generator;
 
-            BitBoard cumNodes = leafs;
-            nodes += Perft(depth - 1, board);
-            board.TakeBack();
-            BitBoard olds = leafs - cumNodes;
-            std::cout << move << ", ";
-            std::cout << SquareToNotation(move & 0x3F)
-                      << SquareToNotation((move & 0xFC0) >> 6);
-            std::cout << ": " << olds << std::endl;
+            if (depth == 0)
+                return 1;
+
+            board.IsWhiteToMove() ? generator.GenerateAllMoves<Colors::WHITE>(board)
+                                  : generator.GenerateAllMoves<Colors::BLACK>(board);
+            for (const auto &move: generator.GetMoveList())
+            {
+                if (!board.MakeMove(move))
+                    continue;
+
+                BitBoard cumNodes = leafs;
+                nodes += Perft(depth - 1, board);
+                board.TakeBack();
+                BitBoard olds = leafs - cumNodes;
+                std::cout << move << ", ";
+                std::cout << SquareToNotation(move & 0x3F)
+                          << SquareToNotation((move & 0xFC0) >> 6);
+                std::cout << ": " << olds << std::endl;
+            }
+            return nodes;
         }
-        return nodes;
-    }
 
-    BitBoard MoveGenerator::Perft(int depth, Board &board)
-    {
-        BitBoard nodes = 0;
-        MoveGenerator generator;
-
-        if (depth == 0)
+        BitBoard Perft(int depth, Board &board)
         {
-            ++leafs;
-            return 1;
-        }
+            BitBoard nodes = 0;
+            MoveGenerator generator;
 
-        board.IsWhiteToMove() ? generator.GenerateAllMoves<Colors::WHITE>(board)
-                              : generator.GenerateAllMoves<Colors::BLACK>(board);
-        for (const auto &move: generator.GetMoveList())
-        {
-            if (!board.MakeMove(move))
-                continue;
-            nodes += Perft(depth - 1, board);
-            board.TakeBack();
+            if (depth == 0)
+            {
+                ++leafs;
+                return 1;
+            }
+
+            board.IsWhiteToMove() ? generator.GenerateAllMoves<Colors::WHITE>(board)
+                                  : generator.GenerateAllMoves<Colors::BLACK>(board);
+            for (const auto &move: generator.GetMoveList())
+            {
+                if (!board.MakeMove(move))
+                    continue;
+                nodes += Perft(depth - 1, board);
+                board.TakeBack();
+            }
+            return nodes;
         }
-        return nodes;
     }
 
     template<Colors sideToMove>
@@ -198,16 +209,16 @@ namespace Vixen
             if ((castlingRights & WKCA) &&
                 IsBitSet(board.bitBoards.at(' '), F1) &&
                 IsBitSet(board.bitBoards.at(' '), G1) &&
-                !IsInCheck<sideToMove>(board.bitBoards) &&
-                !IsSquareAttacked<sideToMove>(F1, board.bitBoards))
+                !Check::IsInCheck<sideToMove>(board.bitBoards) &&
+                !Check::IsSquareAttacked<sideToMove>(F1, board.bitBoards))
                 moveList.emplace_back(CreateMove(E1, G1, KING_CASTLE));
 
             if ((castlingRights & WQCA) &&
                 IsBitSet(board.bitBoards.at(' '), D1) &&
                 IsBitSet(board.bitBoards.at(' '), C1) &&
                 IsBitSet(board.bitBoards.at(' '), B1) &&
-                !IsInCheck<sideToMove>(board.bitBoards) &&
-                !IsSquareAttacked<sideToMove>(D1, board.bitBoards))
+                !Check::IsInCheck<sideToMove>(board.bitBoards) &&
+                !Check::IsSquareAttacked<sideToMove>(D1, board.bitBoards))
                 moveList.emplace_back(CreateMove(E1, C1, QUEEN_CASTLE));
         }
         else
@@ -215,29 +226,17 @@ namespace Vixen
             if ((castlingRights & BKCA) &&
                 IsBitSet(board.bitBoards.at(' '), F8) &&
                 IsBitSet(board.bitBoards.at(' '), G8) &&
-                !IsInCheck<sideToMove>(board.bitBoards) &&
-                !IsSquareAttacked<sideToMove>(F8, board.bitBoards))
+                !Check::IsInCheck<sideToMove>(board.bitBoards) &&
+                !Check::IsSquareAttacked<sideToMove>(F8, board.bitBoards))
                 moveList.emplace_back(CreateMove(E8, G8, KING_CASTLE));
 
             if ((castlingRights & BQCA) &&
                 IsBitSet(board.bitBoards.at(' '), D8) &&
                 IsBitSet(board.bitBoards.at(' '), C8) &&
                 IsBitSet(board.bitBoards.at(' '), B8) &&
-                !IsInCheck<sideToMove>(board.bitBoards) &&
-                !IsSquareAttacked<sideToMove>(D8, board.bitBoards))
+                !Check::IsInCheck<sideToMove>(board.bitBoards) &&
+                !Check::IsSquareAttacked<sideToMove>(D8, board.bitBoards))
                 moveList.emplace_back(CreateMove(E8, C8, QUEEN_CASTLE));
         }
-    }
-
-    Move MoveGenerator::CreateMove(int from, int to, uint8_t moveType)
-    {
-        return moveType << 12 | to << 6 | from;
-    }
-
-    int MoveGenerator::GetPosition(BitBoard &bitBoard) const
-    {
-        int from = TrailingZeroCount(bitBoard);
-        bitBoard &= bitBoard - 1;
-        return from;
     }
 }

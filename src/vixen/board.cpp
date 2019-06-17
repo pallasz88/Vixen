@@ -291,8 +291,8 @@ namespace Vixen
         hashBoard->HashSide();
         ++historyMovesNum;
 
-        if (whiteToMove ? MoveGenerator::IsInCheck<Colors::BLACK>(bitBoards)
-                        : MoveGenerator::IsInCheck<Colors::WHITE>(bitBoards))
+        if (whiteToMove ? Check::IsInCheck<Colors::BLACK>(bitBoards)
+                        : Check::IsInCheck<Colors::WHITE>(bitBoards))
         {
             TakeBack();
             return false;

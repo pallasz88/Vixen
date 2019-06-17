@@ -371,7 +371,7 @@ BOOST_FIXTURE_TEST_SUITE(Test_unit, Fixture)
         board.MakeMove(17417);
         board.MakeMove(3771);
         board.PrintBoard();
-        BOOST_TEST(MoveGenerator::PerftTest(2, board) == 1790);
+        BOOST_TEST(Test::PerftTest(2, board) == 1790);
         board.TakeBack();
         board.TakeBack();
         board.PrintBoard();
