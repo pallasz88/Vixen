@@ -191,52 +191,51 @@ namespace Vixen
 
     namespace
     {
-    template<class T>
-    inline constexpr bool IsBitSet(const T &bits, unsigned position)
-    {
-        return bits & (1ULL << position);
+        template<class T>
+        inline constexpr bool IsBitSet(const T &bits, unsigned position)
+        {
+            return bits & (1ULL << position);
+        }
+
+        template<class T>
+        inline constexpr void SetBit(T &bitBoard, unsigned position)
+        {
+            bitBoard |= 1ULL << position;
+        }
+
+        template<class T>
+        inline constexpr void ClearBit(T &bitBoard, unsigned position)
+        {
+            bitBoard &= ~(1ULL << position);
+        }
+
+        template<Colors pawnColor>
+        inline constexpr BitBoard PushPawns(BitBoard pawns)
+        {
+            return (pawnColor == Colors::WHITE) ? pawns << 8U : pawns >> 8U;
+        }
+
+        template<Colors pawnColor>
+        inline constexpr BitBoard PawnCaptureLeft(BitBoard pawns)
+        {
+            pawns &= (pawnColor == Colors::WHITE) ? ~FILEA : ~FILEH;
+            return (pawnColor == Colors::WHITE) ? pawns << 9U : pawns >> 9U;
+        }
+
+        template<Colors pawnColor>
+        inline constexpr BitBoard PawnCaptureRight(BitBoard pawns)
+        {
+            pawns &= (pawnColor == Colors::WHITE) ? ~FILEH : ~FILEA;
+            return (pawnColor == Colors::WHITE) ? pawns << 7U : pawns >> 7U;
+        }
     }
 
-    template<class T>
-    inline constexpr void SetBit(T &bitBoard, unsigned position)
-    {
-        bitBoard |= 1ULL << position;
-    }
-
-    template<class T>
-    inline constexpr void ClearBit(T &bitBoard, unsigned position)
-    {
-        bitBoard &= ~(1ULL << position);
-    }
-
-    template<Colors pawnColor>
-    inline constexpr BitBoard PushPawns(BitBoard pawns)
-    {
-        return (pawnColor == Colors::WHITE) ? pawns << 8U : pawns >> 8U;
-    }
-
-    template<Colors pawnColor>
-    inline constexpr BitBoard PawnCaptureLeft(BitBoard pawns)
-    {
-        pawns &= (pawnColor == Colors::WHITE) ? ~FILEA : ~FILEH;
-        return (pawnColor == Colors::WHITE) ? pawns << 9U : pawns >> 9U;
-    }
-
-    template<Colors pawnColor>
-    inline constexpr BitBoard PawnCaptureRight(BitBoard pawns)
-    {
-        pawns &= (pawnColor == Colors::WHITE) ? ~FILEH : ~FILEA;
-        return (pawnColor == Colors::WHITE) ? pawns << 7U : pawns >> 7U;
-    }
-    }
-
-
-    inline constexpr unsigned PopCount(BitBoard bitBoard)
+    inline constexpr int PopCount(BitBoard bitBoard)
     {
         return __builtin_popcountll(bitBoard);
     }
 
-    inline constexpr unsigned TrailingZeroCount(BitBoard bitBoard)
+    inline constexpr int TrailingZeroCount(BitBoard bitBoard)
     {
         return __builtin_ctzll(bitBoard);
     }
@@ -249,7 +248,7 @@ namespace Vixen
         return notation;
     }
 
-    inline constexpr auto NotationToSquare(const std::string_view &notation)
+    inline auto NotationToSquare(const std::string &notation)
     {
         if (notation.at(0) < 'a' || notation.at(0) > 'h' ||
             notation.at(1) < '1' || notation.at(1) > '8')
@@ -259,7 +258,7 @@ namespace Vixen
 
     inline constexpr int GetPosition(BitBoard &bitBoard)
     {
-        const auto from = TrailingZeroCount(bitBoard);
+        int from = TrailingZeroCount(bitBoard);
         bitBoard &= bitBoard - 1;
         return from;
     }
