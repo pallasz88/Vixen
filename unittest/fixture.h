@@ -21,9 +21,9 @@ namespace Vixen
         
         bool CheckMoveList(std::vector<Move> &expectedMoveList)
         {
-            MoveGenerator generator = board.CreateGenerator();
+            MoveGenerator generator = board.CreateGenerator<ALL_MOVE>();
             int listSize = generator.GetListSize();
-            std::array<Move, 300> moveList = generator.GetMoveList();
+            std::array<Move, MAX_MOVELIST_SIZE> moveList = generator.GetMoveList();
 
             if (expectedMoveList.size() != listSize)
                 return false;

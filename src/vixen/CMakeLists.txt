@@ -19,7 +19,7 @@ set(SOURCE_FILES
         slider.h
         timer.h
         userinterface.h
-        userinterface.cpp)
+        userinterface.cpp engine.cpp engine.h)
 
 add_library(Vixen SHARED ${SOURCE_FILES})
 target_link_libraries(Vixen)

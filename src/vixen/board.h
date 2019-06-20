@@ -72,6 +72,13 @@ namespace Vixen
             return bitBoards[GetPieceIndex(piece)];
         }
 
+
+
+        [[nodiscard]] constexpr auto GetPieceList() const
+        {
+            return pieceList;
+        }
+
         /**
          * Returns if white is on move from given position.
          * @return whiteToMove
@@ -101,9 +108,9 @@ namespace Vixen
         /**
          * Sets board from FEN position.
          *  FEN position: https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation
-         * @param fenPosition
+         * @param position
          */
-        void SetBoard(const std::string &fenPosition);
+        void SetBoard(const std::string &position);
 
         /**
          * Removes given piece type from given position.
@@ -137,6 +144,7 @@ namespace Vixen
          * Returns a generator of pseudo-legal moves from given position.
          * @return pseudo-legal moves
          */
+        template <uint8_t moveType>
         [[nodiscard]] MoveGenerator CreateGenerator() const;
 
     private:

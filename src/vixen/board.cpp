@@ -202,12 +202,12 @@ namespace Vixen
 
     bool Board::MakeMove(Vixen::Move move)
     {
-        int from = move & 0x3FU;
-        int to = (move >> 6U) & 0x3FU;
-        int moveType = move >> 12U;
-        int enPassantSquare = whiteToMove ? to - 8 : to + 8;
-        char movingPieceLetter = pieceList[from];
-        char capturedPieceLetter = pieceList[to];
+        const auto from = move & 0x3FU;
+        const auto to = (move >> 6U) & 0x3FU;
+        const auto moveType = move >> 12U;
+        const auto enPassantSquare = whiteToMove ? to - 8 : to + 8;
+        const char movingPieceLetter = pieceList[from];
+        const char capturedPieceLetter = pieceList[to];
 
         history.emplace(enPassantBitBoard,
                         castlingRights,
@@ -250,7 +250,7 @@ namespace Vixen
 
         if (moveType & PROMOTION)
         {
-            char promotion = whiteToMove ? "NBRQ"[moveType & 3] : "nbrq"[moveType & 3];
+            char promotion = whiteToMove ? "NBRQ"[moveType & 3U] : "nbrq"[moveType & 3U];
             RemovePiece(to, movingPieceLetter);
             AddPiece(to, promotion);
         }
@@ -305,14 +305,14 @@ namespace Vixen
         if (history.empty())
             throw std::runtime_error("Empty history");
 
-        History lastPosition = history.top();
+        const History &lastPosition = history.top();
         history.pop();
 
-        int from = lastPosition.move & 0x3F;
-        int to = (lastPosition.move >> 6) & 0x3F;
-        int moveType = lastPosition.move >> 12;
-        char movingPieceLetter = lastPosition.movedPiece;
-        char capturedPieceLetter = lastPosition.capturedPiece;
+        const auto from                = lastPosition.move & 0x3FU;
+        const auto to                  = (lastPosition.move >> 6U) & 0x3FU;
+        const auto moveType            = lastPosition.move >> 12U;
+        const char movingPieceLetter   = lastPosition.movedPiece;
+        const char capturedPieceLetter = lastPosition.capturedPiece;
 
         --historyMovesNum;
         whiteToMove = !whiteToMove;
@@ -329,7 +329,7 @@ namespace Vixen
 
         else if (moveType & PROMOTION)
         {
-            char promotion = whiteToMove ? "NBRQ"[moveType & 3] : "nbrq"[moveType & 3];
+            char promotion = whiteToMove ? "NBRQ"[moveType & 3U] : "nbrq"[moveType & 3U];
             RemovePiece(to, promotion);
             AddPiece(to, movingPieceLetter);
         }
@@ -348,27 +348,32 @@ namespace Vixen
     void Board::RemovePiece(int position, char pieceType)
     {
         pieceList[position] = ' ';
-        ClearBit(bitBoards.at(GetPieceIndex(pieceType)), position);
+        ClearBit(bitBoards[GetPieceIndex(pieceType)], position);
         hashBoard->HashPiece(position, pieceType);
-        ClearBit(bitBoards.at(GetPieceIndex(IsBlackMoving(pieceType) ? 'S' : 'F')), position);
-        SetBit(bitBoards.at(GetPieceIndex(' ')), position);
+        ClearBit(bitBoards[GetPieceIndex(IsBlackMoving(pieceType) ? 'S' : 'F')], position);
+        SetBit(bitBoards[GetPieceIndex(' ')], position);
     }
 
     void Board::AddPiece(int position, char pieceType)
     {
         pieceList[position] = pieceType;
-        SetBit(bitBoards.at(GetPieceIndex(pieceType)), position);
+        SetBit(bitBoards[GetPieceIndex(pieceType)], position);
         hashBoard->HashPiece(position, pieceType);
-        SetBit(bitBoards.at(GetPieceIndex(IsBlackMoving(pieceType) ? 'S' : 'F')), position);
-        ClearBit(bitBoards.at(GetPieceIndex(' ')), position);
+        SetBit(bitBoards[GetPieceIndex(IsBlackMoving(pieceType) ? 'S' : 'F')], position);
+        ClearBit(bitBoards[GetPieceIndex(' ')], position);
     }
 
+    template <uint8_t moveType>
     MoveGenerator Board::CreateGenerator() const
     {
         MoveGenerator moveGenerator;
-        whiteToMove ? moveGenerator.GenerateAllMoves<Colors::WHITE>(*this)
-                    : moveGenerator.GenerateAllMoves<Colors::BLACK>(*this);
+        whiteToMove ? moveGenerator.GenerateMoves<Colors::WHITE, moveType>(*this)
+                    : moveGenerator.GenerateMoves<Colors::BLACK, moveType>(*this);
         return moveGenerator;
     }
+
+    template VIXEN_API MoveGenerator Board::CreateGenerator<CAPTURE>() const;
+
+    template VIXEN_API MoveGenerator Board::CreateGenerator<ALL_MOVE>() const;
 
 }

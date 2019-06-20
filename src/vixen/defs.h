@@ -84,7 +84,9 @@ namespace Vixen
 
         ROOK_PROMO_CAPTURE,
 
-        QUEEN_PROMO_CAPTURE
+        QUEEN_PROMO_CAPTURE,
+
+        ALL_MOVE
     };
 
     enum CastlingRights
@@ -102,7 +104,7 @@ namespace Vixen
         BISHOP, ROOK
     };
 
-    typedef int Move;
+    typedef unsigned Move;
 
     typedef uint64_t BitBoard;
 
@@ -123,6 +125,8 @@ namespace Vixen
     typedef uint64_t PositionKey;
 
     typedef std::array<BitBoard, 16> CastleHashKeys;
+
+    constexpr unsigned MAX_MOVELIST_SIZE = 256U;
 
     constexpr int MAX_SQUARE_INDEX = 63;
 
@@ -227,12 +231,12 @@ namespace Vixen
     }
 
 
-    inline constexpr int PopCount(BitBoard bitBoard)
+    inline constexpr unsigned PopCount(BitBoard bitBoard)
     {
         return __builtin_popcountll(bitBoard);
     }
 
-    inline constexpr int TrailingZeroCount(BitBoard bitBoard)
+    inline constexpr unsigned TrailingZeroCount(BitBoard bitBoard)
     {
         return __builtin_ctzll(bitBoard);
     }
@@ -245,7 +249,7 @@ namespace Vixen
         return notation;
     }
 
-    inline auto NotationToSquare(const std::string &notation)
+    inline constexpr auto NotationToSquare(const std::string_view &notation)
     {
         if (notation.at(0) < 'a' || notation.at(0) > 'h' ||
             notation.at(1) < '1' || notation.at(1) > '8')
@@ -255,7 +259,7 @@ namespace Vixen
 
     inline constexpr int GetPosition(BitBoard &bitBoard)
     {
-        int from = TrailingZeroCount(bitBoard);
+        const auto from = TrailingZeroCount(bitBoard);
         bitBoard &= bitBoard - 1;
         return from;
     }

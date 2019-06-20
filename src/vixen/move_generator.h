@@ -34,20 +34,20 @@ namespace Vixen
          * @tparam sideToMove
          * @param board
          */
-        template<Colors sideToMove>
-        void GenerateAllMoves(const Board &board);
+        template<Colors sideToMove, uint8_t moveType>
+        void GenerateMoves(const Board &board);
 
     private:
 
-        std::array<Move, 300> moveList;
+        std::array<Move, MAX_MOVELIST_SIZE> moveList;
 
         int size = 0;
 
         template<Colors sideToMove>
-        void GenerateQuietMoves(const Board &board);
+        void GenerateCaptureMoves(const Board &board);
 
         template<Colors sideToMove>
-        void GenerateCaptureMoves(const Board &board);
+        void GenerateQuietMoves(const Board &board);
 
         template<Slider slider, uint8_t moveType>
         void GenerateSliderMoves(BitBoard pieces, BitBoard blockers, BitBoard targets);

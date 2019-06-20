@@ -1,5 +1,6 @@
 #include <iostream>
 #include <regex>
+#include <random>
 #include "userinterface.h"
 #include "move_generator.h"
 #include "board.h"
@@ -9,6 +10,8 @@ namespace Vixen::UserInterface
 {
     void WaitUserInput(Vixen::Board &board)
     {
+        std::random_device r;
+        std::mt19937 e1(r());
         while (true)
         {
             std::string command;
@@ -33,7 +36,7 @@ namespace Vixen::UserInterface
             else if (command.substr(0, 5) == "perft")
             {
                 Timer<std::chrono::milliseconds> timer("Perft test");
-                std::cout << "Visited nodes: " << Test::PerftTest(stoi(command.substr(6)), board) << "\n";
+                std::cout << Test::PerftTest(stoi(command.substr(6)), board) << "\n";
             }
 
             else if (command.substr(0, 4) == "move")
@@ -60,6 +63,16 @@ namespace Vixen::UserInterface
             else if (command == "list")
                 PrintMoveList(board);
 
+            else if (command == "go")
+            {
+                MoveGenerator generator = board.CreateGenerator<ALL_MOVE>();
+                auto moves = generator.GetMoveList();
+                auto size = generator.GetListSize();
+                std::uniform_int_distribution<int> distribution(0, size);
+                board.MakeMove(moves[distribution(e1)]);
+                board.PrintBoard();
+            }
+
             else
                 std::cerr << "UNKNOWN COMMAND: " << command << "\n";
         }
@@ -77,8 +90,8 @@ namespace Vixen::UserInterface
         unsigned to = NotationToSquare(move.substr(2));
         unsigned decodedMove = to << 6U | from;
 
-        MoveGenerator generator = board.CreateGenerator();
-        std::array<Move, 300> moves = generator.GetMoveList();
+        MoveGenerator generator = board.CreateGenerator<ALL_MOVE>();
+        std::array<Move, MAX_MOVELIST_SIZE> moves = generator.GetMoveList();
         auto moveListSize = generator.GetListSize();
 
         for (size_t i = 0; i < moveListSize; ++i)
@@ -104,8 +117,8 @@ namespace Vixen::UserInterface
 
     void PrintMoveList(Board &board)
     {
-        MoveGenerator generator = board.CreateGenerator();
-        std::array<Move, 300> movesList = generator.GetMoveList();
+        MoveGenerator generator = board.CreateGenerator<ALL_MOVE>();
+        std::array<Move, MAX_MOVELIST_SIZE> movesList = generator.GetMoveList();
         size_t moveListSize = generator.GetListSize();
         for (size_t i = 0; i < moveListSize; ++i)
         {
