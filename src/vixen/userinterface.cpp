@@ -69,7 +69,7 @@ namespace Vixen::UserInterface
         int from = NotationToSquare(move.substr(0, 2));
         int to = NotationToSquare(move.substr(2));
         int decodedMove = to << 6 | from;
-        std::vector<Move> moves = board.GetAllMoves();
+        std::array<Move, 300> moves = board.GetAllMoves();
 
         for (const auto &pseudoMove : moves)
             if ((pseudoMove & 0xFFF) == decodedMove)

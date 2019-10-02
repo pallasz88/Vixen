@@ -27,9 +27,9 @@ namespace Vixen
             castlingRights(0),
             historyMovesNum(0),
             fiftyMoves(0),
-            whiteToMove(false)
+            whiteToMove(false),
+            moveGenerator(std::make_shared<MoveGenerator>())
     {
-        AddMoveGenerator();
         SetBoard(START_POSITION);
         AntSliderUtils::InitKnightKingAttack();
         AntSliderUtils::InitPawnAttack();
@@ -56,11 +56,6 @@ namespace Vixen
         ClearHistory();
     }
 
-    void Board::AddMoveGenerator()
-    {
-        moveGenerator = std::make_shared<MoveGenerator>();
-    }
-
     void Board::AddHashBoard()
     {
         hashBoard = std::make_unique<Hash>(*this);
@@ -72,7 +67,7 @@ namespace Vixen
             history = std::stack<History>();
     }
 
-    void Board::SplitFenPosition(std::vector<std::string> &fenParts)
+    void Board::SplitFenPosition(std::vector<std::string> &fenParts) const
     {
         boost::split(fenParts, fenPosition, boost::is_any_of(" "));
     }
@@ -406,7 +401,7 @@ namespace Vixen
         }
     }
 
-    std::vector<Move> Board::GetAllMoves()
+    std::array<Move, 300> Board::GetAllMoves()
     {
         moveGenerator.reset(new MoveGenerator);
         IsWhiteToMove() ? moveGenerator->GenerateAllMoves<Colors::WHITE>(*this)

@@ -135,14 +135,14 @@ namespace Vixen
 
     constexpr BitBoard EMPTY_BOARD = 0ULL;
 
-    constexpr BitBoard SquareToBitBoard(int square)
+    inline constexpr BitBoard SquareToBitBoard(int square)
     {
         if (square < 0)
             return EMPTY_BOARD;
         return static_cast<BitBoard>(1) << square;
     }
 
-    constexpr bool IsValidCoordinate(int file, int rank)
+    inline constexpr bool IsValidCoordinate(int file, int rank)
     {
         return file >= 0 && rank >= 0 && file < 8 && rank < 8;
     }
@@ -150,50 +150,59 @@ namespace Vixen
     namespace
     {
         template<class T>
-        inline bool IsBitSet(const T &bits, int position)
+        inline constexpr bool IsBitSet(const T &bits, unsigned position)
         {
-            return bits & (1LL << position);
+            return bits & (1ULL << position);
         }
 
         template<class T>
-        inline void SetBit(T &bitBoard, int position)
+        inline constexpr void SetBit(T &bitBoard, unsigned position)
         {
             bitBoard |= 1ULL << position;
         }
 
         template<class T>
-        inline void ClearBit(T &bitBoard, int position)
+        inline constexpr void ClearBit(T &bitBoard, unsigned position)
         {
             bitBoard &= ~(1ULL << position);
         }
 
         template<Colors pawnColor>
-        inline BitBoard PushPawns(BitBoard pawns)
+        inline constexpr BitBoard PushPawns(BitBoard pawns)
         {
-            return pawnColor == Colors::WHITE ? pawns << 8 : pawns >> 8;
+            if constexpr (pawnColor == Colors::WHITE)
+                return pawns << 8;
+            else
+                return pawns >> 8;
         }
 
         template<Colors pawnColor>
-        inline BitBoard PawnCaptureLeft(BitBoard pawns)
+        inline constexpr BitBoard PawnCaptureLeft(BitBoard pawns)
         {
             pawns &= ~FILEH;
-            return pawnColor == Colors::WHITE ? pawns << 9 : pawns >> 9;
+            if constexpr (pawnColor == Colors::WHITE)
+                return pawns << 9;
+            else
+                return pawns >> 9;
         }
 
         template<Colors pawnColor>
-        inline BitBoard PawnCaptureRight(BitBoard pawns)
+        inline constexpr BitBoard PawnCaptureRight(BitBoard pawns)
         {
             pawns &= ~FILEA;
-            return pawnColor == Colors::WHITE ? pawns << 7 : pawns >> 7;
+            if constexpr (pawnColor == Colors::WHITE)
+                return pawns << 7;
+            else
+                return pawns >> 7;
         }
     }
 
-    constexpr int PopCount(BitBoard bitBoard)
+    inline constexpr int PopCount(BitBoard bitBoard)
     {
         return __builtin_popcountll(bitBoard);
     }
 
-    constexpr int TrailingZeroCount(BitBoard bitBoard)
+    inline constexpr int TrailingZeroCount(BitBoard bitBoard)
     {
         return __builtin_ctzll(bitBoard);
     }
@@ -214,14 +223,14 @@ namespace Vixen
         return 7 - (notation.at(0) - 'a') + 8 * (notation.at(1) - '1');
     }
 
-    inline int GetPosition(BitBoard &bitBoard)
+    inline constexpr int GetPosition(BitBoard &bitBoard)
     {
         int from = TrailingZeroCount(bitBoard);
         bitBoard &= bitBoard - 1;
         return from;
     }
 
-    inline Move CreateMove(int from, int to, uint8_t moveType)
+    inline constexpr Move CreateMove(unsigned from, unsigned to, uint8_t moveType)
     {
         return moveType << 12 | to << 6 | from;
     }

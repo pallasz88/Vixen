@@ -65,7 +65,7 @@ namespace Vixen::SliderUtils
             0x0400000260142410ull, 0x0800633408100500ull, 0xFC087E8E4BB2F736ull, 0x43FF9E4EF4CA2C89ull
     };
 
-    inline int GetIndex(BitBoard occupied, const Magic &table)
+    inline constexpr int GetIndex(BitBoard occupied, const Magic &table)
     {
         return static_cast<int>(((occupied & table.mask) * table.magic) >> table.shift);
     }

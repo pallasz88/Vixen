@@ -27,8 +27,9 @@ namespace Vixen
 
             board.IsWhiteToMove() ? generator.GenerateAllMoves<Colors::WHITE>(board)
                                   : generator.GenerateAllMoves<Colors::BLACK>(board);
-            for (const auto &move: generator.GetMoveList())
+            for (int i = 0; i < generator.GetListSize(); ++i)
             {
+                Move move = generator.GetMoveList()[i];
                 if (!board.MakeMove(move))
                     continue;
 
@@ -57,9 +58,9 @@ namespace Vixen
 
             board.IsWhiteToMove() ? generator.GenerateAllMoves<Colors::WHITE>(board)
                                   : generator.GenerateAllMoves<Colors::BLACK>(board);
-            for (const auto &move: generator.GetMoveList())
+            for (int i = 0; i < generator.GetListSize(); ++i)
             {
-                if (!board.MakeMove(move))
+                if (!board.MakeMove(generator.GetMoveList()[i]))
                     continue;
                 nodes += Perft(depth - 1, board);
                 board.TakeBack();
@@ -123,7 +124,8 @@ namespace Vixen
 
         GeneratePawnPromotionCaptureMoves(pawnLeftCapture, pawnPromotionLeft);
         GeneratePawnPromotionCaptureMoves(pawnRightCapture, pawnPromotionRight);
-        GenerateAntiSliderMoves(targets & ~promotionRanks, pawns, AntSliderUtils::pawnAttack[static_cast<int>(sideToMove)], CAPTURE);
+        GenerateAntiSliderMoves(targets & ~promotionRanks, pawns,
+                                AntSliderUtils::pawnAttack[static_cast<int>(sideToMove)], CAPTURE);
         GenerateAntiSliderMoves(enPassant, pawns, AntSliderUtils::pawnAttack[static_cast<int>(sideToMove)], ENPASSANT);
 
         GenerateAntiSliderMoves(targets, knights, AntSliderUtils::knightAttack, CAPTURE);
@@ -145,13 +147,14 @@ namespace Vixen
             while (attacks)
             {
                 int to = GetPosition(attacks);
-                moveList.emplace_back(CreateMove(from, to, moveType));
+                moveList[size++] = CreateMove(from, to, moveType);
             }
         }
     }
 
-    void MoveGenerator::GenerateAntiSliderMoves(BitBoard targets, BitBoard pieces, const BitBoard *attackBoard,
-                                                uint8_t moveType)
+    constexpr void
+    MoveGenerator::GenerateAntiSliderMoves(BitBoard targets, BitBoard pieces, const BitBoard *attackBoard,
+                                           uint8_t moveType)
     {
         auto attacks = EMPTY_BOARD;
         while (pieces)
@@ -162,56 +165,56 @@ namespace Vixen
             while (attacks)
             {
                 int to = GetPosition(attacks);
-                moveList.emplace_back(CreateMove(from, to, moveType));
+                moveList[size++] = CreateMove(from, to, moveType);
             }
         }
     }
 
-    void MoveGenerator::GeneratePawnMoves(int pawnOffset, BitBoard pawnPushed, uint8_t moveType)
+    constexpr void MoveGenerator::GeneratePawnMoves(int pawnOffset, BitBoard pawnPushed, uint8_t moveType)
     {
         while (pawnPushed)
         {
             int to = GetPosition(pawnPushed);
-            moveList.emplace_back(CreateMove(to - pawnOffset, to, moveType));
+            moveList[size++] = CreateMove(to - pawnOffset, to, moveType);
         }
     }
 
-    void MoveGenerator::GeneratePawnPromotionMoves(int offset, BitBoard promotion)
+    constexpr void MoveGenerator::GeneratePawnPromotionMoves(int offset, BitBoard promotion)
     {
         while (promotion)
         {
             int to = GetPosition(promotion);
-            moveList.emplace_back(CreateMove(to - offset, to, QUEEN_PROMOTION));
-            moveList.emplace_back(CreateMove(to - offset, to, ROOK_PROMOTION));
-            moveList.emplace_back(CreateMove(to - offset, to, BISHOP_PROMOTION));
-            moveList.emplace_back(CreateMove(to - offset, to, KNIGHT_PROMOTION));
+            moveList[size++] = CreateMove(to - offset, to, QUEEN_PROMOTION);
+            moveList[size++] = CreateMove(to - offset, to, ROOK_PROMOTION);
+            moveList[size++] = CreateMove(to - offset, to, BISHOP_PROMOTION);
+            moveList[size++] = CreateMove(to - offset, to, KNIGHT_PROMOTION);
         }
     }
 
-    void MoveGenerator::GeneratePawnPromotionCaptureMoves(int offset, BitBoard promotion)
+    constexpr void MoveGenerator::GeneratePawnPromotionCaptureMoves(int offset, BitBoard promotion)
     {
         while (promotion)
         {
             int to = GetPosition(promotion);
-            moveList.emplace_back(CreateMove(to - offset, to, QUEEN_PROMO_CAPTURE));
-            moveList.emplace_back(CreateMove(to - offset, to, ROOK_PROMO_CAPTURE));
-            moveList.emplace_back(CreateMove(to - offset, to, BISHOP_PROMO_CAPTURE));
-            moveList.emplace_back(CreateMove(to - offset, to, KNIGHT_PROMO_CAPTURE));
+            moveList[size++] = CreateMove(to - offset, to, QUEEN_PROMO_CAPTURE);
+            moveList[size++] = CreateMove(to - offset, to, ROOK_PROMO_CAPTURE);
+            moveList[size++] = CreateMove(to - offset, to, BISHOP_PROMO_CAPTURE);
+            moveList[size++] = CreateMove(to - offset, to, KNIGHT_PROMO_CAPTURE);
         }
     }
 
     template<Colors sideToMove>
-    void MoveGenerator::GenerateCastlingMoves(const Board &board)
+    constexpr void MoveGenerator::GenerateCastlingMoves(const Board &board)
     {
         int castlingRights = board.castlingRights;
-        if (sideToMove == Colors::WHITE)
+        if constexpr (sideToMove == Colors::WHITE)
         {
             if ((castlingRights & WKCA) &&
                 IsBitSet(board.bitBoards.at(' '), F1) &&
                 IsBitSet(board.bitBoards.at(' '), G1) &&
                 !Check::IsInCheck<sideToMove>(board.bitBoards) &&
                 !Check::IsSquareAttacked<sideToMove>(F1, board.bitBoards))
-                moveList.emplace_back(CreateMove(E1, G1, KING_CASTLE));
+                moveList[size++] = CreateMove(E1, G1, KING_CASTLE);
 
             if ((castlingRights & WQCA) &&
                 IsBitSet(board.bitBoards.at(' '), D1) &&
@@ -219,7 +222,7 @@ namespace Vixen
                 IsBitSet(board.bitBoards.at(' '), B1) &&
                 !Check::IsInCheck<sideToMove>(board.bitBoards) &&
                 !Check::IsSquareAttacked<sideToMove>(D1, board.bitBoards))
-                moveList.emplace_back(CreateMove(E1, C1, QUEEN_CASTLE));
+                moveList[size++] = CreateMove(E1, C1, QUEEN_CASTLE);
         }
         else
         {
@@ -228,7 +231,7 @@ namespace Vixen
                 IsBitSet(board.bitBoards.at(' '), G8) &&
                 !Check::IsInCheck<sideToMove>(board.bitBoards) &&
                 !Check::IsSquareAttacked<sideToMove>(F8, board.bitBoards))
-                moveList.emplace_back(CreateMove(E8, G8, KING_CASTLE));
+                moveList[size++] = CreateMove(E8, G8, KING_CASTLE);
 
             if ((castlingRights & BQCA) &&
                 IsBitSet(board.bitBoards.at(' '), D8) &&
@@ -236,7 +239,7 @@ namespace Vixen
                 IsBitSet(board.bitBoards.at(' '), B8) &&
                 !Check::IsInCheck<sideToMove>(board.bitBoards) &&
                 !Check::IsSquareAttacked<sideToMove>(D8, board.bitBoards))
-                moveList.emplace_back(CreateMove(E8, C8, QUEEN_CASTLE));
+                moveList[size++] = CreateMove(E8, C8, QUEEN_CASTLE);
         }
     }
 }

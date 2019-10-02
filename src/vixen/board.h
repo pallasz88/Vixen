@@ -72,28 +72,28 @@ namespace Vixen
          * Returns the map of Bitboards
          * @return bitBoards
          */
-        BitBoards GetBitBoards() const
+        [[nodiscard]] BitBoards GetBitBoards() const
         { return bitBoards; }
 
         /**
          * Returns if white is on move from given position.
          * @return whiteToMove
          */
-        bool IsWhiteToMove() const
+        [[nodiscard]] constexpr bool IsWhiteToMove() const
         { return whiteToMove; }
 
         /**
          * Returns a bitboard for enpassant from given position.
          * @return enPassantBitBoard
          */
-        BitBoard GetEnPassant() const
+        [[nodiscard]] constexpr BitBoard GetEnPassant() const
         { return enPassantBitBoard; }
 
         /**
          * Returns castling rights from given position.
          * @return castlingRights
          */
-        int GetCastlingRights() const
+        [[nodiscard]] constexpr int GetCastlingRights() const
         { return castlingRights; }
 
         /**
@@ -140,7 +140,7 @@ namespace Vixen
          * Returns a vector of pseudo-legal moves from given position.
          * @return pseudo-legal moves
          */
-        std::vector<Move> GetAllMoves();
+        std::array<Move, 300> GetAllMoves();
 
     private:
 
@@ -168,8 +168,6 @@ namespace Vixen
 
         void SumUpBitBoards();
 
-        void AddMoveGenerator();
-
         void AddHashBoard();
 
         void ParseFenPiecePart(const std::string &splittedFen);
@@ -178,7 +176,7 @@ namespace Vixen
 
         void ParseCastlingRightPart(const std::string &splittedFen);
 
-        void SplitFenPosition(std::vector<std::string> &fenParts);
+        void SplitFenPosition(std::vector<std::string> &fenParts) const;
 
         void ClearHistory();
 
@@ -192,7 +190,7 @@ namespace Vixen
 
         void UpdateCastlingRights(int from, int to);
 
-        bool IsBoardConsistent() const;
+        [[nodiscard]] bool IsBoardConsistent() const;
 
         friend class MoveGenerator;
     };

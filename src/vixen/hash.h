@@ -20,7 +20,7 @@ namespace Vixen
         /**
          * Returns position key.
          */
-        PositionKey GetHash() const
+        [[nodiscard]] constexpr PositionKey GetHash() const
         { return positionKey; }
 
         /**
@@ -28,7 +28,7 @@ namespace Vixen
          * to recover hash from stack than recalculate it.
          * @param hash
          */
-        void SetHash(BitBoard hash)
+        constexpr void SetHash(BitBoard hash)
         { positionKey = hash; }
 
         /**
@@ -41,7 +41,7 @@ namespace Vixen
          * For differentiating boards where castling is available or not.
          * @param board
          */
-        void HashCastling(const Board &board);
+        constexpr void HashCastling(const Board &board);
 
         /**
          * For hashing piece positions
@@ -53,7 +53,7 @@ namespace Vixen
         /**
          * For differentiating boards where white's or black's turn.
          */
-        void HashSide();
+        constexpr void HashSide();
 
     private:
 
@@ -65,7 +65,7 @@ namespace Vixen
 
         CastleHashKeys castleHashKeys;
 
-        BitBoard GenerateBigRandom();
+        static BitBoard GenerateBigRandom();
 
         void InitZobristKeys();
 
@@ -77,12 +77,12 @@ namespace Vixen
         char enPassantKey = ' ';
     };
 
-    inline void Hash::HashCastling(const Board &board)
+    inline constexpr void Hash::HashCastling(const Board &board)
     {
         positionKey ^= castleHashKeys.at(static_cast<uint8_t>(board.GetCastlingRights()));
     }
 
-    inline void Hash::HashSide()
+    inline constexpr void Hash::HashSide()
     {
         positionKey ^= sideHashKey;
     }

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <vector>
+#include <array>
 #include <string>
 #include "anti_slider.h"
 #include "slider.h"
@@ -20,8 +20,15 @@ namespace Vixen
          * Returns pseudo-legal move list.
          * @return moveList
          */
-        auto GetMoveList() const
+        [[nodiscard]] constexpr auto GetMoveList() const
         { return moveList; }
+
+        /**
+         * Returns pseudo-legal move list size.
+         * @return moveList
+         */
+        [[nodiscard]] constexpr auto GetListSize() const
+        { return size; }
 
         /**
          * Fills moveList by generating all pseudo moves.
@@ -29,11 +36,13 @@ namespace Vixen
          * @param board
          */
         template<Colors sideToMove>
-        void GenerateAllMoves(const Vixen::Board &board);
+        void GenerateAllMoves(const Board &board);
 
     private:
 
-        std::vector<Move> moveList;
+        std::array<Move, 300> moveList;
+
+        int size = 0;
 
         template<Colors sideToMove>
         void GenerateQuietMoves(const Board &board);
@@ -44,17 +53,17 @@ namespace Vixen
         template<Slider slider>
         void GenerateSliderMoves(BitBoard pieces, BitBoard blockers, BitBoard targets, uint8_t moveType);
 
-        void GenerateAntiSliderMoves(BitBoard targets, BitBoard pieces, const BitBoard *attackBoard,
-                                     uint8_t moveType);
+        constexpr void GenerateAntiSliderMoves(BitBoard targets, BitBoard pieces, const BitBoard *attackBoard,
+                                               uint8_t moveType);
 
-        void GeneratePawnMoves(int pawnOffset, BitBoard pawnPushed, uint8_t moveType);
+        constexpr void GeneratePawnMoves(int pawnOffset, BitBoard pawnPushed, uint8_t moveType);
 
-        void GeneratePawnPromotionMoves(int offset, BitBoard promotion);
+        constexpr void GeneratePawnPromotionMoves(int offset, BitBoard promotion);
 
-        void GeneratePawnPromotionCaptureMoves(int offset, BitBoard promotion);
+        constexpr void GeneratePawnPromotionCaptureMoves(int offset, BitBoard promotion);
 
         template<Colors sideToMove>
-        void GenerateCastlingMoves(const Board &board);
+        constexpr void GenerateCastlingMoves(const Board &board);
     };
 
     template<Colors sideToMove>
@@ -67,7 +76,7 @@ namespace Vixen
     namespace Check
     {
         template<Colors sideToMove>
-        inline bool IsSquareAttacked(int square, const BitBoards &bitBoards)
+        inline constexpr bool IsSquareAttacked(int square, const BitBoards &bitBoards)
         {
             auto blockers = ~bitBoards.at(' ');
             auto pawns = sideToMove == Colors::WHITE ? bitBoards.at('p') : bitBoards.at('P');
@@ -91,7 +100,7 @@ namespace Vixen
          * @return Check on board
          */
         template<Colors sideToMove>
-        inline bool IsInCheck(const BitBoards &bitBoards)
+        inline constexpr bool IsInCheck(const BitBoards &bitBoards)
         {
             auto kingBoard = sideToMove == Colors::WHITE ? bitBoards.at('K') : bitBoards.at('k');
             int kingSquare = TrailingZeroCount(kingBoard);
