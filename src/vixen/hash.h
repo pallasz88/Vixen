@@ -71,10 +71,7 @@ namespace Vixen
 
         void ComputePositionKey(const Board &board);
 
-        const std::array<char, 12> pieceKeys = {'P', 'N', 'B', 'R', 'Q', 'K',
-                                                'p', 'n', 'b', 'r', 'q', 'k'};
-
-        char enPassantKey = ' ';
+        static constexpr char enPassantKey = ' ';
     };
 
     inline constexpr void Hash::HashCastling(const Board &board)

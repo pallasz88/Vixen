@@ -4,11 +4,10 @@
 #include <string>
 #include "anti_slider.h"
 #include "slider.h"
+#include "board.h"
 
 namespace Vixen
 {
-    class Board;
-
     /**
      * Generates all pseudo-legal moves from Board class position.
      */
@@ -50,11 +49,11 @@ namespace Vixen
         template<Colors sideToMove>
         void GenerateCaptureMoves(const Board &board);
 
-        template<Slider slider>
-        void GenerateSliderMoves(BitBoard pieces, BitBoard blockers, BitBoard targets, uint8_t moveType);
+        template<Slider slider, uint8_t moveType>
+        void GenerateSliderMoves(BitBoard pieces, BitBoard blockers, BitBoard targets);
 
-        constexpr void GenerateAntiSliderMoves(BitBoard targets, BitBoard pieces, const BitBoard *attackBoard,
-                                               uint8_t moveType);
+        template <uint8_t moveType>
+        constexpr void GenerateAntiSliderMoves(BitBoard targets, BitBoard pieces, const BitBoard *attackBoard);
 
         constexpr void GeneratePawnMoves(int pawnOffset, BitBoard pawnPushed, uint8_t moveType);
 
@@ -66,25 +65,18 @@ namespace Vixen
         constexpr void GenerateCastlingMoves(const Board &board);
     };
 
-    template<Colors sideToMove>
-    void MoveGenerator::GenerateAllMoves(const Vixen::Board &board)
-    {
-        GenerateCaptureMoves<sideToMove>(board);
-        GenerateQuietMoves<sideToMove>(board);
-    }
-
     namespace Check
     {
         template<Colors sideToMove>
-        inline constexpr bool IsSquareAttacked(int square, const BitBoards &bitBoards)
+        inline constexpr bool IsSquareAttacked(int square, const Board &board)
         {
-            auto blockers = ~bitBoards.at(' ');
-            auto pawns = sideToMove == Colors::WHITE ? bitBoards.at('p') : bitBoards.at('P');
-            auto knights = sideToMove == Colors::WHITE ? bitBoards.at('n') : bitBoards.at('N');
-            auto bishops = sideToMove == Colors::WHITE ? bitBoards.at('b') : bitBoards.at('B');
-            auto rooks = sideToMove == Colors::WHITE ? bitBoards.at('r') : bitBoards.at('R');
-            auto queens = sideToMove == Colors::WHITE ? bitBoards.at('q') : bitBoards.at('Q');
-            auto kings = sideToMove == Colors::WHITE ? bitBoards.at('k') : bitBoards.at('K');
+            auto blockers = ~board.GetBitBoard(' ');
+            auto pawns = sideToMove == Colors::WHITE ? board.GetBitBoard('p') : board.GetBitBoard('P');
+            auto knights = sideToMove == Colors::WHITE ? board.GetBitBoard('n') : board.GetBitBoard('N');
+            auto bishops = sideToMove == Colors::WHITE ? board.GetBitBoard('b') : board.GetBitBoard('B');
+            auto rooks = sideToMove == Colors::WHITE ? board.GetBitBoard('r') : board.GetBitBoard('R');
+            auto queens = sideToMove == Colors::WHITE ? board.GetBitBoard('q') : board.GetBitBoard('Q');
+            auto kings = sideToMove == Colors::WHITE ? board.GetBitBoard('k') : board.GetBitBoard('K');
 
             return AntSliderUtils::pawnAttack[static_cast<int>(sideToMove)][square] & pawns ||
                    AntSliderUtils::knightAttack[square] & knights ||
@@ -96,15 +88,15 @@ namespace Vixen
         /**
          * This function returns if king is in check.
          * @tparam sideToMove
-         * @param bitBoards
+         * @param board
          * @return Check on board
          */
         template<Colors sideToMove>
-        inline constexpr bool IsInCheck(const BitBoards &bitBoards)
+        inline constexpr bool IsInCheck(const Board &board)
         {
-            auto kingBoard = sideToMove == Colors::WHITE ? bitBoards.at('K') : bitBoards.at('k');
+            auto kingBoard = sideToMove == Colors::WHITE ? board.GetBitBoard('K') : board.GetBitBoard('k');
             int kingSquare = TrailingZeroCount(kingBoard);
-            return IsSquareAttacked<sideToMove>(kingSquare, bitBoards);
+            return IsSquareAttacked<sideToMove>(kingSquare, board);
         }
     }
 

@@ -3,6 +3,7 @@
 #include "userinterface.h"
 #include "move_generator.h"
 #include "board.h"
+#include "timer.h"
 
 namespace Vixen::UserInterface
 {
@@ -28,6 +29,12 @@ namespace Vixen::UserInterface
 
             else if (command == "reset")
                 board.SetBoard(START_POSITION);
+
+            else if (command.substr(0, 5) == "perft")
+            {
+                Timer<std::chrono::milliseconds> timer("Perft test");
+                std::cout << "Visited nodes: " << Test::PerftTest(stoi(command.substr(6)), board) << "\n";
+            }
 
             else if (command.substr(0, 4) == "move")
                 try
@@ -69,12 +76,15 @@ namespace Vixen::UserInterface
         int from = NotationToSquare(move.substr(0, 2));
         int to = NotationToSquare(move.substr(2));
         int decodedMove = to << 6 | from;
-        std::array<Move, 300> moves = board.GetAllMoves();
 
-        for (const auto &pseudoMove : moves)
-            if ((pseudoMove & 0xFFF) == decodedMove)
+        MoveGenerator generator = board.CreateGenerator();
+        std::array<Move, 300> moves = generator.GetMoveList();
+        auto moveListSize = generator.GetListSize();
+
+        for (size_t i = 0; i < moveListSize; ++i)
+            if ((moves[i] & 0xFFF) == decodedMove)
             {
-                if (!board.MakeMove(pseudoMove))
+                if (!board.MakeMove(moves[i]))
                     throw std::runtime_error("Illegal move!");
                 isLegal = true;
                 break;
@@ -94,14 +104,17 @@ namespace Vixen::UserInterface
 
     void PrintMoveList(Board &board)
     {
-        for (const auto &move : board.GetAllMoves())
+        MoveGenerator generator = board.CreateGenerator();
+        std::array<Move, 300> movesList = generator.GetMoveList();
+        size_t moveListSize = generator.GetListSize();
+        for (size_t i = 0; i < moveListSize; ++i)
         {
-            if (board.MakeMove(move))
+            if (board.MakeMove(movesList[i]))
             {
-                std::cout << SquareToNotation(move & 0x3F)
-                          << SquareToNotation((move & 0xFC0) >> 6);
-                if ((move >> 12) & PROMOTION)
-                    std::cout << "nbrq"[static_cast<int>((move >> 12) & 3)];
+                std::cout << SquareToNotation(movesList[i] & 0x3F)
+                          << SquareToNotation((movesList[i] & 0xFC0) >> 6);
+                if ((movesList[i] >> 12) & PROMOTION)
+                    std::cout << "nbrq"[static_cast<int>((movesList[i] >> 12) & 3)];
 
                 std::cout << ", ";
                 board.TakeBack();

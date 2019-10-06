@@ -24,4 +24,5 @@ if (Boost_FOUND)
     target_link_libraries(perfttest Vixen ${Boost_LIBRARIES})
 endif ()
 
+install(TARGETS perfttest DESTINATION bin)
 install(TARGETS unittest perfttest DESTINATION bin)

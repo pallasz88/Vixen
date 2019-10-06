@@ -40,13 +40,12 @@ namespace Vixen
     void Hash::ComputePositionKey(const Board &board)
     {
         positionKey = 0;
-        BitBoards bitBoards = board.GetBitBoards();
 
         for (int square = H1; square <= MAX_SQUARE_INDEX; ++square)
         {
             for (const auto &pieceKey : pieceKeys)
             {
-                if (IsBitSet(bitBoards.at(pieceKey), square))
+                if (IsBitSet(board.GetBitBoard(pieceKey), square))
                     HashPiece(square, pieceKey);
             }
         }

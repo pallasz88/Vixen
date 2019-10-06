@@ -1,10 +1,8 @@
 #include "board.h"
 #include "move_generator.h"
 #include "hash.h"
-#include "timer.h"
 
 #include <iostream>
-#include <exception>
 #include <bitset>
 #include <boost/algorithm/string.hpp>
 
@@ -23,12 +21,12 @@ namespace Vixen
 
     Board::Board() :
             pieceList{' '},
+            bitBoards{EMPTY_BOARD},
             enPassantBitBoard(EMPTY_BOARD),
             castlingRights(0),
             historyMovesNum(0),
             fiftyMoves(0),
-            whiteToMove(false),
-            moveGenerator(std::make_shared<MoveGenerator>())
+            whiteToMove(false)
     {
         SetBoard(START_POSITION);
         AntSliderUtils::InitKnightKingAttack();
@@ -41,8 +39,9 @@ namespace Vixen
 
     void Board::SetBoard(const std::string &position)
     {
-        this->fenPosition = position;
-        InitBitBoards(bitBoards);
+        fenPosition = position;
+        bitBoards.fill(EMPTY_BOARD);
+        pieceList.fill(' ');
         std::vector<std::string> parsedPosition;
         SplitFenPosition(parsedPosition);
         ParseFenPiecePart(parsedPosition[0]);
@@ -77,14 +76,7 @@ namespace Vixen
         std::cout << std::endl << "+---+---+---+---+---+---+---+---+" << std::endl;
         for (int squareIndex = MAX_SQUARE_INDEX; squareIndex >= H1; --squareIndex)
         {
-            for (const auto &item : bitBoards)
-            {
-                if (IsBitSet(item.second, squareIndex) && item.first != 'F' && item.first != 'S')
-                {
-                    std::cout << "| " << item.first << " ";
-                    break;
-                }
-            }
+            std::cout << "| " << pieceList[squareIndex] << " ";
             if (squareIndex % 8 == 0)
             {
                 std::cout << "| " << squareIndex / 8 + 1 << std::endl;
@@ -125,7 +117,7 @@ namespace Vixen
                 case 'r':
                 case 'q':
                 case 'k':
-                    SetBit(bitBoards[fenChar], squareIndex);
+                    SetBit(bitBoards[GetPieceIndex(fenChar)], squareIndex);
                     pieceList[squareIndex] = fenChar;
                     break;
                 case '/':
@@ -150,19 +142,19 @@ namespace Vixen
 
     void Board::SumUpBitBoards()
     {
-        bitBoards['S'] = bitBoards['k'] |
-                         bitBoards['q'] |
-                         bitBoards['r'] |
-                         bitBoards['b'] |
-                         bitBoards['n'] |
-                         bitBoards['p'];
-        bitBoards['F'] = bitBoards['K'] |
-                         bitBoards['Q'] |
-                         bitBoards['R'] |
-                         bitBoards['B'] |
-                         bitBoards['N'] |
-                         bitBoards['P'];
-        bitBoards[' '] = ~(bitBoards['F'] | bitBoards['S']);
+        bitBoards[GetPieceIndex('F')] = bitBoards[GetPieceIndex('K')] |
+                                        bitBoards[GetPieceIndex('Q')] |
+                                        bitBoards[GetPieceIndex('R')] |
+                                        bitBoards[GetPieceIndex('B')] |
+                                        bitBoards[GetPieceIndex('N')] |
+                                        bitBoards[GetPieceIndex('P')];
+        bitBoards[GetPieceIndex('S')] = bitBoards[GetPieceIndex('k')] |
+                                        bitBoards[GetPieceIndex('q')] |
+                                        bitBoards[GetPieceIndex('r')] |
+                                        bitBoards[GetPieceIndex('b')] |
+                                        bitBoards[GetPieceIndex('n')] |
+                                        bitBoards[GetPieceIndex('p')];
+        bitBoards[GetPieceIndex(' ')] = ~(bitBoards[GetPieceIndex('F')] | bitBoards[GetPieceIndex('S')]);
     }
 
     void Board::ParseSideToMovePart(const std::string &parsedPosition)
@@ -206,26 +198,6 @@ namespace Vixen
             }
         }
     }
-
-    void InitBitBoards(BitBoards &bitBoards)
-    {
-        bitBoards['P'] = EMPTY_BOARD;
-        bitBoards['p'] = EMPTY_BOARD;
-        bitBoards['B'] = EMPTY_BOARD;
-        bitBoards['b'] = EMPTY_BOARD;
-        bitBoards['N'] = EMPTY_BOARD;
-        bitBoards['n'] = EMPTY_BOARD;
-        bitBoards['K'] = EMPTY_BOARD;
-        bitBoards['k'] = EMPTY_BOARD;
-        bitBoards['r'] = EMPTY_BOARD;
-        bitBoards['R'] = EMPTY_BOARD;
-        bitBoards['Q'] = EMPTY_BOARD;
-        bitBoards['q'] = EMPTY_BOARD;
-        bitBoards['F'] = EMPTY_BOARD;
-        bitBoards['S'] = EMPTY_BOARD;
-        bitBoards[' '] = EMPTY_BOARD;
-    }
-
 
     bool Board::MakeMove(Vixen::Move move)
     {
@@ -286,8 +258,8 @@ namespace Vixen
         hashBoard->HashSide();
         ++historyMovesNum;
 
-        if (whiteToMove ? Check::IsInCheck<Colors::BLACK>(bitBoards)
-                        : Check::IsInCheck<Colors::WHITE>(bitBoards))
+        if (whiteToMove ? Check::IsInCheck<Colors::BLACK>(*this)
+                        : Check::IsInCheck<Colors::WHITE>(*this))
         {
             TakeBack();
             return false;
@@ -377,19 +349,19 @@ namespace Vixen
     void Board::RemovePiece(int position, char pieceType)
     {
         pieceList[position] = ' ';
-        ClearBit(bitBoards.at(pieceType), position);
+        ClearBit(bitBoards.at(GetPieceIndex(pieceType)), position);
         hashBoard->HashPiece(position, pieceType);
-        ClearBit(bitBoards.at(islower(pieceType) ? 'S' : 'F'), position);
-        SetBit(bitBoards.at(' '), position);
+        ClearBit(bitBoards.at(GetPieceIndex(islower(pieceType) ? 'S' : 'F')), position);
+        SetBit(bitBoards.at(GetPieceIndex(' ')), position);
     }
 
     void Board::AddPiece(int position, char pieceType)
     {
         pieceList[position] = pieceType;
-        SetBit(bitBoards.at(pieceType), position);
+        SetBit(bitBoards.at(GetPieceIndex(pieceType)), position);
         hashBoard->HashPiece(position, pieceType);
-        SetBit(bitBoards.at(islower(pieceType) ? 'S' : 'F'), position);
-        ClearBit(bitBoards.at(' '), position);
+        SetBit(bitBoards.at(GetPieceIndex(islower(pieceType) ? 'S' : 'F')), position);
+        ClearBit(bitBoards.at(GetPieceIndex(' ')), position);
     }
 
     bool Board::IsBoardConsistent() const
@@ -401,12 +373,12 @@ namespace Vixen
         }
     }
 
-    std::array<Move, 300> Board::GetAllMoves()
+    MoveGenerator Board::CreateGenerator() const
     {
-        moveGenerator.reset(new MoveGenerator);
-        IsWhiteToMove() ? moveGenerator->GenerateAllMoves<Colors::WHITE>(*this)
-                        : moveGenerator->GenerateAllMoves<Colors::BLACK>(*this);
-        return moveGenerator->GetMoveList();
+        MoveGenerator moveGenerator;
+        whiteToMove ? moveGenerator.GenerateAllMoves<Colors::WHITE>(*this)
+                    : moveGenerator.GenerateAllMoves<Colors::BLACK>(*this);
+        return moveGenerator;
     }
 
 }

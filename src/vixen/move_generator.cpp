@@ -1,6 +1,4 @@
 #include "move_generator.h"
-#include "board.h"
-#include "timer.h"
 #include <iostream>
 
 namespace Vixen
@@ -72,13 +70,13 @@ namespace Vixen
     template<Colors sideToMove>
     void MoveGenerator::GenerateQuietMoves(const Board &board)
     {
-        auto targets = board.bitBoards.at(' ');
-        auto pawns = sideToMove == Colors::WHITE ? board.bitBoards.at('P') : board.bitBoards.at('p');
-        auto kings = sideToMove == Colors::WHITE ? board.bitBoards.at('K') : board.bitBoards.at('k');
-        auto knights = sideToMove == Colors::WHITE ? board.bitBoards.at('N') : board.bitBoards.at('n');
-        auto bishops = sideToMove == Colors::WHITE ? board.bitBoards.at('B') : board.bitBoards.at('b');
-        auto rooks = sideToMove == Colors::WHITE ? board.bitBoards.at('R') : board.bitBoards.at('r');
-        auto queens = sideToMove == Colors::WHITE ? board.bitBoards.at('Q') : board.bitBoards.at('q');
+        auto targets = board.GetBitBoard(' ');
+        auto pawns = sideToMove == Colors::WHITE ? board.GetBitBoard('P') : board.GetBitBoard('p');
+        auto kings = sideToMove == Colors::WHITE ? board.GetBitBoard('K') : board.GetBitBoard('k');
+        auto knights = sideToMove == Colors::WHITE ? board.GetBitBoard('N') : board.GetBitBoard('n');
+        auto bishops = sideToMove == Colors::WHITE ? board.GetBitBoard('B') : board.GetBitBoard('b');
+        auto rooks = sideToMove == Colors::WHITE ? board.GetBitBoard('R') : board.GetBitBoard('r');
+        auto queens = sideToMove == Colors::WHITE ? board.GetBitBoard('Q') : board.GetBitBoard('q');
         auto blockers = ~targets;
 
         auto pawnOffset = sideToMove == Colors::WHITE ? 8 : -8;
@@ -93,11 +91,11 @@ namespace Vixen
         GeneratePawnMoves(2 * pawnOffset, doublePawnPush, DOUBLE_PAWN_PUSH);
         GeneratePawnPromotionMoves(pawnOffset, pawnPromotion);
 
-        GenerateAntiSliderMoves(targets, knights, AntSliderUtils::knightAttack, QUIET_MOVE);
-        GenerateAntiSliderMoves(targets, kings, AntSliderUtils::kingAttack, QUIET_MOVE);
+        GenerateAntiSliderMoves<QUIET_MOVE>(targets, knights, AntSliderUtils::knightAttack);
+        GenerateAntiSliderMoves<QUIET_MOVE>(targets, kings, AntSliderUtils::kingAttack);
 
-        GenerateSliderMoves<Slider::BISHOP>(bishops | queens, blockers, targets, QUIET_MOVE);
-        GenerateSliderMoves<Slider::ROOK>(rooks | queens, blockers, targets, QUIET_MOVE);
+        GenerateSliderMoves<Slider::BISHOP, QUIET_MOVE>(bishops | queens, blockers, targets);
+        GenerateSliderMoves<Slider::ROOK, QUIET_MOVE>(rooks | queens, blockers, targets);
 
         GenerateCastlingMoves<sideToMove>(board);
     }
@@ -105,15 +103,15 @@ namespace Vixen
     template<Colors sideToMove>
     void MoveGenerator::GenerateCaptureMoves(const Board &board)
     {
-        auto targets = sideToMove == Colors::WHITE ? board.bitBoards.at('S') : board.bitBoards.at('F');
+        auto targets = sideToMove == Colors::WHITE ? board.GetBitBoard('S') : board.GetBitBoard('F');
         auto enPassant = board.GetEnPassant();
-        auto pawns = sideToMove == Colors::WHITE ? board.bitBoards.at('P') : board.bitBoards.at('p');
-        auto kings = sideToMove == Colors::WHITE ? board.bitBoards.at('K') : board.bitBoards.at('k');
-        auto knights = sideToMove == Colors::WHITE ? board.bitBoards.at('N') : board.bitBoards.at('n');
-        auto bishops = sideToMove == Colors::WHITE ? board.bitBoards.at('B') : board.bitBoards.at('b');
-        auto rooks = sideToMove == Colors::WHITE ? board.bitBoards.at('R') : board.bitBoards.at('r');
-        auto queens = sideToMove == Colors::WHITE ? board.bitBoards.at('Q') : board.bitBoards.at('q');
-        auto blockers = ~board.bitBoards.at(' ');
+        auto pawns = sideToMove == Colors::WHITE ? board.GetBitBoard('P') : board.GetBitBoard('p');
+        auto kings = sideToMove == Colors::WHITE ? board.GetBitBoard('K') : board.GetBitBoard('k');
+        auto knights = sideToMove == Colors::WHITE ? board.GetBitBoard('N') : board.GetBitBoard('n');
+        auto bishops = sideToMove == Colors::WHITE ? board.GetBitBoard('B') : board.GetBitBoard('b');
+        auto rooks = sideToMove == Colors::WHITE ? board.GetBitBoard('R') : board.GetBitBoard('r');
+        auto queens = sideToMove == Colors::WHITE ? board.GetBitBoard('Q') : board.GetBitBoard('q');
+        auto blockers = ~board.GetBitBoard(' ');
 
         auto pawnLeftCapture = sideToMove == Colors::WHITE ? 9 : -9;
         auto pawnRightCapture = sideToMove == Colors::WHITE ? 7 : -7;
@@ -124,18 +122,18 @@ namespace Vixen
 
         GeneratePawnPromotionCaptureMoves(pawnLeftCapture, pawnPromotionLeft);
         GeneratePawnPromotionCaptureMoves(pawnRightCapture, pawnPromotionRight);
-        GenerateAntiSliderMoves(targets & ~promotionRanks, pawns,
-                                AntSliderUtils::pawnAttack[static_cast<int>(sideToMove)], CAPTURE);
-        GenerateAntiSliderMoves(enPassant, pawns, AntSliderUtils::pawnAttack[static_cast<int>(sideToMove)], ENPASSANT);
+        GenerateAntiSliderMoves<CAPTURE>(targets & ~promotionRanks, pawns,
+                                         AntSliderUtils::pawnAttack[static_cast<int>(sideToMove)]);
+        GenerateAntiSliderMoves<ENPASSANT>(enPassant, pawns, AntSliderUtils::pawnAttack[static_cast<int>(sideToMove)]);
 
-        GenerateAntiSliderMoves(targets, knights, AntSliderUtils::knightAttack, CAPTURE);
-        GenerateAntiSliderMoves(targets, kings, AntSliderUtils::kingAttack, CAPTURE);
-        GenerateSliderMoves<Slider::BISHOP>(bishops | queens, blockers, targets, CAPTURE);
-        GenerateSliderMoves<Slider::ROOK>(rooks | queens, blockers, targets, CAPTURE);
+        GenerateAntiSliderMoves<CAPTURE>(targets, knights, AntSliderUtils::knightAttack);
+        GenerateAntiSliderMoves<CAPTURE>(targets, kings, AntSliderUtils::kingAttack);
+        GenerateSliderMoves<Slider::BISHOP, CAPTURE>(bishops | queens, blockers, targets);
+        GenerateSliderMoves<Slider::ROOK, CAPTURE>(rooks | queens, blockers, targets);
     }
 
-    template<Slider slider>
-    void MoveGenerator::GenerateSliderMoves(BitBoard pieces, BitBoard blockers, BitBoard targets, uint8_t moveType)
+    template<Slider slider, uint8_t moveType>
+    void MoveGenerator::GenerateSliderMoves(BitBoard pieces, BitBoard blockers, BitBoard targets)
     {
         auto attacks = EMPTY_BOARD;
         while (pieces)
@@ -152,9 +150,9 @@ namespace Vixen
         }
     }
 
+    template<uint8_t moveType>
     constexpr void
-    MoveGenerator::GenerateAntiSliderMoves(BitBoard targets, BitBoard pieces, const BitBoard *attackBoard,
-                                           uint8_t moveType)
+    MoveGenerator::GenerateAntiSliderMoves(BitBoard targets, BitBoard pieces, const BitBoard *attackBoard)
     {
         auto attacks = EMPTY_BOARD;
         while (pieces)
@@ -206,40 +204,59 @@ namespace Vixen
     template<Colors sideToMove>
     constexpr void MoveGenerator::GenerateCastlingMoves(const Board &board)
     {
-        int castlingRights = board.castlingRights;
+        int castlingRights = board.GetCastlingRights();
         if constexpr (sideToMove == Colors::WHITE)
         {
             if ((castlingRights & WKCA) &&
-                IsBitSet(board.bitBoards.at(' '), F1) &&
-                IsBitSet(board.bitBoards.at(' '), G1) &&
-                !Check::IsInCheck<sideToMove>(board.bitBoards) &&
-                !Check::IsSquareAttacked<sideToMove>(F1, board.bitBoards))
+                IsBitSet(board.GetBitBoard(' '), F1) &&
+                IsBitSet(board.GetBitBoard(' '), G1) &&
+                !Check::IsInCheck<sideToMove>(board) &&
+                !Check::IsSquareAttacked<sideToMove>(F1, board))
                 moveList[size++] = CreateMove(E1, G1, KING_CASTLE);
 
             if ((castlingRights & WQCA) &&
-                IsBitSet(board.bitBoards.at(' '), D1) &&
-                IsBitSet(board.bitBoards.at(' '), C1) &&
-                IsBitSet(board.bitBoards.at(' '), B1) &&
-                !Check::IsInCheck<sideToMove>(board.bitBoards) &&
-                !Check::IsSquareAttacked<sideToMove>(D1, board.bitBoards))
+                IsBitSet(board.GetBitBoard(' '), D1) &&
+                IsBitSet(board.GetBitBoard(' '), C1) &&
+                IsBitSet(board.GetBitBoard(' '), B1) &&
+                !Check::IsInCheck<sideToMove>(board) &&
+                !Check::IsSquareAttacked<sideToMove>(D1, board))
                 moveList[size++] = CreateMove(E1, C1, QUEEN_CASTLE);
         }
         else
         {
             if ((castlingRights & BKCA) &&
-                IsBitSet(board.bitBoards.at(' '), F8) &&
-                IsBitSet(board.bitBoards.at(' '), G8) &&
-                !Check::IsInCheck<sideToMove>(board.bitBoards) &&
-                !Check::IsSquareAttacked<sideToMove>(F8, board.bitBoards))
+                IsBitSet(board.GetBitBoard(' '), F8) &&
+                IsBitSet(board.GetBitBoard(' '), G8) &&
+                !Check::IsInCheck<sideToMove>(board) &&
+                !Check::IsSquareAttacked<sideToMove>(F8, board))
                 moveList[size++] = CreateMove(E8, G8, KING_CASTLE);
 
             if ((castlingRights & BQCA) &&
-                IsBitSet(board.bitBoards.at(' '), D8) &&
-                IsBitSet(board.bitBoards.at(' '), C8) &&
-                IsBitSet(board.bitBoards.at(' '), B8) &&
-                !Check::IsInCheck<sideToMove>(board.bitBoards) &&
-                !Check::IsSquareAttacked<sideToMove>(D8, board.bitBoards))
+                IsBitSet(board.GetBitBoard(' '), D8) &&
+                IsBitSet(board.GetBitBoard(' '), C8) &&
+                IsBitSet(board.GetBitBoard(' '), B8) &&
+                !Check::IsInCheck<sideToMove>(board) &&
+                !Check::IsSquareAttacked<sideToMove>(D8, board))
                 moveList[size++] = CreateMove(E8, C8, QUEEN_CASTLE);
         }
     }
+
+    template<Colors sideToMove>
+    void MoveGenerator::GenerateAllMoves(const Vixen::Board &board)
+    {
+        GenerateCaptureMoves<sideToMove>(board);
+        GenerateQuietMoves<sideToMove>(board);
+    }
+
+    template void MoveGenerator::GenerateCaptureMoves<Colors::WHITE>(const Board &);
+
+    template void MoveGenerator::GenerateCaptureMoves<Colors::BLACK>(const Board &);
+
+    template void MoveGenerator::GenerateQuietMoves<Colors::WHITE>(const Board &);
+
+    template void MoveGenerator::GenerateQuietMoves<Colors::BLACK>(const Board &);
+
+    template void MoveGenerator::GenerateAllMoves<Colors::WHITE>(const Board &board);
+
+    template void MoveGenerator::GenerateAllMoves<Colors::BLACK>(const Board &board);
 }

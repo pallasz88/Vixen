@@ -72,8 +72,14 @@ namespace Vixen
          * Returns the map of Bitboards
          * @return bitBoards
          */
-        [[nodiscard]] BitBoards GetBitBoards() const
+        [[nodiscard]] constexpr BitBoards GetBitBoards() const
         { return bitBoards; }
+
+
+        [[nodiscard]] constexpr BitBoard GetBitBoard(char c) const
+        {
+            return bitBoards[GetPieceIndex(c)];
+        }
 
         /**
          * Returns if white is on move from given position.
@@ -137,10 +143,10 @@ namespace Vixen
         void TakeBack();
 
         /**
-         * Returns a vector of pseudo-legal moves from given position.
+         * Returns a generator of pseudo-legal moves from given position.
          * @return pseudo-legal moves
          */
-        std::array<Move, 300> GetAllMoves();
+        MoveGenerator CreateGenerator() const;
 
     private:
 
@@ -148,7 +154,7 @@ namespace Vixen
 
         std::string fenPosition;
 
-        char pieceList[SQUARE_NUMBER];
+        std::array<char, SQUARE_NUMBER> pieceList;
 
         BitBoards bitBoards;
 
@@ -163,8 +169,6 @@ namespace Vixen
         bool whiteToMove;
 
         std::unique_ptr<Hash> hashBoard;
-
-        std::shared_ptr<MoveGenerator> moveGenerator;
 
         void SumUpBitBoards();
 
@@ -191,7 +195,5 @@ namespace Vixen
         void UpdateCastlingRights(int from, int to);
 
         [[nodiscard]] bool IsBoardConsistent() const;
-
-        friend class MoveGenerator;
     };
 }

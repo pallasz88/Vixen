@@ -105,7 +105,7 @@ namespace Vixen
 
     typedef uint64_t BitBoard;
 
-    typedef std::map<char, BitBoard> BitBoards;
+    typedef std::array<BitBoard, 15> BitBoards;
 
     typedef std::array<int, 2> Direction;
 
@@ -135,11 +135,40 @@ namespace Vixen
 
     constexpr BitBoard EMPTY_BOARD = 0ULL;
 
+    static constexpr std::array<char, 12> pieceKeys = {'P', 'N', 'B', 'R', 'Q', 'K',
+                                                       'p', 'n', 'b', 'r', 'q', 'k'};
+
+    static constexpr std::array<std::pair<char, int>, 15> pieceMap = {std::make_pair('P', 0),
+                                                                      std::make_pair('N', 1),
+                                                                      std::make_pair('B', 2),
+                                                                      std::make_pair('R', 3),
+                                                                      std::make_pair('Q', 4),
+                                                                      std::make_pair('K', 5),
+                                                                      std::make_pair('p', 6),
+                                                                      std::make_pair('n', 7),
+                                                                      std::make_pair('b', 8),
+                                                                      std::make_pair('r', 9),
+                                                                      std::make_pair('q', 10),
+                                                                      std::make_pair('k', 11),
+                                                                      std::make_pair('F', 12),
+                                                                      std::make_pair('S', 13),
+                                                                      std::make_pair(' ', 14)};
+
+    inline constexpr auto GetPieceIndex(char c)
+    {
+        for (const auto& i : pieceMap)
+        {
+            if (i.first == c)
+                return i.second;
+        }
+        return -1;
+    }
+
     inline constexpr BitBoard SquareToBitBoard(int square)
     {
         if (square < 0)
             return EMPTY_BOARD;
-        return static_cast<BitBoard>(1) << square;
+        return static_cast<BitBoard>(1U) << static_cast<unsigned>(square);
     }
 
     inline constexpr bool IsValidCoordinate(int file, int rank)
@@ -170,30 +199,21 @@ namespace Vixen
         template<Colors pawnColor>
         inline constexpr BitBoard PushPawns(BitBoard pawns)
         {
-            if constexpr (pawnColor == Colors::WHITE)
-                return pawns << 8;
-            else
-                return pawns >> 8;
+            return (pawnColor == Colors::WHITE) ? pawns << 8U : pawns >> 8U;
         }
 
         template<Colors pawnColor>
         inline constexpr BitBoard PawnCaptureLeft(BitBoard pawns)
         {
             pawns &= ~FILEH;
-            if constexpr (pawnColor == Colors::WHITE)
-                return pawns << 9;
-            else
-                return pawns >> 9;
+            return (pawnColor == Colors::WHITE) ? pawns << 9U : pawns >> 9U;
         }
 
         template<Colors pawnColor>
         inline constexpr BitBoard PawnCaptureRight(BitBoard pawns)
         {
             pawns &= ~FILEA;
-            if constexpr (pawnColor == Colors::WHITE)
-                return pawns << 7;
-            else
-                return pawns >> 7;
+            return (pawnColor == Colors::WHITE) ? pawns << 7U : pawns >> 7U;
         }
     }
 
@@ -232,7 +252,7 @@ namespace Vixen
 
     inline constexpr Move CreateMove(unsigned from, unsigned to, uint8_t moveType)
     {
-        return moveType << 12 | to << 6 | from;
+        return moveType << 12U | to << 6U | from;
     }
 
 }
