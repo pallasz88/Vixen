@@ -1,6 +1,7 @@
 #include <iostream>
-#include <boost/thread.hpp>
-#include <userinterface.h>
+#include <thread>
+
+#include "userinterface.h"
 #include "board.h"
 #include "hash.h"
 #include "move_generator.h"
@@ -15,7 +16,7 @@ int main()
     ExcHndlInit();
 #endif
     Vixen::Board board;
-    boost::thread t(&Vixen::UserInterface::WaitUserInput, std::ref(board));
+    std::thread t(&Vixen::UserInterface::WaitUserInput, std::ref(board));
     t.join();
     return 0;
 }

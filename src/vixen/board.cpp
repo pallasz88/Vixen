@@ -1,10 +1,11 @@
 #include "board.h"
 #include "move_generator.h"
 #include "hash.h"
-
 #include <iostream>
+
 #include <bitset>
-#include <boost/algorithm/string.hpp>
+#include <iterator>
+#include <sstream>
 
 namespace Vixen
 {
@@ -42,8 +43,7 @@ namespace Vixen
         fenPosition = position;
         bitBoards.fill(EMPTY_BOARD);
         pieceList.fill(' ');
-        std::vector<std::string> parsedPosition;
-        SplitFenPosition(parsedPosition);
+        std::vector<std::string> parsedPosition = SplitFenPosition();
         ParseFenPiecePart(parsedPosition[0]);
         ParseSideToMovePart(parsedPosition[1]);
         ParseCastlingRightPart(parsedPosition[2]);
@@ -66,9 +66,10 @@ namespace Vixen
             history = std::stack<History>();
     }
 
-    void Board::SplitFenPosition(std::vector<std::string> &fenParts) const
+    std::vector<std::string> Board::SplitFenPosition() const
     {
-        boost::split(fenParts, fenPosition, boost::is_any_of(" "));
+        std::istringstream iss(fenPosition);
+        return {std::istream_iterator<std::string>(iss), std::istream_iterator<std::string>()};
     }
 
     void Board::PrintBoard() const
@@ -364,14 +365,14 @@ namespace Vixen
         ClearBit(bitBoards.at(GetPieceIndex(' ')), position);
     }
 
-    bool Board::IsBoardConsistent() const
+    /*bool Board::IsBoardConsistent() const
     {
         for (int square = 0; square < SQUARE_NUMBER; ++square)
         {
             if (!IsBitSet(bitBoards.at(pieceList[square]), square))
                 throw std::runtime_error("Board is not ok: " + std::to_string(square) + pieceList[square]);
         }
-    }
+    }*/
 
     MoveGenerator Board::CreateGenerator() const
     {

@@ -177,7 +177,7 @@ namespace Vixen
 
         void ParseCastlingRightPart(const std::string &splittedFen);
 
-        void SplitFenPosition(std::vector<std::string> &fenParts) const;
+        std::vector<std::string> SplitFenPosition() const;
 
         void ClearHistory();
 
