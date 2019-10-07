@@ -15,12 +15,6 @@ namespace Vixen
     class MoveGenerator;
 
     /**
-     * To init Bitboard maps.
-     * @param bitBoards
-     */
-    void InitBitBoards(BitBoards &bitBoards);
-
-    /**
      * Used for recovering previous positions to start position.
      */
     struct History
@@ -177,7 +171,7 @@ namespace Vixen
 
         void ParseCastlingRightPart(const std::string &splittedFen);
 
-        std::vector<std::string> SplitFenPosition() const;
+        [[nodiscard]] std::vector<std::string> SplitFenPosition() const;
 
         void ClearHistory();
 
@@ -190,7 +184,5 @@ namespace Vixen
         void MoveCastlingBlackRook(int from, int to);
 
         void UpdateCastlingRights(int from, int to);
-
-        [[nodiscard]] bool IsBoardConsistent() const;
     };
 }

@@ -343,8 +343,6 @@ namespace Vixen
 
         else if (moveType & CAPTURE)
             AddPiece(to, capturedPieceLetter);
-
-        //IsBoardConsistent();
     }
 
     void Board::RemovePiece(int position, char pieceType)
@@ -364,15 +362,6 @@ namespace Vixen
         SetBit(bitBoards.at(GetPieceIndex(islower(pieceType) ? 'S' : 'F')), position);
         ClearBit(bitBoards.at(GetPieceIndex(' ')), position);
     }
-
-    /*bool Board::IsBoardConsistent() const
-    {
-        for (int square = 0; square < SQUARE_NUMBER; ++square)
-        {
-            if (!IsBitSet(bitBoards.at(pieceList[square]), square))
-                throw std::runtime_error("Board is not ok: " + std::to_string(square) + pieceList[square]);
-        }
-    }*/
 
     MoveGenerator Board::CreateGenerator() const
     {
