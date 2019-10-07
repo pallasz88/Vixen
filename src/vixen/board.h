@@ -69,16 +69,13 @@ namespace Vixen
         Board();
 
         /**
-         * Returns the map of Bitboards
-         * @return bitBoards
+         * Returns piece bitboard from bitBoards
+         * @param piece
+         * @return
          */
-        [[nodiscard]] constexpr BitBoards GetBitBoards() const
-        { return bitBoards; }
-
-
-        [[nodiscard]] constexpr BitBoard GetBitBoard(char c) const
+        [[nodiscard]] constexpr BitBoard GetBitBoard(char piece) const
         {
-            return bitBoards[GetPieceIndex(c)];
+            return bitBoards[GetPieceIndex(piece)];
         }
 
         /**
@@ -146,7 +143,7 @@ namespace Vixen
          * Returns a generator of pseudo-legal moves from given position.
          * @return pseudo-legal moves
          */
-        MoveGenerator CreateGenerator() const;
+        [[nodiscard]] MoveGenerator CreateGenerator() const;
 
     private:
 

@@ -38,7 +38,7 @@ namespace Vixen
                 std::cout << move << ", ";
                 std::cout << SquareToNotation(move & 0x3F)
                           << SquareToNotation((move & 0xFC0) >> 6);
-                std::cout << ": " << olds << std::endl;
+                std::cout << ": " << olds << "\n";
             }
             return nodes;
         }

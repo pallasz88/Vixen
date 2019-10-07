@@ -22,7 +22,7 @@ namespace Vixen::UserInterface
                 PrintHelp();
 
             else if (command.substr(0, 8) == "position")
-                board.SetBoard(command.substr(10));
+                board.SetBoard(command.substr(9));
 
             else if (command == "print")
                 board.PrintBoard();
@@ -73,16 +73,16 @@ namespace Vixen::UserInterface
         if (!std::regex_match(move, moveRegex))
             throw std::runtime_error("INVALID MOVE FORMAT. Use for example e2e4.");
 
-        int from = NotationToSquare(move.substr(0, 2));
-        int to = NotationToSquare(move.substr(2));
-        int decodedMove = to << 6 | from;
+        unsigned from = NotationToSquare(move.substr(0, 2));
+        unsigned to = NotationToSquare(move.substr(2));
+        unsigned decodedMove = to << 6U | from;
 
         MoveGenerator generator = board.CreateGenerator();
         std::array<Move, 300> moves = generator.GetMoveList();
         auto moveListSize = generator.GetListSize();
 
         for (size_t i = 0; i < moveListSize; ++i)
-            if ((moves[i] & 0xFFF) == decodedMove)
+            if ((moves[i] & 0xFFFU) == decodedMove)
             {
                 if (!board.MakeMove(moves[i]))
                     throw std::runtime_error("Illegal move!");
@@ -111,10 +111,10 @@ namespace Vixen::UserInterface
         {
             if (board.MakeMove(movesList[i]))
             {
-                std::cout << SquareToNotation(movesList[i] & 0x3F)
-                          << SquareToNotation((movesList[i] & 0xFC0) >> 6);
-                if ((movesList[i] >> 12) & PROMOTION)
-                    std::cout << "nbrq"[static_cast<int>((movesList[i] >> 12) & 3)];
+                std::cout << SquareToNotation(movesList[i] & 0x3FU)
+                          << SquareToNotation((movesList[i] & 0xFC0U) >> 6U);
+                if ((movesList[i] >> 12U) & PROMOTION)
+                    std::cout << "nbrq"[static_cast<int>((movesList[i] >> 12U) & 3U)];
 
                 std::cout << ", ";
                 board.TakeBack();

@@ -73,14 +73,14 @@ namespace Vixen
 
     void Board::PrintBoard() const
     {
-        std::cout << std::endl << "+---+---+---+---+---+---+---+---+" << std::endl;
+        std::cout << "\n+---+---+---+---+---+---+---+---+\n";
         for (int squareIndex = MAX_SQUARE_INDEX; squareIndex >= H1; --squareIndex)
         {
             std::cout << "| " << pieceList[squareIndex] << " ";
             if (squareIndex % 8 == 0)
             {
-                std::cout << "| " << squareIndex / 8 + 1 << std::endl;
-                std::cout << "+---+---+---+---+---+---+---+---+" << std::endl;
+                std::cout << "| " << squareIndex / 8 + 1 << "\n";
+                std::cout << "+---+---+---+---+---+---+---+---+\n";
             }
         }
 
@@ -88,14 +88,14 @@ namespace Vixen
         for (int rank = 0; rank < 8; ++rank)
             std::cout << static_cast<char>('a' + rank) << "   ";
 
-        std::cout << std::endl << std::endl;
+        std::cout << "\n\n";
         auto enPassantSquare = (enPassantBitBoard != EMPTY_BOARD) ? SquareToNotation(
                 TrailingZeroCount(enPassantBitBoard)) : "-";
-        std::cout << "En passant square: " << enPassantSquare << std::endl;
-        std::cout << "Castling rights: " << std::bitset<4>(static_cast<unsigned >(castlingRights)) << std::endl;
-        std::cout << "Position key: " << std::hex << hashBoard->GetHash() << std::dec << std::endl;
-        std::cout << "Fen position: " << fenPosition << std::endl;
-        std::cout << std::endl << std::endl;
+        std::cout << "En passant square: " << enPassantSquare << "\n";
+        std::cout << "Castling rights: " << std::bitset<4>(static_cast<unsigned >(castlingRights)) << "\n";
+        std::cout << "Position key: " << std::hex << hashBoard->GetHash() << std::dec << "\n";
+        std::cout << "Fen position: " << fenPosition << "\n";
+        std::cout << "\n\n";
     }
 
     void Board::ParseFenPiecePart(const std::string &parsedPosition)
@@ -133,7 +133,7 @@ namespace Vixen
                     squareIndex -= fenChar - '1';
                     break;
                 default:
-                    std::cerr << "ERROR IN FEN: PIECE POSITION" << std::endl;
+                    std::cerr << "ERROR IN FEN: PIECE POSITION" << "\n";
                     return;
             }
             --squareIndex;
@@ -166,7 +166,7 @@ namespace Vixen
             whiteToMove = false;
 
         else
-            std::cerr << "ERROR IN FEN: SIDE TO MOVE" << std::endl;
+            std::cerr << "ERROR IN FEN: SIDE TO MOVE" << "\n";
 
     }
 
@@ -193,7 +193,7 @@ namespace Vixen
                     castlingRights = 0;
                     break;
                 default:
-                    std::cerr << "ERROR IN FEN: CASTLING" << std::endl;
+                    std::cerr << "ERROR IN FEN: CASTLING\n";
                     break;
             }
         }
@@ -201,9 +201,9 @@ namespace Vixen
 
     bool Board::MakeMove(Vixen::Move move)
     {
-        int from = move & 0x3F;
-        int to = (move >> 6) & 0x3F;
-        int moveType = move >> 12;
+        int from = move & 0x3FU;
+        int to = (move >> 6U) & 0x3FU;
+        int moveType = move >> 12U;
         int enPassantSquare = whiteToMove ? to - 8 : to + 8;
         char movingPieceLetter = pieceList[from];
         char capturedPieceLetter = pieceList[to];

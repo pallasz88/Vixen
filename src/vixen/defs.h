@@ -227,7 +227,7 @@ namespace Vixen
         return __builtin_ctzll(bitBoard);
     }
 
-    inline auto SquareToNotation(int square)
+    inline auto SquareToNotation(unsigned square)
     {
         std::string notation;
         notation.push_back(static_cast<char>(7 - square % 8 + 'a'));
