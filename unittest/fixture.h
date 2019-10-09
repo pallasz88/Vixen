@@ -3,6 +3,7 @@
 #include <boost/test/included/unit_test.hpp>
 #include "userinterface.h"
 #include "board.h"
+#include "move_generator.h"
 
 namespace Vixen
 {
@@ -16,6 +17,24 @@ namespace Vixen
         ~Fixture()
         {
             BOOST_TEST_MESSAGE("teardown fixture");
+        }
+        
+        bool CheckMoveList(std::vector<Move> &expectedMoveList)
+        {
+            MoveGenerator generator = board.CreateGenerator();
+            int listSize = generator.GetListSize();
+            std::array<Move, 300> moveList = generator.GetMoveList();
+
+            if (expectedMoveList.size() != listSize)
+                return false;
+
+            for (int i = 0; i < listSize; ++i)
+            {
+                if (expectedMoveList[i] != moveList[i])
+                    return  false;
+            }
+
+            return true;
         }
 
         Board board;

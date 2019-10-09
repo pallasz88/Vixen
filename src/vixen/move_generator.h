@@ -26,7 +26,7 @@ namespace Vixen
          * Returns pseudo-legal move list size.
          * @return moveList
          */
-        [[nodiscard]] constexpr auto GetListSize() const
+        [[nodiscard]] constexpr int GetListSize() const
         { return size; }
 
         /**
