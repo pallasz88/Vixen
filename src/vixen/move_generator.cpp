@@ -35,7 +35,6 @@ namespace Vixen
                 nodes += Perft(depth - 1, board);
                 board.TakeBack();
                 BitBoard olds = leafs - cumNodes;
-                std::cout << move << ", ";
                 std::cout << SquareToNotation(move & 0x3F)
                           << SquareToNotation((move & 0xFC0) >> 6);
                 std::cout << ": " << olds << "\n";
@@ -116,8 +115,8 @@ namespace Vixen
         auto pawnLeftCapture = sideToMove == Colors::WHITE ? 9 : -9;
         auto pawnRightCapture = sideToMove == Colors::WHITE ? 7 : -7;
         auto promotionRanks = sideToMove == Colors::WHITE ? RANK8 : RANK1;
-        auto pawnPromotionLeft = PawnCaptureLeft<sideToMove>(pawns) & blockers & promotionRanks;
-        auto pawnPromotionRight = PawnCaptureRight<sideToMove>(pawns) & blockers & promotionRanks;
+        auto pawnPromotionLeft = PawnCaptureLeft<sideToMove>(pawns) & targets & promotionRanks;
+        auto pawnPromotionRight = PawnCaptureRight<sideToMove>(pawns) & targets & promotionRanks;
         enPassant &= sideToMove == Colors::WHITE ? RANK6 : RANK3;
 
         GeneratePawnPromotionCaptureMoves(pawnLeftCapture, pawnPromotionLeft);

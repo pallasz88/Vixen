@@ -205,14 +205,14 @@ namespace Vixen
         template<Colors pawnColor>
         inline constexpr BitBoard PawnCaptureLeft(BitBoard pawns)
         {
-            pawns &= ~FILEH;
+            pawns &= (pawnColor == Colors::WHITE) ? ~FILEA : ~FILEH;
             return (pawnColor == Colors::WHITE) ? pawns << 9U : pawns >> 9U;
         }
 
         template<Colors pawnColor>
         inline constexpr BitBoard PawnCaptureRight(BitBoard pawns)
         {
-            pawns &= ~FILEA;
+            pawns &= (pawnColor == Colors::WHITE) ? ~FILEH : ~FILEA;
             return (pawnColor == Colors::WHITE) ? pawns << 7U : pawns >> 7U;
         }
     }
