@@ -4,13 +4,13 @@
 #include <vector>
 #include <string>
 #include <stack>
-#include <memory>
+
 #include "defs.h"
 #include "slider.h"
+#include "hash.h"
 
 namespace Vixen
 {
-    class Hash;
 
     class MoveGenerator;
 
@@ -167,7 +167,7 @@ namespace Vixen
 
         bool whiteToMove;
 
-        std::unique_ptr<Hash> hashBoard;
+        Hash hashBoard;
 
         void SumUpBitBoards();
 

@@ -1,9 +1,12 @@
 #pragma once
 
-#include "board.h"
+#include "defs.h"
 
 namespace Vixen
 {
+
+    class Board;
+
     /**
      * Creates unique hash values from board positions.
      */
@@ -12,24 +15,18 @@ namespace Vixen
     public:
 
         /**
-         * Constructor
-         * @param board
-         */
-        explicit Hash(const Board &board);
-
-        /**
-         * Returns position key.
-         */
-        [[nodiscard]] constexpr PositionKey GetHash() const
-        { return positionKey; }
-
-        /**
          * Sets hash value. In case undoing move it is faster
          * to recover hash from stack than recalculate it.
          * @param hash
          */
-        constexpr void SetHash(BitBoard hash)
+        constexpr void SetHash(PositionKey hash)
         { positionKey = hash; }
+
+        /**
+         * Gets hash value.
+         */
+        [[nodiscard]] constexpr PositionKey GetHash() const
+        { return positionKey; }
 
         /**
          * For differentiating boards where enpassant is available or not.
@@ -41,7 +38,7 @@ namespace Vixen
          * For differentiating boards where castling is available or not.
          * @param board
          */
-        constexpr void HashCastling(const Board &board);
+        void HashCastling(const Board &board);
 
         /**
          * For hashing piece positions
@@ -53,44 +50,24 @@ namespace Vixen
         /**
          * For differentiating boards where white's or black's turn.
          */
-        constexpr void HashSide();
+        void HashSide();
+
+        static void InitZobristKeys();
+
+        void ComputePositionKey(const Board &board);
 
     private:
 
         PositionKey positionKey;
 
-        PieceHashKeys pieceHashKeys;
+        static PieceHashKeys pieceHashKeys;
 
-        SideHashKey sideHashKey;
+        static SideHashKey sideHashKey;
 
-        CastleHashKeys castleHashKeys;
+        static CastleHashKeys castleHashKeys;
 
         static BitBoard GenerateBigRandom();
 
-        void InitZobristKeys();
-
-        void ComputePositionKey(const Board &board);
-
         static constexpr char enPassantKey = ' ';
     };
-
-    inline constexpr void Hash::HashCastling(const Board &board)
-    {
-        positionKey ^= castleHashKeys.at(static_cast<uint8_t>(board.GetCastlingRights()));
-    }
-
-    inline constexpr void Hash::HashSide()
-    {
-        positionKey ^= sideHashKey;
-    }
-
-    inline void Hash::HashPiece(int square, char pieceKey)
-    {
-        positionKey ^= pieceHashKeys[square][pieceKey];
-    }
-
-    inline void Hash::HashEnPassant(BitBoard enPassant)
-    {
-        positionKey ^= pieceHashKeys[TrailingZeroCount(enPassant)][enPassantKey];
-    }
 }

@@ -27,12 +27,14 @@ namespace Vixen
             castlingRights(0),
             historyMovesNum(0),
             fiftyMoves(0),
-            whiteToMove(false)
+            whiteToMove(false),
+            hashBoard(Hash())
     {
         SetBoard(START_POSITION);
         AntSliderUtils::InitKnightKingAttack();
         AntSliderUtils::InitPawnAttack();
         SliderUtils::InitMagics();
+        Hash::InitZobristKeys();
 #ifdef DEBUG
         PrintBoard();
 #endif
@@ -57,7 +59,7 @@ namespace Vixen
 
     void Board::AddHashBoard()
     {
-        hashBoard = std::make_unique<Hash>(*this);
+        hashBoard.ComputePositionKey(*this);
     }
 
     void Board::ClearHistory()
@@ -94,7 +96,7 @@ namespace Vixen
                 TrailingZeroCount(enPassantBitBoard)) : "-";
         std::cout << "En passant square: " << enPassantSquare << "\n";
         std::cout << "Castling rights: " << std::bitset<4>(static_cast<unsigned >(castlingRights)) << "\n";
-        std::cout << "Position key: " << std::hex << hashBoard->GetHash() << std::dec << "\n";
+        std::cout << "Position key: " << std::hex << hashBoard.GetHash() << std::dec << "\n";
         std::cout << "Fen position: " << fenPosition << "\n";
         std::cout << "\n\n";
     }
@@ -215,13 +217,13 @@ namespace Vixen
                         move,
                         movingPieceLetter,
                         capturedPieceLetter,
-                        hashBoard->GetHash());
+                        hashBoard.GetHash());
 
         ++fiftyMoves;
 
         if (enPassantBitBoard != EMPTY_BOARD)
         {
-            hashBoard->HashEnPassant(enPassantBitBoard);
+            hashBoard.HashEnPassant(enPassantBitBoard);
             enPassantBitBoard = EMPTY_BOARD;
         }
 
@@ -256,7 +258,7 @@ namespace Vixen
         }
 
         whiteToMove = !whiteToMove;
-        hashBoard->HashSide();
+        hashBoard.HashSide();
         ++historyMovesNum;
 
         if (whiteToMove ? Check::IsInCheck<Colors::BLACK>(*this)
@@ -270,10 +272,10 @@ namespace Vixen
 
     void Board::UpdateCastlingRights(int from, int to)
     {
-        hashBoard->HashCastling(*this);
+        hashBoard.HashCastling(*this);
         castlingRights &= castlePermission[from];
         castlingRights &= castlePermission[to];
-        hashBoard->HashCastling(*this);
+        hashBoard.HashCastling(*this);
     }
 
     void Board::MoveCastlingWhiteRook(int from, int to)
@@ -291,7 +293,7 @@ namespace Vixen
     void Board::MakeDoublePawnPush(int enPassantSquare)
     {
         SetBit(enPassantBitBoard, enPassantSquare);
-        hashBoard->HashEnPassant(enPassantBitBoard);
+        hashBoard.HashEnPassant(enPassantBitBoard);
     }
 
     void Board::MakeCapture(int to, char capturedPieceLetter)
@@ -319,7 +321,7 @@ namespace Vixen
         fiftyMoves = lastPosition.fiftyMoves;
         enPassantBitBoard = lastPosition.enPassant;
         castlingRights = lastPosition.castlingRights;
-        hashBoard->SetHash(lastPosition.hash);
+        hashBoard.SetHash(lastPosition.hash);
 
         if (moveType == KING_CASTLE)
             whiteToMove ? MoveCastlingWhiteRook(F1, H1) : MoveCastlingBlackRook(F8, H8);
@@ -349,7 +351,7 @@ namespace Vixen
     {
         pieceList[position] = ' ';
         ClearBit(bitBoards[GetPieceIndex(pieceType)], position);
-        hashBoard->HashPiece(position, pieceType);
+        hashBoard.HashPiece(position, pieceType);
         ClearBit(bitBoards[GetPieceIndex(IsBlackMoving(pieceType) ? 'S' : 'F')], position);
         SetBit(bitBoards[GetPieceIndex(' ')], position);
     }
@@ -358,7 +360,7 @@ namespace Vixen
     {
         pieceList[position] = pieceType;
         SetBit(bitBoards[GetPieceIndex(pieceType)], position);
-        hashBoard->HashPiece(position, pieceType);
+        hashBoard.HashPiece(position, pieceType);
         SetBit(bitBoards[GetPieceIndex(IsBlackMoving(pieceType) ? 'S' : 'F')], position);
         ClearBit(bitBoards[GetPieceIndex(' ')], position);
     }

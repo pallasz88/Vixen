@@ -6,11 +6,12 @@
 
 namespace Vixen
 {
-    Hash::Hash(const Board &board)
-    {
-        InitZobristKeys();
-        ComputePositionKey(board);
-    }
+    PieceHashKeys Hash::pieceHashKeys;
+
+    SideHashKey Hash::sideHashKey;
+
+    CastleHashKeys Hash::castleHashKeys;
+
 
     void Hash::InitZobristKeys()
     {
@@ -32,7 +33,7 @@ namespace Vixen
 
     BitBoard Hash::GenerateBigRandom()
     {
-        static std::default_random_engine generator(std::random_device{}());
+        static std::mt19937_64 generator(0xDEADBEEF);
         static std::uniform_int_distribution<uint64_t> distribution(0, ULLONG_MAX);
         return distribution(generator);
     }
@@ -61,5 +62,25 @@ namespace Vixen
             HashSide();
 
         HashCastling(board);
+    }
+
+    void Hash::HashCastling(const Board &board)
+    {
+        positionKey ^= castleHashKeys[board.GetCastlingRights()];
+    }
+
+    void Hash::HashSide()
+    {
+        positionKey ^= sideHashKey;
+    }
+
+    void Hash::HashPiece(int square, char pieceKey)
+    {
+        positionKey ^= pieceHashKeys[square][pieceKey];
+    }
+
+    void Hash::HashEnPassant(BitBoard enPassant)
+    {
+        positionKey ^= pieceHashKeys[TrailingZeroCount(enPassant)][enPassantKey];
     }
 }
