@@ -110,7 +110,7 @@ namespace Vixen
          *  FEN position: https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation
          * @param position
          */
-        void SetBoard(const std::string &position);
+        void SetBoard(const std::string_view &position);
 
         /**
          * Removes given piece type from given position.
@@ -151,8 +151,6 @@ namespace Vixen
 
         std::stack<History> history;
 
-        std::string fenPosition;
-
         std::array<char, SQUARE_NUMBER> pieceList;
 
         BitBoards bitBoards;
@@ -173,13 +171,27 @@ namespace Vixen
 
         void AddHashBoard();
 
-        void ParseFenPiecePart(const std::string &splittedFen);
+        void ParseFenPiecePart(const std::string_view &parsedPosition);
 
-        void ParseSideToMovePart(const std::string &splittedFen);
+        void ParseSideToMovePart(const std::string_view &splittedFen);
 
-        void ParseCastlingRightPart(const std::string &splittedFen);
+        void ParseCastlingRightPart(const std::string_view &parsedPosition);
 
-        [[nodiscard]] std::vector<std::string> SplitFenPosition() const;
+        template<size_t N, char delimiter = ' '>
+        [[nodiscard]] constexpr auto SplitFenPosition(const std::string_view &position) const
+        {
+            std::array<std::string_view, N> parts;
+            auto part = 0ULL;
+            auto firstPosition = 0ULL;
+            auto nextPosition = position.find_first_of(delimiter);
+            while(part < N)
+            {
+                parts[part++] = position.substr(firstPosition, nextPosition - firstPosition);
+                firstPosition = nextPosition + 1;
+                nextPosition = position.find_first_of(delimiter, firstPosition);
+            }
+            return parts;
+        }
 
         void ClearHistory();
 

@@ -6,6 +6,7 @@
 #include <bitset>
 #include <iterator>
 #include <sstream>
+#include <charconv>
 
 namespace Vixen
 {
@@ -40,19 +41,18 @@ namespace Vixen
 #endif
     }
 
-    void Board::SetBoard(const std::string &position)
+    void Board::SetBoard(const std::string_view &position)
     {
-        fenPosition = position;
         bitBoards.fill(EMPTY_BOARD);
         pieceList.fill(' ');
-        std::vector<std::string> parsedPosition = SplitFenPosition();
+        std::array<std::string_view, 6> parsedPosition = SplitFenPosition<6>(position);
         ParseFenPiecePart(parsedPosition[0]);
         ParseSideToMovePart(parsedPosition[1]);
         ParseCastlingRightPart(parsedPosition[2]);
         SumUpBitBoards();
         enPassantBitBoard = SquareToBitBoard(NotationToSquare(parsedPosition[3]));
-        fiftyMoves = stoi(parsedPosition[4]);
-        historyMovesNum = stoi(parsedPosition[5]);
+        std::from_chars(begin(parsedPosition[4]), end(parsedPosition[4]), fiftyMoves);
+        std::from_chars(begin(parsedPosition[5]), end(parsedPosition[5]), historyMovesNum);
         AddHashBoard();
         ClearHistory();
     }
@@ -66,12 +66,6 @@ namespace Vixen
     {
         if (!history.empty())
             history = std::stack<History>();
-    }
-
-    std::vector<std::string> Board::SplitFenPosition() const
-    {
-        std::istringstream iss(fenPosition);
-        return {std::istream_iterator<std::string>(iss), std::istream_iterator<std::string>()};
     }
 
     void Board::PrintBoard() const
@@ -97,11 +91,10 @@ namespace Vixen
         std::cout << "En passant square: " << enPassantSquare << "\n";
         std::cout << "Castling rights: " << std::bitset<4>(static_cast<unsigned >(castlingRights)) << "\n";
         std::cout << "Position key: " << std::hex << hashBoard.GetHash() << std::dec << "\n";
-        std::cout << "Fen position: " << fenPosition << "\n";
         std::cout << "\n\n";
     }
 
-    void Board::ParseFenPiecePart(const std::string &parsedPosition)
+    void Board::ParseFenPiecePart(const std::string_view &parsedPosition)
     {
         unsigned squareIndex = MAX_SQUARE_INDEX;
         for (const auto &fenChar : parsedPosition)
@@ -160,7 +153,7 @@ namespace Vixen
         bitBoards[GetPieceIndex(' ')] = ~(bitBoards[GetPieceIndex('F')] | bitBoards[GetPieceIndex('S')]);
     }
 
-    void Board::ParseSideToMovePart(const std::string &parsedPosition)
+    void Board::ParseSideToMovePart(const std::string_view &parsedPosition)
     {
         if (parsedPosition == "w")
             whiteToMove = true;
@@ -173,7 +166,7 @@ namespace Vixen
 
     }
 
-    void Board::ParseCastlingRightPart(const std::string &parsedPosition)
+    void Board::ParseCastlingRightPart(const std::string_view &parsedPosition)
     {
         castlingRights = 0;
         for (const auto &it : parsedPosition)

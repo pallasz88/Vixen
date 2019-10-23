@@ -2,13 +2,14 @@
 
 #include <map>
 #include <algorithm>
+#include <string_view>
 
 #if defined _WIN32
 #define VIXEN_API __declspec(dllexport)
 #else
 #define VIXEN_API __attribute__ ((visibility ("default")))
 #endif
-#define START_POSITION "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+static constexpr std::string_view START_POSITION = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 #define TESTPOS1 "2rq1rk1/3bppbp/p5p1/1ppPP3/2n2B2/2P1Q1PP/P2N1PB1/R4RK1 w - - 1 18"
 #define TESTPOS2 "rnbqkb1r/pp1ppppp/5n2/8/3p1B2/4P3/PPP2PPP/RN1QKBNR w KQkq - 0 4"
 
@@ -230,12 +231,12 @@ namespace Vixen
         }
     }
 
-    inline constexpr int PopCount(BitBoard bitBoard)
+    inline constexpr unsigned PopCount(BitBoard bitBoard)
     {
         return __builtin_popcountll(bitBoard);
     }
 
-    inline constexpr int TrailingZeroCount(BitBoard bitBoard)
+    inline constexpr unsigned TrailingZeroCount(BitBoard bitBoard)
     {
         return __builtin_ctzll(bitBoard);
     }
@@ -248,7 +249,7 @@ namespace Vixen
         return notation;
     }
 
-    inline auto NotationToSquare(const std::string &notation)
+    inline constexpr auto NotationToSquare(const std::string_view &notation)
     {
         if (notation.at(0) < 'a' || notation.at(0) > 'h' ||
             notation.at(1) < '1' || notation.at(1) > '8')
@@ -258,7 +259,7 @@ namespace Vixen
 
     inline constexpr int GetPosition(BitBoard &bitBoard)
     {
-        int from = TrailingZeroCount(bitBoard);
+        const auto from = TrailingZeroCount(bitBoard);
         bitBoard &= bitBoard - 1;
         return from;
     }
