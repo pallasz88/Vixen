@@ -225,7 +225,7 @@ namespace Vixen
             enPassantBitBoard = EMPTY_BOARD;
         }
 
-        if (tolower(movingPieceLetter) == 'p')
+        if (IsMovingPawn(movingPieceLetter))
             fiftyMoves = 0;
 
         if (moveType & CAPTURE)
@@ -350,7 +350,7 @@ namespace Vixen
         pieceList[position] = ' ';
         ClearBit(bitBoards.at(GetPieceIndex(pieceType)), position);
         hashBoard->HashPiece(position, pieceType);
-        ClearBit(bitBoards.at(GetPieceIndex(islower(pieceType) ? 'S' : 'F')), position);
+        ClearBit(bitBoards.at(GetPieceIndex(IsBlackMoving(pieceType) ? 'S' : 'F')), position);
         SetBit(bitBoards.at(GetPieceIndex(' ')), position);
     }
 
@@ -359,7 +359,7 @@ namespace Vixen
         pieceList[position] = pieceType;
         SetBit(bitBoards.at(GetPieceIndex(pieceType)), position);
         hashBoard->HashPiece(position, pieceType);
-        SetBit(bitBoards.at(GetPieceIndex(islower(pieceType) ? 'S' : 'F')), position);
+        SetBit(bitBoards.at(GetPieceIndex(IsBlackMoving(pieceType) ? 'S' : 'F')), position);
         ClearBit(bitBoards.at(GetPieceIndex(' ')), position);
     }
 

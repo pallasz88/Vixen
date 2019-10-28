@@ -3,7 +3,7 @@ project(main)
 
 MESSAGE("Status: Building main")
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 
 set(SOURCE_FILES main.cpp)
 

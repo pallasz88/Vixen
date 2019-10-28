@@ -33,7 +33,7 @@ namespace Vixen
     BitBoard Hash::GenerateBigRandom()
     {
         static std::default_random_engine generator(std::random_device{}());
-        static std::uniform_int_distribution<uint64_t> distribution(0, UINTMAX_MAX);
+        static std::uniform_int_distribution<uint64_t> distribution(0, ULLONG_MAX);
         return distribution(generator);
     }
 
@@ -46,7 +46,10 @@ namespace Vixen
             for (const auto &pieceKey : pieceKeys)
             {
                 if (IsBitSet(board.GetBitBoard(pieceKey), square))
+                {
                     HashPiece(square, pieceKey);
+                    break;
+                }
             }
         }
 

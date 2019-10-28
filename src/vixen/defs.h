@@ -1,6 +1,7 @@
 #pragma once
 
 #include <map>
+#include <algorithm>
 
 #if defined _WIN32
 #define VIXEN_API __declspec(dllexport)
@@ -138,6 +139,8 @@ namespace Vixen
     static constexpr std::array<char, 12> pieceKeys = {'P', 'N', 'B', 'R', 'Q', 'K',
                                                        'p', 'n', 'b', 'r', 'q', 'k'};
 
+    static constexpr std::array<char, 12> blackPieceKeys = {'p', 'n', 'b', 'r', 'q', 'k'};
+
     static constexpr std::array<std::pair<char, int>, 15> pieceMap = {std::make_pair('P', 0),
                                                                       std::make_pair('N', 1),
                                                                       std::make_pair('B', 2),
@@ -153,6 +156,12 @@ namespace Vixen
                                                                       std::make_pair('F', 12),
                                                                       std::make_pair('S', 13),
                                                                       std::make_pair(' ', 14)};
+//    C++20 find_if function is constexpr
+//    inline constexpr auto GetPieceIndex(char c)
+//    {
+//        auto iterator = std::find_if(std::begin(pieceMap), std::end(pieceMap), [c](auto p){return p.first == c;});
+//        return (iterator != std::end(pieceMap)) ? iterator->second : -1;
+//    }
 
     inline constexpr auto GetPieceIndex(char c)
     {
@@ -178,44 +187,45 @@ namespace Vixen
 
     namespace
     {
-        template<class T>
-        inline constexpr bool IsBitSet(const T &bits, unsigned position)
-        {
-            return bits & (1ULL << position);
-        }
-
-        template<class T>
-        inline constexpr void SetBit(T &bitBoard, unsigned position)
-        {
-            bitBoard |= 1ULL << position;
-        }
-
-        template<class T>
-        inline constexpr void ClearBit(T &bitBoard, unsigned position)
-        {
-            bitBoard &= ~(1ULL << position);
-        }
-
-        template<Colors pawnColor>
-        inline constexpr BitBoard PushPawns(BitBoard pawns)
-        {
-            return (pawnColor == Colors::WHITE) ? pawns << 8U : pawns >> 8U;
-        }
-
-        template<Colors pawnColor>
-        inline constexpr BitBoard PawnCaptureLeft(BitBoard pawns)
-        {
-            pawns &= (pawnColor == Colors::WHITE) ? ~FILEA : ~FILEH;
-            return (pawnColor == Colors::WHITE) ? pawns << 9U : pawns >> 9U;
-        }
-
-        template<Colors pawnColor>
-        inline constexpr BitBoard PawnCaptureRight(BitBoard pawns)
-        {
-            pawns &= (pawnColor == Colors::WHITE) ? ~FILEH : ~FILEA;
-            return (pawnColor == Colors::WHITE) ? pawns << 7U : pawns >> 7U;
-        }
+    template<class T>
+    inline constexpr bool IsBitSet(const T &bits, unsigned position)
+    {
+        return bits & (1ULL << position);
     }
+
+    template<class T>
+    inline constexpr void SetBit(T &bitBoard, unsigned position)
+    {
+        bitBoard |= 1ULL << position;
+    }
+
+    template<class T>
+    inline constexpr void ClearBit(T &bitBoard, unsigned position)
+    {
+        bitBoard &= ~(1ULL << position);
+    }
+
+    template<Colors pawnColor>
+    inline constexpr BitBoard PushPawns(BitBoard pawns)
+    {
+        return (pawnColor == Colors::WHITE) ? pawns << 8U : pawns >> 8U;
+    }
+
+    template<Colors pawnColor>
+    inline constexpr BitBoard PawnCaptureLeft(BitBoard pawns)
+    {
+        pawns &= (pawnColor == Colors::WHITE) ? ~FILEA : ~FILEH;
+        return (pawnColor == Colors::WHITE) ? pawns << 9U : pawns >> 9U;
+    }
+
+    template<Colors pawnColor>
+    inline constexpr BitBoard PawnCaptureRight(BitBoard pawns)
+    {
+        pawns &= (pawnColor == Colors::WHITE) ? ~FILEH : ~FILEA;
+        return (pawnColor == Colors::WHITE) ? pawns << 7U : pawns >> 7U;
+    }
+    }
+
 
     inline constexpr int PopCount(BitBoard bitBoard)
     {
@@ -255,4 +265,19 @@ namespace Vixen
         return moveType << 12U | to << 6U | from;
     }
 
+    inline constexpr bool IsMovingPawn(char movingPiece)
+    {
+        return movingPiece == 'P' || movingPiece == 'p';
+    }
+
+    /**
+     * Returns true if the moving piece is black
+     * C++20 find function will be constexpr.
+     * @param c 
+     * @return 
+     */
+    inline bool IsBlackMoving(char c)
+    {
+        return std::find(begin(blackPieceKeys), end(blackPieceKeys), c) != end(blackPieceKeys);
+    }
 }
