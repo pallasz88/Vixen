@@ -4,13 +4,11 @@
 #include <iostream>
 
 #include <bitset>
-#include <iterator>
-#include <sstream>
 #include <charconv>
 
 namespace Vixen
 {
-    constexpr int castlePermission[SQUARE_NUMBER] = {
+    static constexpr int castlePermission[SQUARE_NUMBER] = {
             7, 15, 15, 3, 15, 15, 15, 11,
             15, 15, 15, 15, 15, 15, 15, 15,
             15, 15, 15, 15, 15, 15, 15, 15,
@@ -31,11 +29,11 @@ namespace Vixen
             whiteToMove(false),
             hashBoard(Hash())
     {
-        SetBoard(START_POSITION);
         AntSliderUtils::InitKnightKingAttack();
         AntSliderUtils::InitPawnAttack();
         SliderUtils::InitMagics();
         Hash::InitZobristKeys();
+        SetBoard(START_POSITION);
 #ifdef DEBUG
         PrintBoard();
 #endif
@@ -314,7 +312,6 @@ namespace Vixen
         fiftyMoves = lastPosition.fiftyMoves;
         enPassantBitBoard = lastPosition.enPassant;
         castlingRights = lastPosition.castlingRights;
-        hashBoard.SetHash(lastPosition.hash);
 
         if (moveType == KING_CASTLE)
             whiteToMove ? MoveCastlingWhiteRook(F1, H1) : MoveCastlingBlackRook(F8, H8);
@@ -338,6 +335,8 @@ namespace Vixen
 
         else if (moveType & CAPTURE)
             AddPiece(to, capturedPieceLetter);
+
+        hashBoard.SetHash(lastPosition.hash);
     }
 
     void Board::RemovePiece(int position, char pieceType)

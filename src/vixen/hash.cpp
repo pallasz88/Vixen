@@ -12,7 +12,6 @@ namespace Vixen
 
     CastleHashKeys Hash::castleHashKeys;
 
-
     void Hash::InitZobristKeys()
     {
         for (int square = H1; square <= MAX_SQUARE_INDEX; ++square)
@@ -34,8 +33,7 @@ namespace Vixen
     BitBoard Hash::GenerateBigRandom()
     {
         static std::mt19937_64 generator(0xDEADBEEF);
-        static std::uniform_int_distribution<uint64_t> distribution(0, ULLONG_MAX);
-        return distribution(generator);
+        return generator();
     }
 
     void Hash::ComputePositionKey(const Board &board)
