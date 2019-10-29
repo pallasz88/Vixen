@@ -63,7 +63,7 @@ namespace Vixen::Search
 
     int Evaluate(const Board &board)
     {
-        std::array<char, SQUARE_NUMBER> pieceList = board.GetPieceList();
+        std::array pieceList = board.GetPieceList();
         int value = 0;
         for (const auto &piece : pieceList)
         {

@@ -39,6 +39,22 @@ namespace Vixen
 #endif
     }
 
+    template<size_t N, char delimiter>
+    [[nodiscard]] constexpr auto Board::SplitFenPosition(const std::string_view &position) const
+    {
+        std::array<std::string_view, N> parts;
+        auto part = 0ULL;
+        auto firstPosition = 0ULL;
+        auto nextPosition = position.find_first_of(delimiter);
+        while(part < N)
+        {
+            parts[part++] = position.substr(firstPosition, nextPosition - firstPosition);
+            firstPosition = nextPosition + 1;
+            nextPosition = position.find_first_of(delimiter, firstPosition);
+        }
+        return parts;
+    }
+
     void Board::SetBoard(const std::string_view &position)
     {
         bitBoards.fill(EMPTY_BOARD);

@@ -72,8 +72,10 @@ namespace Vixen
             return bitBoards[GetPieceIndex(piece)];
         }
 
-
-
+        /**
+         * Returns piece square list.
+         * @return
+         */
         [[nodiscard]] constexpr auto GetPieceList() const
         {
             return pieceList;
@@ -157,6 +159,8 @@ namespace Vixen
 
         BitBoard enPassantBitBoard;
 
+        Hash hashBoard;
+
         int castlingRights;
 
         int historyMovesNum;
@@ -164,8 +168,6 @@ namespace Vixen
         int fiftyMoves;
 
         bool whiteToMove;
-
-        Hash hashBoard;
 
         void SumUpBitBoards();
 
@@ -178,20 +180,7 @@ namespace Vixen
         void ParseCastlingRightPart(const std::string_view &parsedPosition);
 
         template<size_t N, char delimiter = ' '>
-        [[nodiscard]] constexpr auto SplitFenPosition(const std::string_view &position) const
-        {
-            std::array<std::string_view, N> parts;
-            auto part = 0ULL;
-            auto firstPosition = 0ULL;
-            auto nextPosition = position.find_first_of(delimiter);
-            while(part < N)
-            {
-                parts[part++] = position.substr(firstPosition, nextPosition - firstPosition);
-                firstPosition = nextPosition + 1;
-                nextPosition = position.find_first_of(delimiter, firstPosition);
-            }
-            return parts;
-        }
+        [[nodiscard]] constexpr auto SplitFenPosition(const std::string_view &position) const;
 
         void ClearHistory();
 
