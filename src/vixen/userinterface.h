@@ -1,5 +1,3 @@
-#include <memory>
-#include <string>
 #include "defs.h"
 
 namespace Vixen

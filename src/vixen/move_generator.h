@@ -1,7 +1,5 @@
 #pragma once
 
-#include <array>
-#include <string>
 #include "anti_slider.h"
 #include "slider.h"
 #include "board.h"
@@ -39,7 +37,7 @@ namespace Vixen
 
     private:
 
-        std::array<Move, MAX_MOVELIST_SIZE> moveList;
+        std::array<Move, MAX_MOVELIST_SIZE> moveList{};
 
         int size = 0;
 

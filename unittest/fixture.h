@@ -1,7 +1,6 @@
 #pragma once
 
 #include <boost/test/included/unit_test.hpp>
-#include "userinterface.h"
 #include "board.h"
 #include "move_generator.h"
 

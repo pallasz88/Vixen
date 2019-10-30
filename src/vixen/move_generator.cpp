@@ -1,4 +1,5 @@
 #include "move_generator.h"
+
 #include <iostream>
 
 namespace Vixen

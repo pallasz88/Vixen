@@ -32,25 +32,29 @@ namespace Vixen
          * For differentiating boards where enpassant is available or not.
          * @param enPassant
          */
-        void HashEnPassant(BitBoard enPassant);
+        constexpr void HashEnPassant(BitBoard enPassant)
+        { positionKey ^= pieceHashKeys[TrailingZeroCount(enPassant)][enPassantKey]; }
 
         /**
          * For differentiating boards where castling is available or not.
-         * @param board
+         * @param castlingRights
          */
-        void HashCastling(const Board &board);
+        constexpr void HashCastling(int castlingRights) noexcept
+        { positionKey ^= castleHashKeys[castlingRights]; }
 
         /**
          * For hashing piece positions
          * @param square
          * @param pieceKey
          */
-        void HashPiece(int square, char pieceKey);
+        constexpr void HashPiece(int square, char pieceKey)
+        { positionKey ^= pieceHashKeys[square][GetPieceIndex(pieceKey)]; }
 
         /**
          * For differentiating boards where white's or black's turn.
          */
-        void HashSide();
+        void HashSide()
+        { positionKey ^= sideHashKey; }
 
         static void InitZobristKeys();
 
@@ -66,8 +70,8 @@ namespace Vixen
 
         static CastleHashKeys castleHashKeys;
 
-        static BitBoard GenerateBigRandom();
+        static constexpr int enPassantKey = 12;
 
-        static constexpr char enPassantKey = ' ';
+        static BitBoard GenerateBigRandom();
     };
 }

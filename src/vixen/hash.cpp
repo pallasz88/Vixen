@@ -1,7 +1,6 @@
 #include "hash.h"
 #include "board.h"
 
-#include <iostream>
 #include <random>
 
 namespace Vixen
@@ -24,9 +23,7 @@ namespace Vixen
         sideHashKey = GenerateBigRandom();
 
         for (auto &castleHashKey : castleHashKeys)
-        {
             castleHashKey = GenerateBigRandom();
-        }
 
     }
 
@@ -59,26 +56,6 @@ namespace Vixen
         if (board.IsWhiteToMove())
             HashSide();
 
-        HashCastling(board);
-    }
-
-    void Hash::HashCastling(const Board &board)
-    {
-        positionKey ^= castleHashKeys[board.GetCastlingRights()];
-    }
-
-    void Hash::HashSide()
-    {
-        positionKey ^= sideHashKey;
-    }
-
-    void Hash::HashPiece(int square, char pieceKey)
-    {
-        positionKey ^= pieceHashKeys[square][pieceKey];
-    }
-
-    void Hash::HashEnPassant(BitBoard enPassant)
-    {
-        positionKey ^= pieceHashKeys[TrailingZeroCount(enPassant)][enPassantKey];
+        HashCastling(board.GetCastlingRights());
     }
 }

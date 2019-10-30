@@ -4,6 +4,7 @@
 #include "fixture.h"
 #include "move_generator.h"
 #include "hash.h"
+#include "userinterface.h"
 
 
 using namespace Vixen;

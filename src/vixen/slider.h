@@ -80,11 +80,6 @@ namespace Vixen::SliderUtils
         return SliderUtils::RookTable[square].attacks[GetIndex(occupied, SliderUtils::RookTable[square])];
     }
 
-    inline BitBoard GetQueenAttack(int square, Vixen::BitBoard occupied)
-    {
-        return GetBishopAttack(square, occupied) | GetRookAttack(square, occupied);
-    }
-
     inline void GetNextCoordinate(int &file, int &rank, const Direction &direction)
     {
         file += direction[0], rank += direction[1];

@@ -1,7 +1,11 @@
 #pragma once
 
-#include "board.h"
-#include "move_generator.h"
+#include "defs.h"
+
+namespace Vixen
+{
+    class Board;
+}
 
 namespace Vixen::Search
 {

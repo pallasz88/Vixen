@@ -1,13 +1,8 @@
 #pragma once
 
-#include <memory>
-#include <vector>
-#include <string>
-#include <stack>
-
-#include "defs.h"
-#include "slider.h"
 #include "hash.h"
+
+#include <stack>
 
 namespace Vixen
 {
@@ -77,9 +72,7 @@ namespace Vixen
          * @return
          */
         [[nodiscard]] constexpr auto GetPieceList() const
-        {
-            return pieceList;
-        }
+        { return pieceList; }
 
         /**
          * Returns if white is on move from given position.
@@ -169,15 +162,15 @@ namespace Vixen
 
         bool whiteToMove;
 
-        void SumUpBitBoards();
+        constexpr void SumUpBitBoards();
 
         void AddHashBoard();
 
-        void ParseFenPiecePart(const std::string_view &parsedPosition);
+        constexpr void ParseFenPiecePart(const std::string_view &parsedPosition);
 
-        void ParseSideToMovePart(const std::string_view &splittedFen);
+        constexpr void ParseSideToMovePart(const std::string_view &splittedFen);
 
-        void ParseCastlingRightPart(const std::string_view &parsedPosition);
+        constexpr void ParseCastlingRightPart(const std::string_view &parsedPosition);
 
         template<size_t N, char delimiter = ' '>
         [[nodiscard]] constexpr auto SplitFenPosition(const std::string_view &position) const;
@@ -192,6 +185,6 @@ namespace Vixen
 
         void MoveCastlingBlackRook(int from, int to);
 
-        void UpdateCastlingRights(int from, int to);
+        constexpr void UpdateCastlingRights(int from, int to);
     };
 }

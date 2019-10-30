@@ -1,6 +1,5 @@
 #pragma once
 
-#include <map>
 #include <algorithm>
 #include <string_view>
 
@@ -9,11 +8,10 @@
 #else
 #define VIXEN_API __attribute__ ((visibility ("default")))
 #endif
-static constexpr std::string_view START_POSITION = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
-#define TESTPOS1 "2rq1rk1/3bppbp/p5p1/1ppPP3/2n2B2/2P1Q1PP/P2N1PB1/R4RK1 w - - 1 18"
-#define TESTPOS2 "rnbqkb1r/pp1ppppp/5n2/8/3p1B2/4P3/PPP2PPP/RN1QKBNR w KQkq - 0 4"
 
-//#define DEBUG
+static constexpr std::string_view START_POSITION = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+static constexpr std::string_view TESTPOS1 = "2rq1rk1/3bppbp/p5p1/1ppPP3/2n2B2/2P1Q1PP/P2N1PB1/R4RK1 w - - 1 18";
+static constexpr std::string_view TESTPOS2 = "rnbqkb1r/pp1ppppp/5n2/8/3p1B2/4P3/PPP2PPP/RN1QKBNR w KQkq - 0 4";
 
 namespace Vixen
 {
@@ -119,7 +117,7 @@ namespace Vixen
 
     typedef std::array<Direction, 2> PawnDirections;
 
-    typedef std::map<int, std::map<char, BitBoard>> PieceHashKeys;
+    typedef std::array<std::array<BitBoard, 13>, 64> PieceHashKeys;
 
     typedef uint64_t SideHashKey;
 
@@ -129,17 +127,19 @@ namespace Vixen
 
     constexpr unsigned MAX_MOVELIST_SIZE = 256U;
 
-    constexpr int MAX_SQUARE_INDEX = 63;
+    constexpr int MAX_SQUARE_INDEX = 63U;
 
-    constexpr int SQUARE_NUMBER = 64;
+    constexpr int SQUARE_NUMBER = 64U;
 
-    constexpr int COLOR_NUMBER = 2;
+    constexpr int COLOR_NUMBER = 2U;
 
-    constexpr int BISHOP_ATTACK_TABLE_SIZE = 0x1480;
+    constexpr int BISHOP_ATTACK_TABLE_SIZE = 0x1480U;
 
-    constexpr int ROOK_ATTACK_TABLE_SIZE = 0x19000;
+    constexpr int ROOK_ATTACK_TABLE_SIZE = 0x19000U;
 
     constexpr BitBoard EMPTY_BOARD = 0ULL;
+
+    static constexpr std::string_view CASTLERIGHTS = "kqKQ";
 
     static constexpr std::array<char, 12> pieceKeys = {'P', 'N', 'B', 'R', 'Q', 'K',
                                                        'p', 'n', 'b', 'r', 'q', 'k'};

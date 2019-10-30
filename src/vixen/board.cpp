@@ -1,8 +1,8 @@
 #include "board.h"
 #include "move_generator.h"
 #include "hash.h"
-#include <iostream>
 
+#include <iostream>
 #include <bitset>
 #include <charconv>
 
@@ -34,9 +34,6 @@ namespace Vixen
         SliderUtils::InitMagics();
         Hash::InitZobristKeys();
         SetBoard(START_POSITION);
-#ifdef DEBUG
-        PrintBoard();
-#endif
     }
 
     template<size_t N, char delimiter>
@@ -108,7 +105,7 @@ namespace Vixen
         std::cout << "\n\n";
     }
 
-    void Board::ParseFenPiecePart(const std::string_view &parsedPosition)
+    constexpr void Board::ParseFenPiecePart(const std::string_view &parsedPosition)
     {
         unsigned squareIndex = MAX_SQUARE_INDEX;
         for (const auto &fenChar : parsedPosition)
@@ -150,7 +147,7 @@ namespace Vixen
         }
     }
 
-    void Board::SumUpBitBoards()
+    constexpr void Board::SumUpBitBoards()
     {
         bitBoards[GetPieceIndex('F')] = bitBoards[GetPieceIndex('K')] |
                                         bitBoards[GetPieceIndex('Q')] |
@@ -167,7 +164,7 @@ namespace Vixen
         bitBoards[GetPieceIndex(' ')] = ~(bitBoards[GetPieceIndex('F')] | bitBoards[GetPieceIndex('S')]);
     }
 
-    void Board::ParseSideToMovePart(const std::string_view &parsedPosition)
+    constexpr void Board::ParseSideToMovePart(const std::string_view &parsedPosition)
     {
         if (parsedPosition == "w")
             whiteToMove = true;
@@ -180,7 +177,7 @@ namespace Vixen
 
     }
 
-    void Board::ParseCastlingRightPart(const std::string_view &parsedPosition)
+    constexpr void Board::ParseCastlingRightPart(const std::string_view &parsedPosition)
     {
         castlingRights = 0;
         for (const auto &it : parsedPosition)
@@ -188,16 +185,11 @@ namespace Vixen
             switch (it)
             {
                 case 'K':
-                    SetBit(castlingRights, 3);
-                    break;
                 case 'Q':
-                    SetBit(castlingRights, 2);
-                    break;
                 case 'k':
-                    SetBit(castlingRights, 1);
-                    break;
                 case 'q':
-                    SetBit(castlingRights, 0);
+                    SetBit( castlingRights,
+                            std::distance(begin(CASTLERIGHTS), std::find(begin(CASTLERIGHTS), end(CASTLERIGHTS), it)));
                     break;
                 case '-':
                     castlingRights = 0;
@@ -277,12 +269,12 @@ namespace Vixen
         return true;
     }
 
-    void Board::UpdateCastlingRights(int from, int to)
+    constexpr void Board::UpdateCastlingRights(int from, int to)
     {
-        hashBoard.HashCastling(*this);
+        hashBoard.HashCastling(castlingRights);
         castlingRights &= castlePermission[from];
         castlingRights &= castlePermission[to];
-        hashBoard.HashCastling(*this);
+        hashBoard.HashCastling(castlingRights);
     }
 
     void Board::MoveCastlingWhiteRook(int from, int to)
@@ -359,18 +351,18 @@ namespace Vixen
     {
         pieceList[position] = ' ';
         ClearBit(bitBoards[GetPieceIndex(pieceType)], position);
-        hashBoard.HashPiece(position, pieceType);
         ClearBit(bitBoards[GetPieceIndex(IsBlackMoving(pieceType) ? 'S' : 'F')], position);
         SetBit(bitBoards[GetPieceIndex(' ')], position);
+        hashBoard.HashPiece(position, pieceType);
     }
 
     void Board::AddPiece(int position, char pieceType)
     {
         pieceList[position] = pieceType;
         SetBit(bitBoards[GetPieceIndex(pieceType)], position);
-        hashBoard.HashPiece(position, pieceType);
         SetBit(bitBoards[GetPieceIndex(IsBlackMoving(pieceType) ? 'S' : 'F')], position);
         ClearBit(bitBoards[GetPieceIndex(' ')], position);
+        hashBoard.HashPiece(position, pieceType);
     }
 
     template <uint8_t moveType>

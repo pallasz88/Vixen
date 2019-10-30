@@ -33,7 +33,7 @@ namespace Vixen::SliderUtils
         table[square].shift = SQUARE_NUMBER - PopCount(table[square].mask);
 
         if (square != MAX_SQUARE_INDEX)
-            table[square + 1].attacks = table[square].attacks + (1 << PopCount(table[square].mask));
+            table[square + 1].attacks = table[square].attacks + (1U << PopCount(table[square].mask));
 
         do
         {

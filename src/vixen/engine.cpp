@@ -1,4 +1,6 @@
 #include "engine.h"
+#include "move_generator.h"
+#include "board.h"
 
 namespace Vixen::Search
 {
