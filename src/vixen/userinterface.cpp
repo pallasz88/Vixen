@@ -82,13 +82,30 @@ namespace Vixen::UserInterface
     {
         bool isLegal = false;
         std::cout << "Your move is: " << move << "\n";
-        std::regex moveRegex{"[a-h][1-8][a-h][1-8]"};
+        std::regex moveRegex{"[a-h][1-8][a-h][1-8][q|r|b|n]?"};
         if (!std::regex_match(move, moveRegex))
             throw std::runtime_error("INVALID MOVE FORMAT. Use for example e2e4.");
 
         unsigned from = NotationToSquare(move.substr(0, 2));
-        unsigned to = NotationToSquare(move.substr(2));
-        unsigned decodedMove = to << 6U | from;
+        unsigned to = NotationToSquare(move.substr(2, 2));
+
+        char promoted = ' ';
+        if (move.size() == 5)
+            promoted = move.substr(4)[0];
+
+        uint8_t moveType = 0;
+        if (promoted != ' ')
+        {
+            moveType = GetPromotionType(promoted);
+            char capturedPiece = board.GetPieceList()[to];
+            if (capturedPiece != ' ')
+            {
+                moveType += CAPTURE;
+            }
+        }
+
+        unsigned decodedPromotion = CreateMove(from, to, moveType);
+        unsigned decodedMove = decodedPromotion & 0xFFFU;
 
         MoveGenerator generator = board.CreateGenerator<ALL_MOVE>();
         std::array<Move, MAX_MOVELIST_SIZE> moves = generator.GetMoveList();
@@ -97,8 +114,16 @@ namespace Vixen::UserInterface
         for (size_t i = 0; i < moveListSize; ++i)
             if ((moves[i] & 0xFFFU) == decodedMove)
             {
-                if (!board.MakeMove(moves[i]))
-                    throw std::runtime_error("Illegal move!");
+                if (moveType == 0)
+                {
+                    if (!board.MakeMove(moves[i]))
+                        throw std::runtime_error("Illegal move!");
+                }
+                else
+                {
+                    if (!board.MakeMove(decodedPromotion))
+                        throw std::runtime_error("Illegal move!");
+                }
                 isLegal = true;
                 break;
             }

@@ -23,11 +23,12 @@ namespace Vixen
             pieceList{' '},
             bitBoards{EMPTY_BOARD},
             enPassantBitBoard(EMPTY_BOARD),
+            hashBoard(Hash()),
             castlingRights(0),
             historyMovesNum(0),
             fiftyMoves(0),
-            whiteToMove(false),
-            hashBoard(Hash())
+            material(0),
+            whiteToMove(false)
     {
         AntSliderUtils::InitKnightKingAttack();
         AntSliderUtils::InitPawnAttack();
@@ -54,6 +55,7 @@ namespace Vixen
 
     void Board::SetBoard(const std::string_view &position)
     {
+        material = 0;
         bitBoards.fill(EMPTY_BOARD);
         pieceList.fill(' ');
         std::array<std::string_view, 6> parsedPosition = SplitFenPosition<6>(position);
@@ -125,6 +127,7 @@ namespace Vixen
                 case 'q':
                 case 'k':
                     SetBit(bitBoards[GetPieceIndex(fenChar)], squareIndex);
+                    material += GetPieceMaterial(fenChar);
                     pieceList[squareIndex] = fenChar;
                     break;
                 case '/':
@@ -192,7 +195,6 @@ namespace Vixen
                             std::distance(begin(CASTLERIGHTS), std::find(begin(CASTLERIGHTS), end(CASTLERIGHTS), it)));
                     break;
                 case '-':
-                    castlingRights = 0;
                     break;
                 default:
                     std::cerr << "ERROR IN FEN: CASTLING\n";
@@ -252,6 +254,8 @@ namespace Vixen
         if (moveType & PROMOTION)
         {
             char promotion = whiteToMove ? "NBRQ"[moveType & 3U] : "nbrq"[moveType & 3U];
+            material += GetPieceMaterial(promotion);
+            material -= (moveType & CAPTURE) ? GetPieceMaterial(movingPieceLetter) : 0;
             RemovePiece(to, movingPieceLetter);
             AddPiece(to, promotion);
         }
@@ -298,6 +302,7 @@ namespace Vixen
     void Board::MakeCapture(int to, char capturedPieceLetter)
     {
         fiftyMoves = 0;
+        material -= GetPieceMaterial(capturedPieceLetter);
         RemovePiece(to, capturedPieceLetter);
     }
 
@@ -330,6 +335,8 @@ namespace Vixen
         else if (moveType & PROMOTION)
         {
             char promotion = whiteToMove ? "NBRQ"[moveType & 3U] : "nbrq"[moveType & 3U];
+            material -= GetPieceMaterial(promotion);
+            material += (moveType & CAPTURE) ? GetPieceMaterial(movingPieceLetter) : 0;
             RemovePiece(to, promotion);
             AddPiece(to, movingPieceLetter);
         }
@@ -342,7 +349,10 @@ namespace Vixen
                         : AddPiece(to + 8, 'P');
 
         else if (moveType & CAPTURE)
+        {
             AddPiece(to, capturedPieceLetter);
+            material += GetPieceMaterial(capturedPieceLetter);
+        }
 
         hashBoard.SetHash(lastPosition.hash);
     }

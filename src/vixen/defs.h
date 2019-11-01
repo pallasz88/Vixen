@@ -10,7 +10,9 @@
 #endif
 
 static constexpr std::string_view START_POSITION = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+
 static constexpr std::string_view TESTPOS1 = "2rq1rk1/3bppbp/p5p1/1ppPP3/2n2B2/2P1Q1PP/P2N1PB1/R4RK1 w - - 1 18";
+
 static constexpr std::string_view TESTPOS2 = "rnbqkb1r/pp1ppppp/5n2/8/3p1B2/4P3/PPP2PPP/RN1QKBNR w KQkq - 0 4";
 
 namespace Vixen
@@ -144,7 +146,7 @@ namespace Vixen
     static constexpr std::array<char, 12> pieceKeys = {'P', 'N', 'B', 'R', 'Q', 'K',
                                                        'p', 'n', 'b', 'r', 'q', 'k'};
 
-    static constexpr std::array<char, 12> blackPieceKeys = {'p', 'n', 'b', 'r', 'q', 'k'};
+    static constexpr std::array<char, 6> blackPieceKeys = {'p', 'n', 'b', 'r', 'q', 'k'};
 
     static constexpr std::array<std::pair<char, int>, 15> pieceMap = {std::make_pair('P', 0),
                                                                       std::make_pair('N', 1),
@@ -161,6 +163,25 @@ namespace Vixen
                                                                       std::make_pair('F', 12),
                                                                       std::make_pair('S', 13),
                                                                       std::make_pair(' ', 14)};
+
+    static constexpr std::array<std::pair<char, int>, 12> materialMap = {std::make_pair('P', -100),
+                                                                         std::make_pair('N', -300),
+                                                                         std::make_pair('B', -300),
+                                                                         std::make_pair('R', -500),
+                                                                         std::make_pair('Q', -900),
+                                                                         std::make_pair('K', -2000),
+                                                                         std::make_pair('p', 100),
+                                                                         std::make_pair('n', 300),
+                                                                         std::make_pair('b', 300),
+                                                                         std::make_pair('r', 500),
+                                                                         std::make_pair('q', 900),
+                                                                         std::make_pair('k', 2000)};
+
+    static constexpr std::array<std::pair<char, int>, 4> promotionMap = {std::make_pair('q', QUEEN_PROMOTION),
+                                                                         std::make_pair('r', ROOK_PROMOTION),
+                                                                         std::make_pair('b', BISHOP_PROMOTION),
+                                                                         std::make_pair('n', KNIGHT_PROMOTION)};
+
 //    C++20 find_if function is constexpr
 //    inline constexpr auto GetPieceIndex(char c)
 //    {
@@ -168,9 +189,29 @@ namespace Vixen
 //        return (iterator != std::end(pieceMap)) ? iterator->second : -1;
 //    }
 
-    inline constexpr auto GetPieceIndex(char c)
+    inline constexpr auto GetPieceIndex(char c) noexcept
     {
-        for (const auto& i : pieceMap)
+        for (const auto &i : pieceMap)
+        {
+            if (i.first == c)
+                return i.second;
+        }
+        return -1;
+    }
+
+    inline constexpr auto GetPieceMaterial(char c) noexcept
+    {
+        for (const auto &i : materialMap)
+        {
+            if (i.first == c)
+                return i.second;
+        }
+        return -1;
+    }
+
+    inline constexpr auto GetPromotionType(char c) noexcept
+    {
+        for (const auto &i : promotionMap)
         {
             if (i.first == c)
                 return i.second;

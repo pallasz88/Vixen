@@ -385,4 +385,29 @@ BOOST_FIXTURE_TEST_SUITE(Test_unit, Fixture)
         BOOST_TEST(board.GetBitBoard('P') == 268435456ULL);
     }
 
+    BOOST_AUTO_TEST_CASE(Test_material_balance)
+    {
+        board.SetBoard(START_POSITION);
+        UserInterface::MakeMove("e2e4", board);
+        UserInterface::MakeMove("d7d5", board);
+        UserInterface::MakeMove("e4d5", board);
+        BOOST_TEST(board.GetMaterialBalance() == 100);
+        UserInterface::MakeMove("d8d5", board);
+        BOOST_TEST(board.GetMaterialBalance() == 0);
+        UserInterface::MakeMove("b1c3", board);
+        UserInterface::MakeMove("g8f6", board);
+        UserInterface::MakeMove("c3d5", board);
+        BOOST_TEST(board.GetMaterialBalance() == 900);
+        UserInterface::TakeBackMove(board);
+        BOOST_TEST(board.GetMaterialBalance() == 0);
+
+        board.SetBoard("3q2k1/4P3/8/5K2/8/8/8/8 w - - 0 1");
+        board.PrintBoard();
+        BOOST_TEST(board.GetMaterialBalance() == -800);
+        UserInterface::MakeMove("e7d8r", board);
+        BOOST_TEST(board.GetMaterialBalance() == 500);
+        UserInterface::TakeBackMove(board);
+        BOOST_TEST(board.GetMaterialBalance() == -800);
+    }
+
 BOOST_AUTO_TEST_SUITE_END()

@@ -13,5 +13,5 @@ namespace Vixen::Search
 
     extern int Quiescence(int alpha, int beta, Board& board);
 
-    VIXEN_API extern int AlphaBeta(int depth, int alpha, int beta, Board& board);
+    VIXEN_API extern int NegaMax(int depth, int alpha, int beta, Board& board);
 }

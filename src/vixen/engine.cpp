@@ -1,18 +1,18 @@
+#include <iostream>
 #include "engine.h"
 #include "move_generator.h"
 #include "board.h"
 
 namespace Vixen::Search
 {
-    int AlphaBeta(int depth, int alpha, int beta, Board& board)
+    int NegaMax(int depth, int alpha, int beta, Board& board)
     {
+        if (depth == 0)
+            return Quiescence(alpha, beta, board);
+
         MoveGenerator generator = board.CreateGenerator<ALL_MOVE>();
         auto moveList = generator.GetMoveList();
         auto size = generator.GetListSize();
-
-        if (depth == 0)
-//            return Evaluate(board);
-            return Quiescence(alpha, beta, board);
 
         board.IsWhiteToMove() ? generator.GenerateMoves<Colors::WHITE, ALL_MOVE>(board)
                               : generator.GenerateMoves<Colors::BLACK, ALL_MOVE>(board);
@@ -22,7 +22,7 @@ namespace Vixen::Search
             if (!board.MakeMove(moveList[i]))
                 continue;
 
-            int score = -AlphaBeta(depth - 1, alpha, beta, board);
+            int score = -NegaMax(depth - 1, -beta, -alpha, board);
             board.TakeBack();
 
             if (score >= beta)
@@ -65,46 +65,6 @@ namespace Vixen::Search
 
     int Evaluate(const Board &board)
     {
-        std::array pieceList = board.GetPieceList();
-        int value = 0;
-        for (const auto &piece : pieceList)
-        {
-            switch (piece)
-            {
-                case 'P':
-                    value += 100;
-                    break;
-                case 'N':
-                    value += 300;
-                    break;
-                case 'B':
-                    value += 300;
-                    break;
-                case 'R':
-                    value += 500;
-                    break;
-                case 'Q':
-                    value += 900;
-                    break;
-                case 'p':
-                    value += -100;
-                    break;
-                case 'n':
-                    value += -300;
-                    break;
-                case 'b':
-                    value += -300;
-                    break;
-                case 'r':
-                    value += -500;
-                    break;
-                case 'q':
-                    value += -900;
-                    break;
-                default:
-                    break;
-            }
-        }
-        return value;
+        return board.GetMaterialBalance();
     }
 }

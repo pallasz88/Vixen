@@ -96,6 +96,12 @@ namespace Vixen
         { return castlingRights; }
 
         /**
+         * Returns material balance on board
+         */
+        [[nodiscard]] constexpr int GetMaterialBalance() const
+        { return material; }
+
+        /**
          * Prints the board to console.
          */
         void PrintBoard() const;
@@ -159,6 +165,8 @@ namespace Vixen
         int historyMovesNum;
 
         int fiftyMoves;
+
+        int material;
 
         bool whiteToMove;
 
