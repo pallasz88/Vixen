@@ -1,6 +1,7 @@
 #pragma once
 
 #include "defs.h"
+#include "random.h"
 
 namespace Vixen
 {
@@ -33,14 +34,14 @@ namespace Vixen
          * @param enPassant
          */
         constexpr void HashEnPassant(BitBoard enPassant)
-        { positionKey ^= pieceHashKeys[TrailingZeroCount(enPassant)][enPassantKey]; }
+        { positionKey ^= zobristKeys.pieceHashKeys[TrailingZeroCount(enPassant)][enPassantKey]; }
 
         /**
          * For differentiating boards where castling is available or not.
          * @param castlingRights
          */
         constexpr void HashCastling(int castlingRights) noexcept
-        { positionKey ^= castleHashKeys[castlingRights]; }
+        { positionKey ^= zobristKeys.castleHashKeys[castlingRights]; }
 
         /**
          * For hashing piece positions
@@ -48,30 +49,47 @@ namespace Vixen
          * @param pieceKey
          */
         constexpr void HashPiece(int square, char pieceKey)
-        { positionKey ^= pieceHashKeys[square][GetPieceIndex(pieceKey)]; }
+        { positionKey ^= zobristKeys.pieceHashKeys[square][GetPieceIndex(pieceKey)]; }
 
         /**
          * For differentiating boards where white's or black's turn.
          */
         void HashSide()
-        { positionKey ^= sideHashKey; }
+        { positionKey ^= zobristKeys.sideHashKey; }
 
-        static void InitZobristKeys();
+        static constexpr void InitZobristKeys()
+        {
+            int i = -1;
+            for (int square = H1; square <= MAX_SQUARE_INDEX; ++square)
+            {
+                zobristKeys.pieceHashKeys[square][enPassantKey] = PRNG::GenerateRandom(++i);
+                for (const auto &pieceKey : pieceKeys)
+                    zobristKeys.pieceHashKeys[square][GetPieceIndex(pieceKey)] = PRNG::GenerateRandom(++i);
+            }
+
+            zobristKeys.sideHashKey = PRNG::GenerateRandom(++i);
+
+            for (auto &castleHashKey : zobristKeys.castleHashKeys)
+                castleHashKey = PRNG::GenerateRandom(++i);
+
+        }
 
         void ComputePositionKey(const Board &board);
+
+        struct Keys
+        {
+            PieceHashKeys pieceHashKeys;
+            SideHashKey sideHashKey;
+            CastleHashKeys castleHashKeys;
+        };
 
     private:
 
         PositionKey positionKey;
 
-        static PieceHashKeys pieceHashKeys;
-
-        static SideHashKey sideHashKey;
-
-        static CastleHashKeys castleHashKeys;
+        static Keys zobristKeys;
 
         static constexpr int enPassantKey = 12;
 
-        static BitBoard GenerateBigRandom();
     };
 }

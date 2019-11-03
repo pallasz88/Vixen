@@ -111,21 +111,21 @@ namespace Vixen
          *  FEN position: https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation
          * @param position
          */
-        void SetBoard(const std::string_view &position);
+        void SetBoard(std::string_view position);
 
         /**
          * Removes given piece type from given position.
          * @param position
          * @param pieceType
          */
-        void RemovePiece(int position, char pieceType);
+        constexpr void RemovePiece(int position, char pieceType);
 
         /**
          * Adds given piece type to given position.
          * @param position
          * @param pieceType
          */
-        void AddPiece(int position, char pieceType);
+        constexpr void AddPiece(int position, char pieceType);
 
         /**
          * Tries to move a pseudo-legal move.
@@ -145,7 +145,7 @@ namespace Vixen
          * Returns a generator of pseudo-legal moves from given position.
          * @return pseudo-legal moves
          */
-        template <uint8_t moveType>
+        template<uint8_t moveType>
         [[nodiscard]] MoveGenerator CreateGenerator() const;
 
     private:
@@ -174,24 +174,24 @@ namespace Vixen
 
         void AddHashBoard();
 
-        constexpr void ParseFenPiecePart(const std::string_view &parsedPosition);
+        constexpr void ParseFenPiecePart(std::string_view parsedPosition);
 
-        constexpr void ParseSideToMovePart(const std::string_view &splittedFen);
+        constexpr void ParseSideToMovePart(std::string_view splittedFen);
 
-        constexpr void ParseCastlingRightPart(const std::string_view &parsedPosition);
+        constexpr void ParseCastlingRightPart(std::string_view parsedPosition);
 
         template<size_t N, char delimiter = ' '>
-        [[nodiscard]] constexpr auto SplitFenPosition(const std::string_view &position) const;
+        [[nodiscard]] constexpr auto SplitFenPosition(std::string_view position) const;
 
         void ClearHistory();
 
-        void MakeCapture(int to, char capturedPieceLetter);
+        constexpr void MakeCapture(int to, char capturedPieceLetter);
 
-        void MakeDoublePawnPush(int enPassantSquare);
+        constexpr void MakeDoublePawnPush(int enPassantSquare);
 
-        void MoveCastlingWhiteRook(int from, int to);
+        constexpr void MoveCastlingWhiteRook(int from, int to);
 
-        void MoveCastlingBlackRook(int from, int to);
+        constexpr void MoveCastlingBlackRook(int from, int to);
 
         constexpr void UpdateCastlingRights(int from, int to);
     };

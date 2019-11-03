@@ -68,13 +68,13 @@ namespace Vixen
         template<Colors sideToMove>
         inline constexpr bool IsSquareAttacked(int square, const Board &board)
         {
-            auto blockers = ~board.GetBitBoard(' ');
-            auto pawns = sideToMove == Colors::WHITE ? board.GetBitBoard('p') : board.GetBitBoard('P');
-            auto knights = sideToMove == Colors::WHITE ? board.GetBitBoard('n') : board.GetBitBoard('N');
-            auto bishops = sideToMove == Colors::WHITE ? board.GetBitBoard('b') : board.GetBitBoard('B');
-            auto rooks = sideToMove == Colors::WHITE ? board.GetBitBoard('r') : board.GetBitBoard('R');
-            auto queens = sideToMove == Colors::WHITE ? board.GetBitBoard('q') : board.GetBitBoard('Q');
-            auto kings = sideToMove == Colors::WHITE ? board.GetBitBoard('k') : board.GetBitBoard('K');
+            const auto blockers = ~board.GetBitBoard(' ');
+            const auto pawns    = sideToMove == Colors::WHITE ? board.GetBitBoard('p') : board.GetBitBoard('P');
+            const auto knights  = sideToMove == Colors::WHITE ? board.GetBitBoard('n') : board.GetBitBoard('N');
+            const auto bishops  = sideToMove == Colors::WHITE ? board.GetBitBoard('b') : board.GetBitBoard('B');
+            const auto rooks    = sideToMove == Colors::WHITE ? board.GetBitBoard('r') : board.GetBitBoard('R');
+            const auto queens   = sideToMove == Colors::WHITE ? board.GetBitBoard('q') : board.GetBitBoard('Q');
+            const auto kings    = sideToMove == Colors::WHITE ? board.GetBitBoard('k') : board.GetBitBoard('K');
 
             return AntSliderUtils::pawnAttack[static_cast<int>(sideToMove)][square] & pawns ||
                    AntSliderUtils::knightAttack[square] & knights ||
@@ -92,8 +92,8 @@ namespace Vixen
         template<Colors sideToMove>
         inline constexpr bool IsInCheck(const Board &board)
         {
-            auto kingBoard = sideToMove == Colors::WHITE ? board.GetBitBoard('K') : board.GetBitBoard('k');
-            int kingSquare = TrailingZeroCount(kingBoard);
+            const auto kingBoard = sideToMove == Colors::WHITE ? board.GetBitBoard('K') : board.GetBitBoard('k');
+            const auto kingSquare = TrailingZeroCount(kingBoard);
             return IsSquareAttacked<sideToMove>(kingSquare, board);
         }
     }

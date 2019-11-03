@@ -11,15 +11,18 @@ set(SOURCE_FILES
         board.h
         board.cpp
         defs.h
+        engine.h
+        engine.cpp
         hash.h
         hash.cpp
         move_generator.h
         move_generator.cpp
+        random.h
         slider.cpp
         slider.h
         timer.h
         userinterface.h
-        userinterface.cpp engine.cpp engine.h)
+        userinterface.cpp)
 
 add_library(Vixen SHARED ${SOURCE_FILES})
 target_link_libraries(Vixen)

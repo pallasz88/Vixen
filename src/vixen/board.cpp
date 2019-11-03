@@ -38,7 +38,7 @@ namespace Vixen
     }
 
     template<size_t N, char delimiter>
-    [[nodiscard]] constexpr auto Board::SplitFenPosition(const std::string_view &position) const
+    [[nodiscard]] constexpr auto Board::SplitFenPosition(std::string_view position) const
     {
         std::array<std::string_view, N> parts;
         auto part = 0ULL;
@@ -53,12 +53,12 @@ namespace Vixen
         return parts;
     }
 
-    void Board::SetBoard(const std::string_view &position)
+    void Board::SetBoard(std::string_view position)
     {
         material = 0;
         bitBoards.fill(EMPTY_BOARD);
         pieceList.fill(' ');
-        std::array<std::string_view, 6> parsedPosition = SplitFenPosition<6>(position);
+        std::array parsedPosition = SplitFenPosition<6>(position);
         ParseFenPiecePart(parsedPosition[0]);
         ParseSideToMovePart(parsedPosition[1]);
         ParseCastlingRightPart(parsedPosition[2]);
@@ -107,7 +107,7 @@ namespace Vixen
         std::cout << "\n\n";
     }
 
-    constexpr void Board::ParseFenPiecePart(const std::string_view &parsedPosition)
+    constexpr void Board::ParseFenPiecePart(std::string_view parsedPosition)
     {
         unsigned squareIndex = MAX_SQUARE_INDEX;
         for (const auto &fenChar : parsedPosition)
@@ -167,12 +167,12 @@ namespace Vixen
         bitBoards[GetPieceIndex(' ')] = ~(bitBoards[GetPieceIndex('F')] | bitBoards[GetPieceIndex('S')]);
     }
 
-    constexpr void Board::ParseSideToMovePart(const std::string_view &parsedPosition)
+    constexpr void Board::ParseSideToMovePart(std::string_view splittedFen)
     {
-        if (parsedPosition == "w")
+        if (splittedFen == "w")
             whiteToMove = true;
 
-        else if (parsedPosition == "b")
+        else if (splittedFen == "b")
             whiteToMove = false;
 
         else
@@ -180,7 +180,7 @@ namespace Vixen
 
     }
 
-    constexpr void Board::ParseCastlingRightPart(const std::string_view &parsedPosition)
+    constexpr void Board::ParseCastlingRightPart(std::string_view parsedPosition)
     {
         castlingRights = 0;
         for (const auto &it : parsedPosition)
@@ -281,25 +281,25 @@ namespace Vixen
         hashBoard.HashCastling(castlingRights);
     }
 
-    void Board::MoveCastlingWhiteRook(int from, int to)
+    constexpr void Board::MoveCastlingWhiteRook(int from, int to)
     {
         RemovePiece(from, 'R');
         AddPiece(to, 'R');
     }
 
-    void Board::MoveCastlingBlackRook(int from, int to)
+    constexpr void Board::MoveCastlingBlackRook(int from, int to)
     {
         RemovePiece(from, 'r');
         AddPiece(to, 'r');
     }
 
-    void Board::MakeDoublePawnPush(int enPassantSquare)
+    constexpr void Board::MakeDoublePawnPush(int enPassantSquare)
     {
         SetBit(enPassantBitBoard, enPassantSquare);
         hashBoard.HashEnPassant(enPassantBitBoard);
     }
 
-    void Board::MakeCapture(int to, char capturedPieceLetter)
+    constexpr void Board::MakeCapture(int to, char capturedPieceLetter)
     {
         fiftyMoves = 0;
         material -= GetPieceMaterial(capturedPieceLetter);
@@ -357,7 +357,7 @@ namespace Vixen
         hashBoard.SetHash(lastPosition.hash);
     }
 
-    void Board::RemovePiece(int position, char pieceType)
+    constexpr void Board::RemovePiece(int position, char pieceType)
     {
         pieceList[position] = ' ';
         ClearBit(bitBoards[GetPieceIndex(pieceType)], position);
@@ -366,7 +366,7 @@ namespace Vixen
         hashBoard.HashPiece(position, pieceType);
     }
 
-    void Board::AddPiece(int position, char pieceType)
+    constexpr void Board::AddPiece(int position, char pieceType)
     {
         pieceList[position] = pieceType;
         SetBit(bitBoards[GetPieceIndex(pieceType)], position);

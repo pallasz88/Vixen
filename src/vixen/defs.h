@@ -164,18 +164,18 @@ namespace Vixen
                                                                       std::make_pair('S', 13),
                                                                       std::make_pair(' ', 14)};
 
-    static constexpr std::array<std::pair<char, int>, 12> materialMap = {std::make_pair('P', -100),
-                                                                         std::make_pair('N', -300),
-                                                                         std::make_pair('B', -300),
-                                                                         std::make_pair('R', -500),
-                                                                         std::make_pair('Q', -900),
-                                                                         std::make_pair('K', -2000),
-                                                                         std::make_pair('p', 100),
-                                                                         std::make_pair('n', 300),
-                                                                         std::make_pair('b', 300),
-                                                                         std::make_pair('r', 500),
-                                                                         std::make_pair('q', 900),
-                                                                         std::make_pair('k', 2000)};
+    static constexpr std::array<std::pair<char, int>, 12> materialMap = {std::make_pair('P', 100),
+                                                                         std::make_pair('N', 300),
+                                                                         std::make_pair('B', 300),
+                                                                         std::make_pair('R', 500),
+                                                                         std::make_pair('Q', 900),
+                                                                         std::make_pair('K', 2000),
+                                                                         std::make_pair('p', -100),
+                                                                         std::make_pair('n', -300),
+                                                                         std::make_pair('b', -300),
+                                                                         std::make_pair('r', -500),
+                                                                         std::make_pair('q', -900),
+                                                                         std::make_pair('k', -2000)};
 
     static constexpr std::array<std::pair<char, int>, 4> promotionMap = {std::make_pair('q', QUEEN_PROMOTION),
                                                                          std::make_pair('r', ROOK_PROMOTION),
@@ -316,13 +316,33 @@ namespace Vixen
     }
 
     /**
+     * Replaces std::find until it will become constexpr function.
+     * @tparam InputIt
+     * @tparam T
+     * @param first
+     * @param last
+     * @param value
+     * @return
+     */
+    template<class InputIt, class T>
+    constexpr InputIt find(InputIt first, InputIt last, const T& value)
+    {
+        for (; first != last; ++first) {
+            if (*first == value) {
+                return first;
+            }
+        }
+        return last;
+    }
+
+    /**
      * Returns true if the moving piece is black
-     * C++20 find function will be constexpr.
+     * C++20 std::find function will be constexpr.
      * @param c 
      * @return 
      */
-    inline bool IsBlackMoving(char c)
+    inline constexpr bool IsBlackMoving(char c)
     {
-        return std::find(begin(blackPieceKeys), end(blackPieceKeys), c) != end(blackPieceKeys);
+        return find(begin(blackPieceKeys), end(blackPieceKeys), c) != end(blackPieceKeys);
     }
 }
