@@ -3,16 +3,14 @@
 #include "defs.h"
 #include "random.h"
 
-namespace Vixen
-{
+namespace Vixen {
 
     class Board;
 
     /**
      * Creates unique hash values from board positions.
      */
-    class Hash
-    {
+    class Hash {
     public:
 
         /**
@@ -40,7 +38,7 @@ namespace Vixen
          * For differentiating boards where castling is available or not.
          * @param castlingRights
          */
-        constexpr void HashCastling(int castlingRights) noexcept
+        constexpr void HashCastling(unsigned castlingRights) noexcept
         { positionKey ^= zobristKeys.castleHashKeys[castlingRights]; }
 
         /**
@@ -48,8 +46,8 @@ namespace Vixen
          * @param square
          * @param pieceKey
          */
-        constexpr void HashPiece(int square, char pieceKey)
-        { positionKey ^= zobristKeys.pieceHashKeys[square][GetPieceIndex(pieceKey)]; }
+        constexpr void HashPiece(unsigned square, char pieceKey)
+        { positionKey ^= zobristKeys.pieceHashKeys[square][static_cast<unsigned>(GetPieceIndex(pieceKey))]; }
 
         /**
          * For differentiating boards where white's or black's turn.
@@ -59,12 +57,13 @@ namespace Vixen
 
         static constexpr void InitZobristKeys()
         {
-            int i = -1;
-            for (int square = H1; square <= MAX_SQUARE_INDEX; ++square)
+            unsigned i = 0;
+            for (unsigned square = H1; square <= Constants::MAX_SQUARE_INDEX; ++square)
             {
                 zobristKeys.pieceHashKeys[square][enPassantKey] = PRNG::GenerateRandom(++i);
-                for (const auto &pieceKey : pieceKeys)
-                    zobristKeys.pieceHashKeys[square][GetPieceIndex(pieceKey)] = PRNG::GenerateRandom(++i);
+                for (const auto &pieceKey : Constants::pieceKeys)
+                    zobristKeys.pieceHashKeys[square][static_cast<unsigned>(GetPieceIndex(
+                            pieceKey))] = PRNG::GenerateRandom(++i);
             }
 
             zobristKeys.sideHashKey = PRNG::GenerateRandom(++i);
@@ -76,8 +75,7 @@ namespace Vixen
 
         void ComputePositionKey(const Board &board);
 
-        struct Keys
-        {
+        struct Keys {
             PieceHashKeys pieceHashKeys;
             SideHashKey sideHashKey;
             CastleHashKeys castleHashKeys;

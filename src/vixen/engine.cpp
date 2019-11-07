@@ -17,7 +17,7 @@ namespace Vixen::Search
         board.IsWhiteToMove() ? generator.GenerateMoves<Colors::WHITE, ALL_MOVE>(board)
                               : generator.GenerateMoves<Colors::BLACK, ALL_MOVE>(board);
 
-        for (int i = 0; i < size; ++i)
+        for (unsigned i = 0; i < size; ++i)
         {
             if (!board.MakeMove(moveList[i]))
                 continue;
@@ -47,7 +47,7 @@ namespace Vixen::Search
         auto moveList = generator.GetMoveList();
         auto size = generator.GetListSize();
 
-        for (int i = 0; i < size; ++i)
+        for (unsigned i = 0; i < size; ++i)
         {
             if (!board.MakeMove(moveList[i]))
                 continue;

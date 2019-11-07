@@ -20,11 +20,13 @@ namespace Vixen
         [[nodiscard]] constexpr auto GetMoveList() const
         { return moveList; }
 
+        [[nodiscard]] std::vector<Move> GetLegalMoveList(Board& board) const;
+
         /**
          * Returns pseudo-legal move list size.
          * @return moveList
          */
-        [[nodiscard]] constexpr int GetListSize() const
+        [[nodiscard]] constexpr unsigned GetListSize() const
         { return size; }
 
         /**
@@ -37,9 +39,9 @@ namespace Vixen
 
     private:
 
-        std::array<Move, MAX_MOVELIST_SIZE> moveList{};
+        std::array<Move, Constants::MAX_MOVELIST_SIZE> moveList{};
 
-        int size = 0;
+        unsigned size = 0;
 
         template<Colors sideToMove>
         void GenerateCaptureMoves(const Board &board);
@@ -66,7 +68,7 @@ namespace Vixen
     namespace Check
     {
         template<Colors sideToMove>
-        inline constexpr bool IsSquareAttacked(int square, const Board &board)
+        inline constexpr bool IsSquareAttacked(unsigned int square, const Board &board)
         {
             const auto blockers = ~board.GetBitBoard(' ');
             const auto pawns    = sideToMove == Colors::WHITE ? board.GetBitBoard('p') : board.GetBitBoard('P');

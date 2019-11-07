@@ -22,12 +22,11 @@ namespace Vixen
                 return 1;
 
             BitBoard nodes = 0;
-            MoveGenerator generator;
-            board.IsWhiteToMove() ? generator.GenerateMoves<Colors::WHITE, ALL_MOVE>(board)
-                                  : generator.GenerateMoves<Colors::BLACK, ALL_MOVE>(board);
-            for (int i = 0; i < generator.GetListSize(); ++i)
+            const auto generator = board.CreateGenerator<ALL_MOVE>();
+
+            for (unsigned i = 0; i < generator.GetListSize(); ++i)
             {
-                Move move = generator.GetMoveList()[i];
+                const auto move = generator.GetMoveList()[i];
                 if (!board.MakeMove(move))
                     continue;
 
@@ -51,13 +50,13 @@ namespace Vixen
             }
 
             BitBoard nodes = 0;
-            MoveGenerator generator;
-            board.IsWhiteToMove() ? generator.GenerateMoves<Colors::WHITE, ALL_MOVE>(board)
-                                  : generator.GenerateMoves<Colors::BLACK, ALL_MOVE>(board);
-            for (int i = 0; i < generator.GetListSize(); ++i)
+            const auto generator = board.CreateGenerator<ALL_MOVE>();
+
+            for (unsigned i = 0; i < generator.GetListSize(); ++i)
             {
                 if (!board.MakeMove(generator.GetMoveList()[i]))
                     continue;
+
                 nodes += Perft(depth - 1, board);
                 board.TakeBack();
             }
@@ -131,16 +130,16 @@ namespace Vixen
     template<Slider slider, uint8_t moveType>
     void MoveGenerator::GenerateSliderMoves(BitBoard pieces, BitBoard blockers, BitBoard targets)
     {
-        auto attacks = EMPTY_BOARD;
+        auto attacks = Constants::EMPTY_BOARD;
         while (pieces)
         {
-            int from = GetPosition(pieces);
+            const auto from = GetPosition(pieces);
             attacks |= slider == Slider::BISHOP ? SliderUtils::GetBishopAttack(from, blockers)
                                                 : SliderUtils::GetRookAttack(from, blockers);
             attacks &= targets;
             while (attacks)
             {
-                int to = GetPosition(attacks);
+                const auto to = GetPosition(attacks);
                 moveList[size++] = CreateMove(from, to, moveType);
             }
         }
@@ -150,15 +149,15 @@ namespace Vixen
     constexpr void
     MoveGenerator::GenerateAntiSliderMoves(BitBoard targets, BitBoard pieces, const BitBoard *attackBoard)
     {
-        auto attacks = EMPTY_BOARD;
+        auto attacks = Constants::EMPTY_BOARD;
         while (pieces)
         {
-            int from = GetPosition(pieces);
+            const unsigned from = GetPosition(pieces);
             attacks |= attackBoard[from];
             attacks &= targets;
             while (attacks)
             {
-                int to = GetPosition(attacks);
+                const unsigned to = GetPosition(attacks);
                 moveList[size++] = CreateMove(from, to, moveType);
             }
         }
@@ -168,8 +167,9 @@ namespace Vixen
     {
         while (pawnPushed)
         {
-            int to = GetPosition(pawnPushed);
-            moveList[size++] = CreateMove(to - pawnOffset, to, moveType);
+            const unsigned to = GetPosition(pawnPushed);
+            const int from = static_cast<int>(to) - pawnOffset;
+            moveList[size++] = CreateMove(static_cast<unsigned>(from), to, moveType);
         }
     }
 
@@ -177,11 +177,12 @@ namespace Vixen
     {
         while (promotion)
         {
-            int to = GetPosition(promotion);
-            moveList[size++] = CreateMove(to - offset, to, QUEEN_PROMOTION);
-            moveList[size++] = CreateMove(to - offset, to, ROOK_PROMOTION);
-            moveList[size++] = CreateMove(to - offset, to, BISHOP_PROMOTION);
-            moveList[size++] = CreateMove(to - offset, to, KNIGHT_PROMOTION);
+            const unsigned to = GetPosition(promotion);
+            const int from   = static_cast<int>(to) - offset;
+            moveList[size++] = CreateMove(static_cast<unsigned>(from), to, QUEEN_PROMOTION);
+            moveList[size++] = CreateMove(static_cast<unsigned>(from), to, ROOK_PROMOTION);
+            moveList[size++] = CreateMove(static_cast<unsigned>(from), to, BISHOP_PROMOTION);
+            moveList[size++] = CreateMove(static_cast<unsigned>(from), to, KNIGHT_PROMOTION);
         }
     }
 
@@ -189,11 +190,12 @@ namespace Vixen
     {
         while (promotion)
         {
-            int to = GetPosition(promotion);
-            moveList[size++] = CreateMove(to - offset, to, QUEEN_PROMO_CAPTURE);
-            moveList[size++] = CreateMove(to - offset, to, ROOK_PROMO_CAPTURE);
-            moveList[size++] = CreateMove(to - offset, to, BISHOP_PROMO_CAPTURE);
-            moveList[size++] = CreateMove(to - offset, to, KNIGHT_PROMO_CAPTURE);
+            const unsigned to = GetPosition(promotion);
+            const int from   = static_cast<int>(to) - offset;
+            moveList[size++] = CreateMove(static_cast<unsigned>(from), to, QUEEN_PROMO_CAPTURE);
+            moveList[size++] = CreateMove(static_cast<unsigned>(from), to, ROOK_PROMO_CAPTURE);
+            moveList[size++] = CreateMove(static_cast<unsigned>(from), to, BISHOP_PROMO_CAPTURE);
+            moveList[size++] = CreateMove(static_cast<unsigned>(from), to, KNIGHT_PROMO_CAPTURE);
         }
     }
 
@@ -245,6 +247,22 @@ namespace Vixen
             return;
 
         GenerateQuietMoves<sideToMove>(board);
+    }
+
+    std::vector<Move> MoveGenerator::GetLegalMoveList(Board& board) const
+    {
+        std::vector<Move> allLegalMoves;
+        const auto addLegal = [&board, &allLegalMoves](Move move)
+        {
+            if (board.MakeMove(move))
+            {
+                allLegalMoves.emplace_back(move);
+                board.TakeBack();
+            }
+        };
+
+        std::for_each(begin(moveList), begin(moveList) + size, addLegal);
+        return allLegalMoves;
     }
 
     template void MoveGenerator::GenerateCaptureMoves<Colors::WHITE>(const Board &);

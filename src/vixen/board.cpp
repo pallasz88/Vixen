@@ -5,10 +5,11 @@
 #include <iostream>
 #include <bitset>
 #include <charconv>
+#include <regex>
 
 namespace Vixen
 {
-    static constexpr int castlePermission[SQUARE_NUMBER] = {
+    static constexpr unsigned castlePermission[Constants::SQUARE_NUMBER] = {
             7, 15, 15, 3, 15, 15, 15, 11,
             15, 15, 15, 15, 15, 15, 15, 15,
             15, 15, 15, 15, 15, 15, 15, 15,
@@ -21,8 +22,8 @@ namespace Vixen
 
     Board::Board() :
             pieceList{' '},
-            bitBoards{EMPTY_BOARD},
-            enPassantBitBoard(EMPTY_BOARD),
+            bitBoards{Constants::EMPTY_BOARD},
+            enPassantBitBoard(Constants::EMPTY_BOARD),
             hashBoard(Hash()),
             castlingRights(0),
             historyMovesNum(0),
@@ -34,7 +35,7 @@ namespace Vixen
         AntSliderUtils::InitPawnAttack();
         SliderUtils::InitMagics();
         Hash::InitZobristKeys();
-        SetBoard(START_POSITION);
+        SetBoard(Constants::START_POSITION);
     }
 
     template<size_t N, char delimiter>
@@ -56,7 +57,7 @@ namespace Vixen
     void Board::SetBoard(std::string_view position)
     {
         material = 0;
-        bitBoards.fill(EMPTY_BOARD);
+        bitBoards.fill(Constants::EMPTY_BOARD);
         pieceList.fill(' ');
         std::array parsedPosition = SplitFenPosition<6>(position);
         ParseFenPiecePart(parsedPosition[0]);
@@ -84,7 +85,7 @@ namespace Vixen
     void Board::PrintBoard() const
     {
         std::cout << "\n+---+---+---+---+---+---+---+---+\n";
-        for (int squareIndex = MAX_SQUARE_INDEX; squareIndex >= H1; --squareIndex)
+        for (unsigned squareIndex = 64; squareIndex-- != 0;)
         {
             std::cout << "| " << pieceList[squareIndex] << " ";
             if (squareIndex % 8 == 0)
@@ -99,7 +100,7 @@ namespace Vixen
             std::cout << static_cast<char>('a' + rank) << "   ";
 
         std::cout << "\n\n";
-        auto enPassantSquare = (enPassantBitBoard != EMPTY_BOARD) ? SquareToNotation(
+        auto enPassantSquare = (enPassantBitBoard != Constants::EMPTY_BOARD) ? SquareToNotation(
                 TrailingZeroCount(enPassantBitBoard)) : "-";
         std::cout << "En passant square: " << enPassantSquare << "\n";
         std::cout << "Castling rights: " << std::bitset<4>(static_cast<unsigned >(castlingRights)) << "\n";
@@ -109,7 +110,7 @@ namespace Vixen
 
     constexpr void Board::ParseFenPiecePart(std::string_view parsedPosition)
     {
-        unsigned squareIndex = MAX_SQUARE_INDEX;
+        unsigned squareIndex = Constants::MAX_SQUARE_INDEX;
         for (const auto &fenChar : parsedPosition)
         {
             switch (fenChar)
@@ -126,7 +127,7 @@ namespace Vixen
                 case 'r':
                 case 'q':
                 case 'k':
-                    SetBit(bitBoards[GetPieceIndex(fenChar)], squareIndex);
+                    SetBit(bitBoards[static_cast<unsigned>(GetPieceIndex(fenChar))], squareIndex);
                     material += GetPieceMaterial(fenChar);
                     pieceList[squareIndex] = fenChar;
                     break;
@@ -140,7 +141,7 @@ namespace Vixen
                 case '6':
                 case '7':
                 case '8':
-                    squareIndex -= fenChar - '1';
+                    squareIndex -= static_cast<unsigned>(fenChar - '1');
                     break;
                 default:
                     std::cerr << "ERROR IN FEN: PIECE POSITION" << "\n";
@@ -191,8 +192,9 @@ namespace Vixen
                 case 'Q':
                 case 'k':
                 case 'q':
-                    SetBit( castlingRights,
-                            std::distance(begin(CASTLERIGHTS), std::find(begin(CASTLERIGHTS), end(CASTLERIGHTS), it)));
+                    SetBit( castlingRights, static_cast<unsigned>
+                    (std::distance(begin(Constants::CASTLERIGHTS),
+                            std::find(begin(Constants::CASTLERIGHTS), end(Constants::CASTLERIGHTS), it))));
                     break;
                 case '-':
                     break;
@@ -222,10 +224,10 @@ namespace Vixen
 
         ++fiftyMoves;
 
-        if (enPassantBitBoard != EMPTY_BOARD)
+        if (enPassantBitBoard != Constants::EMPTY_BOARD)
         {
             hashBoard.HashEnPassant(enPassantBitBoard);
-            enPassantBitBoard = EMPTY_BOARD;
+            enPassantBitBoard = Constants::EMPTY_BOARD;
         }
 
         if (IsMovingPawn(movingPieceLetter))
@@ -273,7 +275,7 @@ namespace Vixen
         return true;
     }
 
-    constexpr void Board::UpdateCastlingRights(int from, int to)
+    constexpr void Board::UpdateCastlingRights(unsigned int from, unsigned int to)
     {
         hashBoard.HashCastling(castlingRights);
         castlingRights &= castlePermission[from];
@@ -281,25 +283,25 @@ namespace Vixen
         hashBoard.HashCastling(castlingRights);
     }
 
-    constexpr void Board::MoveCastlingWhiteRook(int from, int to)
+    constexpr void Board::MoveCastlingWhiteRook(unsigned int from, unsigned int to)
     {
         RemovePiece(from, 'R');
         AddPiece(to, 'R');
     }
 
-    constexpr void Board::MoveCastlingBlackRook(int from, int to)
+    constexpr void Board::MoveCastlingBlackRook(unsigned int from, unsigned int to)
     {
         RemovePiece(from, 'r');
         AddPiece(to, 'r');
     }
 
-    constexpr void Board::MakeDoublePawnPush(int enPassantSquare)
+    constexpr void Board::MakeDoublePawnPush(unsigned int enPassantSquare)
     {
         SetBit(enPassantBitBoard, enPassantSquare);
         hashBoard.HashEnPassant(enPassantBitBoard);
     }
 
-    constexpr void Board::MakeCapture(int to, char capturedPieceLetter)
+    constexpr void Board::MakeCapture(unsigned int to, char capturedPieceLetter)
     {
         fiftyMoves = 0;
         material -= GetPieceMaterial(capturedPieceLetter);
@@ -357,20 +359,20 @@ namespace Vixen
         hashBoard.SetHash(lastPosition.hash);
     }
 
-    constexpr void Board::RemovePiece(int position, char pieceType)
+    constexpr void Board::RemovePiece(unsigned int position, char pieceType)
     {
         pieceList[position] = ' ';
-        ClearBit(bitBoards[GetPieceIndex(pieceType)], position);
-        ClearBit(bitBoards[GetPieceIndex(IsBlackMoving(pieceType) ? 'S' : 'F')], position);
+        ClearBit(bitBoards[static_cast<unsigned>(GetPieceIndex(pieceType))], position);
+        ClearBit(bitBoards[static_cast<unsigned>(GetPieceIndex(IsBlackMoving(pieceType) ? 'S' : 'F'))], position);
         SetBit(bitBoards[GetPieceIndex(' ')], position);
         hashBoard.HashPiece(position, pieceType);
     }
 
-    constexpr void Board::AddPiece(int position, char pieceType)
+    constexpr void Board::AddPiece(unsigned int position, char pieceType)
     {
         pieceList[position] = pieceType;
-        SetBit(bitBoards[GetPieceIndex(pieceType)], position);
-        SetBit(bitBoards[GetPieceIndex(IsBlackMoving(pieceType) ? 'S' : 'F')], position);
+        SetBit(bitBoards[static_cast<unsigned>(GetPieceIndex(pieceType))], position);
+        SetBit(bitBoards[static_cast<unsigned>(GetPieceIndex(IsBlackMoving(pieceType) ? 'S' : 'F'))], position);
         ClearBit(bitBoards[GetPieceIndex(' ')], position);
         hashBoard.HashPiece(position, pieceType);
     }
@@ -382,6 +384,45 @@ namespace Vixen
         whiteToMove ? moveGenerator.GenerateMoves<Colors::WHITE, moveType>(*this)
                     : moveGenerator.GenerateMoves<Colors::BLACK, moveType>(*this);
         return moveGenerator;
+    }
+
+    bool Board::MakeMove(std::string_view move)
+    {
+        const std::regex moveRegex{"[a-h][1-8][a-h][1-8][q|r|b|n]?"};
+        std::match_results<std::string_view::const_iterator> iterator;
+        if (!std::regex_match(begin(move), end(move), iterator, moveRegex))
+            throw std::runtime_error("INVALID MOVE FORMAT. Use for example e2e4.");
+
+        const auto from = static_cast<unsigned>(NotationToSquare(move.substr(0, 2)));
+        const auto to   = static_cast<unsigned>(NotationToSquare(move.substr(2, 2)));
+
+        char promoted = ' ';
+        if (move.size() == 5)
+            promoted = move.substr(4)[0];
+
+        uint8_t moveType = 0;
+        if (promoted != ' ')
+        {
+            moveType = static_cast<uint8_t>(GetPromotionType(promoted));
+            char capturedPiece = GetPieceList()[to];
+            if (capturedPiece != ' ')
+            {
+                moveType |= static_cast<uint8_t>(CAPTURE);
+            }
+        }
+
+        const auto decodedPromotion = CreateMove(from, to, moveType);
+        const auto decodedMove      = decodedPromotion & 0xFFFU;
+
+        const auto generator    = CreateGenerator<ALL_MOVE>();
+        const auto moves        = generator.GetMoveList();
+        const auto moveListSize = generator.GetListSize();
+
+        for (size_t i = 0; i < moveListSize; ++i)
+            if ((moves[i] & 0xFFFU) == decodedMove)
+                return (moveType == 0) ? MakeMove(moves[i]) : MakeMove(decodedPromotion);
+
+        return false;
     }
 
     template VIXEN_API MoveGenerator Board::CreateGenerator<CAPTURE>() const;

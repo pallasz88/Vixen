@@ -11,8 +11,8 @@ struct Timer
 
     std::string name;
 
-    explicit Timer(std::string &&name) : start(std::chrono::high_resolution_clock::now()),
-                                         name(std::move(name))
+    explicit Timer(std::string &&nm) : start(std::chrono::high_resolution_clock::now()),
+                                       name(std::move(nm))
     {
     }
 

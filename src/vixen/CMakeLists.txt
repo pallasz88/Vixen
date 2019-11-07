@@ -21,10 +21,21 @@ set(SOURCE_FILES
         slider.cpp
         slider.h
         timer.h
+        uci.h
+        uci.cpp
         userinterface.h
         userinterface.cpp)
 
 add_library(Vixen SHARED ${SOURCE_FILES})
 target_link_libraries(Vixen)
+
+if (MSVC)
+    target_compile_options(Vixen PRIVATE /W4 /WX)
+else ()
+    target_compile_options(Vixen PRIVATE -Wall -Wextra -Wshadow -Wnon-virtual-dtor -pedantic
+            -Wold-style-cast -Wcast-align -Wunused -Woverloaded-virtual -Wpedantic -Wconversion -Wsign-conversion
+            -Wmisleading-indentation -Wduplicated-cond -Wduplicated-branches -Wlogical-op -Wnull-dereference
+            -Wuseless-cast -Wdouble-promotion -Wformat=2)
+endif ()
 
 install(TARGETS Vixen DESTINATION bin)

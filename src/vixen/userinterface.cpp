@@ -31,7 +31,7 @@ namespace Vixen::UserInterface
                 board.PrintBoard();
 
             else if (command == "reset")
-                board.SetBoard(START_POSITION);
+                board.SetBoard(Constants::START_POSITION);
 
             else if (command.substr(0, 5) == "perft")
             {
@@ -65,10 +65,9 @@ namespace Vixen::UserInterface
 
             else if (command == "go")
             {
-                MoveGenerator generator = board.CreateGenerator<ALL_MOVE>();
-                auto moves = generator.GetMoveList();
-                auto size = generator.GetListSize();
-                std::uniform_int_distribution<int> distribution(0, size);
+                const auto generator = board.CreateGenerator<ALL_MOVE>();
+                const auto moves = generator.GetLegalMoveList(board);
+                std::uniform_int_distribution<unsigned> distribution(0, static_cast<unsigned>(moves.size()));
                 board.MakeMove(moves[distribution(e1)]);
                 board.PrintBoard();
             }
@@ -80,56 +79,13 @@ namespace Vixen::UserInterface
 
     void MakeMove(std::string &&move, Vixen::Board &board)
     {
-        bool isLegal = false;
         std::cout << "Your move is: " << move << "\n";
-        std::regex moveRegex{"[a-h][1-8][a-h][1-8][q|r|b|n]?"};
-        if (!std::regex_match(move, moveRegex))
-            throw std::runtime_error("INVALID MOVE FORMAT. Use for example e2e4.");
 
-        unsigned from = NotationToSquare(move.substr(0, 2));
-        unsigned to = NotationToSquare(move.substr(2, 2));
-
-        char promoted = ' ';
-        if (move.size() == 5)
-            promoted = move.substr(4)[0];
-
-        uint8_t moveType = 0;
-        if (promoted != ' ')
+        if (!board.MakeMove(move))
         {
-            moveType = GetPromotionType(promoted);
-            char capturedPiece = board.GetPieceList()[to];
-            if (capturedPiece != ' ')
-            {
-                moveType += CAPTURE;
-            }
+            std::cerr << "Illegal move!\n";
+            return;
         }
-
-        unsigned decodedPromotion = CreateMove(from, to, moveType);
-        unsigned decodedMove = decodedPromotion & 0xFFFU;
-
-        MoveGenerator generator = board.CreateGenerator<ALL_MOVE>();
-        std::array<Move, MAX_MOVELIST_SIZE> moves = generator.GetMoveList();
-        auto moveListSize = generator.GetListSize();
-
-        for (size_t i = 0; i < moveListSize; ++i)
-            if ((moves[i] & 0xFFFU) == decodedMove)
-            {
-                if (moveType == 0)
-                {
-                    if (!board.MakeMove(moves[i]))
-                        throw std::runtime_error("Illegal move!");
-                }
-                else
-                {
-                    if (!board.MakeMove(decodedPromotion))
-                        throw std::runtime_error("Illegal move!");
-                }
-                isLegal = true;
-                break;
-            }
-
-        if (!isLegal)
-            throw std::runtime_error("Illegal move!");
 
         board.PrintBoard();
 
@@ -142,9 +98,9 @@ namespace Vixen::UserInterface
 
     void PrintMoveList(Board &board)
     {
-        MoveGenerator generator = board.CreateGenerator<ALL_MOVE>();
-        std::array<Move, MAX_MOVELIST_SIZE> movesList = generator.GetMoveList();
-        size_t moveListSize = generator.GetListSize();
+        const auto generator    = board.CreateGenerator<ALL_MOVE>();
+        const auto movesList    = generator.GetMoveList();
+        const auto moveListSize = generator.GetListSize();
         for (size_t i = 0; i < moveListSize; ++i)
         {
             if (board.MakeMove(movesList[i]))
@@ -170,8 +126,10 @@ namespace Vixen::UserInterface
         std::cout << "\tposition:\tset FEN position\n";
         std::cout << "\tprint:\t\tprint current position\n";
         std::cout << "\treset:\t\treset board to starting position\n";
-        std::cout << "\tmove <MOVE>:\tprovide MOVE in algebraic notation like e2e4!\n";
+        std::cout << "\tmove:\t\tprovide your move in algebraic notation like e2e4!\n";
+        std::cout << "\tgo:\t\t\tcomputer makes a random legal move\n";
         std::cout << "\tundo:\t\tundo previous move\n";
         std::cout << "\tlist:\t\tlist all available moves from current position\n";
+        std::cout << "\tperft:\t\tcomputer generates legal moves from current position to given depth\n";
     }
 }

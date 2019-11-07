@@ -18,7 +18,7 @@ namespace Vixen
 
         PositionKey hash;
 
-        int castlingRights;
+        unsigned castlingRights;
 
         int fiftyMoves;
 
@@ -28,19 +28,19 @@ namespace Vixen
 
         char capturedPiece;
 
-        explicit History(BitBoard enPassant,
-                         int castlingRights,
-                         int fiftyMoves,
-                         Move move,
+        explicit History(BitBoard en,
+                         unsigned cr,
+                         int fi,
+                         Move lastMove,
                          char moved,
                          char captured,
-                         PositionKey hash) : enPassant(enPassant),
-                                             hash(hash),
-                                             castlingRights(castlingRights),
-                                             fiftyMoves(fiftyMoves),
-                                             move(move),
-                                             movedPiece(moved),
-                                             capturedPiece(captured)
+                         PositionKey lastHash) : enPassant(en),
+                                                 hash(lastHash),
+                                                 castlingRights(cr),
+                                                 fiftyMoves(fi),
+                                                 move(lastMove),
+                                                 movedPiece(moved),
+                                                 capturedPiece(captured)
         {}
 
     };
@@ -63,9 +63,7 @@ namespace Vixen
          * @return
          */
         [[nodiscard]] constexpr BitBoard GetBitBoard(char piece) const
-        {
-            return bitBoards[GetPieceIndex(piece)];
-        }
+        { return bitBoards[static_cast<unsigned>(GetPieceIndex(piece))]; }
 
         /**
          * Returns piece square list.
@@ -73,6 +71,13 @@ namespace Vixen
          */
         [[nodiscard]] constexpr auto GetPieceList() const
         { return pieceList; }
+
+        /**
+         *
+         * @return
+         */
+        [[nodiscard]] constexpr auto GetHash() const
+        { return hashBoard.GetHash();}
 
         /**
          * Returns if white is on move from given position.
@@ -92,14 +97,14 @@ namespace Vixen
          * Returns castling rights from given position.
          * @return castlingRights
          */
-        [[nodiscard]] constexpr int GetCastlingRights() const
+        [[nodiscard]] constexpr unsigned GetCastlingRights() const
         { return castlingRights; }
 
         /**
          * Returns material balance on board
          */
         [[nodiscard]] constexpr int GetMaterialBalance() const
-        { return material; }
+        { return whiteToMove ? material : -material; }
 
         /**
          * Prints the board to console.
@@ -118,14 +123,14 @@ namespace Vixen
          * @param position
          * @param pieceType
          */
-        constexpr void RemovePiece(int position, char pieceType);
+        constexpr void RemovePiece(unsigned int position, char pieceType);
 
         /**
          * Adds given piece type to given position.
          * @param position
          * @param pieceType
          */
-        constexpr void AddPiece(int position, char pieceType);
+        constexpr void AddPiece(unsigned int position, char pieceType);
 
         /**
          * Tries to move a pseudo-legal move.
@@ -135,6 +140,8 @@ namespace Vixen
          * @return
          */
         bool MakeMove(Move move);
+
+        bool MakeMove(std::string_view move);
 
         /**
          * Rolls back to previous state of the board.
@@ -152,7 +159,7 @@ namespace Vixen
 
         std::stack<History> history;
 
-        std::array<char, SQUARE_NUMBER> pieceList;
+        std::array<char, Constants::SQUARE_NUMBER> pieceList;
 
         BitBoards bitBoards;
 
@@ -160,7 +167,7 @@ namespace Vixen
 
         Hash hashBoard;
 
-        int castlingRights;
+        unsigned castlingRights;
 
         int historyMovesNum;
 
@@ -185,14 +192,14 @@ namespace Vixen
 
         void ClearHistory();
 
-        constexpr void MakeCapture(int to, char capturedPieceLetter);
+        constexpr void MakeCapture(unsigned int to, char capturedPieceLetter);
 
-        constexpr void MakeDoublePawnPush(int enPassantSquare);
+        constexpr void MakeDoublePawnPush(unsigned int enPassantSquare);
 
-        constexpr void MoveCastlingWhiteRook(int from, int to);
+        constexpr void MoveCastlingWhiteRook(unsigned int from, unsigned int to);
 
-        constexpr void MoveCastlingBlackRook(int from, int to);
+        constexpr void MoveCastlingBlackRook(unsigned int from, unsigned int to);
 
-        constexpr void UpdateCastlingRights(int from, int to);
+        constexpr void UpdateCastlingRights(unsigned int from, unsigned int to);
     };
 }

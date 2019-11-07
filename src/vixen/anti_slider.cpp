@@ -2,29 +2,27 @@
 
 namespace Vixen::AntSliderUtils
 {
-    BitBoard pawnAttack[COLOR_NUMBER][SQUARE_NUMBER];
+    BitBoard pawnAttack[Constants::COLOR_NUMBER][Constants::SQUARE_NUMBER];
 
-    BitBoard knightAttack[SQUARE_NUMBER];
+    BitBoard knightAttack[Constants::SQUARE_NUMBER];
 
-    BitBoard kingAttack[SQUARE_NUMBER];
+    BitBoard kingAttack[Constants::SQUARE_NUMBER];
 
     void InitKnightKingAttack()
     {
-        AntiSliderDirections knightOffset = {{{-2, -1}, {-2, 1}, {-1, -2}, {-1, 2}, {1, -2}, {1, 2}, {2, -1}, {2, 1}}};
-        AntiSliderDirections kingOffset = {{{-1, -1}, {-1, 0}, {-1, 1}, {0, -1}, {0, 1}, {1, -1}, {1, 0}, {1, 1}}};
-        for (auto square = 0; square < SQUARE_NUMBER; ++square)
+        for (unsigned square = 0; square < Constants::SQUARE_NUMBER; ++square)
         {
-            for (int direction = 0; direction < 8; ++direction)
+            for (unsigned direction = 0; direction < 8; ++direction)
             {
-                int knightFile = square % 8 + knightOffset[direction][0];
-                int knightRank = square / 8 + knightOffset[direction][1];
-                int kingFile = square % 8 + kingOffset[direction][0];
-                int kingRank = square / 8 + kingOffset[direction][1];
+                const int knightFile = static_cast<int>(square % 8) + Constants::knightOffset[direction][0];
+                const int knightRank = static_cast<int>(square / 8) + Constants::knightOffset[direction][1];
+                const int kingFile   = static_cast<int>(square % 8) + Constants::kingOffset[direction][0];
+                const int kingRank   = static_cast<int>(square / 8) + Constants::kingOffset[direction][1];
                 if (IsValidCoordinate(knightFile, knightRank))
-                    SetBit(knightAttack[square], 8 * knightRank + knightFile);
+                    SetBit(knightAttack[square], static_cast<unsigned>(8 * knightRank + knightFile));
 
                 if (IsValidCoordinate(kingFile, kingRank))
-                    SetBit(kingAttack[square], 8 * kingRank + kingFile);
+                    SetBit(kingAttack[square], static_cast<unsigned>(8 * kingRank + kingFile));
 
             }
         }
@@ -32,20 +30,21 @@ namespace Vixen::AntSliderUtils
 
     void InitPawnAttack()
     {
-        PawnDirections pawnDirections = {{{-1, 1}, {1, 1}}};
-        for (auto square = 0; square < SQUARE_NUMBER; ++square)
+        for (unsigned square = 0; square < Constants::SQUARE_NUMBER; ++square)
         {
-            for (int direction = 0; direction < 2; ++direction)
+            for (unsigned direction = 0; direction < 2; ++direction)
             {
-                int pawnFile = square % 8 + pawnDirections[direction][0];
-                int pawnRank = square / 8 + pawnDirections[direction][1];
+                int pawnFile = static_cast<int>(square % 8) + Constants::pawnDirections[direction][0];
+                int pawnRank = static_cast<int>(square / 8) + Constants::pawnDirections[direction][1];
                 if (IsValidCoordinate(pawnFile, pawnRank))
-                    SetBit(pawnAttack[static_cast<int>(Colors::WHITE)][square], 8 * pawnRank + pawnFile);
+                    SetBit(pawnAttack[static_cast<int>(Colors::WHITE)][square],
+                                      static_cast<unsigned>(8 * pawnRank + pawnFile));
 
-                pawnFile = square % 8 - pawnDirections[direction][0];
-                pawnRank = square / 8 - pawnDirections[direction][1];
+                pawnFile = static_cast<int>(square % 8) - Constants::pawnDirections[direction][0];
+                pawnRank = static_cast<int>(square / 8) - Constants::pawnDirections[direction][1];
                 if (IsValidCoordinate(pawnFile, pawnRank))
-                    SetBit(pawnAttack[static_cast<int>(Colors::BLACK)][square], 8 * pawnRank + pawnFile);
+                    SetBit(pawnAttack[static_cast<int>(Colors::BLACK)][square],
+                                      static_cast<unsigned>(8 * pawnRank + pawnFile));
             }
         }
     }

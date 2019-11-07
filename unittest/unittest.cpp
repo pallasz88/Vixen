@@ -42,14 +42,14 @@ BOOST_FIXTURE_TEST_SUITE(Test_unit, Fixture)
 
         BOOST_CHECK_EQUAL(board.GetCastlingRights(), 0xF);
 
-        BOOST_CHECK_EQUAL(board.GetEnPassant(), EMPTY_BOARD);
+        BOOST_CHECK_EQUAL(board.GetEnPassant(), Constants::EMPTY_BOARD);
 
         BOOST_CHECK_EQUAL(board.IsWhiteToMove(), true);
     }
 
     BOOST_AUTO_TEST_CASE(Test_SetPosition)
     {
-        board.SetBoard(TESTPOS1);
+        board.SetBoard(Constants::TESTPOS1);
         board.PrintBoard();
 
         BOOST_CHECK_EQUAL(board.GetBitBoard('K'), 2ULL);
@@ -68,7 +68,7 @@ BOOST_FIXTURE_TEST_SUITE(Test_unit, Fixture)
 
         BOOST_CHECK_EQUAL(board.IsWhiteToMove(), true);
 
-        board.SetBoard(TESTPOS2);
+        board.SetBoard(Constants::TESTPOS2);
         board.PrintBoard();
 
         BOOST_CHECK_EQUAL(board.GetBitBoard('K'), 8ULL);
@@ -299,7 +299,7 @@ BOOST_FIXTURE_TEST_SUITE(Test_unit, Fixture)
         board.PrintBoard();
         BOOST_TEST(board.GetBitBoard('P') == 9007199254740992ULL);
         BOOST_TEST(board.GetBitBoard('Q') == 576460752303423488ULL);
-        BOOST_TEST(board.GetBitBoard('b') == EMPTY_BOARD);
+        BOOST_TEST(board.GetBitBoard('b') == Constants::EMPTY_BOARD);
         BOOST_TEST(board.GetBitBoard(' ') == 11952552861285482487ULL);
         BOOST_TEST(board.GetBitBoard('F') == 585467951558164488ULL);
         BOOST_TEST(board.GetBitBoard('S') == 5908723260865904640ULL);
@@ -307,7 +307,7 @@ BOOST_FIXTURE_TEST_SUITE(Test_unit, Fixture)
         board.TakeBack();
         board.PrintBoard();
         BOOST_TEST(board.GetBitBoard('P') == 10133099161583616ULL);
-        BOOST_TEST(board.GetBitBoard('Q') == EMPTY_BOARD);
+        BOOST_TEST(board.GetBitBoard('Q') == Constants::EMPTY_BOARD);
         BOOST_TEST(board.GetBitBoard('b') == 576460752303423488ULL);
         BOOST_TEST(board.GetBitBoard(' ') == 11951426961378639863ULL);
         BOOST_TEST(board.GetBitBoard('F') == 10133099161583624ULL);
@@ -387,7 +387,7 @@ BOOST_FIXTURE_TEST_SUITE(Test_unit, Fixture)
 
     BOOST_AUTO_TEST_CASE(Test_material_balance)
     {
-        board.SetBoard(START_POSITION);
+        board.SetBoard(Constants::START_POSITION);
         UserInterface::MakeMove("e2e4", board);
         UserInterface::MakeMove("d7d5", board);
         UserInterface::MakeMove("e4d5", board);

@@ -10,9 +10,9 @@ namespace Vixen
     {
         positionKey = 0;
 
-        for (int square = H1; square <= MAX_SQUARE_INDEX; ++square)
+        for (unsigned square = H1; square <= Constants::MAX_SQUARE_INDEX; ++square)
         {
-            for (const auto &pieceKey : pieceKeys)
+            for (const auto &pieceKey : Constants::pieceKeys)
             {
                 if (IsBitSet(board.GetBitBoard(pieceKey), square))
                 {
@@ -23,7 +23,7 @@ namespace Vixen
         }
 
         auto enPassant = board.GetEnPassant();
-        if (enPassant != EMPTY_BOARD)
+        if (enPassant != Constants::EMPTY_BOARD)
             HashEnPassant(enPassant);
 
         if (board.IsWhiteToMove())
