@@ -404,11 +404,10 @@ namespace Vixen
         if (promoted != ' ')
         {
             moveType = static_cast<uint8_t>(GetPromotionType(promoted));
-            char capturedPiece = GetPieceList()[to];
+            const char capturedPiece = GetPieceList()[to];
             if (capturedPiece != ' ')
-            {
                 moveType |= static_cast<uint8_t>(CAPTURE);
-            }
+
         }
 
         const auto decodedPromotion = CreateMove(from, to, moveType);

@@ -1,6 +1,7 @@
 #include "uci.h"
 #include "board.h"
 #include "move_generator.h"
+#include "engine.h"
 
 #include <iostream>
 #include <sstream>
@@ -64,18 +65,12 @@ namespace Vixen::Uci
 
             else if (token == "go")
             {
-                const auto generator = board.CreateGenerator<ALL_MOVE>();
-                const auto moves = generator.GetLegalMoveList(board);
-                std::uniform_int_distribution<unsigned> distribution(0, static_cast<unsigned>(moves.size() - 1));
-                const unsigned move = moves[distribution(e1)];
-
-                std::stringstream ss;
-                ss << SquareToNotation(move & 0x3FU) << SquareToNotation((move & 0xFC0U) >> 6U);
-                if ((move >> 12U) & PROMOTION)
-                    ss << "nbrq"[static_cast<int>((move >> 12U) & 3U)];
-
-                board.MakeMove(move);
-                std::cout << "bestmove " << ss.str() << '\n';
+                auto[score, encodedMove] = Search::Root(4, board);
+                std::cout << encodedMove << '\n';
+                std::cout << "info score " << score << '\n';
+                const auto from = encodedMove & 0x3FU;
+                const auto to = (encodedMove >> 6U) & 0x3FU;
+                std::cout << "bestmove " << SquareToNotation(from) << SquareToNotation(to) << '\n';
             }
 
             else if (token == "quit")
