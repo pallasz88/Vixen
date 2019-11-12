@@ -192,7 +192,7 @@ namespace Vixen
 
         void ClearHistory();
 
-        constexpr void MakeCapture(unsigned int to, char capturedPieceLetter);
+        constexpr void MakeCapture(unsigned int to, char capturedPieceLetter, unsigned int moveType);
 
         constexpr void MakeDoublePawnPush(unsigned int enPassantSquare);
 

@@ -234,11 +234,7 @@ namespace Vixen
             fiftyMoves = 0;
 
         if (moveType & CAPTURE)
-        {
-            MakeCapture(to, capturedPieceLetter);
-            if (moveType == ENPASSANT)
-                whiteToMove ? RemovePiece(to - 8, 'p') : RemovePiece(to + 8, 'P');
-        }
+            MakeCapture(to, capturedPieceLetter, moveType);
 
         else if (moveType == DOUBLE_PAWN_PUSH)
             MakeDoublePawnPush(enPassantSquare);
@@ -301,11 +297,19 @@ namespace Vixen
         hashBoard.HashEnPassant(enPassantBitBoard);
     }
 
-    constexpr void Board::MakeCapture(unsigned int to, char capturedPieceLetter)
+    constexpr void Board::MakeCapture(unsigned int to, char capturedPieceLetter, unsigned int moveType)
     {
         fiftyMoves = 0;
-        material -= GetPieceMaterial(capturedPieceLetter);
-        RemovePiece(to, capturedPieceLetter);
+        if (moveType != ENPASSANT)
+        {
+            RemovePiece(to, capturedPieceLetter);
+            material -= GetPieceMaterial(capturedPieceLetter);
+        }
+        else
+        {
+            whiteToMove ? RemovePiece(to - 8, 'p') : RemovePiece(to + 8, 'P');
+            material -= whiteToMove ? GetPieceMaterial('p') : GetPieceMaterial('P');
+        }
     }
 
     void Board::TakeBack()
@@ -347,13 +351,16 @@ namespace Vixen
         AddPiece(from, movingPieceLetter);
 
         if (moveType == ENPASSANT)
+        {
             whiteToMove ? AddPiece(to - 8, 'p')
                         : AddPiece(to + 8, 'P');
+            material += whiteToMove ? GetPieceMaterial('p') : GetPieceMaterial('P');
+        }
 
         else if (moveType & CAPTURE)
         {
-            AddPiece(to, capturedPieceLetter);
             material += GetPieceMaterial(capturedPieceLetter);
+            AddPiece(to, capturedPieceLetter);
         }
 
         hashBoard.SetHash(lastPosition.hash);

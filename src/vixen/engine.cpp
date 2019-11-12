@@ -1,7 +1,9 @@
 #include <iostream>
+
 #include "engine.h"
 #include "move_generator.h"
 #include "board.h"
+
 
 namespace Vixen::Search
 {
@@ -11,8 +13,8 @@ namespace Vixen::Search
             return {};
 
         const auto generator = board.CreateGenerator<ALL_MOVE>();
-        int alpha = -100000;
-        int beta = 100000;
+        int alpha = -1000000;
+        int beta = 1000000;
         int score{0};
         Move bestMove{0};
 

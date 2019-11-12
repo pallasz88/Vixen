@@ -408,6 +408,11 @@ BOOST_FIXTURE_TEST_SUITE(Test_unit, Fixture)
         BOOST_TEST(board.GetMaterialBalance() == 500);
         UserInterface::TakeBackMove(board);
         BOOST_TEST(board.GetMaterialBalance() == -800);
+
+        board.SetBoard(Constants::TESTPOS1);
+        const int materialBefore = board.GetMaterialBalance();
+        Test::PerftTest(3, board);
+        BOOST_TEST(materialBefore == board.GetMaterialBalance());
     }
 
 BOOST_AUTO_TEST_SUITE_END()

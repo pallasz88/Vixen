@@ -65,7 +65,7 @@ namespace Vixen::Uci
 
             else if (token == "go")
             {
-                auto[score, encodedMove] = Search::Root(4, board);
+                auto[score, encodedMove] = Search::Root(6, board);
                 std::cout << encodedMove << '\n';
                 std::cout << "info score " << score << '\n';
                 const auto from = encodedMove & 0x3FU;
