@@ -104,7 +104,7 @@ namespace Vixen
          * Returns material balance on board
          */
         [[nodiscard]] constexpr int GetMaterialBalance() const
-        { return whiteToMove ? material : -material; }
+        { return material; }
 
         /**
          * Prints the board to console.

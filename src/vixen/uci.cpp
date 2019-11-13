@@ -5,19 +5,17 @@
 
 #include <iostream>
 #include <sstream>
-#include <random>
 
 namespace Vixen::Uci
 {
 
     void loop(Board &board)
     {
-        std::random_device r;
-        std::mt19937 e1(r());
-        std::string line, token;
+        std::string line;
         while (std::getline(std::cin, line))
         {
             std::istringstream is(line);
+            std::string token;
             is >> token;
             
             if (token == "uci")
@@ -65,8 +63,7 @@ namespace Vixen::Uci
 
             else if (token == "go")
             {
-                auto[score, encodedMove] = Search::Root(6, board);
-                std::cout << encodedMove << '\n';
+                const auto[score, encodedMove] = Search::Root(6, board);
                 std::cout << "info score " << score << '\n';
                 const auto from = encodedMove & 0x3FU;
                 const auto to = (encodedMove >> 6U) & 0x3FU;

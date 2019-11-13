@@ -1,4 +1,6 @@
 #include <iostream>
+#include <limits>
+#include <cassert>
 
 #include "engine.h"
 #include "move_generator.h"
@@ -9,22 +11,21 @@ namespace Vixen::Search
 {
     std::pair<int, Move> Root(int depth, Board &board)
     {
-        if (depth == 0)
-            return {};
-
+        assert(depth > 0);
         const auto generator = board.CreateGenerator<ALL_MOVE>();
-        int alpha = -1000000;
-        int beta = 1000000;
+        const auto moveList = generator.GetLegalMoveList(board);
+        int alpha = -std::numeric_limits<int>::max();;
+        int beta = std::numeric_limits<int>::max();;
         int score{0};
         Move bestMove{0};
 
-        for (unsigned i = 0; i < generator.GetListSize(); ++i)
-        {
-            const auto move = generator.GetMoveList()[i];
-            if (!board.MakeMove(move))
-                continue;
+        if (moveList.empty())
+            return {-std::numeric_limits<int>::max(), bestMove};
 
-            bestMove == 0 ? bestMove = move : bestMove;
+        for (Move move : moveList)
+        {
+            board.MakeMove(move);
+
             score = -NegaMax(depth - 1, -beta, -alpha, board);
             board.TakeBack();
 
@@ -37,6 +38,10 @@ namespace Vixen::Search
                 bestMove = move;
             }
         }
+
+        if (bestMove == 0)
+            bestMove = moveList[0];
+
         return {alpha, bestMove};
     }
 
@@ -48,6 +53,8 @@ namespace Vixen::Search
         MoveGenerator generator = board.CreateGenerator<ALL_MOVE>();
         auto moveList = generator.GetMoveList();
         auto size = generator.GetListSize();
+        unsigned legalMoveCount = 0;
+
 
         board.IsWhiteToMove() ? generator.GenerateMoves<Colors::WHITE, ALL_MOVE>(board)
                               : generator.GenerateMoves<Colors::BLACK, ALL_MOVE>(board);
@@ -57,6 +64,7 @@ namespace Vixen::Search
             if (!board.MakeMove(moveList[i]))
                 continue;
 
+            ++legalMoveCount;
             int score = -NegaMax(depth - 1, -beta, -alpha, board);
             board.TakeBack();
 
@@ -67,6 +75,19 @@ namespace Vixen::Search
                 alpha = score; // alpha acts like max in MiniMax
 
         }
+
+        if (legalMoveCount == 0)
+        {
+            if (Check::IsInCheck<Colors::WHITE>(board))
+                return std::numeric_limits<int>::max();
+
+            else if (Check::IsInCheck<Colors::BLACK>(board))
+                return -std::numeric_limits<int>::max();
+
+            else
+                return 0;
+        }
+
         return alpha;
     }
 
@@ -100,6 +121,33 @@ namespace Vixen::Search
 
     int Evaluate(const Board &board)
     {
-        return board.GetMaterialBalance();
+        int score = board.GetMaterialBalance();
+        for (unsigned i = 0; i < Constants::SQUARE_NUMBER; ++i)
+        {
+            if (board.GetPieceList()[i] == 'P')
+                score += pawnTable[i];
+
+            else if (board.GetPieceList()[i] == 'p')
+                score -= PawnTable[i];
+
+            else if (board.GetPieceList()[i] == 'N')
+                score += knightTable[i];
+
+            else if (board.GetPieceList()[i] == 'n')
+                score -= KnightTable[i];
+
+            else if (board.GetPieceList()[i] == 'B')
+                score += bishopTable[i];
+
+            else if (board.GetPieceList()[i] == 'b')
+                score -= BishopTable[i];
+
+            else if (board.GetPieceList()[i] == 'R')
+                score += rookTable[i];
+
+            else if (board.GetPieceList()[i] == 'r')
+                score -= RookTable[i];
+        }
+        return board.IsWhiteToMove() ? score : -score;
     }
 }
