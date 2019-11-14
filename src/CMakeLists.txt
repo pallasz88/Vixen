@@ -11,7 +11,7 @@ include_directories(vixen)
 
 add_subdirectory(vixen)
 
-add_executable(main ${SOURCE_FILES})
-target_link_libraries(main Vixen pthread)
+add_executable(Vixen ${SOURCE_FILES})
+target_link_libraries(Vixen Engine pthread)
 
-install(TARGETS main DESTINATION bin)
+install(TARGETS Vixen DESTINATION bin)

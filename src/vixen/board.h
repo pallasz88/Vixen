@@ -2,8 +2,6 @@
 
 #include "hash.h"
 
-#include <stack>
-
 namespace Vixen
 {
 
@@ -20,7 +18,7 @@ namespace Vixen
 
         unsigned castlingRights;
 
-        int fiftyMoves;
+        unsigned fiftyMoves;
 
         Move move;
 
@@ -28,9 +26,11 @@ namespace Vixen
 
         char capturedPiece;
 
+        History() = default;
+
         explicit History(BitBoard en,
                          unsigned cr,
-                         int fi,
+                         unsigned fi,
                          Move lastMove,
                          char moved,
                          char captured,
@@ -42,6 +42,9 @@ namespace Vixen
                                                  movedPiece(moved),
                                                  capturedPiece(captured)
         {}
+
+        [[nodiscard]]friend constexpr bool operator==(const History &history, PositionKey positionKey)
+        { return history.hash == positionKey; }
 
     };
 
@@ -106,6 +109,9 @@ namespace Vixen
         [[nodiscard]] constexpr int GetMaterialBalance() const
         { return material; }
 
+        [[nodiscard]] constexpr unsigned GetFiftyMoveCounter() const
+        { return fiftyMoves; }
+
         /**
          * Prints the board to console.
          */
@@ -155,9 +161,15 @@ namespace Vixen
         template<uint8_t moveType>
         [[nodiscard]] MoveGenerator CreateGenerator() const;
 
+        [[nodiscard]] constexpr bool IsRepetition() const
+        {
+            return Vixen::find(begin(history) + historyPly - fiftyMoves,
+                               begin(history) + historyPly, hashBoard.GetHash()) != begin(history) + historyPly;
+        }
+
     private:
 
-        std::stack<History> history;
+        std::array<History, 1024> history{};
 
         std::array<char, Constants::SQUARE_NUMBER> pieceList;
 
@@ -169,9 +181,9 @@ namespace Vixen
 
         unsigned castlingRights;
 
-        int historyMovesNum;
+        unsigned historyPly;
 
-        int fiftyMoves;
+        unsigned fiftyMoves;
 
         int material;
 

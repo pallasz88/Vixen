@@ -21,12 +21,13 @@ namespace Vixen
     };
 
     Board::Board() :
+            history{},
             pieceList{' '},
             bitBoards{Constants::EMPTY_BOARD},
             enPassantBitBoard(Constants::EMPTY_BOARD),
             hashBoard(Hash()),
             castlingRights(0),
-            historyMovesNum(0),
+            historyPly(0),
             fiftyMoves(0),
             material(0),
             whiteToMove(false)
@@ -59,14 +60,14 @@ namespace Vixen
         material = 0;
         bitBoards.fill(Constants::EMPTY_BOARD);
         pieceList.fill(' ');
-        std::array parsedPosition = SplitFenPosition<6>(position);
+        std::array parsedPosition = SplitFenPosition<5>(position);
         ParseFenPiecePart(parsedPosition[0]);
         ParseSideToMovePart(parsedPosition[1]);
         ParseCastlingRightPart(parsedPosition[2]);
         SumUpBitBoards();
         enPassantBitBoard = SquareToBitBoard(NotationToSquare(parsedPosition[3]));
         std::from_chars(begin(parsedPosition[4]), end(parsedPosition[4]), fiftyMoves);
-        std::from_chars(begin(parsedPosition[5]), end(parsedPosition[5]), historyMovesNum);
+        //std::from_chars(begin(parsedPosition[5]), end(parsedPosition[5]), historyPly);
         AddHashBoard();
         ClearHistory();
     }
@@ -78,8 +79,7 @@ namespace Vixen
 
     void Board::ClearHistory()
     {
-        if (!history.empty())
-            history = std::stack<History>();
+        historyPly = 0;
     }
 
     void Board::PrintBoard() const
@@ -214,13 +214,13 @@ namespace Vixen
         const char movingPieceLetter = pieceList[from];
         const char capturedPieceLetter = pieceList[to];
 
-        history.emplace(enPassantBitBoard,
-                        castlingRights,
-                        fiftyMoves,
-                        move,
-                        movingPieceLetter,
-                        capturedPieceLetter,
-                        hashBoard.GetHash());
+        history[historyPly++] = History{enPassantBitBoard,
+                                        castlingRights,
+                                        fiftyMoves,
+                                        move,
+                                        movingPieceLetter,
+                                        capturedPieceLetter,
+                                        hashBoard.GetHash()};
 
         ++fiftyMoves;
 
@@ -260,7 +260,6 @@ namespace Vixen
 
         whiteToMove = !whiteToMove;
         hashBoard.HashSide();
-        ++historyMovesNum;
 
         if (whiteToMove ? Check::IsInCheck<Colors::BLACK>(*this)
                         : Check::IsInCheck<Colors::WHITE>(*this))
@@ -314,11 +313,10 @@ namespace Vixen
 
     void Board::TakeBack()
     {
-        if (history.empty())
+        if (historyPly == 0)
             throw std::runtime_error("Empty history");
 
-        const History &lastPosition = history.top();
-        history.pop();
+        const History &lastPosition = history[--historyPly];
 
         const auto from                = lastPosition.move & 0x3FU;
         const auto to                  = (lastPosition.move >> 6U) & 0x3FU;
@@ -326,7 +324,6 @@ namespace Vixen
         const char movingPieceLetter   = lastPosition.movedPiece;
         const char capturedPieceLetter = lastPosition.capturedPiece;
 
-        --historyMovesNum;
         whiteToMove = !whiteToMove;
         fiftyMoves = lastPosition.fiftyMoves;
         enPassantBitBoard = lastPosition.enPassant;

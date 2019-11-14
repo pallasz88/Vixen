@@ -26,16 +26,16 @@ set(SOURCE_FILES
         userinterface.h
         userinterface.cpp)
 
-add_library(Vixen SHARED ${SOURCE_FILES})
-target_link_libraries(Vixen)
+add_library(Engine SHARED ${SOURCE_FILES})
+target_link_libraries(Engine)
 
 if (MSVC)
-    target_compile_options(Vixen PRIVATE /W4 /WX)
+    target_compile_options(Engine PRIVATE /W4 /WX)
 else ()
-    target_compile_options(Vixen PRIVATE -Wall -Wextra -Wshadow -Wnon-virtual-dtor -pedantic
+    target_compile_options(Engine PRIVATE -Wall -Wextra -Wshadow -Wnon-virtual-dtor -pedantic
             -Wold-style-cast -Wcast-align -Wunused -Woverloaded-virtual -Wpedantic -Wconversion -Wsign-conversion
             -Wmisleading-indentation -Wduplicated-cond -Wduplicated-branches -Wlogical-op -Wnull-dereference
             -Wuseless-cast -Wdouble-promotion -Wformat=2)
 endif ()
 
-install(TARGETS Vixen DESTINATION bin)
+install(TARGETS Engine DESTINATION bin)

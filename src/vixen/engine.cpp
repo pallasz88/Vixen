@@ -17,6 +17,7 @@ namespace Vixen::Search
         int alpha = -std::numeric_limits<int>::max();;
         int beta = std::numeric_limits<int>::max();;
         int score{0};
+        int distancefromRoot{0};
         Move bestMove{0};
 
         if (moveList.empty())
@@ -25,8 +26,8 @@ namespace Vixen::Search
         for (Move move : moveList)
         {
             board.MakeMove(move);
-
-            score = -NegaMax(depth - 1, -beta, -alpha, board);
+            score = -NegaMax(depth - 1, -beta, -alpha, board, ++distancefromRoot);
+            --distancefromRoot;
             board.TakeBack();
 
             if (score >= beta)
@@ -45,16 +46,18 @@ namespace Vixen::Search
         return {alpha, bestMove};
     }
 
-    int NegaMax(int depth, int alpha, int beta, Board& board)
+    int NegaMax(int depth, int alpha, int beta, Board &board, int distancefromRoot)
     {
         if (depth == 0)
             return Quiescence(alpha, beta, board);
+
+        if (board.IsRepetition() || board.GetFiftyMoveCounter() >= 100)
+            return 0;
 
         MoveGenerator generator = board.CreateGenerator<ALL_MOVE>();
         auto moveList = generator.GetMoveList();
         auto size = generator.GetListSize();
         unsigned legalMoveCount = 0;
-
 
         board.IsWhiteToMove() ? generator.GenerateMoves<Colors::WHITE, ALL_MOVE>(board)
                               : generator.GenerateMoves<Colors::BLACK, ALL_MOVE>(board);
@@ -65,7 +68,8 @@ namespace Vixen::Search
                 continue;
 
             ++legalMoveCount;
-            int score = -NegaMax(depth - 1, -beta, -alpha, board);
+            int score = -NegaMax(depth - 1, -beta, -alpha, board, ++distancefromRoot);
+            --distancefromRoot;
             board.TakeBack();
 
             if (score >= beta)
@@ -78,11 +82,10 @@ namespace Vixen::Search
 
         if (legalMoveCount == 0)
         {
-            if (Check::IsInCheck<Colors::WHITE>(board))
-                return std::numeric_limits<int>::max();
-
-            else if (Check::IsInCheck<Colors::BLACK>(board))
-                return -std::numeric_limits<int>::max();
+            if (Check::IsInCheck<Colors::WHITE>(board) ||
+                Check::IsInCheck<Colors::BLACK>(board)) {
+                return -std::numeric_limits<int>::max() + distancefromRoot;
+            }
 
             else
                 return 0;
