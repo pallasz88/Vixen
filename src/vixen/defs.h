@@ -402,4 +402,5 @@ namespace Vixen
         return find(begin(Constants::blackPieceKeys), end(Constants::blackPieceKeys), c)
                != end(Constants::blackPieceKeys);
     }
+
 }

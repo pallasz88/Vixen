@@ -1,6 +1,5 @@
 #include <iostream>
 #include <limits>
-#include <cassert>
 
 #include "engine.h"
 #include "move_generator.h"
@@ -9,16 +8,24 @@
 
 namespace Vixen::Search
 {
-    std::pair<int, Move> Root(int depth, Board &board)
+    std::pair<int, Move> IterativeDeepening(Board &board, SearchInfo &info)
     {
-        assert(depth > 0);
+        std::pair<int, Move> result;
+        for (int depth = 1; depth < info.maxDepth; ++depth)
+            result = Search::Root(depth, board, info);
+
+        return result;
+    }
+
+    std::pair<int, Move> Root(int depth, Board &board, SearchInfo &info)
+    {
         const auto generator = board.CreateGenerator<ALL_MOVE>();
         const auto moveList = generator.GetLegalMoveList(board);
         int alpha = -std::numeric_limits<int>::max();;
         int beta = std::numeric_limits<int>::max();;
         int score{0};
-        int distancefromRoot{0};
         Move bestMove{0};
+        ++info.nodesCount;
 
         if (moveList.empty())
             return {-std::numeric_limits<int>::max(), bestMove};
@@ -26,8 +33,13 @@ namespace Vixen::Search
         for (Move move : moveList)
         {
             board.MakeMove(move);
-            score = -NegaMax(depth - 1, -beta, -alpha, board, ++distancefromRoot);
-            --distancefromRoot;
+            ++info.currentDepth;
+            score = -NegaMax(depth - 1, -beta, -alpha, board, info);
+            --info.currentDepth;
+
+            if (info.stopped)
+                return {score, move};
+
             board.TakeBack();
 
             if (score >= beta)
@@ -46,13 +58,15 @@ namespace Vixen::Search
         return {alpha, bestMove};
     }
 
-    int NegaMax(int depth, int alpha, int beta, Board &board, int distancefromRoot)
+    int NegaMax(int depth, int alpha, int beta, Board &board, SearchInfo &info)
     {
         if (depth == 0)
-            return Quiescence(alpha, beta, board);
+            return Quiescence(alpha, beta, board, info);
 
         if (board.IsRepetition() || board.GetFiftyMoveCounter() >= 100)
             return 0;
+
+        ++info.nodesCount;
 
         MoveGenerator generator = board.CreateGenerator<ALL_MOVE>();
         auto moveList = generator.GetMoveList();
@@ -68,8 +82,9 @@ namespace Vixen::Search
                 continue;
 
             ++legalMoveCount;
-            int score = -NegaMax(depth - 1, -beta, -alpha, board, ++distancefromRoot);
-            --distancefromRoot;
+            ++info.currentDepth;
+            int score = -NegaMax(depth - 1, -beta, -alpha, board, info);
+            --info.currentDepth;
             board.TakeBack();
 
             if (score >= beta)
@@ -84,7 +99,7 @@ namespace Vixen::Search
         {
             if (Check::IsInCheck<Colors::WHITE>(board) ||
                 Check::IsInCheck<Colors::BLACK>(board)) {
-                return -std::numeric_limits<int>::max() + distancefromRoot;
+                return -std::numeric_limits<int>::max() + info.currentDepth;
             }
 
             else
@@ -94,9 +109,11 @@ namespace Vixen::Search
         return alpha;
     }
 
-    int Quiescence(int alpha, int beta, Board& board)
+    int Quiescence(int alpha, int beta, Board &board, SearchInfo &info)
     {
+        ++info.nodesCount;
         int stand_pat = Evaluate(board);
+
         if( stand_pat >= beta )
             return beta;
         if( alpha < stand_pat )
@@ -111,7 +128,7 @@ namespace Vixen::Search
             if (!board.MakeMove(moveList[i]))
                 continue;
 
-            int score = -Quiescence( -beta, -alpha, board);
+            int score = -Quiescence(-beta, -alpha, board, info);
             board.TakeBack();
 
             if( score >= beta )

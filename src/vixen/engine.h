@@ -2,9 +2,25 @@
 
 #include "defs.h"
 
+#include <chrono>
+
 namespace Vixen
 {
     class Board;
+
+    struct SearchInfo
+    {
+        std::chrono::high_resolution_clock::time_point startTime{};
+        std::chrono::high_resolution_clock::time_point endTime{};
+        long nodesCount{0};
+        int maxDepth{7};
+        int currentDepth{0};
+        int movesToGo{30};
+        int moveTime{0};
+        std::array<int, 2> time{};
+        std::array<int, 2> increment{};
+        bool stopped{false};
+    };
 }
 
 namespace Vixen::Search
@@ -75,9 +91,11 @@ namespace Vixen::Search
 
     extern int Evaluate(const Board &board);
 
-    extern int Quiescence(int alpha, int beta, Board& board);
+    extern int Quiescence(int alpha, int beta, Board &board, SearchInfo &info);
 
-    VIXEN_API extern int NegaMax(int depth, int alpha, int beta, Board &board, int distancefromRoot);
+    VIXEN_API extern int NegaMax(int depth, int alpha, int beta, Board &board, SearchInfo &info);
 
-    extern std::pair<int, Move> Root(int depth, Board &board);
+    extern std::pair<int, Move> Root(int depth, Board &board, SearchInfo &info);
+
+    extern std::pair<int, Move> IterativeDeepening(Board &board, SearchInfo &info);
 }
