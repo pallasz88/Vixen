@@ -63,9 +63,9 @@ namespace Vixen::Uci
         while (std::getline(std::cin, line))
         {
             std::istringstream is(line);
-            std::string token;
+            std::string        token;
             is >> token;
-            
+
             if (token == "uci")
             {
                 std::cout << "id name Vixen " << "0.0.5\n";
@@ -111,12 +111,12 @@ namespace Vixen::Uci
 
             else if (token == "go")
             {
-                SearchInfo info{};
+                SearchInfo info;
                 InitSearchInfo(board, is, token, info);
                 const auto[score, encodedMove] = Search::IterativeDeepening(board, info);
                 std::cout << "info score cp " << score << '\n';
                 const auto from = encodedMove & 0x3FU;
-                const auto to = (encodedMove >> 6U) & 0x3FU;
+                const auto to   = (encodedMove >> 6U) & 0x3FU;
                 std::cout << "bestmove " << SquareToNotation(from) << SquareToNotation(to) << '\n';
             }
 

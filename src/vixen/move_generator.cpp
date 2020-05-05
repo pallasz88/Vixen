@@ -21,7 +21,7 @@ namespace Vixen
             if (depth == 0)
                 return 1;
 
-            BitBoard nodes = 0;
+            BitBoard   nodes     = 0;
             const auto generator = board.CreateGenerator<ALL_MOVE>();
 
             for (unsigned i = 0; i < generator.GetListSize(); ++i)
@@ -49,7 +49,7 @@ namespace Vixen
                 return 1;
             }
 
-            BitBoard nodes = 0;
+            BitBoard   nodes     = 0;
             const auto generator = board.CreateGenerator<ALL_MOVE>();
 
             for (unsigned i = 0; i < generator.GetListSize(); ++i)
@@ -79,9 +79,9 @@ namespace Vixen
         constexpr auto pawnOffset      = sideToMove == Colors::WHITE ? 8 : -8;
         constexpr auto promotionRanks  = sideToMove == Colors::WHITE ? RANK8 : RANK1;
         constexpr auto doublePushStart = sideToMove == Colors::WHITE ? RANK3 : RANK6;
-        const auto onePawnPush         = PushPawns<sideToMove>(pawns) & ~blockers & ~promotionRanks;
-        const auto doublePawnPush      = PushPawns<sideToMove>((onePawnPush & doublePushStart)) & ~blockers;
-        const auto pawnPromotion       = PushPawns<sideToMove>(pawns) & ~blockers & promotionRanks;
+        const auto     onePawnPush     = PushPawns<sideToMove>(pawns) & ~blockers & ~promotionRanks;
+        const auto     doublePawnPush  = PushPawns<sideToMove>((onePawnPush & doublePushStart)) & ~blockers;
+        const auto     pawnPromotion   = PushPawns<sideToMove>(pawns) & ~blockers & promotionRanks;
 
         GeneratePawnMoves(pawnOffset, onePawnPush, QUIET_MOVE);
         GeneratePawnMoves(2 * pawnOffset, doublePawnPush, DOUBLE_PAWN_PUSH);
@@ -111,9 +111,9 @@ namespace Vixen
         constexpr auto pawnLeftCapture    = sideToMove == Colors::WHITE ? 9 : -9;
         constexpr auto pawnRightCapture   = sideToMove == Colors::WHITE ? 7 : -7;
         constexpr auto promotionRanks     = sideToMove == Colors::WHITE ? RANK8 : RANK1;
-        const auto pawnPromotionLeft      = PawnCaptureLeft<sideToMove>(pawns) & targets & promotionRanks;
-        const auto pawnPromotionRight     = PawnCaptureRight<sideToMove>(pawns) & targets & promotionRanks;
-        const auto enPassant              = board.GetEnPassant() & (sideToMove == Colors::WHITE ? RANK6 : RANK3);
+        const auto     pawnPromotionLeft  = PawnCaptureLeft<sideToMove>(pawns) & targets & promotionRanks;
+        const auto     pawnPromotionRight = PawnCaptureRight<sideToMove>(pawns) & targets & promotionRanks;
+        const auto     enPassant          = board.GetEnPassant() & (sideToMove == Colors::WHITE ? RANK6 : RANK3);
 
         GeneratePawnPromotionCaptureMoves(pawnLeftCapture, pawnPromotionLeft);
         GeneratePawnPromotionCaptureMoves(pawnRightCapture, pawnPromotionRight);
@@ -167,8 +167,8 @@ namespace Vixen
     {
         while (pawnPushed)
         {
-            const unsigned to = GetPosition(pawnPushed);
-            const int from = static_cast<int>(to) - pawnOffset;
+            const unsigned to   = GetPosition(pawnPushed);
+            const int      from = static_cast<int>(to) - pawnOffset;
             moveList[size++] = CreateMove(static_cast<unsigned>(from), to, moveType);
         }
     }
@@ -177,8 +177,8 @@ namespace Vixen
     {
         while (promotion)
         {
-            const unsigned to = GetPosition(promotion);
-            const int from   = static_cast<int>(to) - offset;
+            const unsigned to   = GetPosition(promotion);
+            const int      from = static_cast<int>(to) - offset;
             moveList[size++] = CreateMove(static_cast<unsigned>(from), to, QUEEN_PROMOTION);
             moveList[size++] = CreateMove(static_cast<unsigned>(from), to, ROOK_PROMOTION);
             moveList[size++] = CreateMove(static_cast<unsigned>(from), to, BISHOP_PROMOTION);
@@ -190,8 +190,8 @@ namespace Vixen
     {
         while (promotion)
         {
-            const unsigned to = GetPosition(promotion);
-            const int from   = static_cast<int>(to) - offset;
+            const unsigned to   = GetPosition(promotion);
+            const int      from = static_cast<int>(to) - offset;
             moveList[size++] = CreateMove(static_cast<unsigned>(from), to, QUEEN_PROMO_CAPTURE);
             moveList[size++] = CreateMove(static_cast<unsigned>(from), to, ROOK_PROMO_CAPTURE);
             moveList[size++] = CreateMove(static_cast<unsigned>(from), to, BISHOP_PROMO_CAPTURE);
@@ -202,39 +202,41 @@ namespace Vixen
     template<Colors sideToMove>
     constexpr void MoveGenerator::GenerateCastlingMoves(const Board &board)
     {
-        const auto castlingRights = board.GetCastlingRights();
+        const auto currentCastlingRights = board.GetCastlingRights();
+        const auto emptySquaresBitBoard  = board.GetBitBoard(' ');
+
+        const std::array castleEmptySquareLookUp = {
+                IsBitSet(emptySquaresBitBoard, B8, C8, D8),
+                IsBitSet(emptySquaresBitBoard, F8, G8),
+                IsBitSet(emptySquaresBitBoard, B1, C1, D1),
+                IsBitSet(emptySquaresBitBoard, F1, G1)
+        };
+
+        const auto isCastlingAvailable =
+                           [&board, currentCastlingRights, &castleEmptySquareLookUp](CastlingRights castlingRight)
+                           {
+                               const unsigned castlingRightBB = static_cast<uint8_t>(castlingRight);
+                               return (currentCastlingRights & castlingRightBB) &&
+                                      castleEmptySquareLookUp[Constants::castlingLookUp[castlingRight]] &&
+                                      !Check::IsInCheck<sideToMove>(board) &&
+                                      !Check::IsSquareAttacked<sideToMove>(
+                                              Constants::rookSquareAfterCastling[castlingRight], board);
+                           };
+
         if (sideToMove == Colors::WHITE)
         {
-            if ((castlingRights & WKCA) &&
-                IsBitSet(board.GetBitBoard(' '), F1) &&
-                IsBitSet(board.GetBitBoard(' '), G1) &&
-                !Check::IsInCheck<sideToMove>(board) &&
-                !Check::IsSquareAttacked<sideToMove>(F1, board))
+            if (isCastlingAvailable(CastlingRights::WKCA))
                 moveList[size++] = CreateMove(E1, G1, KING_CASTLE);
 
-            if ((castlingRights & WQCA) &&
-                IsBitSet(board.GetBitBoard(' '), D1) &&
-                IsBitSet(board.GetBitBoard(' '), C1) &&
-                IsBitSet(board.GetBitBoard(' '), B1) &&
-                !Check::IsInCheck<sideToMove>(board) &&
-                !Check::IsSquareAttacked<sideToMove>(D1, board))
+            if (isCastlingAvailable(CastlingRights::WQCA))
                 moveList[size++] = CreateMove(E1, C1, QUEEN_CASTLE);
         }
         else
         {
-            if ((castlingRights & BKCA) &&
-                IsBitSet(board.GetBitBoard(' '), F8) &&
-                IsBitSet(board.GetBitBoard(' '), G8) &&
-                !Check::IsInCheck<sideToMove>(board) &&
-                !Check::IsSquareAttacked<sideToMove>(F8, board))
+            if (isCastlingAvailable(CastlingRights::BKCA))
                 moveList[size++] = CreateMove(E8, G8, KING_CASTLE);
 
-            if ((castlingRights & BQCA) &&
-                IsBitSet(board.GetBitBoard(' '), D8) &&
-                IsBitSet(board.GetBitBoard(' '), C8) &&
-                IsBitSet(board.GetBitBoard(' '), B8) &&
-                !Check::IsInCheck<sideToMove>(board) &&
-                !Check::IsSquareAttacked<sideToMove>(D8, board))
+            if (isCastlingAvailable(CastlingRights::BQCA))
                 moveList[size++] = CreateMove(E8, C8, QUEEN_CASTLE);
         }
     }
@@ -249,10 +251,10 @@ namespace Vixen
         GenerateQuietMoves<sideToMove>(board);
     }
 
-    std::vector<Move> MoveGenerator::GetLegalMoveList(Board& board) const
+    std::vector<Move> MoveGenerator::GetLegalMoveList(Board &board) const
     {
         std::vector<Move> allLegalMoves;
-        const auto addLegal = [&board, &allLegalMoves](Move move)
+        const auto        addLegal = [&board, &allLegalMoves](Move move)
         {
             if (board.MakeMove(move))
             {

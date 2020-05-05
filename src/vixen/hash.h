@@ -3,14 +3,16 @@
 #include "defs.h"
 #include "random.h"
 
-namespace Vixen {
+namespace Vixen
+{
 
     class Board;
 
     /**
      * Creates unique hash values from board positions.
      */
-    class Hash {
+    class Hash
+    {
     public:
 
         /**
@@ -57,13 +59,13 @@ namespace Vixen {
 
         static constexpr void InitZobristKeys()
         {
-            unsigned i = 0;
+            unsigned      i      = 0;
             for (unsigned square = H1; square <= Constants::MAX_SQUARE_INDEX; ++square)
             {
                 zobristKeys.pieceHashKeys[square][enPassantKey] = PRNG::GenerateRandom(++i);
                 for (const auto &pieceKey : Constants::pieceKeys)
                     zobristKeys.pieceHashKeys[square][static_cast<unsigned>(GetPieceIndex(
-                            pieceKey))] = PRNG::GenerateRandom(++i);
+                            pieceKey))]                         = PRNG::GenerateRandom(++i);
             }
 
             zobristKeys.sideHashKey = PRNG::GenerateRandom(++i);
@@ -75,9 +77,10 @@ namespace Vixen {
 
         void ComputePositionKey(const Board &board);
 
-        struct Keys {
-            PieceHashKeys pieceHashKeys;
-            SideHashKey sideHashKey;
+        struct Keys
+        {
+            PieceHashKeys  pieceHashKeys;
+            SideHashKey    sideHashKey;
             CastleHashKeys castleHashKeys;
         };
 

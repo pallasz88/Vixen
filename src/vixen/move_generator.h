@@ -20,7 +20,7 @@ namespace Vixen
         [[nodiscard]] constexpr auto GetMoveList() const
         { return moveList; }
 
-        [[nodiscard]] std::vector<Move> GetLegalMoveList(Board& board) const;
+        [[nodiscard]] std::vector<Move> GetLegalMoveList(Board &board) const;
 
         /**
          * Returns pseudo-legal move list size.
@@ -52,7 +52,7 @@ namespace Vixen
         template<Slider slider, uint8_t moveType>
         void GenerateSliderMoves(BitBoard pieces, BitBoard blockers, BitBoard targets);
 
-        template <uint8_t moveType>
+        template<uint8_t moveType>
         constexpr void GenerateAntiSliderMoves(BitBoard targets, BitBoard pieces, const BitBoard *attackBoard);
 
         constexpr void GeneratePawnMoves(int pawnOffset, BitBoard pawnPushed, uint8_t moveType);
@@ -94,7 +94,7 @@ namespace Vixen
         template<Colors sideToMove>
         inline constexpr bool IsInCheck(const Board &board)
         {
-            const auto kingBoard = sideToMove == Colors::WHITE ? board.GetBitBoard('K') : board.GetBitBoard('k');
+            const auto kingBoard  = sideToMove == Colors::WHITE ? board.GetBitBoard('K') : board.GetBitBoard('k');
             const auto kingSquare = TrailingZeroCount(kingBoard);
             return IsSquareAttacked<sideToMove>(kingSquare, board);
         }

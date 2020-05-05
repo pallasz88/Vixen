@@ -17,12 +17,12 @@ namespace Vixen
         {
             BOOST_TEST_MESSAGE("teardown fixture");
         }
-        
+
         bool CheckMoveList(std::vector<Move> &expectedMoveList)
         {
             const auto generator = board.CreateGenerator<ALL_MOVE>();
-            const auto listSize = generator.GetListSize();
-            const auto moveList = generator.GetMoveList();
+            const auto listSize  = generator.GetListSize();
+            const auto moveList  = generator.GetMoveList();
 
             if (expectedMoveList.size() != listSize)
                 return false;
@@ -30,7 +30,7 @@ namespace Vixen
             for (unsigned i = 0; i < listSize; ++i)
             {
                 if (expectedMoveList[i] != moveList[i])
-                    return  false;
+                    return false;
             }
 
             return true;

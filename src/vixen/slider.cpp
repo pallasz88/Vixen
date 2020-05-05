@@ -12,9 +12,9 @@ namespace Vixen::SliderUtils
 
     void InitMagics()
     {
-        RookTable[0].attacks = RookAttacks;
+        RookTable[0].attacks   = RookAttacks;
         BishopTable[0].attacks = BishopAttacks;
-        for (unsigned square = 0; square < Constants::SQUARE_NUMBER; ++square)
+        for (unsigned square   = 0; square < Constants::SQUARE_NUMBER; ++square)
         {
             InitSlidingAttack<Slider::ROOK>(square, Constants::rookDirections, RookTable);
             InitSlidingAttack<Slider::BISHOP>(square, Constants::bishopDirections, BishopTable);
@@ -24,12 +24,12 @@ namespace Vixen::SliderUtils
     template<Slider slider>
     void InitSlidingAttack(unsigned int square, SliderDirections directions, Magic *table)
     {
-        BitBoard edges = ((FILEA | FILEH) & ~(FILEH << square % 8)) |
-                         ((RANK1 | RANK8) & ~(RANK1 << 8 * (square / 8)));
-        auto occupied = Constants::EMPTY_BOARD;
+        BitBoard edges    = ((FILEA | FILEH) & ~(FILEH << square % 8)) |
+                            ((RANK1 | RANK8) & ~(RANK1 << 8 * (square / 8)));
+        auto     occupied = Constants::EMPTY_BOARD;
 
         table[square].magic = slider == Slider::BISHOP ? Constants::BishopMagic[square] : Constants::RookMagic[square];
-        table[square].mask = SlidingAttack(square, directions, occupied) & ~edges;
+        table[square].mask  = SlidingAttack(square, directions, occupied) & ~edges;
         table[square].shift = Constants::SQUARE_NUMBER - PopCount(table[square].mask);
 
         if (square != Constants::MAX_SQUARE_INDEX)
@@ -45,7 +45,7 @@ namespace Vixen::SliderUtils
 
     BitBoard SlidingAttack(unsigned int square, SliderDirections directions, BitBoard occupied)
     {
-        auto attacks = Constants::EMPTY_BOARD;
+        auto            attacks = Constants::EMPTY_BOARD;
         for (const auto &direction : directions)
         {
             for (int file = static_cast<int>(square / 8) + direction[0],

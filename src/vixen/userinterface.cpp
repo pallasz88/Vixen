@@ -11,7 +11,7 @@ namespace Vixen::UserInterface
     void WaitUserInput(Vixen::Board &board)
     {
         std::random_device r;
-        std::mt19937 e1(r());
+        std::mt19937       e1(r());
         while (true)
         {
             std::string command;
@@ -65,8 +65,8 @@ namespace Vixen::UserInterface
 
             else if (command == "go")
             {
-                const auto generator = board.CreateGenerator<ALL_MOVE>();
-                const auto moves = generator.GetLegalMoveList(board);
+                const auto                              generator = board.CreateGenerator<ALL_MOVE>();
+                const auto                              moves     = generator.GetLegalMoveList(board);
                 std::uniform_int_distribution<unsigned> distribution(0, static_cast<unsigned>(moves.size()));
                 board.MakeMove(moves[distribution(e1)]);
                 board.PrintBoard();
@@ -98,10 +98,10 @@ namespace Vixen::UserInterface
 
     void PrintMoveList(Board &board)
     {
-        const auto generator    = board.CreateGenerator<ALL_MOVE>();
-        const auto movesList    = generator.GetMoveList();
-        const auto moveListSize = generator.GetListSize();
-        for (size_t i = 0; i < moveListSize; ++i)
+        const auto  generator    = board.CreateGenerator<ALL_MOVE>();
+        const auto  movesList    = generator.GetMoveList();
+        const auto  moveListSize = generator.GetListSize();
+        for (size_t i            = 0; i < moveListSize; ++i)
         {
             if (board.MakeMove(movesList[i]))
             {

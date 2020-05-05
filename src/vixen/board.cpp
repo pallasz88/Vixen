@@ -43,14 +43,14 @@ namespace Vixen
     [[nodiscard]] constexpr auto Board::SplitFenPosition(std::string_view position) const
     {
         std::array<std::string_view, N> parts;
-        auto part = 0ULL;
-        auto firstPosition = 0ULL;
-        auto nextPosition = position.find_first_of(delimiter);
-        while(part < N)
+        auto                            part          = 0ULL;
+        auto                            firstPosition = 0ULL;
+        auto                            nextPosition  = position.find_first_of(delimiter);
+        while (part < N)
         {
             parts[part++] = position.substr(firstPosition, nextPosition - firstPosition);
             firstPosition = nextPosition + 1;
-            nextPosition = position.find_first_of(delimiter, firstPosition);
+            nextPosition  = position.find_first_of(delimiter, firstPosition);
         }
         return parts;
     }
@@ -110,7 +110,7 @@ namespace Vixen
 
     constexpr void Board::ParseFenPiecePart(std::string_view parsedPosition)
     {
-        unsigned squareIndex = Constants::MAX_SQUARE_INDEX;
+        unsigned        squareIndex = Constants::MAX_SQUARE_INDEX;
         for (const auto &fenChar : parsedPosition)
         {
             switch (fenChar)
@@ -192,9 +192,9 @@ namespace Vixen
                 case 'Q':
                 case 'k':
                 case 'q':
-                    SetBit( castlingRights, static_cast<unsigned>
+                    SetBit(castlingRights, static_cast<unsigned>
                     (std::distance(begin(Constants::CASTLERIGHTS),
-                            std::find(begin(Constants::CASTLERIGHTS), end(Constants::CASTLERIGHTS), it))));
+                                   std::find(begin(Constants::CASTLERIGHTS), end(Constants::CASTLERIGHTS), it))));
                     break;
                 case '-':
                     break;
@@ -207,11 +207,11 @@ namespace Vixen
 
     bool Board::MakeMove(Vixen::Move move)
     {
-        const auto from = move & 0x3FU;
-        const auto to = (move >> 6U) & 0x3FU;
-        const auto moveType = move >> 12U;
-        const auto enPassantSquare = whiteToMove ? to - 8 : to + 8;
-        const char movingPieceLetter = pieceList[from];
+        const auto from                = move & 0x3FU;
+        const auto to                  = (move >> 6U) & 0x3FU;
+        const auto moveType            = move >> 12U;
+        const auto enPassantSquare     = whiteToMove ? to - 8 : to + 8;
+        const char movingPieceLetter   = pieceList[from];
         const char capturedPieceLetter = pieceList[to];
 
         history[historyPly++] = History{enPassantBitBoard,
@@ -324,10 +324,10 @@ namespace Vixen
         const char movingPieceLetter   = lastPosition.movedPiece;
         const char capturedPieceLetter = lastPosition.capturedPiece;
 
-        whiteToMove = !whiteToMove;
-        fiftyMoves = lastPosition.fiftyMoves;
+        whiteToMove       = !whiteToMove;
+        fiftyMoves        = lastPosition.fiftyMoves;
         enPassantBitBoard = lastPosition.enPassant;
-        castlingRights = lastPosition.castlingRights;
+        castlingRights    = lastPosition.castlingRights;
 
         if (moveType == KING_CASTLE)
             whiteToMove ? MoveCastlingWhiteRook(F1, H1) : MoveCastlingBlackRook(F8, H8);
@@ -381,7 +381,7 @@ namespace Vixen
         hashBoard.HashPiece(position, pieceType);
     }
 
-    template <uint8_t moveType>
+    template<uint8_t moveType>
     MoveGenerator Board::CreateGenerator() const
     {
         MoveGenerator moveGenerator;
@@ -392,7 +392,7 @@ namespace Vixen
 
     bool Board::MakeMove(std::string_view move)
     {
-        const std::regex moveRegex{"[a-h][1-8][a-h][1-8][q|r|b|n]?"};
+        const std::regex                                     moveRegex{"[a-h][1-8][a-h][1-8][q|r|b|n]?"};
         std::match_results<std::string_view::const_iterator> iterator;
         if (!std::regex_match(begin(move), end(move), iterator, moveRegex))
             throw std::runtime_error("INVALID MOVE FORMAT. Use for example e2e4.");
@@ -407,7 +407,7 @@ namespace Vixen
         uint8_t moveType = 0;
         if (promoted != ' ')
         {
-            moveType = static_cast<uint8_t>(GetPromotionType(promoted));
+            moveType                 = static_cast<uint8_t>(GetPromotionType(promoted));
             const char capturedPiece = GetPieceList()[to];
             if (capturedPiece != ' ')
                 moveType |= static_cast<uint8_t>(CAPTURE);

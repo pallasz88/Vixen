@@ -80,7 +80,7 @@ namespace Vixen
          * @return
          */
         [[nodiscard]] constexpr auto GetHash() const
-        { return hashBoard.GetHash();}
+        { return hashBoard.GetHash(); }
 
         /**
          * Returns if white is on move from given position.

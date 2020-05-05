@@ -38,13 +38,13 @@ namespace Vixen::AntSliderUtils
                 int pawnRank = static_cast<int>(square / 8) + Constants::pawnDirections[direction][1];
                 if (IsValidCoordinate(pawnFile, pawnRank))
                     SetBit(pawnAttack[static_cast<int>(Colors::WHITE)][square],
-                                      static_cast<unsigned>(8 * pawnRank + pawnFile));
+                           static_cast<unsigned>(8 * pawnRank + pawnFile));
 
                 pawnFile = static_cast<int>(square % 8) - Constants::pawnDirections[direction][0];
                 pawnRank = static_cast<int>(square / 8) - Constants::pawnDirections[direction][1];
                 if (IsValidCoordinate(pawnFile, pawnRank))
                     SetBit(pawnAttack[static_cast<int>(Colors::BLACK)][square],
-                                      static_cast<unsigned>(8 * pawnRank + pawnFile));
+                           static_cast<unsigned>(8 * pawnRank + pawnFile));
             }
         }
     }

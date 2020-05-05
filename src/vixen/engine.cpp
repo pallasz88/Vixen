@@ -11,7 +11,7 @@ namespace Vixen::Search
     std::pair<int, Move> IterativeDeepening(Board &board, SearchInfo &info)
     {
         std::pair<int, Move> result;
-        for (int depth = 1; depth < info.maxDepth; ++depth)
+        for (int             depth = 1; depth < info.maxDepth; ++depth)
             result = Search::Root(depth, board, info);
 
         return result;
@@ -19,22 +19,21 @@ namespace Vixen::Search
 
     std::pair<int, Move> Root(int depth, Board &board, SearchInfo &info)
     {
-        const auto generator = board.CreateGenerator<ALL_MOVE>();
-        const auto moveList = generator.GetLegalMoveList(board);
-        int alpha = -std::numeric_limits<int>::max();;
-        int beta = std::numeric_limits<int>::max();;
-        int score{0};
-        Move bestMove{0};
+        const auto &generator = board.CreateGenerator<ALL_MOVE>();
+        const auto &moveList  = generator.GetLegalMoveList(board);
+        int        alpha      = -std::numeric_limits<int>::max();
+        int        beta       = std::numeric_limits<int>::max();
+        Move       bestMove{0};
         ++info.nodesCount;
 
         if (moveList.empty())
             return {-std::numeric_limits<int>::max(), bestMove};
 
-        for (Move move : moveList)
+        for (const Move &move : moveList)
         {
             board.MakeMove(move);
             ++info.currentDepth;
-            score = -NegaMax(depth - 1, -beta, -alpha, board, info);
+            const int score = -NegaMax(depth - 1, -beta, -alpha, board, info);
             --info.currentDepth;
 
             if (info.stopped)
@@ -47,7 +46,7 @@ namespace Vixen::Search
 
             if (score > alpha)
             {
-                alpha = score; // alpha acts like max in MiniMax
+                alpha    = score; // alpha acts like max in MiniMax
                 bestMove = move;
             }
         }
@@ -68,10 +67,10 @@ namespace Vixen::Search
 
         ++info.nodesCount;
 
-        MoveGenerator generator = board.CreateGenerator<ALL_MOVE>();
-        auto moveList = generator.GetMoveList();
-        auto size = generator.GetListSize();
-        unsigned legalMoveCount = 0;
+        auto       generator      = board.CreateGenerator<ALL_MOVE>();
+        const auto &moveList      = generator.GetMoveList();
+        const auto size           = generator.GetListSize();
+        unsigned   legalMoveCount = 0;
 
         board.IsWhiteToMove() ? generator.GenerateMoves<Colors::WHITE, ALL_MOVE>(board)
                               : generator.GenerateMoves<Colors::BLACK, ALL_MOVE>(board);
@@ -83,7 +82,7 @@ namespace Vixen::Search
 
             ++legalMoveCount;
             ++info.currentDepth;
-            int score = -NegaMax(depth - 1, -beta, -alpha, board, info);
+            const int score = -NegaMax(depth - 1, -beta, -alpha, board, info);
             --info.currentDepth;
             board.TakeBack();
 
@@ -98,7 +97,8 @@ namespace Vixen::Search
         if (legalMoveCount == 0)
         {
             if (Check::IsInCheck<Colors::WHITE>(board) ||
-                Check::IsInCheck<Colors::BLACK>(board)) {
+                Check::IsInCheck<Colors::BLACK>(board))
+            {
                 return -std::numeric_limits<int>::max() + info.currentDepth;
             }
 
@@ -114,14 +114,14 @@ namespace Vixen::Search
         ++info.nodesCount;
         int stand_pat = Evaluate(board);
 
-        if( stand_pat >= beta )
+        if (stand_pat >= beta)
             return beta;
-        if( alpha < stand_pat )
+        if (alpha < stand_pat)
             alpha = stand_pat;
 
         MoveGenerator generator = board.CreateGenerator<CAPTURE>();
-        auto moveList = generator.GetMoveList();
-        auto size = generator.GetListSize();
+        auto          moveList  = generator.GetMoveList();
+        auto          size      = generator.GetListSize();
 
         for (unsigned i = 0; i < size; ++i)
         {
@@ -131,9 +131,9 @@ namespace Vixen::Search
             int score = -Quiescence(-beta, -alpha, board, info);
             board.TakeBack();
 
-            if( score >= beta )
+            if (score >= beta)
                 return beta;
-            if( score > alpha )
+            if (score > alpha)
                 alpha = score;
         }
         return alpha;
@@ -141,8 +141,8 @@ namespace Vixen::Search
 
     int Evaluate(const Board &board)
     {
-        int score = board.GetMaterialBalance();
-        for (unsigned i = 0; i < Constants::SQUARE_NUMBER; ++i)
+        int           score = board.GetMaterialBalance();
+        for (unsigned i     = 0; i < Constants::SQUARE_NUMBER; ++i)
         {
             if (board.GetPieceList()[i] == 'P')
                 score += pawnTable[i];
