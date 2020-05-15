@@ -11,7 +11,7 @@ namespace Vixen::Search
     std::pair<int, Move> IterativeDeepening(Board &board, SearchInfo &info)
     {
         std::pair<int, Move> result;
-        for (int             depth = 1; depth < info.maxDepth; ++depth)
+        for (int             depth = 1; depth <= info.maxDepth; ++depth)
             result = Search::Root(depth, board, info);
 
         return result;
@@ -99,7 +99,7 @@ namespace Vixen::Search
             if (Check::IsInCheck<Colors::WHITE>(board) ||
                 Check::IsInCheck<Colors::BLACK>(board))
             {
-                return -std::numeric_limits<int>::max() + info.currentDepth;
+                return -2999999 + info.currentDepth;
             }
 
             else

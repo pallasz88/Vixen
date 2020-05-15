@@ -114,7 +114,12 @@ namespace Vixen::Uci
                 SearchInfo info;
                 InitSearchInfo(board, is, token, info);
                 const auto[score, encodedMove] = Search::IterativeDeepening(board, info);
-                std::cout << "info score cp " << score << '\n';
+                if (score > 2999990)
+                    std::cout << "info score mate " << (2999999 - score) / 2 << '\n';
+                else if (score < -2999990)
+                    std::cout << "info score mate " << (-2999999 - score) / 2 << '\n';
+                else
+                    std::cout << "info score cp " << score << '\n';
                 const auto from = encodedMove & 0x3FU;
                 const auto to   = (encodedMove >> 6U) & 0x3FU;
                 std::cout << "bestmove " << SquareToNotation(from) << SquareToNotation(to) << '\n';
