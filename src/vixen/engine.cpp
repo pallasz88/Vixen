@@ -11,7 +11,8 @@ namespace Vixen::Search
     std::pair<int, Move> IterativeDeepening(Board &board, SearchInfo &info)
     {
         std::pair<int, Move> result;
-        for (int             depth = 1; depth <= info.maxDepth; ++depth)
+
+        for (int depth = 1; depth <= info.maxDepth; ++depth)
             result = Search::Root(depth, board, info);
 
         return result;
@@ -67,13 +68,10 @@ namespace Vixen::Search
 
         ++info.nodesCount;
 
-        auto       generator      = board.CreateGenerator<ALL_MOVE>();
+        const auto &generator     = board.CreateGenerator<ALL_MOVE>();
         const auto &moveList      = generator.GetMoveList();
         const auto size           = generator.GetListSize();
         unsigned   legalMoveCount = 0;
-
-        board.IsWhiteToMove() ? generator.GenerateMoves<Colors::WHITE, ALL_MOVE>(board)
-                              : generator.GenerateMoves<Colors::BLACK, ALL_MOVE>(board);
 
         for (unsigned i = 0; i < size; ++i)
         {
@@ -116,12 +114,13 @@ namespace Vixen::Search
 
         if (stand_pat >= beta)
             return beta;
+        
         if (alpha < stand_pat)
             alpha = stand_pat;
 
-        MoveGenerator generator = board.CreateGenerator<CAPTURE>();
-        auto          moveList  = generator.GetMoveList();
-        auto          size      = generator.GetListSize();
+        const auto &generator = board.CreateGenerator<CAPTURE>();
+        const auto &moveList  = generator.GetMoveList();
+        const auto size       = generator.GetListSize();
 
         for (unsigned i = 0; i < size; ++i)
         {
