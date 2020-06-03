@@ -1,6 +1,8 @@
 #pragma once
 
 #include "defs.h"
+#include "principal_variation.h"
+
 
 #include <chrono>
 
@@ -21,81 +23,94 @@ namespace Vixen
         std::array<int, 2>                             increment{};
         bool                                           stopped{false};
     };
-}
 
-namespace Vixen::Search
-{
-    static constexpr std::array<int, Constants::SQUARE_NUMBER> pawnTable =
-                                                                       {
-                                                                               0, 0, 0, 0, 0, 0, 0, 0,
-                                                                               10, 10, 0, -10, -10, 0, 10, 10,
-                                                                               5, 0, 0, 5, 5, 0, 0, 5,
-                                                                               0, 0, 10, 20, 20, 10, 0, 0,
-                                                                               5, 5, 5, 10, 10, 5, 5, 5,
-                                                                               10, 10, 10, 20, 20, 10, 10, 10,
-                                                                               20, 20, 20, 30, 30, 20, 20, 20,
-                                                                               0, 0, 0, 0, 0, 0, 0, 0
-                                                                       };
-
-    static constexpr std::array<int, Constants::SQUARE_NUMBER> knightTable =
-                                                                       {
-                                                                               0, -10, 0, 0, 0, 0, -10, 0,
-                                                                               0, 0, 0, 5, 5, 0, 0, 0,
-                                                                               0, 0, 10, 10, 10, 10, 0, 0,
-                                                                               0, 0, 10, 20, 20, 10, 5, 0,
-                                                                               5, 10, 15, 20, 20, 15, 10, 5,
-                                                                               5, 10, 10, 20, 20, 10, 10, 5,
-                                                                               0, 0, 5, 10, 10, 5, 0, 0,
-                                                                               0, 0, 0, 0, 0, 0, 0, 0
-                                                                       };
-
-    static constexpr std::array<int, Constants::SQUARE_NUMBER> bishopTable =
-                                                                       {
-                                                                               0, 0, -10, 0, 0, -10, 0, 0,
-                                                                               0, 0, 0, 10, 10, 0, 0, 0,
-                                                                               0, 0, 10, 15, 15, 10, 0, 0,
-                                                                               0, 10, 15, 20, 20, 15, 10, 0,
-                                                                               0, 10, 15, 20, 20, 15, 10, 0,
-                                                                               0, 0, 10, 15, 15, 10, 0, 0,
-                                                                               0, 0, 0, 10, 10, 0, 0, 0,
-                                                                               0, 0, 0, 0, 0, 0, 0, 0
-                                                                       };
-
-    static constexpr std::array<int, Constants::SQUARE_NUMBER> rookTable =
-                                                                       {
-                                                                               0, 0, 5, 10, 10, 5, 0, 0,
-                                                                               0, 0, 5, 10, 10, 5, 0, 0,
-                                                                               0, 0, 5, 10, 10, 5, 0, 0,
-                                                                               0, 0, 5, 10, 10, 5, 0, 0,
-                                                                               0, 0, 5, 10, 10, 5, 0, 0,
-                                                                               0, 0, 5, 10, 10, 5, 0, 0,
-                                                                               25, 25, 25, 25, 25, 25, 25, 25,
-                                                                               0, 0, 5, 10, 10, 5, 0, 0
-                                                                       };
-
-    template<class T>
-    static auto MirrorTable(const T &list) noexcept
+    class Search
     {
-        T table{};
-        std::reverse_copy(begin(list), end(list), begin(table));
-        return table;
-    }
+    public:
 
-    static const std::array<int, Constants::SQUARE_NUMBER> PawnTable = MirrorTable(pawnTable);
+        static Move IterativeDeepening(Board &board, SearchInfo &info);
 
-    static const std::array<int, Constants::SQUARE_NUMBER> KnightTable = MirrorTable(knightTable);
+        static constexpr int MATE = 2999999;
 
-    static const std::array<int, Constants::SQUARE_NUMBER> BishopTable = MirrorTable(bishopTable);
+        static constexpr int STALE_MATE = 0;
 
-    static const std::array<int, Constants::SQUARE_NUMBER> RookTable = MirrorTable(rookTable);
+    private:
 
-    extern int Evaluate(const Board &board);
+        static PrincipalVariation pv;
 
-    extern int Quiescence(int alpha, int beta, Board &board, SearchInfo &info);
+        static constexpr std::array<int, Constants::SQUARE_NUMBER> pawnTable =
+                                                                           {
+                                                                                   0, 0, 0, 0, 0, 0, 0, 0,
+                                                                                   10, 10, 0, -10, -10, 0, 10, 10,
+                                                                                   5, 0, 0, 5, 5, 0, 0, 5,
+                                                                                   0, 0, 10, 20, 20, 10, 0, 0,
+                                                                                   5, 5, 5, 10, 10, 5, 5, 5,
+                                                                                   10, 10, 10, 20, 20, 10, 10, 10,
+                                                                                   20, 20, 20, 30, 30, 20, 20, 20,
+                                                                                   0, 0, 0, 0, 0, 0, 0, 0
+                                                                           };
 
-    VIXEN_API extern int NegaMax(int depth, int alpha, int beta, Board &board, SearchInfo &info);
+        static constexpr std::array<int, Constants::SQUARE_NUMBER> knightTable =
+                                                                           {
+                                                                                   0, -10, 0, 0, 0, 0, -10, 0,
+                                                                                   0, 0, 0, 5, 5, 0, 0, 0,
+                                                                                   0, 0, 10, 10, 10, 10, 0, 0,
+                                                                                   0, 0, 10, 20, 20, 10, 5, 0,
+                                                                                   5, 10, 15, 20, 20, 15, 10, 5,
+                                                                                   5, 10, 10, 20, 20, 10, 10, 5,
+                                                                                   0, 0, 5, 10, 10, 5, 0, 0,
+                                                                                   0, 0, 0, 0, 0, 0, 0, 0
+                                                                           };
 
-    extern std::pair<int, Move> Root(int depth, Board &board, SearchInfo &info);
+        static constexpr std::array<int, Constants::SQUARE_NUMBER> bishopTable =
+                                                                           {
+                                                                                   0, 0, -10, 0, 0, -10, 0, 0,
+                                                                                   0, 0, 0, 10, 10, 0, 0, 0,
+                                                                                   0, 0, 10, 15, 15, 10, 0, 0,
+                                                                                   0, 10, 15, 20, 20, 15, 10, 0,
+                                                                                   0, 10, 15, 20, 20, 15, 10, 0,
+                                                                                   0, 0, 10, 15, 15, 10, 0, 0,
+                                                                                   0, 0, 0, 10, 10, 0, 0, 0,
+                                                                                   0, 0, 0, 0, 0, 0, 0, 0
+                                                                           };
 
-    extern std::pair<int, Move> IterativeDeepening(Board &board, SearchInfo &info);
+        static constexpr std::array<int, Constants::SQUARE_NUMBER> rookTable =
+                                                                           {
+                                                                                   0, 0, 5, 10, 10, 5, 0, 0,
+                                                                                   0, 0, 5, 10, 10, 5, 0, 0,
+                                                                                   0, 0, 5, 10, 10, 5, 0, 0,
+                                                                                   0, 0, 5, 10, 10, 5, 0, 0,
+                                                                                   0, 0, 5, 10, 10, 5, 0, 0,
+                                                                                   0, 0, 5, 10, 10, 5, 0, 0,
+                                                                                   25, 25, 25, 25, 25, 25, 25, 25,
+                                                                                   0, 0, 5, 10, 10, 5, 0, 0
+                                                                           };
+
+        template<class T>
+        static constexpr T MirrorTable(const T &table) noexcept
+        {
+            T reversed{};
+            std::reverse_copy(begin(table), end(table), begin(reversed));
+            return reversed;
+        }
+
+        static inline std::array PawnTable = MirrorTable(pawnTable);
+
+        static inline std::array KnightTable = MirrorTable(knightTable);
+
+        static inline std::array BishopTable = MirrorTable(bishopTable);
+
+        static inline std::array RookTable = MirrorTable(rookTable);
+
+        static int Evaluate(const Board &board);
+
+        static int Quiescence(int alpha, int beta, Board &board, SearchInfo &info);
+
+        static int NegaMax(int depth, int alpha, int beta, Board &board, SearchInfo &info);
+
+        static std::pair<int, Move> Root(int depth, Board &board, SearchInfo &info);
+
+        static std::vector<Move> GetPV(int, Board &);
+
+    };
 }

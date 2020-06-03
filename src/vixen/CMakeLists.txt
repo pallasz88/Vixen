@@ -17,6 +17,8 @@ set(SOURCE_FILES
         hash.cpp
         move_generator.h
         move_generator.cpp
+        principal_variation.h
+        principal_variation.cpp
         random.h
         slider.cpp
         slider.h

@@ -1,34 +1,64 @@
 #include <iostream>
-#include <limits>
 
 #include "engine.h"
 #include "move_generator.h"
-#include "board.h"
+#include "uci.h"
 
 
-namespace Vixen::Search
+namespace Vixen
 {
-    std::pair<int, Move> IterativeDeepening(Board &board, SearchInfo &info)
+    PrincipalVariation Search::pv;
+
+    std::vector<Move> Search::GetPV(int depth, Board &board)
+    {
+        std::vector<Move> moveList;
+        int               ply = 0;
+
+        for (; ply < depth;)
+        {
+            const auto bestMove = pv.GetPVEntry(board.GetHash()).move;
+
+            if (bestMove == 0)
+                break;
+
+            if (board.MakeMove(bestMove))
+            {
+                ++ply;
+                moveList.emplace_back(bestMove);
+            }
+
+            else
+                break;
+        }
+
+        for (int j = 0; j < ply; ++j)
+            board.TakeBack();
+
+        return moveList;
+    }
+
+    Move Search::IterativeDeepening(Board &board, SearchInfo &info)
     {
         std::pair<int, Move> result;
 
         for (int depth = 1; depth <= info.maxDepth; ++depth)
+        {
             result = Search::Root(depth, board, info);
+            const auto bestLine = GetPV(depth, board);
+            Uci::LogUci(info, result, depth, bestLine);
+        }
 
-        return result;
+        return result.second;
     }
 
-    std::pair<int, Move> Root(int depth, Board &board, SearchInfo &info)
+    std::pair<int, Move> Search::Root(int depth, Board &board, SearchInfo &info)
     {
         const auto &generator = board.CreateGenerator<ALL_MOVE>();
         const auto &moveList  = generator.GetLegalMoveList(board);
-        int        alpha      = -std::numeric_limits<int>::max();
-        int        beta       = std::numeric_limits<int>::max();
+        int        alpha      = -MATE;
+        int        beta       = MATE;
         Move       bestMove{0};
         ++info.nodesCount;
-
-        if (moveList.empty())
-            return {-std::numeric_limits<int>::max(), bestMove};
 
         for (const Move &move : moveList)
         {
@@ -55,10 +85,13 @@ namespace Vixen::Search
         if (bestMove == 0)
             bestMove = moveList[0];
 
+        if (!info.stopped)
+            pv.StorePVEntry(PVEntry{bestMove, board.GetHash()});
+
         return {alpha, bestMove};
     }
 
-    int NegaMax(int depth, int alpha, int beta, Board &board, SearchInfo &info)
+    int Search::NegaMax(int depth, int alpha, int beta, Board &board, SearchInfo &info)
     {
         if (depth == 0)
             return Quiescence(alpha, beta, board, info);
@@ -88,7 +121,10 @@ namespace Vixen::Search
                 return beta; //  fail hard beta-cutoff
 
             if (score > alpha)
+            {
                 alpha = score; // alpha acts like max in MiniMax
+                pv.StorePVEntry(PVEntry{moveList[i], board.GetHash()});
+            }
 
         }
 
@@ -97,24 +133,24 @@ namespace Vixen::Search
             if (Check::IsInCheck<Colors::WHITE>(board) ||
                 Check::IsInCheck<Colors::BLACK>(board))
             {
-                return -2999999 + info.currentDepth;
+                return -MATE + info.currentDepth;
             }
 
             else
-                return 0;
+                return STALE_MATE;
         }
 
         return alpha;
     }
 
-    int Quiescence(int alpha, int beta, Board &board, SearchInfo &info)
+    int Search::Quiescence(int alpha, int beta, Board &board, SearchInfo &info)
     {
         ++info.nodesCount;
         int stand_pat = Evaluate(board);
 
         if (stand_pat >= beta)
             return beta;
-        
+
         if (alpha < stand_pat)
             alpha = stand_pat;
 
@@ -138,10 +174,11 @@ namespace Vixen::Search
         return alpha;
     }
 
-    int Evaluate(const Board &board)
+    int Search::Evaluate(const Board &board)
     {
-        int           score = board.GetMaterialBalance();
-        for (unsigned i     = 0; i < Constants::SQUARE_NUMBER; ++i)
+        int score = board.GetMaterialBalance();
+
+        for (unsigned i = 0; i < Constants::SQUARE_NUMBER; ++i)
         {
             if (board.GetPieceList()[i] == 'P')
                 score += pawnTable[i];

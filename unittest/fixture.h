@@ -18,7 +18,15 @@ namespace Vixen
             BOOST_TEST_MESSAGE("teardown fixture");
         }
 
-        bool CheckMoveList(std::vector<Move> &expectedMoveList)
+        Fixture(const Fixture &) = delete;
+
+        Fixture &operator=(const Fixture &) = delete;
+
+        Fixture(Fixture &&) = delete;
+
+        Fixture &operator=(Fixture &&) = delete;
+
+        bool CheckMoveList(std::vector<Move> &expectedMoveList) const
         {
             const auto generator = board.CreateGenerator<ALL_MOVE>();
             const auto listSize  = generator.GetListSize();

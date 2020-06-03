@@ -8,6 +8,26 @@
 
 namespace Vixen::Uci
 {
+    void LogUci(const SearchInfo &info, const std::pair<int, Move> &result, int depth,
+                const std::vector<Move> &bestLine)
+    {
+        if (result.first > Search::MATE - info.maxDepth)
+            std::cout << "info score mate " << (Search::MATE - result.first) / 2;
+
+        else if (result.first < -Search::MATE + info.maxDepth)
+            std::cout << "info score mate " << (-Search::MATE - result.first) / 2;
+
+        else
+            std::cout << "info score cp " << result.first;
+
+        std::cout << " depth " << depth << " nodes " << info.nodesCount << " pv ";
+
+        for (const auto &move : bestLine)
+            std::cout << SquareToNotation(move & 0x3FU)
+                      << SquareToNotation((move & 0xFC0U) >> 6U) << " ";
+
+        std::cout << std::endl;
+    }
 
     void InitSearchInfo(const Board &board, std::istringstream &is, std::string &token, SearchInfo &info)
     {
@@ -113,13 +133,8 @@ namespace Vixen::Uci
             {
                 SearchInfo info;
                 InitSearchInfo(board, is, token, info);
-                const auto[score, encodedMove] = Search::IterativeDeepening(board, info);
-                if (score > 2999990)
-                    std::cout << "info score mate " << (2999999 - score) / 2 << '\n';
-                else if (score < -2999990)
-                    std::cout << "info score mate " << (-2999999 - score) / 2 << '\n';
-                else
-                    std::cout << "info score cp " << score << '\n';
+                const Move encodedMove = Search::IterativeDeepening(board, info);
+
                 const auto from = encodedMove & 0x3FU;
                 const auto to   = (encodedMove >> 6U) & 0x3FU;
                 std::cout << "bestmove " << SquareToNotation(from) << SquareToNotation(to) << '\n';

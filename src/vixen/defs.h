@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <string_view>
+#include <string>
 
 #if defined _WIN32
 #define VIXEN_API __declspec(dllexport)
