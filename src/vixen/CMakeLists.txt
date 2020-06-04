@@ -3,7 +3,7 @@ project(Vixen C CXX)
 
 MESSAGE("STATUS: Building Vixen")
 
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 17)
 
 set(SOURCE_FILES
         anti_slider.h

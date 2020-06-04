@@ -6,10 +6,20 @@
 #include <iostream>
 #include <sstream>
 
-namespace Vixen::Uci
+namespace Vixen
 {
-    void LogUci(const SearchInfo &info, const std::pair<int, Move> &result, int depth,
-                const std::vector<Move> &bestLine)
+    Uci::Uci()
+            : board(std::make_unique<Board>()), info(std::make_unique<SearchInfo>())
+    {}
+
+    Uci::~Uci()
+    {
+        board.reset();
+        info.reset();
+    }
+
+    void Uci::LogUci(const SearchInfo &info, const std::pair<int, Move> &result, int depth,
+                     const std::vector<Move> &bestLine)
     {
         if (result.first > Search::MATE - info.maxDepth)
             std::cout << "info score mate " << (Search::MATE - result.first) / 2;
@@ -29,55 +39,57 @@ namespace Vixen::Uci
         std::cout << std::endl;
     }
 
-    void InitSearchInfo(const Board &board, std::istringstream &is, std::string &token, SearchInfo &info)
+    void Uci::UpdateSearchInfo(std::istringstream &is, std::string &token)
     {
+        info->nodesCount = 0;
+
         while (is >> token)
         {
-            if (board.IsWhiteToMove() && token == "wtime")
+            if (board->IsWhiteToMove() && token == "wtime")
             {
                 is >> token;
-                info.time[static_cast<int>(Colors::WHITE)] = std::stoi(token);
+                info->time[static_cast<int>(Colors::WHITE)] = std::stoi(token);
             }
 
-            else if (!board.IsWhiteToMove() && token == "btime")
+            else if (!board->IsWhiteToMove() && token == "btime")
             {
                 is >> token;
-                info.time[static_cast<int>(Colors::BLACK)] = std::stoi(token);
+                info->time[static_cast<int>(Colors::BLACK)] = std::stoi(token);
             }
 
-            if (board.IsWhiteToMove() && token == "winc")
+            if (board->IsWhiteToMove() && token == "winc")
             {
                 is >> token;
-                info.increment[static_cast<int>(Colors::WHITE)] = std::stoi(token);
+                info->increment[static_cast<int>(Colors::WHITE)] = std::stoi(token);
             }
 
-            else if (!board.IsWhiteToMove() && token == "binc")
+            else if (!board->IsWhiteToMove() && token == "binc")
             {
                 is >> token;
-                info.increment[static_cast<int>(Colors::BLACK)] = std::stoi(token);
+                info->increment[static_cast<int>(Colors::BLACK)] = std::stoi(token);
             }
 
             if (token == "movestogo")
             {
                 is >> token;
-                info.movesToGo = std::stoi(token);
+                info->movesToGo = std::stoi(token);
             }
 
             if (token == "movetime")
             {
                 is >> token;
-                info.moveTime = std::stoi(token);
+                info->moveTime = std::stoi(token);
             }
 
             if (token == "depth")
             {
                 is >> token;
-                info.maxDepth = std::stoi(token);
+                info->maxDepth = std::stoi(token);
             }
         }
     }
 
-    void loop(Board &board)
+    void Uci::loop()
     {
         std::string line;
         while (std::getline(std::cin, line))
@@ -94,7 +106,7 @@ namespace Vixen::Uci
             }
 
             else if (token == "ucinewgame")
-                board.SetBoard(Constants::START_POSITION);
+                board->SetBoard(Constants::START_POSITION);
 
             else if (token == "isready")
                 std::cout << "readyok\n";
@@ -116,7 +128,7 @@ namespace Vixen::Uci
                 else
                     return;
 
-                board.SetBoard(fen);
+                board->SetBoard(fen);
 
                 if (token == "moves")
                 {
@@ -124,16 +136,15 @@ namespace Vixen::Uci
                     while (!is.eof())
                     {
                         is >> move;
-                        board.MakeMove(move);
+                        board->MakeMove(move);
                     }
                 }
             }
 
             else if (token == "go")
             {
-                SearchInfo info;
-                InitSearchInfo(board, is, token, info);
-                const Move encodedMove = Search::IterativeDeepening(board, info);
+                UpdateSearchInfo(is, token);
+                const Move encodedMove = Search::IterativeDeepening(*board, *info);
 
                 const auto from = encodedMove & 0x3FU;
                 const auto to   = (encodedMove >> 6U) & 0x3FU;
