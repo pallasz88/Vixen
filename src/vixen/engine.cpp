@@ -7,7 +7,7 @@
 
 namespace Vixen
 {
-    PrincipalVariation Search::pv;
+    PrincipalVariation Search::pv(megaByte / sizeof(PVEntry));
 
     std::vector<Move> Search::GetPV(int depth, Board &board)
     {

@@ -2,26 +2,33 @@
 
 namespace Vixen
 {
-    void PrincipalVariation::ClearTable()
-    {
-        hashTable.clear();
-    }
-
     void PrincipalVariation::StorePVEntry(PVEntry &&entry)
     {
-        const auto[f, inserted] = hashTable.emplace(entry.positionKey, entry);
+        const auto &reference = hashTable.find(entry.positionKey);
 
-        if (!inserted)
-            f->second.move = entry.move;
+        if (reference == hashTable.end())
+        {
+            if (hashTable.size() == capacity)
+            {
+                PVEntry lastUsed = elements.back();
+                elements.pop_back();
+                hashTable.erase(lastUsed.positionKey);
+            }
+        }
 
+        else
+            elements.erase(reference->second);
+
+        elements.emplace_front(entry);
+        hashTable[entry.positionKey] = begin(elements);
     }
 
     PVEntry PrincipalVariation::GetPVEntry(PositionKey key)
     {
         const auto entry = hashTable.find(key);
 
-        if (entry != hashTable.end())
-            return entry->second;
+        if (entry != end(hashTable))
+            return *entry->second;
 
         else
             return {};

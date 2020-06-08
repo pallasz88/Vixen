@@ -3,6 +3,8 @@
 #include <algorithm>
 #include <string_view>
 #include <string>
+#include <unordered_map>
+#include <array>
 
 #if defined _WIN32
 #define VIXEN_API __declspec(dllexport)
@@ -13,7 +15,7 @@
 namespace Vixen
 {
 
-    enum Ranks
+    enum Ranks : uint64_t
     {
         RANK1  = 255ULL,
         RANK2  = 65280ULL,
@@ -26,7 +28,7 @@ namespace Vixen
         RANK78 = 18446462598732840960ULL
     };
 
-    enum Files
+    enum Files : uint64_t
     {
         FILEA = 9259542123273814144ULL,
         FILEB = 4629771061636907072ULL,
@@ -38,7 +40,7 @@ namespace Vixen
         FILEH = 72340172838076673ULL
     };
 
-    enum Squares
+    enum Squares : uint8_t
     {
         H1, G1, F1, E1, D1, C1, B1, A1,
         H2, G2, F2, E2, D2, C2, B2, A2,
@@ -335,25 +337,25 @@ namespace Vixen
         static constexpr PawnDirections pawnDirections = {{{-1, 1}, {1, 1}}};
 
         static inline std::unordered_map<CastlingRights, uint8_t>
-                rookSquareAfterCastling = {{{CastlingRights::BQCA, D8},
-                                                   {CastlingRights::BKCA, F8},
-                                                   {CastlingRights::WQCA, D1},
-                                                   {CastlingRights::WKCA, F1}}};
+                rookSquareAfterCastling = {{{CastlingRights::BQCA, static_cast<uint8_t>(D8)},
+                                                   {CastlingRights::BKCA, static_cast<uint8_t>(F8)},
+                                                   {CastlingRights::WQCA, static_cast<uint8_t>(D1)},
+                                                   {CastlingRights::WKCA, static_cast<uint8_t>(F1)}}};
 
-        static inline std::unordered_map<CastlingRights, uint8_t> castlingLookUp = {{{CastlingRights::WKCA, 3},
-                                                                                            {CastlingRights::WQCA, 2},
-                                                                                            {CastlingRights::BKCA, 1},
-                                                                                            {CastlingRights::BQCA, 0}}};
+        static inline std::unordered_map<CastlingRights, uint8_t> castlingLookUp = {{{CastlingRights::WKCA, 3U},
+                                                                                            {CastlingRights::WQCA, 2U},
+                                                                                            {CastlingRights::BKCA, 1U},
+                                                                                            {CastlingRights::BQCA, 0U}}};
     };
 
 //    C++20 find_if function is constexpr
-//    inline constexpr auto GetPieceIndex(char c)
+//    constexpr auto GetPieceIndex(char c)
 //    {
 //        auto iterator = std::find_if(std::begin(pieceMap), std::end(pieceMap), [c](auto p){return p.first == c;});
 //        return (iterator != std::end(pieceMap)) ? iterator->second : -1;
 //    }
 
-    inline constexpr auto GetPieceIndex(char c) noexcept
+    constexpr auto GetPieceIndex(char c) noexcept
     {
         for (const auto &i : Constants::pieceMap)
         {
@@ -363,7 +365,7 @@ namespace Vixen
         return -1;
     }
 
-    inline constexpr auto GetPieceMaterial(char c) noexcept
+    constexpr auto GetPieceMaterial(char c) noexcept
     {
         for (const auto &i : Constants::materialMap)
         {
@@ -373,7 +375,7 @@ namespace Vixen
         return -1;
     }
 
-    inline constexpr auto GetPromotionType(char c) noexcept
+    constexpr auto GetPromotionType(char c) noexcept
     {
         for (const auto &i : Constants::promotionMap)
         {
@@ -383,14 +385,14 @@ namespace Vixen
         return -1;
     }
 
-    inline constexpr BitBoard SquareToBitBoard(int square)
+    constexpr BitBoard SquareToBitBoard(int square)
     {
         if (square < 0)
             return Constants::EMPTY_BOARD;
         return static_cast<BitBoard>(1U) << static_cast<unsigned>(square);
     }
 
-    inline constexpr bool IsValidCoordinate(int file, int rank)
+    constexpr bool IsValidCoordinate(int file, int rank)
     {
         return file >= 0 && rank >= 0 && file < 8 && rank < 8;
     }
@@ -404,44 +406,44 @@ namespace Vixen
         }
 
         template<class T>
-        inline constexpr void SetBit(T &bitBoard, unsigned position)
+        constexpr void SetBit(T &bitBoard, unsigned position)
         {
             bitBoard |= static_cast<T>(1ULL << position);
         }
 
         template<class T>
-        inline constexpr void ClearBit(T &bitBoard, unsigned position)
+        constexpr void ClearBit(T &bitBoard, unsigned position)
         {
             bitBoard &= ~(1ULL << position);
         }
 
         template<Colors pawnColor>
-        inline constexpr BitBoard PushPawns(BitBoard pawns)
+        constexpr BitBoard PushPawns(BitBoard pawns)
         {
             return (pawnColor == Colors::WHITE) ? pawns << 8U : pawns >> 8U;
         }
 
         template<Colors pawnColor>
-        inline constexpr BitBoard PawnCaptureLeft(BitBoard pawns)
+        constexpr BitBoard PawnCaptureLeft(BitBoard pawns)
         {
             pawns &= (pawnColor == Colors::WHITE) ? ~FILEA : ~FILEH;
             return (pawnColor == Colors::WHITE) ? pawns << 9U : pawns >> 9U;
         }
 
         template<Colors pawnColor>
-        inline constexpr BitBoard PawnCaptureRight(BitBoard pawns)
+        constexpr BitBoard PawnCaptureRight(BitBoard pawns)
         {
             pawns &= (pawnColor == Colors::WHITE) ? ~FILEH : ~FILEA;
             return (pawnColor == Colors::WHITE) ? pawns << 7U : pawns >> 7U;
         }
     }
 
-    inline constexpr unsigned PopCount(BitBoard bitBoard)
+    constexpr unsigned PopCount(BitBoard bitBoard)
     {
         return static_cast<unsigned>(__builtin_popcountll(bitBoard));
     }
 
-    inline constexpr unsigned TrailingZeroCount(BitBoard bitBoard)
+    constexpr unsigned TrailingZeroCount(BitBoard bitBoard)
     {
         return static_cast<unsigned>(__builtin_ctzll(bitBoard));
     }
@@ -454,7 +456,7 @@ namespace Vixen
         return notation;
     }
 
-    inline constexpr auto NotationToSquare(const std::string_view &notation)
+    constexpr auto NotationToSquare(const std::string_view &notation)
     {
         if (notation.at(0) < 'a' || notation.at(0) > 'h' ||
             notation.at(1) < '1' || notation.at(1) > '8')
@@ -462,19 +464,19 @@ namespace Vixen
         return 7 - (notation.at(0) - 'a') + 8 * (notation.at(1) - '1');
     }
 
-    inline constexpr unsigned GetPosition(BitBoard &bitBoard)
+    constexpr unsigned GetPosition(BitBoard &bitBoard)
     {
         const auto from = TrailingZeroCount(bitBoard);
         bitBoard &= bitBoard - 1;
         return from;
     }
 
-    inline constexpr Move CreateMove(unsigned from, unsigned to, uint8_t moveType)
+    constexpr Move CreateMove(unsigned from, unsigned to, uint8_t moveType)
     {
         return static_cast<unsigned>(moveType << 12U) | to << 6U | from;
     }
 
-    inline constexpr bool IsMovingPawn(char movingPiece)
+    constexpr bool IsMovingPawn(char movingPiece)
     {
         return movingPiece == 'P' || movingPiece == 'p';
     }
@@ -507,7 +509,7 @@ namespace Vixen
      * @param c
      * @return
      */
-    inline constexpr bool IsBlackMoving(char c)
+    constexpr bool IsBlackMoving(char c)
     {
         return find(begin(Constants::blackPieceKeys), end(Constants::blackPieceKeys), c)
                != end(Constants::blackPieceKeys);

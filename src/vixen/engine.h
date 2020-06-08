@@ -36,6 +36,8 @@ namespace Vixen
 
     private:
 
+        static constexpr int megaByte = 1ULL << 20ULL;
+
         static PrincipalVariation pv;
 
         static constexpr std::array pawnTable =

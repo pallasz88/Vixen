@@ -2,6 +2,7 @@
 #define VIXEN_PRINCIPALVARIATION_H
 
 #include "defs.h"
+#include <list>
 
 namespace Vixen
 {
@@ -23,18 +24,22 @@ namespace Vixen
     {
     public:
 
-        void ClearTable();
+        explicit PrincipalVariation(size_t n)
+                : capacity(n)
+        {
+        }
 
         void StorePVEntry(PVEntry &&);
 
-        PVEntry GetPVEntry(PositionKey key);
+        PVEntry GetPVEntry(PositionKey);
 
     private:
 
-        static constexpr int megabyte = 0x200000;
+        std::list<PVEntry> elements;
 
-        std::unordered_map<PositionKey, PVEntry> hashTable;
+        std::unordered_map<PositionKey, std::list<PVEntry>::iterator> hashTable;
 
+        size_t capacity;
     };
 
 }

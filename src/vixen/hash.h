@@ -11,7 +11,7 @@ namespace Vixen
     /**
      * Creates unique hash values from board positions.
      */
-    class Hash
+    class VIXEN_API Hash
     {
     public:
 
