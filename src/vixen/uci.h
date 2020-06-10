@@ -1,11 +1,12 @@
 #pragma once
 
 #include "board.h"
-#include "engine.h"
 #include <memory>
 
 namespace Vixen
 {
+    struct SearchInfo;
+
     class VIXEN_API Uci
     {
     public:

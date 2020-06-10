@@ -1,7 +1,11 @@
 cmake_minimum_required(VERSION 3.13)
 project(unittest)
 
-set(CMAKE_CXX_STANDARD 17)
+if(CMAKE_CXX_COMPILER_ID MATCHES ".*Clang")
+    set(CMAKE_CXX_STANDARD 20)
+elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    set(CMAKE_CXX_STANDARD 17)
+endif ()
 
 set(SOURCE_FILES unittest.cpp fixture.h)
 

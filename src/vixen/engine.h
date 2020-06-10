@@ -3,7 +3,6 @@
 #include "defs.h"
 #include "principal_variation.h"
 
-
 #include <chrono>
 
 namespace Vixen
@@ -24,7 +23,22 @@ namespace Vixen
         bool                                           stopped{false};
     };
 
-    class Search
+    struct Utility
+    {
+        template<class T>
+#if (__cpp_lib_constexpr_algorithms)
+        static constexpr T MirrorTable(const T &table) noexcept
+#else
+        static T MirrorTable(const T &table) noexcept
+#endif
+        {
+            T reversed{};
+            std::reverse_copy(begin(table), end(table), begin(reversed));
+            return reversed;
+        }
+    };
+
+    class VIXEN_API Search
     {
     public:
 
@@ -40,7 +54,7 @@ namespace Vixen
 
         static PrincipalVariation pv;
 
-        static constexpr std::array pawnTable =
+        static constexpr std::array PawnTable =
                                             {
                                                     0, 0, 0, 0, 0, 0, 0, 0,
                                                     10, 10, 0, -10, -10, 0, 10, 10,
@@ -52,7 +66,7 @@ namespace Vixen
                                                     0, 0, 0, 0, 0, 0, 0, 0
                                             };
 
-        static constexpr std::array knightTable =
+        static constexpr std::array KnightTable =
                                             {
                                                     0, -10, 0, 0, 0, 0, -10, 0,
                                                     0, 0, 0, 5, 5, 0, 0, 0,
@@ -64,7 +78,7 @@ namespace Vixen
                                                     0, 0, 0, 0, 0, 0, 0, 0
                                             };
 
-        static constexpr std::array bishopTable =
+        static constexpr std::array BishopTable =
                                             {
                                                     0, 0, -10, 0, 0, -10, 0, 0,
                                                     0, 0, 0, 10, 10, 0, 0, 0,
@@ -76,7 +90,7 @@ namespace Vixen
                                                     0, 0, 0, 0, 0, 0, 0, 0
                                             };
 
-        static constexpr std::array rookTable =
+        static constexpr std::array RookTable =
                                             {
                                                     0, 0, 5, 10, 10, 5, 0, 0,
                                                     0, 0, 5, 10, 10, 5, 0, 0,
@@ -87,22 +101,37 @@ namespace Vixen
                                                     25, 25, 25, 25, 25, 25, 25, 25,
                                                     0, 0, 5, 10, 10, 5, 0, 0
                                             };
+#if (__cpp_lib_constexpr_algorithms)
 
-        template<class T>
-        static constexpr T MirrorTable(const T &table) noexcept
-        {
-            T reversed{};
-            std::reverse_copy(begin(table), end(table), begin(reversed));
-            return reversed;
-        }
+        static constexpr std::array pawnTable = Utility::MirrorTable(PawnTable);
 
-        static inline std::array PawnTable = MirrorTable(pawnTable);
+        static constexpr std::array knightTable = Utility::MirrorTable(KnightTable);
 
-        static inline std::array KnightTable = MirrorTable(knightTable);
+        static constexpr std::array bishopTable = Utility::MirrorTable(BishopTable);
 
-        static inline std::array BishopTable = MirrorTable(bishopTable);
+        static constexpr std::array rookTable = Utility::MirrorTable(RookTable);
 
-        static inline std::array RookTable = MirrorTable(rookTable);
+        static constexpr std::array arrayLookUp {
+            pawnTable, knightTable, bishopTable, rookTable,
+            PawnTable, KnightTable, BishopTable, RookTable
+        };
+
+#else
+
+        static inline std::array pawnTable = Utility::MirrorTable(PawnTable);
+
+        static inline std::array knightTable = Utility::MirrorTable(KnightTable);
+
+        static inline std::array bishopTable = Utility::MirrorTable(BishopTable);
+
+        static inline std::array rookTable = Utility::MirrorTable(RookTable);
+
+        static inline std::array arrayLookUp {
+                pawnTable, knightTable, bishopTable, rookTable,
+                PawnTable, KnightTable, BishopTable, RookTable
+        };
+
+#endif
 
         static int Evaluate(const Board &board);
 
@@ -115,4 +144,6 @@ namespace Vixen
         static std::vector<Move> GetPV(int, Board &);
 
     };
+
+    template std::array<int, 64ul> Vixen::Utility::MirrorTable<std::array<int, 64ul> >(std::array<int, 64ul> const&);
 }

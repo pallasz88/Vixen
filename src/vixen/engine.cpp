@@ -163,11 +163,12 @@ namespace Vixen
             if (!board.MakeMove(moveList[i]))
                 continue;
 
-            int score = -Quiescence(-beta, -alpha, board, info);
+            const int score = -Quiescence(-beta, -alpha, board, info);
             board.TakeBack();
 
             if (score >= beta)
                 return beta;
+
             if (score > alpha)
                 alpha = score;
         }
@@ -180,29 +181,16 @@ namespace Vixen
 
         for (unsigned i = 0; i < Constants::SQUARE_NUMBER; ++i)
         {
-            if (board.GetPieceList()[i] == 'P')
-                score += pawnTable[i];
+            const char piece = board.GetPieceList()[i];
 
-            else if (board.GetPieceList()[i] == 'p')
-                score -= PawnTable[i];
+            if (int index = GetEvalIndex(piece); index != -1)
+            {
+                if (IsWhitePiece(piece))
+                    score += arrayLookUp[static_cast<unsigned>(index)][i];
+                else
+                    score -= arrayLookUp[static_cast<unsigned>(index)][i];
+            }
 
-            else if (board.GetPieceList()[i] == 'N')
-                score += knightTable[i];
-
-            else if (board.GetPieceList()[i] == 'n')
-                score -= KnightTable[i];
-
-            else if (board.GetPieceList()[i] == 'B')
-                score += bishopTable[i];
-
-            else if (board.GetPieceList()[i] == 'b')
-                score -= BishopTable[i];
-
-            else if (board.GetPieceList()[i] == 'R')
-                score += rookTable[i];
-
-            else if (board.GetPieceList()[i] == 'r')
-                score -= RookTable[i];
         }
         return board.IsWhiteToMove() ? score : -score;
     }
