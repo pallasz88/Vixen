@@ -1,4 +1,5 @@
-#include <iostream>
+//#include <iostream>
+#include <algorithm>
 
 #include "engine.h"
 #include "move_generator.h"
@@ -54,13 +55,23 @@ namespace Vixen
     std::pair<int, Move> Search::Root(int depth, Board &board, SearchInfo &info)
     {
         const auto &generator = board.CreateGenerator<ALL_MOVE>();
-        const auto &moveList  = generator.GetLegalMoveList(board);
+        auto moveList  = generator.GetLegalMoveList(board);
         int        alpha      = -MATE;
         int        beta       = MATE;
         Move       bestMove{0};
         ++info.nodesCount;
 
-        for (const Move &move : moveList)
+        const auto pvLine = GetPV(depth, board);
+        if (!pvLine.empty())
+        {
+            for (size_t i = 0; i < moveList.size(); ++i) 
+            {
+                if (moveList[i] == pvLine[0])
+                    std::swap(moveList[0], moveList[i]);
+            }
+        }
+
+        for (const auto &move : moveList)
         {
             board.MakeMove(move);
             ++info.currentDepth;
