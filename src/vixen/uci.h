@@ -1,41 +1,39 @@
 #pragma once
 
-#include "board.h"
 #include <memory>
+
+#include "board.h"
 
 namespace Vixen
 {
-    struct SearchInfo;
+struct SearchInfo;
 
-    class VIXEN_API Uci
-    {
-    public:
+class VIXEN_API Uci
+{
+  public:
+    Uci();
 
-        Uci();
+    ~Uci();
 
-        ~Uci();
+    Uci(const Uci &) = delete;
 
-        Uci(const Uci &) = delete;
+    Uci &operator=(const Uci &) = delete;
 
-        Uci &operator=(const Uci &) = delete;
+    Uci(Uci &&) = delete;
 
-        Uci(Uci &&) = delete;
+    Uci &operator=(Uci &&) = delete;
 
-        Uci &operator=(Uci &&) = delete;
+    void loop();
 
-        void loop();
+    static void LogUci(const SearchInfo &info, const std::pair<int, Move> &result, int depth,
+                       const std::vector<Move> &bestLine);
 
-        static void LogUci(const SearchInfo &info, const std::pair<int, Move> &result, int depth,
-                           const std::vector<Move> &bestLine);
+  private:
+    std::unique_ptr<Board> board;
 
-    private:
+    std::unique_ptr<SearchInfo> info;
 
-        std::unique_ptr<Board> board;
+    void UpdateSearchInfo(std::istringstream &is, std::string &token);
+};
 
-        std::unique_ptr<SearchInfo> info;
-
-        void UpdateSearchInfo(std::istringstream &is, std::string &token);
-    };
-
-
-}
+} // namespace Vixen

@@ -4,61 +4,60 @@
 
 namespace Vixen::SliderUtils
 {
-    struct Magic
-    {
-        /**
-         * Pointer to attack_table for each particular square
-         */
-        BitBoard *attacks;
+struct Magic
+{
+    /**
+     * Pointer to attack_table for each particular square
+     */
+    BitBoard *attacks;
 
-        /**
-         * Mask relevant squares of both lines (no outer squares)
-         */
-        BitBoard mask;
+    /**
+     * Mask relevant squares of both lines (no outer squares)
+     */
+    BitBoard mask;
 
-        /**
-         * Magic 64-bit factor
-         */
-        BitBoard magic;
+    /**
+     * Magic 64-bit factor
+     */
+    BitBoard magic;
 
-        /**
-         * Shift right
-         */
-        unsigned shift;
-    };
+    /**
+     * Shift right
+     */
+    unsigned shift;
+};
 
-    extern BitBoard BishopAttacks[Constants::BISHOP_ATTACK_TABLE_SIZE];
+extern BitBoard BishopAttacks[Constants::BISHOP_ATTACK_TABLE_SIZE];
 
-    extern BitBoard RookAttacks[Constants::ROOK_ATTACK_TABLE_SIZE];
+extern BitBoard RookAttacks[Constants::ROOK_ATTACK_TABLE_SIZE];
 
-    extern Magic BishopTable[Constants::SQUARE_NUMBER];
+extern Magic BishopTable[Constants::SQUARE_NUMBER];
 
-    extern Magic RookTable[Constants::SQUARE_NUMBER];
+extern Magic RookTable[Constants::SQUARE_NUMBER];
 
-    inline constexpr unsigned GetIndex(BitBoard occupied, const Magic &table)
-    {
-        return static_cast<unsigned>(((occupied & table.mask) * table.magic) >> table.shift);
-    }
-
-    inline BitBoard GetBishopAttack(unsigned int square, BitBoard occupied)
-    {
-        return SliderUtils::BishopTable[square].attacks[GetIndex(occupied, SliderUtils::BishopTable[square])];
-    }
-
-    inline BitBoard GetRookAttack(unsigned int square, BitBoard occupied)
-    {
-        return SliderUtils::RookTable[square].attacks[GetIndex(occupied, SliderUtils::RookTable[square])];
-    }
-
-    inline void GetNextCoordinate(int &file, int &rank, const Direction &direction)
-    {
-        file += direction[0], rank += direction[1];
-    }
-
-    void InitMagics();
-
-    template<Slider slider>
-    void InitSlidingAttack(unsigned int square, SliderDirections directions, Magic *table);
-
-    BitBoard SlidingAttack(unsigned int square, SliderDirections directions, BitBoard occupied);
+inline constexpr unsigned GetIndex(BitBoard occupied, const Magic &table)
+{
+    return static_cast<unsigned>(((occupied & table.mask) * table.magic) >> table.shift);
 }
+
+inline BitBoard GetBishopAttack(unsigned int square, BitBoard occupied)
+{
+    return SliderUtils::BishopTable[square].attacks[GetIndex(occupied, SliderUtils::BishopTable[square])];
+}
+
+inline BitBoard GetRookAttack(unsigned int square, BitBoard occupied)
+{
+    return SliderUtils::RookTable[square].attacks[GetIndex(occupied, SliderUtils::RookTable[square])];
+}
+
+inline void GetNextCoordinate(int &file, int &rank, const Direction &direction)
+{
+    file += direction[0], rank += direction[1];
+}
+
+void InitMagics();
+
+template <Slider slider> void InitSlidingAttack(unsigned int square, SliderDirections directions, Magic *table);
+
+BitBoard SlidingAttack(unsigned int square, SliderDirections directions, BitBoard occupied);
+} // namespace Vixen::SliderUtils

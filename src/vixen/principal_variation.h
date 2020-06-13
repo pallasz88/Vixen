@@ -1,48 +1,45 @@
 #ifndef VIXEN_PRINCIPALVARIATION_H
 #define VIXEN_PRINCIPALVARIATION_H
 
-#include "defs.h"
 #include <list>
+
+#include "defs.h"
 
 namespace Vixen
 {
 
-    struct PVEntry
+struct PVEntry
+{
+    Move move;
+
+    PositionKey positionKey;
+
+    PVEntry() = default;
+
+    explicit PVEntry(Move m, PositionKey key) : move(m), positionKey(key)
     {
-        Move move;
+    }
+};
 
-        PositionKey positionKey;
-
-        PVEntry() = default;
-
-        explicit PVEntry(Move m, PositionKey key)
-                : move(m), positionKey(key)
-        {}
-    };
-
-    class PrincipalVariation
+class PrincipalVariation
+{
+  public:
+    explicit PrincipalVariation(size_t n) : capacity(n)
     {
-    public:
+    }
 
-        explicit PrincipalVariation(size_t n)
-                : capacity(n)
-        {
-        }
+    void StorePVEntry(PVEntry &&);
 
-        void StorePVEntry(PVEntry &&);
+    PVEntry GetPVEntry(PositionKey);
 
-        PVEntry GetPVEntry(PositionKey);
+  private:
+    std::list<PVEntry> elements;
 
-    private:
+    std::unordered_map<PositionKey, std::list<PVEntry>::iterator> hashTable;
 
-        std::list<PVEntry> elements;
+    size_t capacity;
+};
 
-        std::unordered_map<PositionKey, std::list<PVEntry>::iterator> hashTable;
+} // namespace Vixen
 
-        size_t capacity;
-    };
-
-}
-
-
-#endif //VIXEN_PRINCIPALVARIATION_H
+#endif // VIXEN_PRINCIPALVARIATION_H

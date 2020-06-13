@@ -1,158 +1,159 @@
 #include "uci.h"
-#include "board.h"
-#include "move_generator.h"
-#include "engine.h"
 
 #include <iostream>
 #include <sstream>
 
+#include "board.h"
+#include "engine.h"
+#include "move_generator.h"
+
 namespace Vixen
 {
-    Uci::Uci()
-            : board(std::make_unique<Board>()), info(std::make_unique<SearchInfo>())
-    {}
+Uci::Uci() : board(std::make_unique<Board>()), info(std::make_unique<SearchInfo>())
+{
+}
 
-    Uci::~Uci()
+Uci::~Uci()
+{
+    board.reset();
+    info.reset();
+}
+
+void Uci::LogUci(const SearchInfo &info, const std::pair<int, Move> &result, int depth,
+                 const std::vector<Move> &bestLine)
+{
+    if (result.first > Search::MATE - info.maxDepth)
+        std::cout << "info score mate " << (Search::MATE - result.first) / 2;
+
+    else if (result.first < -Search::MATE + info.maxDepth)
+        std::cout << "info score mate " << (-Search::MATE - result.first) / 2;
+
+    else
+        std::cout << "info score cp " << result.first;
+
+    std::cout << " depth " << depth << " nodes " << info.nodesCount << " pv ";
+
+    for (const auto &move : bestLine)
+        std::cout << SquareToNotation(move & 0x3FU) << SquareToNotation((move & 0xFC0U) >> 6U) << " ";
+
+    std::cout << std::endl;
+}
+
+void Uci::UpdateSearchInfo(std::istringstream &is, std::string &token)
+{
+    info->nodesCount = 0;
+
+    while (is >> token)
     {
-        board.reset();
-        info.reset();
-    }
-
-    void Uci::LogUci(const SearchInfo &info, const std::pair<int, Move> &result, int depth,
-                     const std::vector<Move> &bestLine)
-    {
-        if (result.first > Search::MATE - info.maxDepth)
-            std::cout << "info score mate " << (Search::MATE - result.first) / 2;
-
-        else if (result.first < -Search::MATE + info.maxDepth)
-            std::cout << "info score mate " << (-Search::MATE - result.first) / 2;
-
-        else
-            std::cout << "info score cp " << result.first;
-
-        std::cout << " depth " << depth << " nodes " << info.nodesCount << " pv ";
-
-        for (const auto &move : bestLine)
-            std::cout << SquareToNotation(move & 0x3FU)
-                      << SquareToNotation((move & 0xFC0U) >> 6U) << " ";
-
-        std::cout << std::endl;
-    }
-
-    void Uci::UpdateSearchInfo(std::istringstream &is, std::string &token)
-    {
-        info->nodesCount = 0;
-
-        while (is >> token)
+        if (board->IsWhiteToMove() && token == "wtime")
         {
-            if (board->IsWhiteToMove() && token == "wtime")
-            {
-                is >> token;
-                info->time[static_cast<int>(Colors::WHITE)] = std::stoi(token);
-            }
-
-            else if (!board->IsWhiteToMove() && token == "btime")
-            {
-                is >> token;
-                info->time[static_cast<int>(Colors::BLACK)] = std::stoi(token);
-            }
-
-            if (board->IsWhiteToMove() && token == "winc")
-            {
-                is >> token;
-                info->increment[static_cast<int>(Colors::WHITE)] = std::stoi(token);
-            }
-
-            else if (!board->IsWhiteToMove() && token == "binc")
-            {
-                is >> token;
-                info->increment[static_cast<int>(Colors::BLACK)] = std::stoi(token);
-            }
-
-            if (token == "movestogo")
-            {
-                is >> token;
-                info->movesToGo = std::stoi(token);
-            }
-
-            if (token == "movetime")
-            {
-                is >> token;
-                info->moveTime = std::stoi(token);
-            }
-
-            if (token == "depth")
-            {
-                is >> token;
-                info->maxDepth = std::stoi(token);
-            }
-        }
-    }
-
-    void Uci::loop()
-    {
-        std::string line;
-        while (std::getline(std::cin, line))
-        {
-            std::istringstream is(line);
-            std::string        token;
             is >> token;
+            info->time[static_cast<int>(Colors::WHITE)] = std::stoi(token);
+        }
 
-            if (token == "uci")
-            {
-                std::cout << "id name Vixen " << "0.0.5\n";
-                std::cout << "id author Laszlo Paal\n\n";
-                std::cout << "uciok\n";
-            }
+        else if (!board->IsWhiteToMove() && token == "btime")
+        {
+            is >> token;
+            info->time[static_cast<int>(Colors::BLACK)] = std::stoi(token);
+        }
 
-            else if (token == "ucinewgame")
-                board->SetBoard(Constants::START_POSITION);
+        if (board->IsWhiteToMove() && token == "winc")
+        {
+            is >> token;
+            info->increment[static_cast<int>(Colors::WHITE)] = std::stoi(token);
+        }
 
-            else if (token == "isready")
-                std::cout << "readyok\n";
+        else if (!board->IsWhiteToMove() && token == "binc")
+        {
+            is >> token;
+            info->increment[static_cast<int>(Colors::BLACK)] = std::stoi(token);
+        }
 
-            else if (token == "position") //position [fen  | startpos ]  moves  ....
-            {
-                std::string fen;
+        if (token == "movestogo")
+        {
+            is >> token;
+            info->movesToGo = std::stoi(token);
+        }
 
-                is >> token;
+        if (token == "movetime")
+        {
+            is >> token;
+            info->moveTime = std::stoi(token);
+        }
 
-                if (token == "startpos")
-                {
-                    fen = Constants::START_POSITION;
-                    is >> token; // Consume "moves" token if any
-                }
-                else if (token == "fen")
-                    while (is >> token && token != "moves")
-                        fen += token + " ";
-                else
-                    return;
-
-                board->SetBoard(fen);
-
-                if (token == "moves")
-                {
-                    std::string move;
-                    while (!is.eof())
-                    {
-                        is >> move;
-                        board->MakeMove(move);
-                    }
-                }
-            }
-
-            else if (token == "go")
-            {
-                UpdateSearchInfo(is, token);
-                const Move encodedMove = Search::IterativeDeepening(*board, *info);
-
-                const auto from = encodedMove & 0x3FU;
-                const auto to   = (encodedMove >> 6U) & 0x3FU;
-                std::cout << "bestmove " << SquareToNotation(from) << SquareToNotation(to) << '\n';
-            }
-
-            else if (token == "quit")
-                return;
+        if (token == "depth")
+        {
+            is >> token;
+            info->maxDepth = std::stoi(token);
         }
     }
 }
+
+void Uci::loop()
+{
+    std::string line;
+    while (std::getline(std::cin, line))
+    {
+        std::istringstream is(line);
+        std::string token;
+        is >> token;
+
+        if (token == "uci")
+        {
+            std::cout << "id name Vixen "
+                      << "0.0.5\n";
+            std::cout << "id author Laszlo Paal\n\n";
+            std::cout << "uciok\n";
+        }
+
+        else if (token == "ucinewgame")
+            board->SetBoard(Constants::START_POSITION);
+
+        else if (token == "isready")
+            std::cout << "readyok\n";
+
+        else if (token == "position") // position [fen  | startpos ]  moves  ....
+        {
+            std::string fen;
+
+            is >> token;
+
+            if (token == "startpos")
+            {
+                fen = Constants::START_POSITION;
+                is >> token; // Consume "moves" token if any
+            }
+            else if (token == "fen")
+                while (is >> token && token != "moves")
+                    fen += token + " ";
+            else
+                return;
+
+            board->SetBoard(fen);
+
+            if (token == "moves")
+            {
+                std::string move;
+                while (!is.eof())
+                {
+                    is >> move;
+                    board->MakeMove(move);
+                }
+            }
+        }
+
+        else if (token == "go")
+        {
+            UpdateSearchInfo(is, token);
+            const Move encodedMove = Search::IterativeDeepening(*board, *info);
+
+            const auto from = encodedMove & 0x3FU;
+            const auto to = (encodedMove >> 6U) & 0x3FU;
+            std::cout << "bestmove " << SquareToNotation(from) << SquareToNotation(to) << '\n';
+        }
+
+        else if (token == "quit")
+            return;
+    }
+}
+} // namespace Vixen

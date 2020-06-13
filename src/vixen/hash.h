@@ -6,91 +6,99 @@
 namespace Vixen
 {
 
-    class Board;
+class Board;
+
+/**
+ * Creates unique hash values from board positions.
+ */
+class VIXEN_API Hash
+{
+  public:
+    /**
+     * Sets hash value. In case undoing move it is faster
+     * to recover hash from stack than recalculate it.
+     * @param hash
+     */
+    constexpr void SetHash(PositionKey hash)
+    {
+        positionKey = hash;
+    }
 
     /**
-     * Creates unique hash values from board positions.
+     * Gets hash value.
      */
-    class VIXEN_API Hash
+    [[nodiscard]] constexpr PositionKey GetHash() const
     {
-    public:
+        return positionKey;
+    }
 
-        /**
-         * Sets hash value. In case undoing move it is faster
-         * to recover hash from stack than recalculate it.
-         * @param hash
-         */
-        constexpr void SetHash(PositionKey hash)
-        { positionKey = hash; }
+    /**
+     * For differentiating boards where enpassant is available or not.
+     * @param enPassant
+     */
+    constexpr void HashEnPassant(BitBoard enPassant)
+    {
+        positionKey ^= zobristKeys.pieceHashKeys[TrailingZeroCount(enPassant)][enPassantKey];
+    }
 
-        /**
-         * Gets hash value.
-         */
-        [[nodiscard]] constexpr PositionKey GetHash() const
-        { return positionKey; }
+    /**
+     * For differentiating boards where castling is available or not.
+     * @param castlingRights
+     */
+    constexpr void HashCastling(unsigned castlingRights) noexcept
+    {
+        positionKey ^= zobristKeys.castleHashKeys[castlingRights];
+    }
 
-        /**
-         * For differentiating boards where enpassant is available or not.
-         * @param enPassant
-         */
-        constexpr void HashEnPassant(BitBoard enPassant)
-        { positionKey ^= zobristKeys.pieceHashKeys[TrailingZeroCount(enPassant)][enPassantKey]; }
+    /**
+     * For hashing piece positions
+     * @param square
+     * @param pieceKey
+     */
+    constexpr void HashPiece(unsigned square, char pieceKey)
+    {
+        positionKey ^= zobristKeys.pieceHashKeys[square][static_cast<unsigned>(GetPieceIndex(pieceKey))];
+    }
 
-        /**
-         * For differentiating boards where castling is available or not.
-         * @param castlingRights
-         */
-        constexpr void HashCastling(unsigned castlingRights) noexcept
-        { positionKey ^= zobristKeys.castleHashKeys[castlingRights]; }
+    /**
+     * For differentiating boards where white's or black's turn.
+     */
+    void HashSide()
+    {
+        positionKey ^= zobristKeys.sideHashKey;
+    }
 
-        /**
-         * For hashing piece positions
-         * @param square
-         * @param pieceKey
-         */
-        constexpr void HashPiece(unsigned square, char pieceKey)
-        { positionKey ^= zobristKeys.pieceHashKeys[square][static_cast<unsigned>(GetPieceIndex(pieceKey))]; }
-
-        /**
-         * For differentiating boards where white's or black's turn.
-         */
-        void HashSide()
-        { positionKey ^= zobristKeys.sideHashKey; }
-
-        static constexpr void InitZobristKeys()
+    static constexpr void InitZobristKeys()
+    {
+        unsigned i = 0;
+        for (unsigned square = H1; square <= Constants::MAX_SQUARE_INDEX; ++square)
         {
-            unsigned      i      = 0;
-            for (unsigned square = H1; square <= Constants::MAX_SQUARE_INDEX; ++square)
-            {
-                zobristKeys.pieceHashKeys[square][enPassantKey] = PRNG::GenerateRandom(++i);
-                for (const auto &pieceKey : Constants::pieceKeys)
-                    zobristKeys.pieceHashKeys[square][static_cast<unsigned>(GetPieceIndex(
-                            pieceKey))]                         = PRNG::GenerateRandom(++i);
-            }
-
-            zobristKeys.sideHashKey = PRNG::GenerateRandom(++i);
-
-            for (auto &castleHashKey : zobristKeys.castleHashKeys)
-                castleHashKey = PRNG::GenerateRandom(++i);
-
+            zobristKeys.pieceHashKeys[square][enPassantKey] = PRNG::GenerateRandom(++i);
+            for (const auto &pieceKey : Constants::pieceKeys)
+                zobristKeys.pieceHashKeys[square][static_cast<unsigned>(GetPieceIndex(pieceKey))] =
+                    PRNG::GenerateRandom(++i);
         }
 
-        void ComputePositionKey(const Board &board);
+        zobristKeys.sideHashKey = PRNG::GenerateRandom(++i);
 
-        struct Keys
-        {
-            PieceHashKeys  pieceHashKeys;
-            SideHashKey    sideHashKey;
-            CastleHashKeys castleHashKeys;
-        };
+        for (auto &castleHashKey : zobristKeys.castleHashKeys)
+            castleHashKey = PRNG::GenerateRandom(++i);
+    }
 
-    private:
+    void ComputePositionKey(const Board &board);
 
-        PositionKey positionKey;
-
-        static Keys zobristKeys;
-
-        static constexpr int enPassantKey = 12;
-
+    struct Keys
+    {
+        PieceHashKeys pieceHashKeys;
+        SideHashKey sideHashKey;
+        CastleHashKeys castleHashKeys;
     };
-}
+
+  private:
+    PositionKey positionKey;
+
+    static Keys zobristKeys;
+
+    static constexpr int enPassantKey = 12;
+};
+} // namespace Vixen

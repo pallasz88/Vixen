@@ -1,135 +1,140 @@
-#include <iostream>
-#include <regex>
-#include <random>
 #include "userinterface.h"
-#include "move_generator.h"
+
+#include <iostream>
+#include <random>
+#include <regex>
+
 #include "board.h"
+#include "move_generator.h"
 #include "timer.h"
 
 namespace Vixen::UserInterface
 {
-    void WaitUserInput(Vixen::Board &board)
+void WaitUserInput(Vixen::Board &board)
+{
+    std::random_device r;
+    std::mt19937 e1(r());
+    while (true)
     {
-        std::random_device r;
-        std::mt19937       e1(r());
-        while (true)
-        {
-            std::string command;
-            std::cout << "Vixen >";
-            std::getline(std::cin, command);
+        std::string command;
+        std::cout << "Vixen >";
+        std::getline(std::cin, command);
 
-            if (command == "quit")
-                return;
-
-            else if (command == "help")
-                PrintHelp();
-
-            else if (command.substr(0, 8) == "position")
-                board.SetBoard(command.substr(9));
-
-            else if (command == "print")
-                board.PrintBoard();
-
-            else if (command == "reset")
-                board.SetBoard(Constants::START_POSITION);
-
-            else if (command.substr(0, 5) == "perft")
-            {
-                Timer<std::chrono::milliseconds> timer("Perft test");
-                std::cout << Test::PerftTest(stoi(command.substr(6)), board) << "\n";
-            }
-
-            else if (command.substr(0, 4) == "move")
-                try
-                {
-                    UserInterface::MakeMove(command.substr(5), board);
-                } catch (std::runtime_error &error)
-                {
-                    std::cerr << error.what() << "\n";
-                } catch (std::out_of_range &error)
-                {
-                    std::cerr << "INVALID MOVE FORMAT. Use for example e2e4.\n";
-                }
-
-            else if (command == "undo")
-                try
-                {
-                    TakeBackMove(board);
-                } catch (std::runtime_error &error)
-                {
-                    std::cerr << "ERROR HAPPENED: " << error.what() << "\n";
-                }
-
-            else if (command == "list")
-                PrintMoveList(board);
-
-            else if (command == "go")
-            {
-                const auto                              generator = board.CreateGenerator<ALL_MOVE>();
-                const auto                              moves     = generator.GetLegalMoveList(board);
-                std::uniform_int_distribution<unsigned> distribution(0, static_cast<unsigned>(moves.size()));
-                board.MakeMove(moves[distribution(e1)]);
-                board.PrintBoard();
-            }
-
-            else
-                std::cerr << "UNKNOWN COMMAND: " << command << "\n";
-        }
-    }
-
-    void MakeMove(std::string &&move, Vixen::Board &board)
-    {
-        std::cout << "Your move is: " << move << "\n";
-
-        if (!board.MakeMove(move))
-        {
-            std::cerr << "Illegal move!\n";
+        if (command == "quit")
             return;
-        }
 
-        board.PrintBoard();
+        else if (command == "help")
+            PrintHelp();
 
-    }
+        else if (command.substr(0, 8) == "position")
+            board.SetBoard(command.substr(9));
 
-    void TakeBackMove(Board &board)
-    {
-        board.TakeBack();
-    }
+        else if (command == "print")
+            board.PrintBoard();
 
-    void PrintMoveList(Board &board)
-    {
-        const auto  generator    = board.CreateGenerator<ALL_MOVE>();
-        const auto  movesList    = generator.GetMoveList();
-        const auto  moveListSize = generator.GetListSize();
-        for (size_t i            = 0; i < moveListSize; ++i)
+        else if (command == "reset")
+            board.SetBoard(Constants::START_POSITION);
+
+        else if (command.substr(0, 5) == "perft")
         {
-            if (board.MakeMove(movesList[i]))
-            {
-                std::cout << SquareToNotation(movesList[i] & 0x3FU)
-                          << SquareToNotation((movesList[i] & 0xFC0U) >> 6U);
-                if ((movesList[i] >> 12U) & PROMOTION)
-                    std::cout << "nbrq"[static_cast<int>((movesList[i] >> 12U) & 3U)];
-
-                std::cout << ", ";
-                board.TakeBack();
-            }
+            Timer<std::chrono::milliseconds> timer("Perft test");
+            std::cout << Test::PerftTest(stoi(command.substr(6)), board) << "\n";
         }
-        std::cout << "\n";
-    }
 
-    void PrintHelp()
-    {
-        std::cout << "Welcome to Vixen C++ chess engine!\n";
-        std::cout << "\nUse the below listed commands to interact with engine from consol:\n";
-        std::cout << "\thelp:\t\tprint this help\n";
-        std::cout << "\tquit:\t\tclose program\n";
-        std::cout << "\tposition:\tset FEN position\n";
-        std::cout << "\tprint:\t\tprint current position\n";
-        std::cout << "\treset:\t\treset board to starting position\n";
-        std::cout << "\tmove:\t\tprovide your move in algebraic notation like e2e4!\n";
-        std::cout << "\tgo:\t\t\tcomputer makes a random legal move\n";
-        std::cout << "\tundo:\t\tundo previous move\n";
-        std::cout << "\tlist:\t\tlist all available moves from current position\n";
-        std::cout << "\tperft:\t\tcomputer generates legal moves from current position to given depth\n";
+        else if (command.substr(0, 4) == "move")
+            try
+            {
+                UserInterface::MakeMove(command.substr(5), board);
+            }
+            catch (std::runtime_error &error)
+            {
+                std::cerr << error.what() << "\n";
+            }
+            catch (std::out_of_range &error)
+            {
+                std::cerr << "INVALID MOVE FORMAT. Use for example e2e4.\n";
+            }
+
+        else if (command == "undo")
+            try
+            {
+                TakeBackMove(board);
+            }
+            catch (std::runtime_error &error)
+            {
+                std::cerr << "ERROR HAPPENED: " << error.what() << "\n";
+            }
+
+        else if (command == "list")
+            PrintMoveList(board);
+
+        else if (command == "go")
+        {
+            const auto generator = board.CreateGenerator<ALL_MOVE>();
+            const auto moves = generator.GetLegalMoveList(board);
+            std::uniform_int_distribution<unsigned> distribution(0, static_cast<unsigned>(moves.size()));
+            board.MakeMove(moves[distribution(e1)]);
+            board.PrintBoard();
+        }
+
+        else
+            std::cerr << "UNKNOWN COMMAND: " << command << "\n";
     }
 }
+
+void MakeMove(std::string &&move, Vixen::Board &board)
+{
+    std::cout << "Your move is: " << move << "\n";
+
+    if (!board.MakeMove(move))
+    {
+        std::cerr << "Illegal move!\n";
+        return;
+    }
+
+    board.PrintBoard();
+}
+
+void TakeBackMove(Board &board)
+{
+    board.TakeBack();
+}
+
+void PrintMoveList(Board &board)
+{
+    const auto generator = board.CreateGenerator<ALL_MOVE>();
+    const auto movesList = generator.GetMoveList();
+    const auto moveListSize = generator.GetListSize();
+    for (size_t i = 0; i < moveListSize; ++i)
+    {
+        if (board.MakeMove(movesList[i]))
+        {
+            std::cout << SquareToNotation(movesList[i] & 0x3FU) << SquareToNotation((movesList[i] & 0xFC0U) >> 6U);
+            if ((movesList[i] >> 12U) & PROMOTION)
+                std::cout << "nbrq"[static_cast<int>((movesList[i] >> 12U) & 3U)];
+
+            std::cout << ", ";
+            board.TakeBack();
+        }
+    }
+    std::cout << "\n";
+}
+
+void PrintHelp()
+{
+    std::cout << "Welcome to Vixen C++ chess engine!\n";
+    std::cout << "\nUse the below listed commands to interact with engine from "
+                 "consol:\n";
+    std::cout << "\thelp:\t\tprint this help\n";
+    std::cout << "\tquit:\t\tclose program\n";
+    std::cout << "\tposition:\tset FEN position\n";
+    std::cout << "\tprint:\t\tprint current position\n";
+    std::cout << "\treset:\t\treset board to starting position\n";
+    std::cout << "\tmove:\t\tprovide your move in algebraic notation like e2e4!\n";
+    std::cout << "\tgo:\t\t\tcomputer makes a random legal move\n";
+    std::cout << "\tundo:\t\tundo previous move\n";
+    std::cout << "\tlist:\t\tlist all available moves from current position\n";
+    std::cout << "\tperft:\t\tcomputer generates legal moves from current "
+                 "position to given depth\n";
+}
+} // namespace Vixen::UserInterface
