@@ -34,7 +34,7 @@ BitBoard PerftTest(int depth, Board &board)
         nodes += Perft(depth - 1, board);
         board.TakeBack();
         BitBoard olds = leafs - cumNodes;
-        std::cout << SquareToNotation(move & 0x3FU) << SquareToNotation((move & 0xFC0U) >> 6U);
+        std::cout << move;
         std::cout << ": " << olds << "\n";
     }
     return nodes;
@@ -137,7 +137,7 @@ void MoveGenerator::GenerateSliderMoves(BitBoard pieces, BitBoard blockers, BitB
         while (attacks)
         {
             const auto to = GetPosition(attacks);
-            moveList[size++] = CreateMove(from, to, moveType);
+            moveList[size++] = Move(from, to, moveType);
         }
     }
 }
@@ -154,7 +154,7 @@ constexpr void MoveGenerator::GenerateAntiSliderMoves(BitBoard targets, BitBoard
         while (attacks)
         {
             const unsigned to = GetPosition(attacks);
-            moveList[size++] = CreateMove(from, to, moveType);
+            moveList[size++] = Move(from, to, moveType);
         }
     }
 }
@@ -165,7 +165,7 @@ constexpr void MoveGenerator::GeneratePawnMoves(int pawnOffset, BitBoard pawnPus
     {
         const unsigned to = GetPosition(pawnPushed);
         const int from = static_cast<int>(to) - pawnOffset;
-        moveList[size++] = CreateMove(static_cast<unsigned>(from), to, moveType);
+        moveList[size++] = Move(static_cast<unsigned>(from), to, moveType);
     }
 }
 
@@ -175,10 +175,10 @@ constexpr void MoveGenerator::GeneratePawnPromotionMoves(int offset, BitBoard pr
     {
         const unsigned to = GetPosition(promotion);
         const int from = static_cast<int>(to) - offset;
-        moveList[size++] = CreateMove(static_cast<unsigned>(from), to, QUEEN_PROMOTION);
-        moveList[size++] = CreateMove(static_cast<unsigned>(from), to, ROOK_PROMOTION);
-        moveList[size++] = CreateMove(static_cast<unsigned>(from), to, BISHOP_PROMOTION);
-        moveList[size++] = CreateMove(static_cast<unsigned>(from), to, KNIGHT_PROMOTION);
+        moveList[size++] = Move(static_cast<unsigned>(from), to, QUEEN_PROMOTION);
+        moveList[size++] = Move(static_cast<unsigned>(from), to, ROOK_PROMOTION);
+        moveList[size++] = Move(static_cast<unsigned>(from), to, BISHOP_PROMOTION);
+        moveList[size++] = Move(static_cast<unsigned>(from), to, KNIGHT_PROMOTION);
     }
 }
 
@@ -188,10 +188,10 @@ constexpr void MoveGenerator::GeneratePawnPromotionCaptureMoves(int offset, BitB
     {
         const unsigned to = GetPosition(promotion);
         const int from = static_cast<int>(to) - offset;
-        moveList[size++] = CreateMove(static_cast<unsigned>(from), to, QUEEN_PROMO_CAPTURE);
-        moveList[size++] = CreateMove(static_cast<unsigned>(from), to, ROOK_PROMO_CAPTURE);
-        moveList[size++] = CreateMove(static_cast<unsigned>(from), to, BISHOP_PROMO_CAPTURE);
-        moveList[size++] = CreateMove(static_cast<unsigned>(from), to, KNIGHT_PROMO_CAPTURE);
+        moveList[size++] = Move(static_cast<unsigned>(from), to, QUEEN_PROMO_CAPTURE);
+        moveList[size++] = Move(static_cast<unsigned>(from), to, ROOK_PROMO_CAPTURE);
+        moveList[size++] = Move(static_cast<unsigned>(from), to, BISHOP_PROMO_CAPTURE);
+        moveList[size++] = Move(static_cast<unsigned>(from), to, KNIGHT_PROMO_CAPTURE);
     }
 }
 
@@ -216,18 +216,18 @@ template <Colors sideToMove> constexpr void MoveGenerator::GenerateCastlingMoves
     if (sideToMove == Colors::WHITE)
     {
         if (isCastlingAvailable(CastlingRights::WKCA))
-            moveList[size++] = CreateMove(E1, G1, KING_CASTLE);
+            moveList[size++] = Move(E1, G1, KING_CASTLE);
 
         if (isCastlingAvailable(CastlingRights::WQCA))
-            moveList[size++] = CreateMove(E1, C1, QUEEN_CASTLE);
+            moveList[size++] = Move(E1, C1, QUEEN_CASTLE);
     }
     else
     {
         if (isCastlingAvailable(CastlingRights::BKCA))
-            moveList[size++] = CreateMove(E8, G8, KING_CASTLE);
+            moveList[size++] = Move(E8, G8, KING_CASTLE);
 
         if (isCastlingAvailable(CastlingRights::BQCA))
-            moveList[size++] = CreateMove(E8, C8, QUEEN_CASTLE);
+            moveList[size++] = Move(E8, C8, QUEEN_CASTLE);
     }
 }
 

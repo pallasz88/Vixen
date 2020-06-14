@@ -1,6 +1,7 @@
 #pragma once
 
 #include "hash.h"
+#include "move.h"
 
 namespace Vixen
 {
@@ -172,8 +173,13 @@ class VIXEN_API Board
 
     [[nodiscard]] constexpr bool IsRepetition() const
     {
+#ifdef __cpp_lib_constexpr_algorithms
+        return std::find(begin(history) + historyPly - fiftyMoves, begin(history) + historyPly, hashBoard.GetHash()) !=
+               begin(history) + historyPly;
+#else
         return Vixen::find(begin(history) + historyPly - fiftyMoves, begin(history) + historyPly,
                            hashBoard.GetHash()) != begin(history) + historyPly;
+#endif
     }
 
   private:

@@ -9,6 +9,7 @@
 
 namespace Vixen
 {
+
 Uci::Uci() : board(std::make_unique<Board>()), info(std::make_unique<SearchInfo>())
 {
 }
@@ -34,7 +35,7 @@ void Uci::LogUci(const SearchInfo &info, const std::pair<int, Move> &result, int
     std::cout << " depth " << depth << " nodes " << info.nodesCount << " pv ";
 
     for (const auto &move : bestLine)
-        std::cout << SquareToNotation(move & 0x3FU) << SquareToNotation((move & 0xFC0U) >> 6U) << " ";
+        std::cout << move << " ";
 
     std::cout << std::endl;
 }
@@ -146,10 +147,7 @@ void Uci::loop()
         {
             UpdateSearchInfo(is, token);
             const Move encodedMove = Search::IterativeDeepening(*board, *info);
-
-            const auto from = encodedMove & 0x3FU;
-            const auto to = (encodedMove >> 6U) & 0x3FU;
-            std::cout << "bestmove " << SquareToNotation(from) << SquareToNotation(to) << '\n';
+            std::cout << "bestmove " << encodedMove << '\n';
         }
 
         else if (token == "quit")

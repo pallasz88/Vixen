@@ -51,10 +51,8 @@ void Board::SetBoard(std::string_view position)
     ParseSideToMovePart(parsedPosition[1]);
     ParseCastlingRightPart(parsedPosition[2]);
     SumUpBitBoards();
-    enPassantBitBoard = SquareToBitBoard(NotationToSquare(parsedPosition[3]));
+    enPassantBitBoard = SquareToBitBoard(Move::NotationToSquare(parsedPosition[3]));
     std::from_chars(begin(parsedPosition[4]), end(parsedPosition[4]), fiftyMoves);
-    // std::from_chars(begin(parsedPosition[5]), end(parsedPosition[5]),
-    // historyPly);
     AddHashBoard();
     ClearHistory();
 }
@@ -87,8 +85,9 @@ void Board::PrintBoard() const
         std::cout << static_cast<char>('a' + rank) << "   ";
 
     std::cout << "\n\n";
-    auto enPassantSquare =
-        (enPassantBitBoard != Constants::EMPTY_BOARD) ? SquareToNotation(TrailingZeroCount(enPassantBitBoard)) : "-";
+    auto enPassantSquare = (enPassantBitBoard != Constants::EMPTY_BOARD)
+                               ? Move::SquareToNotation(TrailingZeroCount(enPassantBitBoard))
+                               : "-";
     std::cout << "En passant square: " << enPassantSquare << "\n";
     std::cout << "Castling rights: " << std::bitset<4>(static_cast<unsigned>(castlingRights)) << "\n";
     std::cout << "Position key: " << std::hex << hashBoard.GetHash() << std::dec << "\n";
@@ -189,9 +188,9 @@ constexpr void Board::ParseCastlingRightPart(std::string_view parsedPosition)
 
 bool Board::MakeMove(Vixen::Move move)
 {
-    const auto from = move & 0x3FU;
-    const auto to = (move >> 6U) & 0x3FU;
-    const auto moveType = move >> 12U;
+    const auto from = move.GetFromSquare();
+    const auto to = move.GetToSquare();
+    const auto moveType = move.GetMoveType();
     const auto enPassantSquare = whiteToMove ? to - 8 : to + 8;
     const char movingPieceLetter = pieceList[from];
     const char capturedPieceLetter = pieceList[to];
@@ -294,9 +293,9 @@ void Board::TakeBack()
 
     const History &lastPosition = history[--historyPly];
 
-    const auto from = lastPosition.move & 0x3FU;
-    const auto to = (lastPosition.move >> 6U) & 0x3FU;
-    const auto moveType = lastPosition.move >> 12U;
+    const auto from = lastPosition.move.GetFromSquare();
+    const auto to = lastPosition.move.GetToSquare();
+    const auto moveType = lastPosition.move.GetMoveType();
     const char movingPieceLetter = lastPosition.movedPiece;
     const char capturedPieceLetter = lastPosition.capturedPiece;
 
@@ -371,8 +370,8 @@ bool Board::MakeMove(std::string_view move)
     if (!std::regex_match(begin(move), end(move), iterator, moveRegex))
         throw std::runtime_error("INVALID MOVE FORMAT. Use for example e2e4.");
 
-    const auto from = static_cast<unsigned>(NotationToSquare(move.substr(0, 2)));
-    const auto to = static_cast<unsigned>(NotationToSquare(move.substr(2, 2)));
+    const auto from = static_cast<unsigned>(Move::NotationToSquare(move.substr(0, 2)));
+    const auto to = static_cast<unsigned>(Move::NotationToSquare(move.substr(2, 2)));
 
     char promoted = ' ';
     if (move.size() == 5)
@@ -387,15 +386,15 @@ bool Board::MakeMove(std::string_view move)
             moveType |= static_cast<uint8_t>(CAPTURE);
     }
 
-    const auto decodedPromotion = CreateMove(from, to, moveType);
-    const auto decodedMove = decodedPromotion & 0xFFFU;
+    const auto decodedPromotion = Move(from, to, moveType);
+    const auto decodedMove = decodedPromotion.RemoveMoveType();
 
     const auto generator = CreateGenerator<ALL_MOVE>();
     const auto moves = generator.GetMoveList();
     const auto moveListSize = generator.GetListSize();
 
     for (size_t i = 0; i < moveListSize; ++i)
-        if ((moves[i] & 0xFFFU) == decodedMove)
+        if ((moves[i].RemoveMoveType()) == decodedMove)
             return (moveType == 0) ? MakeMove(moves[i]) : MakeMove(decodedPromotion);
 
     return false;

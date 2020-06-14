@@ -109,8 +109,6 @@ enum class Slider
     ROOK
 };
 
-typedef unsigned Move;
-
 typedef uint64_t BitBoard;
 
 typedef std::array<BitBoard, 15> BitBoards;
@@ -234,7 +232,7 @@ struct Constants
                                                                                  {CastlingRights::BQCA, 0U}}};
 };
 
-#if defined(__cpp_lib_constexpr_algorithms)
+#ifdef __cpp_lib_constexpr_algorithms
 constexpr auto GetPieceIndex(char c)
 {
     auto iterator = std::find_if(std::begin(Constants::pieceMap), std::end(Constants::pieceMap),
@@ -255,11 +253,7 @@ constexpr auto GetPieceIndex(char c) noexcept
 
 constexpr bool IsWhitePiece(char piece) noexcept
 {
-    if (piece >= 'A' && piece < 'Z')
-        return true;
-
-    else
-        return false;
+    return piece >= 'A' && piece < 'Z';
 }
 
 static constexpr std::array evalMap{std::make_pair('P', 4), std::make_pair('N', 5), std::make_pair('B', 6),
@@ -353,31 +347,11 @@ constexpr unsigned TrailingZeroCount(BitBoard bitBoard)
     return static_cast<unsigned>(__builtin_ctzll(bitBoard));
 }
 
-inline auto SquareToNotation(unsigned square)
-{
-    std::string notation;
-    notation.push_back(static_cast<char>(7 - square % 8 + 'a'));
-    notation.push_back(static_cast<char>(square / 8 + '1'));
-    return notation;
-}
-
-constexpr auto NotationToSquare(const std::string_view &notation)
-{
-    if (notation.at(0) < 'a' || notation.at(0) > 'h' || notation.at(1) < '1' || notation.at(1) > '8')
-        return -1;
-    return 7 - (notation.at(0) - 'a') + 8 * (notation.at(1) - '1');
-}
-
 constexpr unsigned GetPosition(BitBoard &bitBoard)
 {
     const auto from = TrailingZeroCount(bitBoard);
     bitBoard &= bitBoard - 1;
     return from;
-}
-
-constexpr Move CreateMove(unsigned from, unsigned to, uint8_t moveType)
-{
-    return static_cast<unsigned>(moveType << 12U) | to << 6U | from;
 }
 
 constexpr bool IsMovingPawn(char movingPiece)

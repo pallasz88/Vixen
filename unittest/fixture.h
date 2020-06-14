@@ -27,7 +27,7 @@ struct Fixture
 
     Fixture &operator=(Fixture &&) = delete;
 
-    bool CheckMoveList(std::vector<Move> &expectedMoveList) const
+    bool CheckMoveList(std::vector<Representation> &expectedMoveList) const
     {
         const auto generator = board.CreateGenerator<ALL_MOVE>();
         const auto listSize = generator.GetListSize();
@@ -38,7 +38,7 @@ struct Fixture
 
         for (unsigned i = 0; i < listSize; ++i)
         {
-            if (expectedMoveList[i] != moveList[i])
+            if (moveList[i] != expectedMoveList[i])
                 return false;
         }
 

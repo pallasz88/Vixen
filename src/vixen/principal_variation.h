@@ -4,6 +4,7 @@
 #include <list>
 
 #include "defs.h"
+#include "move.h"
 
 namespace Vixen
 {

@@ -1,0 +1,88 @@
+#pragma once
+
+#include "defs.h"
+
+namespace Vixen
+{
+
+using Representation = unsigned;
+
+class Move
+{
+  public:
+    Move() = default;
+
+    explicit Move(unsigned move) : represantation(move), score(0)
+    {
+    }
+
+    constexpr Move(unsigned from, unsigned to, uint8_t moveType)
+        : represantation(static_cast<unsigned>(moveType << 12U) | to << 6U | from), score(0)
+    {
+    }
+
+    constexpr unsigned GetFromSquare() const noexcept
+    {
+        return represantation & 0x3FU;
+    }
+
+    constexpr unsigned GetToSquare() const noexcept
+    {
+        return (represantation >> 6U) & 0x3FU;
+    }
+
+    constexpr unsigned GetMoveType() const noexcept
+    {
+        return represantation >> 12U;
+    }
+
+    constexpr unsigned RemoveMoveType() const noexcept
+    {
+        return represantation & 0xFFFU;
+    }
+
+    constexpr bool operator==(const Move &rhs) const noexcept
+    {
+        return rhs.represantation == represantation;
+    }
+
+    constexpr bool operator==(const unsigned move) const noexcept
+    {
+        return this->represantation == move;
+    }
+
+    constexpr bool operator!=(const Representation move) const noexcept
+    {
+        return this->represantation != move;
+    }
+
+    friend std::ostream &operator<<(std::ostream &os, const Move &move) noexcept
+    {
+        const std::string from = SquareToNotation(move.represantation & 0x3FU);
+        const std::string to = SquareToNotation((move.represantation & 0xFC0U) >> 6U);
+        os << from << to;
+        return os;
+    }
+
+    static constexpr int NotationToSquare(const std::string_view &notation) noexcept
+    {
+        if (notation.at(0) < 'a' || notation.at(0) > 'h' || notation.at(1) < '1' || notation.at(1) > '8')
+            return -1;
+        return 7 - (notation.at(0) - 'a') + 8 * (notation.at(1) - '1');
+    }
+
+    static std::string SquareToNotation(unsigned square) noexcept
+    {
+        std::string notation;
+        notation.push_back(static_cast<char>(7 - square % 8 + 'a'));
+        notation.push_back(static_cast<char>(square / 8 + '1'));
+        return notation;
+    }
+
+  private:
+    Representation represantation;
+
+    int score;
+};
+
+} // namespace Vixen

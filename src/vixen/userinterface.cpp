@@ -109,9 +109,9 @@ void PrintMoveList(Board &board)
     {
         if (board.MakeMove(movesList[i]))
         {
-            std::cout << SquareToNotation(movesList[i] & 0x3FU) << SquareToNotation((movesList[i] & 0xFC0U) >> 6U);
-            if ((movesList[i] >> 12U) & PROMOTION)
-                std::cout << "nbrq"[static_cast<int>((movesList[i] >> 12U) & 3U)];
+            std::cout << movesList[i];
+            if ((movesList[i].GetMoveType()) & PROMOTION)
+                std::cout << "nbrq"[static_cast<int>((movesList[i].GetMoveType()) & 3U)];
 
             std::cout << ", ";
             board.TakeBack();
