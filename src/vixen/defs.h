@@ -153,22 +153,22 @@ struct Constants
 
     static constexpr std::string_view CASTLERIGHTS = "kqKQ";
 
-    static constexpr std::array<char, 12> pieceKeys = {'P', 'N', 'B', 'R', 'Q', 'K', 'p', 'n', 'b', 'r', 'q', 'k'};
+    static constexpr std::array<unsigned char, 12> pieceKeys = {'P', 'N', 'B', 'R', 'Q', 'K', 'p', 'n', 'b', 'r', 'q', 'k'};
 
-    static constexpr std::array<char, 6> blackPieceKeys = {'p', 'n', 'b', 'r', 'q', 'k'};
+    static constexpr std::array<unsigned char, 6> blackPieceKeys = {'p', 'n', 'b', 'r', 'q', 'k'};
 
-    static constexpr std::array<std::pair<char, int>, 15> pieceMap = {
+    static constexpr std::array<std::pair<unsigned char, int>, 15> pieceMap = {
         std::make_pair('P', 0),  std::make_pair('N', 1),  std::make_pair('B', 2),  std::make_pair('R', 3),
         std::make_pair('Q', 4),  std::make_pair('K', 5),  std::make_pair('p', 6),  std::make_pair('n', 7),
         std::make_pair('b', 8),  std::make_pair('r', 9),  std::make_pair('q', 10), std::make_pair('k', 11),
         std::make_pair('F', 12), std::make_pair('S', 13), std::make_pair(' ', 14)};
 
-    static constexpr std::array<std::pair<char, int>, 12> materialMap = {
+    static constexpr std::array<std::pair<unsigned char, int>, 12> materialMap = {
         std::make_pair('P', 100),  std::make_pair('N', 300),  std::make_pair('B', 300),  std::make_pair('R', 500),
         std::make_pair('Q', 900),  std::make_pair('K', 2000), std::make_pair('p', -100), std::make_pair('n', -300),
         std::make_pair('b', -300), std::make_pair('r', -500), std::make_pair('q', -900), std::make_pair('k', -2000)};
 
-    static constexpr std::array<std::pair<char, int>, 4> promotionMap = {
+    static constexpr std::array<std::pair<unsigned char, int>, 4> promotionMap = {
         std::make_pair('q', QUEEN_PROMOTION), std::make_pair('r', ROOK_PROMOTION),
         std::make_pair('b', BISHOP_PROMOTION), std::make_pair('n', KNIGHT_PROMOTION)};
 
@@ -233,14 +233,18 @@ struct Constants
 };
 
 #ifdef __cpp_lib_constexpr_algorithms
-constexpr auto GetPieceIndex(char c)
+constexpr auto GetPieceIndex(unsigned char c) noexcept
 {
     auto iterator = std::find_if(std::begin(Constants::pieceMap), std::end(Constants::pieceMap),
                                  [c](auto p) { return p.first == c; });
-    return (iterator != std::end(Constants::pieceMap)) ? iterator->second : -1;
+    
+    if (iterator == std::end(Constants::pieceMap))
+        return -1;
+
+    return iterator->second;
 }
 #else
-constexpr auto GetPieceIndex(char c) noexcept
+constexpr auto GetPieceIndex(unsigned char c) noexcept
 {
     for (const auto &i : Constants::pieceMap)
     {
@@ -290,71 +294,71 @@ constexpr auto GetPromotionType(char c) noexcept
     return -1;
 }
 
-constexpr BitBoard SquareToBitBoard(int square)
+constexpr BitBoard SquareToBitBoard(int square) noexcept
 {
     if (square < 0)
         return Constants::EMPTY_BOARD;
     return static_cast<BitBoard>(1U) << static_cast<unsigned>(square);
 }
 
-constexpr bool IsValidCoordinate(int file, int rank)
+constexpr bool IsValidCoordinate(int file, int rank) noexcept
 {
     return file >= 0 && rank >= 0 && file < 8 && rank < 8;
 }
 
 namespace
 {
-template <class T, class... Position> bool IsBitSet(const T &bits, Position &&... p)
+template <class T, class... Position> bool IsBitSet(const T &bits, Position &&... p) noexcept
 {
     return ((bits & (1ULL << p)) && ...);
 }
 
-template <class T> constexpr void SetBit(T &bitBoard, unsigned position)
+template <class T> constexpr void SetBit(T &bitBoard, unsigned position) noexcept
 {
     bitBoard |= static_cast<T>(1ULL << position);
 }
 
-template <class T> constexpr void ClearBit(T &bitBoard, unsigned position)
+template <class T> constexpr void ClearBit(T &bitBoard, unsigned position) noexcept
 {
     bitBoard &= ~(1ULL << position);
 }
 
-template <Colors pawnColor> constexpr BitBoard PushPawns(BitBoard pawns)
+template <Colors pawnColor> constexpr BitBoard PushPawns(BitBoard pawns) noexcept
 {
     return (pawnColor == Colors::WHITE) ? pawns << 8U : pawns >> 8U;
 }
 
-template <Colors pawnColor> constexpr BitBoard PawnCaptureLeft(BitBoard pawns)
+template <Colors pawnColor> constexpr BitBoard PawnCaptureLeft(BitBoard pawns) noexcept
 {
     pawns &= (pawnColor == Colors::WHITE) ? ~FILEA : ~FILEH;
     return (pawnColor == Colors::WHITE) ? pawns << 9U : pawns >> 9U;
 }
 
-template <Colors pawnColor> constexpr BitBoard PawnCaptureRight(BitBoard pawns)
+template <Colors pawnColor> constexpr BitBoard PawnCaptureRight(BitBoard pawns) noexcept
 {
     pawns &= (pawnColor == Colors::WHITE) ? ~FILEH : ~FILEA;
     return (pawnColor == Colors::WHITE) ? pawns << 7U : pawns >> 7U;
 }
 } // namespace
 
-constexpr unsigned PopCount(BitBoard bitBoard)
+constexpr unsigned PopCount(BitBoard bitBoard) noexcept
 {
     return static_cast<unsigned>(__builtin_popcountll(bitBoard));
 }
 
-constexpr unsigned TrailingZeroCount(BitBoard bitBoard)
+constexpr unsigned TrailingZeroCount(BitBoard bitBoard) noexcept
 {
     return static_cast<unsigned>(__builtin_ctzll(bitBoard));
 }
 
-constexpr unsigned GetPosition(BitBoard &bitBoard)
+constexpr unsigned GetPosition(BitBoard &bitBoard) noexcept
 {
     const auto from = TrailingZeroCount(bitBoard);
     bitBoard &= bitBoard - 1;
     return from;
 }
 
-constexpr bool IsMovingPawn(char movingPiece)
+constexpr bool IsMovingPawn(char movingPiece) noexcept
 {
     return movingPiece == 'P' || movingPiece == 'p';
 }
@@ -369,7 +373,7 @@ constexpr bool IsMovingPawn(char movingPiece)
  * @param value
  * @return
  */
-template <class InputIt, class T> constexpr InputIt find(InputIt first, InputIt last, const T &value)
+template <class InputIt, class T> constexpr InputIt find(InputIt first, InputIt last, const T &value) noexcept
 {
     for (; first != last; ++first)
     {
@@ -388,7 +392,7 @@ template <class InputIt, class T> constexpr InputIt find(InputIt first, InputIt 
  * @param c
  * @return
  */
-constexpr bool IsBlackMoving(char c)
+constexpr bool IsBlackMoving(char c) noexcept
 {
 #ifdef __cpp_lib_constexpr_algorithms
     return std::find(begin(Constants::blackPieceKeys), end(Constants::blackPieceKeys), c) !=

@@ -10,7 +10,7 @@ Magic BishopTable[Constants::SQUARE_NUMBER];
 
 Magic RookTable[Constants::SQUARE_NUMBER];
 
-void InitMagics()
+void InitMagics() noexcept
 {
     RookTable[0].attacks = RookAttacks;
     BishopTable[0].attacks = BishopAttacks;
@@ -21,7 +21,7 @@ void InitMagics()
     }
 }
 
-template <Slider slider> void InitSlidingAttack(unsigned int square, SliderDirections directions, Magic *table)
+template <Slider slider> void InitSlidingAttack(unsigned int square, SliderDirections directions, Magic *table) noexcept
 {
     BitBoard edges = ((FILEA | FILEH) & ~(FILEH << square % 8)) | ((RANK1 | RANK8) & ~(RANK1 << 8 * (square / 8)));
     auto occupied = Constants::EMPTY_BOARD;
@@ -41,7 +41,7 @@ template <Slider slider> void InitSlidingAttack(unsigned int square, SliderDirec
     } while (occupied);
 }
 
-BitBoard SlidingAttack(unsigned int square, SliderDirections directions, BitBoard occupied)
+BitBoard SlidingAttack(unsigned int square, SliderDirections directions, BitBoard occupied) noexcept
 {
     auto attacks = Constants::EMPTY_BOARD;
     for (const auto &direction : directions)

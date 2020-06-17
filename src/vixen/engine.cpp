@@ -26,6 +26,7 @@ std::vector<Move> Search::GetPV(int depth, Board &board)
         {
             ++ply;
             moveList.emplace_back(bestMove);
+            pv.GetPVEntry(board.GetHash()).move.SetScore(1000000);
         }
 
         else
@@ -50,7 +51,7 @@ Move Search::IterativeDeepening(Board &board, SearchInfo &info)
     }
 
     return result.second;
-}
+} 
 
 std::pair<int, Move> Search::Root(int depth, Board &board, SearchInfo &info)
 {
@@ -61,18 +62,31 @@ std::pair<int, Move> Search::Root(int depth, Board &board, SearchInfo &info)
     Move bestMove{0};
     ++info.nodesCount;
 
-    const auto pvLine = GetPV(depth, board);
-    if (!pvLine.empty())
+    const auto pvEntry = pv.GetPVEntry(board.GetHash());
+
+    for (size_t i = 0; i < moveList.size(); ++i)
     {
-        for (size_t i = 0; i < moveList.size(); ++i)
+        if (pvEntry.move != 0 && moveList[i] == pvEntry.move)
+            moveList[i].SetScore(2000000);
+        
+        if (moveList[i].GetMoveType() == CAPTURE)
         {
-            if (moveList[i] == pvLine[0])
-                std::swap(moveList[0], moveList[i]);
+            unsigned char attacker = board.GetPieceList()[moveList[i].GetFromSquare()];
+            unsigned char victim = board.GetPieceList()[moveList[i].GetToSquare()];
+            moveList[i].SetScore(mvvlvaTable[GetPieceIndex(attacker)][GetPieceIndex(victim)] + 1000000U);
         }
     }
 
-    for (const auto &move : moveList)
+    const auto nextBestMove = [&moveList]{
+        const auto maxElement = std::max_element(begin(moveList), end(moveList));
+        const auto retVal = *maxElement;
+        moveList.erase(maxElement);
+        return retVal;
+    };
+
+    while (!moveList.empty())
     {
+        const Move move = nextBestMove();
         board.MakeMove(move);
         ++info.currentDepth;
         const int score = -NegaMax(depth - 1, -beta, -alpha, board, info);
@@ -113,13 +127,30 @@ int Search::NegaMax(int depth, int alpha, int beta, Board &board, SearchInfo &in
     ++info.nodesCount;
 
     const auto &generator = board.CreateGenerator<ALL_MOVE>();
-    const auto &moveList = generator.GetMoveList();
-    const auto size = generator.GetListSize();
+    auto moveList = generator.GetMoveList();
     unsigned legalMoveCount = 0;
 
-    for (unsigned i = 0; i < size; ++i)
+    for (size_t i = 0; i < moveList.size(); ++i)
     {
-        if (!board.MakeMove(moveList[i]))
+        if (moveList[i].GetMoveType() == CAPTURE)
+        {
+            char attacker = board.GetPieceList()[moveList[i].GetFromSquare()];
+            char victim = board.GetPieceList()[moveList[i].GetToSquare()];
+            moveList[i].SetScore(mvvlvaTable[GetPieceIndex(attacker)][GetPieceIndex(victim)] + 1000000);
+        }
+    }
+
+    const auto nextBestMove = [&moveList](){
+        const auto maxElement = std::max_element(begin(moveList), end(moveList));
+        const auto retVal = *maxElement;
+        moveList.erase(maxElement);
+        return retVal;
+    };
+
+    while (!moveList.empty())
+    {
+        const Move move = nextBestMove();
+        if (!board.MakeMove(move))
             continue;
 
         ++legalMoveCount;
@@ -134,16 +165,14 @@ int Search::NegaMax(int depth, int alpha, int beta, Board &board, SearchInfo &in
         if (score > alpha)
         {
             alpha = score; // alpha acts like max in MiniMax
-            pv.StorePVEntry(PVEntry{moveList[i], board.GetHash()});
+            pv.StorePVEntry(PVEntry{move, board.GetHash()});
         }
     }
 
     if (legalMoveCount == 0)
     {
         if (Check::IsInCheck<Colors::WHITE>(board) || Check::IsInCheck<Colors::BLACK>(board))
-        {
             return -MATE + info.currentDepth;
-        }
 
         else
             return STALE_MATE;
@@ -165,11 +194,10 @@ int Search::Quiescence(int alpha, int beta, Board &board, SearchInfo &info)
 
     const auto &generator = board.CreateGenerator<CAPTURE>();
     const auto &moveList = generator.GetMoveList();
-    const auto size = generator.GetListSize();
 
-    for (unsigned i = 0; i < size; ++i)
+    for (const auto move : moveList)
     {
-        if (!board.MakeMove(moveList[i]))
+        if (!board.MakeMove(move))
             continue;
 
         const int score = -Quiescence(-beta, -alpha, board, info);

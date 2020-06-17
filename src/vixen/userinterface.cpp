@@ -104,14 +104,13 @@ void PrintMoveList(Board &board)
 {
     const auto generator = board.CreateGenerator<ALL_MOVE>();
     const auto movesList = generator.GetMoveList();
-    const auto moveListSize = generator.GetListSize();
-    for (size_t i = 0; i < moveListSize; ++i)
+    for (const auto move : movesList)
     {
-        if (board.MakeMove(movesList[i]))
+        if (board.MakeMove(move))
         {
-            std::cout << movesList[i];
-            if ((movesList[i].GetMoveType()) & PROMOTION)
-                std::cout << "nbrq"[static_cast<int>((movesList[i].GetMoveType()) & 3U)];
+            std::cout << move;
+            if ((move.GetMoveType()) & PROMOTION)
+                std::cout << "nbrq"[static_cast<int>((move.GetMoveType()) & 3U)];
 
             std::cout << ", ";
             board.TakeBack();

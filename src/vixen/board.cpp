@@ -391,11 +391,10 @@ bool Board::MakeMove(std::string_view move)
 
     const auto generator = CreateGenerator<ALL_MOVE>();
     const auto moves = generator.GetMoveList();
-    const auto moveListSize = generator.GetListSize();
 
-    for (size_t i = 0; i < moveListSize; ++i)
-        if ((moves[i].RemoveMoveType()) == decodedMove)
-            return (moveType == 0) ? MakeMove(moves[i]) : MakeMove(decodedPromotion);
+    for (const auto move : moves)
+        if ((move.RemoveMoveType()) == decodedMove)
+            return (moveType == 0) ? MakeMove(move) : MakeMove(decodedPromotion);
 
     return false;
 }

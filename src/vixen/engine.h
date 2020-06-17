@@ -36,6 +36,25 @@ struct Utility
         std::reverse_copy(begin(table), end(table), begin(reversed));
         return reversed;
     }
+
+    static constexpr auto InitMvvLvaTable()
+    {
+        std::array<unsigned, 12> victimScore { 100, 200, 300, 400, 500, 600, 100, 200, 300, 400, 500, 600 };
+        std::array<std::array<unsigned, 12>, 12> mvvlvaTable{};
+
+        for (unsigned attacker = 0;  attacker < Constants::pieceKeys.size(); ++attacker)
+        {
+            for (unsigned victim = 0;  victim < Constants::pieceKeys.size(); ++victim)
+            {
+                const auto attackerIndex = static_cast<unsigned>(Constants::pieceMap[attacker].second);
+                const auto victimIndex = static_cast<unsigned>(Constants::pieceMap[victim].second);
+                mvvlvaTable[attackerIndex][victimIndex] = victimScore[victimIndex] + 6U - victimScore[attackerIndex] / 100;
+            }
+        }
+
+        return mvvlvaTable;
+        
+    } 
 };
 
 class VIXEN_API Search
@@ -70,6 +89,9 @@ class VIXEN_API Search
     static constexpr std::array RookTable = {
         0, 0, 5, 10, 10, 5, 0, 0, 0, 0, 5, 10, 10, 5, 0, 0, 0,  0,  5,  10, 10, 5,  0,  0,  0, 0, 5, 10, 10, 5, 0, 0,
         0, 0, 5, 10, 10, 5, 0, 0, 0, 0, 5, 10, 10, 5, 0, 0, 25, 25, 25, 25, 25, 25, 25, 25, 0, 0, 5, 10, 10, 5, 0, 0};
+
+    static constexpr std::array mvvlvaTable = Utility::InitMvvLvaTable();
+
 #if (__cpp_lib_constexpr_algorithms)
 
     static constexpr std::array pawnTable = Utility::MirrorTable(PawnTable);

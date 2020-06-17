@@ -16,7 +16,7 @@ BitBoard leafs = 0;
  * @param board
  * @return visited node number
  */
-BitBoard PerftTest(int depth, Board &board)
+BitBoard PerftTest(int depth, Board &board) noexcept
 {
     if (depth == 0)
         return 1;
@@ -24,9 +24,8 @@ BitBoard PerftTest(int depth, Board &board)
     BitBoard nodes = 0;
     const auto generator = board.CreateGenerator<ALL_MOVE>();
 
-    for (unsigned i = 0; i < generator.GetListSize(); ++i)
+    for (const auto move : generator.GetMoveList())
     {
-        const auto move = generator.GetMoveList()[i];
         if (!board.MakeMove(move))
             continue;
 
@@ -40,7 +39,7 @@ BitBoard PerftTest(int depth, Board &board)
     return nodes;
 }
 
-BitBoard Perft(int depth, Board &board)
+BitBoard Perft(int depth, Board &board) noexcept
 {
     if (depth == 0)
     {
@@ -51,9 +50,9 @@ BitBoard Perft(int depth, Board &board)
     BitBoard nodes = 0;
     const auto generator = board.CreateGenerator<ALL_MOVE>();
 
-    for (unsigned i = 0; i < generator.GetListSize(); ++i)
+    for (const auto move : generator.GetMoveList())
     {
-        if (!board.MakeMove(generator.GetMoveList()[i]))
+        if (!board.MakeMove(move))
             continue;
 
         nodes += Perft(depth - 1, board);
@@ -63,7 +62,7 @@ BitBoard Perft(int depth, Board &board)
 }
 } // namespace Test
 
-template <Colors sideToMove> void MoveGenerator::GenerateQuietMoves(const Board &board)
+template <Colors sideToMove> void MoveGenerator::GenerateQuietMoves(const Board &board) noexcept
 {
     const auto pawns = sideToMove == Colors::WHITE ? board.GetBitBoard('P') : board.GetBitBoard('p');
     const auto kings = sideToMove == Colors::WHITE ? board.GetBitBoard('K') : board.GetBitBoard('k');
@@ -94,7 +93,7 @@ template <Colors sideToMove> void MoveGenerator::GenerateQuietMoves(const Board 
     GenerateCastlingMoves<sideToMove>(board);
 }
 
-template <Colors sideToMove> void MoveGenerator::GenerateCaptureMoves(const Board &board)
+template <Colors sideToMove> void MoveGenerator::GenerateCaptureMoves(const Board &board) noexcept
 {
     const auto pawns = sideToMove == Colors::WHITE ? board.GetBitBoard('P') : board.GetBitBoard('p');
     const auto kings = sideToMove == Colors::WHITE ? board.GetBitBoard('K') : board.GetBitBoard('k');
@@ -125,7 +124,7 @@ template <Colors sideToMove> void MoveGenerator::GenerateCaptureMoves(const Boar
 }
 
 template <Slider slider, uint8_t moveType>
-void MoveGenerator::GenerateSliderMoves(BitBoard pieces, BitBoard blockers, BitBoard targets)
+void MoveGenerator::GenerateSliderMoves(BitBoard pieces, BitBoard blockers, BitBoard targets) noexcept
 {
     auto attacks = Constants::EMPTY_BOARD;
     while (pieces)
@@ -137,13 +136,13 @@ void MoveGenerator::GenerateSliderMoves(BitBoard pieces, BitBoard blockers, BitB
         while (attacks)
         {
             const auto to = GetPosition(attacks);
-            moveList[size++] = Move(from, to, moveType);
+            moveList.emplace_back(from, to, moveType);
         }
     }
 }
 
 template <uint8_t moveType>
-constexpr void MoveGenerator::GenerateAntiSliderMoves(BitBoard targets, BitBoard pieces, const BitBoard *attackBoard)
+constexpr void MoveGenerator::GenerateAntiSliderMoves(BitBoard targets, BitBoard pieces, const BitBoard *attackBoard) noexcept
 {
     auto attacks = Constants::EMPTY_BOARD;
     while (pieces)
@@ -154,48 +153,48 @@ constexpr void MoveGenerator::GenerateAntiSliderMoves(BitBoard targets, BitBoard
         while (attacks)
         {
             const unsigned to = GetPosition(attacks);
-            moveList[size++] = Move(from, to, moveType);
+            moveList.emplace_back(from, to, moveType);
         }
     }
 }
 
-constexpr void MoveGenerator::GeneratePawnMoves(int pawnOffset, BitBoard pawnPushed, uint8_t moveType)
+constexpr void MoveGenerator::GeneratePawnMoves(int pawnOffset, BitBoard pawnPushed, uint8_t moveType) noexcept
 {
     while (pawnPushed)
     {
         const unsigned to = GetPosition(pawnPushed);
         const int from = static_cast<int>(to) - pawnOffset;
-        moveList[size++] = Move(static_cast<unsigned>(from), to, moveType);
+        moveList.emplace_back(static_cast<unsigned>(from), to, moveType);
     }
 }
 
-constexpr void MoveGenerator::GeneratePawnPromotionMoves(int offset, BitBoard promotion)
+constexpr void MoveGenerator::GeneratePawnPromotionMoves(int offset, BitBoard promotion) noexcept
 {
     while (promotion)
     {
         const unsigned to = GetPosition(promotion);
         const int from = static_cast<int>(to) - offset;
-        moveList[size++] = Move(static_cast<unsigned>(from), to, QUEEN_PROMOTION);
-        moveList[size++] = Move(static_cast<unsigned>(from), to, ROOK_PROMOTION);
-        moveList[size++] = Move(static_cast<unsigned>(from), to, BISHOP_PROMOTION);
-        moveList[size++] = Move(static_cast<unsigned>(from), to, KNIGHT_PROMOTION);
+        moveList.emplace_back(static_cast<unsigned>(from), to, QUEEN_PROMOTION);
+        moveList.emplace_back(static_cast<unsigned>(from), to, ROOK_PROMOTION);
+        moveList.emplace_back(static_cast<unsigned>(from), to, BISHOP_PROMOTION);
+        moveList.emplace_back(static_cast<unsigned>(from), to, KNIGHT_PROMOTION);
     }
 }
 
-constexpr void MoveGenerator::GeneratePawnPromotionCaptureMoves(int offset, BitBoard promotion)
+constexpr void MoveGenerator::GeneratePawnPromotionCaptureMoves(int offset, BitBoard promotion) noexcept
 {
     while (promotion)
     {
         const unsigned to = GetPosition(promotion);
         const int from = static_cast<int>(to) - offset;
-        moveList[size++] = Move(static_cast<unsigned>(from), to, QUEEN_PROMO_CAPTURE);
-        moveList[size++] = Move(static_cast<unsigned>(from), to, ROOK_PROMO_CAPTURE);
-        moveList[size++] = Move(static_cast<unsigned>(from), to, BISHOP_PROMO_CAPTURE);
-        moveList[size++] = Move(static_cast<unsigned>(from), to, KNIGHT_PROMO_CAPTURE);
+        moveList.emplace_back(static_cast<unsigned>(from), to, QUEEN_PROMO_CAPTURE);
+        moveList.emplace_back(static_cast<unsigned>(from), to, ROOK_PROMO_CAPTURE);
+        moveList.emplace_back(static_cast<unsigned>(from), to, BISHOP_PROMO_CAPTURE);
+        moveList.emplace_back(static_cast<unsigned>(from), to, KNIGHT_PROMO_CAPTURE);
     }
 }
 
-template <Colors sideToMove> constexpr void MoveGenerator::GenerateCastlingMoves(const Board &board)
+template <Colors sideToMove> constexpr void MoveGenerator::GenerateCastlingMoves(const Board &board) noexcept
 {
     const auto currentCastlingRights = board.GetCastlingRights();
     const auto emptySquaresBitBoard = board.GetBitBoard(' ');
@@ -216,22 +215,22 @@ template <Colors sideToMove> constexpr void MoveGenerator::GenerateCastlingMoves
     if (sideToMove == Colors::WHITE)
     {
         if (isCastlingAvailable(CastlingRights::WKCA))
-            moveList[size++] = Move(E1, G1, KING_CASTLE);
+            moveList.emplace_back(E1, G1, KING_CASTLE);
 
         if (isCastlingAvailable(CastlingRights::WQCA))
-            moveList[size++] = Move(E1, C1, QUEEN_CASTLE);
+            moveList.emplace_back(E1, C1, QUEEN_CASTLE);
     }
     else
     {
         if (isCastlingAvailable(CastlingRights::BKCA))
-            moveList[size++] = Move(E8, G8, KING_CASTLE);
+            moveList.emplace_back(E8, G8, KING_CASTLE);
 
         if (isCastlingAvailable(CastlingRights::BQCA))
-            moveList[size++] = Move(E8, C8, QUEEN_CASTLE);
+            moveList.emplace_back(E8, C8, QUEEN_CASTLE);
     }
 }
 
-template <Colors sideToMove, uint8_t moveType> void MoveGenerator::GenerateMoves(const Vixen::Board &board)
+template <Colors sideToMove, uint8_t moveType> void MoveGenerator::GenerateMoves(const Vixen::Board &board) noexcept
 {
     GenerateCaptureMoves<sideToMove>(board);
     if (moveType == CAPTURE)
@@ -240,7 +239,7 @@ template <Colors sideToMove, uint8_t moveType> void MoveGenerator::GenerateMoves
     GenerateQuietMoves<sideToMove>(board);
 }
 
-std::vector<Move> MoveGenerator::GetLegalMoveList(Board &board) const
+std::vector<Move> MoveGenerator::GetLegalMoveList(Board &board) const noexcept
 {
     std::vector<Move> allLegalMoves;
     const auto addLegal = [&board, &allLegalMoves](Move move) {
@@ -251,23 +250,23 @@ std::vector<Move> MoveGenerator::GetLegalMoveList(Board &board) const
         }
     };
 
-    std::for_each(begin(moveList), begin(moveList) + size, addLegal);
+    std::for_each(begin(moveList), end(moveList), addLegal);
     return allLegalMoves;
 }
 
-template void MoveGenerator::GenerateCaptureMoves<Colors::WHITE>(const Board &);
+template void MoveGenerator::GenerateCaptureMoves<Colors::WHITE>(const Board &) noexcept;
 
-template void MoveGenerator::GenerateCaptureMoves<Colors::BLACK>(const Board &);
+template void MoveGenerator::GenerateCaptureMoves<Colors::BLACK>(const Board &) noexcept;
 
-template void MoveGenerator::GenerateQuietMoves<Colors::WHITE>(const Board &);
+template void MoveGenerator::GenerateQuietMoves<Colors::WHITE>(const Board &) noexcept;
 
-template void MoveGenerator::GenerateQuietMoves<Colors::BLACK>(const Board &);
+template void MoveGenerator::GenerateQuietMoves<Colors::BLACK>(const Board &) noexcept;
 
-template void MoveGenerator::GenerateMoves<Colors::WHITE, CAPTURE>(const Board &board);
+template void MoveGenerator::GenerateMoves<Colors::WHITE, CAPTURE>(const Board &board) noexcept;
 
-template void MoveGenerator::GenerateMoves<Colors::BLACK, CAPTURE>(const Board &board);
+template void MoveGenerator::GenerateMoves<Colors::BLACK, CAPTURE>(const Board &board) noexcept;
 
-template void MoveGenerator::GenerateMoves<Colors::WHITE, ALL_MOVE>(const Board &board);
+template void MoveGenerator::GenerateMoves<Colors::WHITE, ALL_MOVE>(const Board &board) noexcept;
 
-template void MoveGenerator::GenerateMoves<Colors::BLACK, ALL_MOVE>(const Board &board);
+template void MoveGenerator::GenerateMoves<Colors::BLACK, ALL_MOVE>(const Board &board) noexcept;
 } // namespace Vixen

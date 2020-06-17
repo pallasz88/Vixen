@@ -10,6 +10,7 @@ using Representation = unsigned;
 class Move
 {
   public:
+
     Move() = default;
 
     explicit Move(unsigned move) : represantation(move), score(0)
@@ -19,6 +20,16 @@ class Move
     constexpr Move(unsigned from, unsigned to, uint8_t moveType)
         : represantation(static_cast<unsigned>(moveType << 12U) | to << 6U | from), score(0)
     {
+    }
+
+    constexpr void SetScore(unsigned newScore) noexcept
+    {
+        score = newScore;
+    }
+
+    constexpr unsigned GetScore() const noexcept
+    {
+        return score;
     }
 
     constexpr unsigned GetFromSquare() const noexcept
@@ -46,14 +57,19 @@ class Move
         return rhs.represantation == represantation;
     }
 
-    constexpr bool operator==(const unsigned move) const noexcept
+    constexpr bool operator==(const Representation rhs) const noexcept
     {
-        return this->represantation == move;
+        return this->represantation == rhs;
     }
 
-    constexpr bool operator!=(const Representation move) const noexcept
+    constexpr bool operator!=(const Representation rhs) const noexcept
     {
-        return this->represantation != move;
+        return this->represantation != rhs;
+    }
+
+    constexpr bool operator<(const Move &rhs) const noexcept
+    {
+        return rhs.score > score;
     }
 
     friend std::ostream &operator<<(std::ostream &os, const Move &move) noexcept
@@ -80,9 +96,10 @@ class Move
     }
 
   private:
+    
     Representation represantation;
 
-    int score;
+    unsigned score;
 };
 
 } // namespace Vixen

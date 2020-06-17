@@ -16,56 +16,56 @@ class VIXEN_API MoveGenerator
      * Returns pseudo-legal move list.
      * @return moveList
      */
-    [[nodiscard]] constexpr auto GetMoveList() const
+    [[nodiscard]] auto GetMoveList() const noexcept
     {
         return moveList;
     }
 
-    [[nodiscard]] std::vector<Move> GetLegalMoveList(Board &board) const;
+    [[nodiscard]] std::vector<Move> GetLegalMoveList(Board &board) const noexcept;
 
     /**
      * Returns pseudo-legal move list size.
      * @return moveList
      */
-    [[nodiscard]] constexpr unsigned GetListSize() const
+    /*[[nodiscard]] constexpr unsigned GetListSize() const noexcept
     {
         return size;
-    }
+    }*/
 
     /**
      * Fills moveList by generating all pseudo moves.
      * @tparam sideToMove
      * @param board
      */
-    template <Colors sideToMove, uint8_t moveType> void GenerateMoves(const Board &board);
+    template <Colors sideToMove, uint8_t moveType> void GenerateMoves(const Board &board) noexcept;
 
   private:
-    std::array<Move, Constants::MAX_MOVELIST_SIZE> moveList{};
+    
+    std::vector<Move> moveList{};
 
-    unsigned size = 0;
+    template <Colors sideToMove> void GenerateCaptureMoves(const Board &board) noexcept;
 
-    template <Colors sideToMove> void GenerateCaptureMoves(const Board &board);
-
-    template <Colors sideToMove> void GenerateQuietMoves(const Board &board);
+    template <Colors sideToMove> void GenerateQuietMoves(const Board &board) noexcept;
 
     template <Slider slider, uint8_t moveType>
-    void GenerateSliderMoves(BitBoard pieces, BitBoard blockers, BitBoard targets);
+    void GenerateSliderMoves(BitBoard pieces, BitBoard blockers, BitBoard targets) noexcept;
 
     template <uint8_t moveType>
-    constexpr void GenerateAntiSliderMoves(BitBoard targets, BitBoard pieces, const BitBoard *attackBoard);
+    constexpr void GenerateAntiSliderMoves(BitBoard targets, BitBoard pieces, const BitBoard *attackBoard) noexcept;
 
-    constexpr void GeneratePawnMoves(int pawnOffset, BitBoard pawnPushed, uint8_t moveType);
+    constexpr void GeneratePawnMoves(int pawnOffset, BitBoard pawnPushed, uint8_t moveType) noexcept;
 
-    constexpr void GeneratePawnPromotionMoves(int offset, BitBoard promotion);
+    constexpr void GeneratePawnPromotionMoves(int offset, BitBoard promotion) noexcept;
 
-    constexpr void GeneratePawnPromotionCaptureMoves(int offset, BitBoard promotion);
+    constexpr void GeneratePawnPromotionCaptureMoves(int offset, BitBoard promotion) noexcept;
 
-    template <Colors sideToMove> constexpr void GenerateCastlingMoves(const Board &board);
+    template <Colors sideToMove> constexpr void GenerateCastlingMoves(const Board &board) noexcept;
+
 };
 
 namespace Check
 {
-template <Colors sideToMove> inline constexpr bool IsSquareAttacked(unsigned int square, const Board &board)
+template <Colors sideToMove> constexpr bool IsSquareAttacked(unsigned int square, const Board &board) noexcept
 {
     const auto blockers = ~board.GetBitBoard(' ');
     const auto pawns = sideToMove == Colors::WHITE ? board.GetBitBoard('p') : board.GetBitBoard('P');
@@ -88,7 +88,7 @@ template <Colors sideToMove> inline constexpr bool IsSquareAttacked(unsigned int
  * @param board
  * @return Check on board
  */
-template <Colors sideToMove> inline constexpr bool IsInCheck(const Board &board)
+template <Colors sideToMove> constexpr bool IsInCheck(const Board &board) noexcept
 {
     const auto kingBoard = sideToMove == Colors::WHITE ? board.GetBitBoard('K') : board.GetBitBoard('k');
     const auto kingSquare = TrailingZeroCount(kingBoard);
@@ -108,8 +108,8 @@ extern BitBoard leafs;
  * @param board
  * @return visited node number
  */
-VIXEN_API BitBoard PerftTest(int depth, Board &board);
+VIXEN_API BitBoard PerftTest(int depth, Board &board) noexcept;
 
-VIXEN_API BitBoard Perft(int depth, Board &board);
+VIXEN_API BitBoard Perft(int depth, Board &board) noexcept;
 } // namespace Test
 } // namespace Vixen

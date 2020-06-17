@@ -58,7 +58,7 @@ class VIXEN_API Board
      * @param piece
      * @return
      */
-    [[nodiscard]] constexpr BitBoard GetBitBoard(char piece) const
+    [[nodiscard]] constexpr BitBoard GetBitBoard(unsigned char piece) const
     {
         return bitBoards[static_cast<unsigned>(GetPieceIndex(piece))];
     }
@@ -185,7 +185,7 @@ class VIXEN_API Board
   private:
     std::array<History, 1024> history{};
 
-    std::array<char, Constants::SQUARE_NUMBER> pieceList;
+    std::array<unsigned char, Constants::SQUARE_NUMBER> pieceList;
 
     BitBoards bitBoards;
 

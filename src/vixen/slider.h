@@ -35,29 +35,29 @@ extern Magic BishopTable[Constants::SQUARE_NUMBER];
 
 extern Magic RookTable[Constants::SQUARE_NUMBER];
 
-inline constexpr unsigned GetIndex(BitBoard occupied, const Magic &table)
+constexpr unsigned GetIndex(BitBoard occupied, const Magic &table) noexcept
 {
     return static_cast<unsigned>(((occupied & table.mask) * table.magic) >> table.shift);
 }
 
-inline BitBoard GetBishopAttack(unsigned int square, BitBoard occupied)
+inline BitBoard GetBishopAttack(unsigned int square, BitBoard occupied) noexcept
 {
     return SliderUtils::BishopTable[square].attacks[GetIndex(occupied, SliderUtils::BishopTable[square])];
 }
 
-inline BitBoard GetRookAttack(unsigned int square, BitBoard occupied)
+inline BitBoard GetRookAttack(unsigned int square, BitBoard occupied) noexcept
 {
     return SliderUtils::RookTable[square].attacks[GetIndex(occupied, SliderUtils::RookTable[square])];
 }
 
-inline void GetNextCoordinate(int &file, int &rank, const Direction &direction)
+inline void GetNextCoordinate(int &file, int &rank, const Direction &direction) noexcept
 {
     file += direction[0], rank += direction[1];
 }
 
-void InitMagics();
+void InitMagics() noexcept;
 
-template <Slider slider> void InitSlidingAttack(unsigned int square, SliderDirections directions, Magic *table);
+template <Slider slider> void InitSlidingAttack(unsigned int square, SliderDirections directions, Magic *table) noexcept;
 
-BitBoard SlidingAttack(unsigned int square, SliderDirections directions, BitBoard occupied);
+BitBoard SlidingAttack(unsigned int square, SliderDirections directions, BitBoard occupied) noexcept;
 } // namespace Vixen::SliderUtils
