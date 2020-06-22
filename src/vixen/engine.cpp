@@ -77,9 +77,9 @@ std::pair<int, Move> Search::Root(int depth, Board &board, SearchInfo &info)
         }
     }
 
-    for (auto it = begin(moveList); it != end(moveList); ++it)
+    while (!moveList.empty())
     {
-        const auto move = PickBest(it, end(moveList));
+        const Move move = PickBest(moveList);
         board.MakeMove(move);
         ++info.currentDepth;
         const int score = -NegaMax(depth - 1, -beta, -alpha, board, info);
@@ -130,9 +130,9 @@ int Search::NegaMax(int depth, int alpha, int beta, Board &board, SearchInfo &in
         }
     }
 
-    for (auto it = begin(moveList); it != end(moveList); ++it)
+    while (!moveList.empty())
     {
-        const auto move = PickBest(it, end(moveList));
+        const Move move = PickBest(moveList);
         if (!board.MakeMove(move))
             continue;
 
