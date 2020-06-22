@@ -26,7 +26,6 @@ std::vector<Move> Search::GetPV(int depth, Board &board)
         {
             ++ply;
             moveList.emplace_back(bestMove);
-            pv.GetPVEntry(board.GetHash()).move.SetScore(1000000);
         }
 
         else
@@ -67,8 +66,11 @@ std::pair<int, Move> Search::Root(int depth, Board &board, SearchInfo &info)
     for (auto &move : moveList)
     {
         if (pvEntry.move != 0 && move == pvEntry.move)
-            move.SetScore(2000000U);
-        
+	{
+	    move.SetScore(2000000U);
+	    continue;
+	}
+
         if (move.GetMoveType() == CAPTURE)
         {
             const auto attacker = board.GetPieceList()[move.GetFromSquare()];
