@@ -69,7 +69,12 @@ class Move
 
     constexpr bool operator<(const Move &rhs) const noexcept
     {
-        return rhs.score > score;
+        return score < rhs.score;
+    }
+
+    constexpr bool operator>(const Move &rhs) const noexcept
+    {
+        return score > rhs.score;
     }
 
     friend std::ostream &operator<<(std::ostream &os, const Move &move) noexcept

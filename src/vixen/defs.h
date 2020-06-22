@@ -403,4 +403,12 @@ constexpr bool IsBlackMoving(char c) noexcept
 #endif
 }
 
+template <class ForwardIterator>
+constexpr auto PickBest(ForwardIterator &from, const ForwardIterator &last)
+{
+    auto maxElement = std::max_element(from, last);
+    std::swap(*maxElement, *from);
+    return *from;
+}
+
 } // namespace Vixen

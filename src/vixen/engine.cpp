@@ -64,29 +64,22 @@ std::pair<int, Move> Search::Root(int depth, Board &board, SearchInfo &info)
 
     const auto pvEntry = pv.GetPVEntry(board.GetHash());
 
-    for (size_t i = 0; i < moveList.size(); ++i)
+    for (auto &move : moveList)
     {
-        if (pvEntry.move != 0 && moveList[i] == pvEntry.move)
-            moveList[i].SetScore(2000000);
+        if (pvEntry.move != 0 && move == pvEntry.move)
+            move.SetScore(2000000U);
         
-        if (moveList[i].GetMoveType() == CAPTURE)
+        if (move.GetMoveType() == CAPTURE)
         {
-            unsigned char attacker = board.GetPieceList()[moveList[i].GetFromSquare()];
-            unsigned char victim = board.GetPieceList()[moveList[i].GetToSquare()];
-            moveList[i].SetScore(mvvlvaTable[GetPieceIndex(attacker)][GetPieceIndex(victim)] + 1000000U);
+            const auto attacker = board.GetPieceList()[move.GetFromSquare()];
+            const auto victim = board.GetPieceList()[move.GetToSquare()];
+            move.SetScore(mvvlvaTable[GetPieceIndex(attacker)][GetPieceIndex(victim)] + 1000000U);
         }
     }
 
-    const auto nextBestMove = [&moveList]{
-        const auto maxElement = std::max_element(begin(moveList), end(moveList));
-        const auto retVal = *maxElement;
-        moveList.erase(maxElement);
-        return retVal;
-    };
-
-    while (!moveList.empty())
+    for (auto it = begin(moveList); it != end(moveList); ++it)
     {
-        const Move move = nextBestMove();
+        const auto move = PickBest(it, end(moveList));
         board.MakeMove(move);
         ++info.currentDepth;
         const int score = -NegaMax(depth - 1, -beta, -alpha, board, info);
@@ -106,9 +99,6 @@ std::pair<int, Move> Search::Root(int depth, Board &board, SearchInfo &info)
             bestMove = move;
         }
     }
-
-    if (bestMove == 0)
-        bestMove = moveList[0];
 
     if (!info.stopped)
         pv.StorePVEntry(PVEntry{bestMove, board.GetHash()});
@@ -130,26 +120,19 @@ int Search::NegaMax(int depth, int alpha, int beta, Board &board, SearchInfo &in
     auto moveList = generator.GetMoveList();
     unsigned legalMoveCount = 0;
 
-    for (size_t i = 0; i < moveList.size(); ++i)
+    for (auto &move : moveList)
     {
-        if (moveList[i].GetMoveType() == CAPTURE)
+        if (move.GetMoveType() == CAPTURE)
         {
-            char attacker = board.GetPieceList()[moveList[i].GetFromSquare()];
-            char victim = board.GetPieceList()[moveList[i].GetToSquare()];
-            moveList[i].SetScore(mvvlvaTable[GetPieceIndex(attacker)][GetPieceIndex(victim)] + 1000000);
+            const auto attacker = board.GetPieceList()[move.GetFromSquare()];
+            const auto victim = board.GetPieceList()[move.GetToSquare()];
+            move.SetScore(mvvlvaTable[GetPieceIndex(attacker)][GetPieceIndex(victim)] + 1000000U);
         }
     }
 
-    const auto nextBestMove = [&moveList](){
-        const auto maxElement = std::max_element(begin(moveList), end(moveList));
-        const auto retVal = *maxElement;
-        moveList.erase(maxElement);
-        return retVal;
-    };
-
-    while (!moveList.empty())
+    for (auto it = begin(moveList); it != end(moveList); ++it)
     {
-        const Move move = nextBestMove();
+        const auto move = PickBest(it, end(moveList));
         if (!board.MakeMove(move))
             continue;
 
