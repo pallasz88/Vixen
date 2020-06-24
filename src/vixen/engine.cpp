@@ -66,12 +66,12 @@ std::pair<int, Move> Search::Root(int depth, Board &board, SearchInfo &info)
     for (auto &move : moveList)
     {
         if (pvEntry.move != 0 && move == pvEntry.move)
-	{
-	    move.SetScore(2000000U);
-	    continue;
-	}
+        {
+            move.SetScore(2000000U);
+            continue;
+        }
 
-        if (move.GetMoveType() == CAPTURE)
+        if ((move.GetMoveType() & CAPTURE) == CAPTURE)
         {
             const auto attacker = board.GetPieceList()[move.GetFromSquare()];
             const auto victim = board.GetPieceList()[move.GetToSquare()];
@@ -124,7 +124,7 @@ int Search::NegaMax(int depth, int alpha, int beta, Board &board, SearchInfo &in
 
     for (auto &move : moveList)
     {
-        if (move.GetMoveType() == CAPTURE)
+        if ((move.GetMoveType() & CAPTURE) == CAPTURE)
         {
             const auto attacker = board.GetPieceList()[move.GetFromSquare()];
             const auto victim = board.GetPieceList()[move.GetToSquare()];
@@ -178,10 +178,21 @@ int Search::Quiescence(int alpha, int beta, Board &board, SearchInfo &info)
         alpha = stand_pat;
 
     const auto &generator = board.CreateGenerator<CAPTURE>();
-    const auto &moveList = generator.GetMoveList();
+    auto moveList = generator.GetMoveList();
 
-    for (const auto move : moveList)
+    for (auto &move : moveList)
     {
+        if ((move.GetMoveType() & CAPTURE) == CAPTURE)
+        {
+            const auto attacker = board.GetPieceList()[move.GetFromSquare()];
+            const auto victim = board.GetPieceList()[move.GetToSquare()];
+            move.SetScore(mvvlvaTable[GetPieceIndex(attacker)][GetPieceIndex(victim)] + 1000000U);
+        }
+    }
+
+    while (!moveList.empty())
+    {
+        const Move move = PickBest(moveList);
         if (!board.MakeMove(move))
             continue;
 
