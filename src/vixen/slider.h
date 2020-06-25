@@ -57,7 +57,8 @@ inline void GetNextCoordinate(int &file, int &rank, const Direction &direction) 
 
 void InitMagics() noexcept;
 
-template <Slider slider> void InitSlidingAttack(unsigned int square, SliderDirections directions, Magic *table) noexcept;
+template <Slider slider>
+void InitSlidingAttack(unsigned int square, SliderDirections directions, Magic *table) noexcept;
 
 BitBoard SlidingAttack(unsigned int square, SliderDirections directions, BitBoard occupied) noexcept;
 } // namespace Vixen::SliderUtils

@@ -153,7 +153,8 @@ struct Constants
 
     static constexpr std::string_view CASTLERIGHTS = "kqKQ";
 
-    static constexpr std::array<unsigned char, 12> pieceKeys = {'P', 'N', 'B', 'R', 'Q', 'K', 'p', 'n', 'b', 'r', 'q', 'k'};
+    static constexpr std::array<unsigned char, 12> pieceKeys = {'P', 'N', 'B', 'R', 'Q', 'K',
+                                                                'p', 'n', 'b', 'r', 'q', 'k'};
 
     static constexpr std::array<unsigned char, 6> blackPieceKeys = {'p', 'n', 'b', 'r', 'q', 'k'};
 
@@ -237,7 +238,7 @@ constexpr auto GetPieceIndex(unsigned char c) noexcept
 {
     auto iterator = std::find_if(std::begin(Constants::pieceMap), std::end(Constants::pieceMap),
                                  [c](auto p) { return p.first == c; });
-    
+
     if (iterator == std::end(Constants::pieceMap))
         return -1;
 
@@ -403,8 +404,7 @@ constexpr bool IsBlackMoving(char c) noexcept
 #endif
 }
 
-template <class MoveList>
-constexpr auto PickBest(MoveList &moveList)
+template <class MoveList> constexpr auto PickBest(MoveList &moveList)
 {
     auto maxElement = std::max_element(begin(moveList), end(moveList));
     const auto maxValue = *maxElement;

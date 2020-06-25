@@ -39,22 +39,22 @@ struct Utility
 
     static constexpr auto InitMvvLvaTable()
     {
-        std::array<unsigned, 12> victimScore { 100, 200, 300, 400, 500, 600, 100, 200, 300, 400, 500, 600 };
+        std::array<unsigned, 12> victimScore{100, 200, 300, 400, 500, 600, 100, 200, 300, 400, 500, 600};
         std::array<std::array<unsigned, 12>, 12> mvvlvaTable{};
 
-        for (unsigned attacker = 0;  attacker < Constants::pieceKeys.size(); ++attacker)
+        for (unsigned attacker = 0; attacker < Constants::pieceKeys.size(); ++attacker)
         {
-            for (unsigned victim = 0;  victim < Constants::pieceKeys.size(); ++victim)
+            for (unsigned victim = 0; victim < Constants::pieceKeys.size(); ++victim)
             {
                 const auto attackerIndex = static_cast<unsigned>(Constants::pieceMap[attacker].second);
                 const auto victimIndex = static_cast<unsigned>(Constants::pieceMap[victim].second);
-                mvvlvaTable[attackerIndex][victimIndex] = victimScore[victimIndex] + 6U - victimScore[attackerIndex] / 100;
+                mvvlvaTable[attackerIndex][victimIndex] =
+                    victimScore[victimIndex] + 6U - victimScore[attackerIndex] / 100;
             }
         }
 
         return mvvlvaTable;
-        
-    } 
+    }
 };
 
 class VIXEN_API Search

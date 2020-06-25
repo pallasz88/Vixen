@@ -50,7 +50,7 @@ Move Search::IterativeDeepening(Board &board, SearchInfo &info)
     }
 
     return result.second;
-} 
+}
 
 std::pair<int, Move> Search::Root(int depth, Board &board, SearchInfo &info)
 {

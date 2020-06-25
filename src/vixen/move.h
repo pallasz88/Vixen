@@ -10,7 +10,6 @@ using Representation = unsigned;
 class Move
 {
   public:
-
     Move() = default;
 
     explicit Move(unsigned move) : represantation(move), score(0)
@@ -101,7 +100,6 @@ class Move
     }
 
   private:
-    
     Representation represantation;
 
     unsigned score;

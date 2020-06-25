@@ -40,7 +40,6 @@ class VIXEN_API MoveGenerator
     template <Colors sideToMove, uint8_t moveType> void GenerateMoves(const Board &board) noexcept;
 
   private:
-    
     std::vector<Move> moveList{};
 
     template <Colors sideToMove> void GenerateCaptureMoves(const Board &board) noexcept;
@@ -60,7 +59,6 @@ class VIXEN_API MoveGenerator
     constexpr void GeneratePawnPromotionCaptureMoves(int offset, BitBoard promotion) noexcept;
 
     template <Colors sideToMove> constexpr void GenerateCastlingMoves(const Board &board) noexcept;
-
 };
 
 namespace Check

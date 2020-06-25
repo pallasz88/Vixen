@@ -142,7 +142,8 @@ void MoveGenerator::GenerateSliderMoves(BitBoard pieces, BitBoard blockers, BitB
 }
 
 template <uint8_t moveType>
-constexpr void MoveGenerator::GenerateAntiSliderMoves(BitBoard targets, BitBoard pieces, const BitBoard *attackBoard) noexcept
+constexpr void MoveGenerator::GenerateAntiSliderMoves(BitBoard targets, BitBoard pieces,
+                                                      const BitBoard *attackBoard) noexcept
 {
     auto attacks = Constants::EMPTY_BOARD;
     while (pieces)
