@@ -13,14 +13,16 @@ _6.  UCI interface_\
 _7.  Alpha-Beta Search_\
 _8.  Principal Variation Table_\
 _9.  Iterative Deepening_\
-10. PV Move Ordering
+_10. PV Move Ordering_\
+_11. MVV\LVA: Most Valuable Victim\Least valueable aggressor_\
+12.  Killer Heuritics
 
 **Future implementation**
 
+_1.  History heuristic_\
+_2.  In-Check extension_\
+3.   Time management
 
-_1.  MVV\LVA: Most Valuable Victim\Least valueable aggressor_\
-_2.  Killer Heuritics_\
-3.  History heuristic
 
 **Prerequisites**
 

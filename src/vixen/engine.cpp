@@ -77,6 +77,12 @@ std::pair<int, Move> Search::Root(int depth, Board &board, SearchInfo &info)
             const auto victim = board.GetPieceList()[move.GetToSquare()];
             move.SetScore(mvvlvaTable[GetPieceIndex(attacker)][GetPieceIndex(victim)] + 1000000U);
         }
+
+        else if (board.GetKiller()[depth][1] == move)
+            move.SetScore(900000);
+
+        else if (board.GetKiller()[depth][0] == move)
+            move.SetScore(800000);
     }
 
     while (!moveList.empty())
@@ -93,7 +99,14 @@ std::pair<int, Move> Search::Root(int depth, Board &board, SearchInfo &info)
         board.TakeBack();
 
         if (score >= beta)
+        {
+            if ((move.GetMoveType() & CAPTURE) != CAPTURE)
+            {
+                board.CopyPreviousKiller(depth);
+                board.SetKiller(move, depth);
+            }
             return {beta, move}; //  fail hard beta-cutoff
+        }
 
         if (score > alpha)
         {
@@ -130,6 +143,12 @@ int Search::NegaMax(int depth, int alpha, int beta, Board &board, SearchInfo &in
             const auto victim = board.GetPieceList()[move.GetToSquare()];
             move.SetScore(mvvlvaTable[GetPieceIndex(attacker)][GetPieceIndex(victim)] + 1000000U);
         }
+
+        else if (board.GetKiller()[depth][1] == move)
+            move.SetScore(900000);
+
+        else if (board.GetKiller()[depth][0] == move)
+            move.SetScore(800000);
     }
 
     while (!moveList.empty())
@@ -145,7 +164,14 @@ int Search::NegaMax(int depth, int alpha, int beta, Board &board, SearchInfo &in
         board.TakeBack();
 
         if (score >= beta)
+        {
+            if ((move.GetMoveType() & CAPTURE) != CAPTURE)
+            {
+                board.CopyPreviousKiller(depth);
+                board.SetKiller(move, depth);
+            }
             return beta; //  fail hard beta-cutoff
+        }
 
         if (score > alpha)
         {

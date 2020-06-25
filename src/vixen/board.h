@@ -121,6 +121,21 @@ class VIXEN_API Board
         return fiftyMoves;
     }
 
+    [[nodiscard]] constexpr auto GetKiller() const
+    {
+        return killer;
+    }
+
+    constexpr void SetKiller(const Move &move, const int depth)
+    {
+        killer[0U][static_cast<unsigned>(depth)] = move;
+    }
+
+    constexpr void CopyPreviousKiller(const int depth)
+    {
+        killer[1U][static_cast<unsigned>(depth)] = killer[0U][static_cast<unsigned>(depth)];
+    }
+
     /**
      * Prints the board to console.
      */
@@ -183,6 +198,8 @@ class VIXEN_API Board
     }
 
   private:
+    std::array<std::array<Move, 2>, 64> killer;
+
     std::array<History, 1024> history{};
 
     std::array<unsigned char, Constants::SQUARE_NUMBER> pieceList;
