@@ -15,13 +15,13 @@ _8.  Principal Variation Table_\
 _9.  Iterative Deepening_\
 _10. PV Move Ordering_\
 _11. MVV\LVA: Most Valuable Victim\Least valueable aggressor_\
-12.  Killer Heuritics
+_12.  Killer Heuritics_\
+_13.  History Heuristics_\
 
 **Future implementation**
 
-_1.  History heuristic_\
-_2.  In-Check extension_\
-3.   Time management
+_1.  In-Check extension_\
+2.   Time management
 
 
 **Prerequisites**
