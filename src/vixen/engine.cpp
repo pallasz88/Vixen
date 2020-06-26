@@ -83,6 +83,10 @@ std::pair<int, Move> Search::Root(int depth, Board &board, SearchInfo &info)
 
         else if (board.GetKiller()[depth][0] == move)
             move.SetScore(800000);
+        
+        else
+            move.SetScore(board.GetHistoryValue(move.GetFromSquare(), move.GetToSquare()));
+        
     }
 
     while (!moveList.empty())
@@ -101,15 +105,16 @@ std::pair<int, Move> Search::Root(int depth, Board &board, SearchInfo &info)
         if (score >= beta)
         {
             if ((move.GetMoveType() & CAPTURE) != CAPTURE)
-            {
-                board.CopyPreviousKiller(depth);
-                board.SetKiller(move, depth);
-            }
+                board.UpdateKillers(move, depth);
+
             return {beta, move}; //  fail hard beta-cutoff
         }
 
         if (score > alpha)
         {
+            if ((move.GetMoveType() & CAPTURE) != CAPTURE)
+                board.IncreaseHistoryValue(depth, move.GetFromSquare(), move.GetToSquare());
+
             alpha = score; // alpha acts like max in MiniMax
             bestMove = move;
         }
@@ -149,6 +154,9 @@ int Search::NegaMax(int depth, int alpha, int beta, Board &board, SearchInfo &in
 
         else if (board.GetKiller()[depth][0] == move)
             move.SetScore(800000);
+        
+        else
+            move.SetScore(board.GetHistoryValue(move.GetFromSquare(), move.GetToSquare()));
     }
 
     while (!moveList.empty())
@@ -166,15 +174,16 @@ int Search::NegaMax(int depth, int alpha, int beta, Board &board, SearchInfo &in
         if (score >= beta)
         {
             if ((move.GetMoveType() & CAPTURE) != CAPTURE)
-            {
-                board.CopyPreviousKiller(depth);
-                board.SetKiller(move, depth);
-            }
+                board.UpdateKillers(move, depth);
+
             return beta; //  fail hard beta-cutoff
         }
 
         if (score > alpha)
         {
+            if ((move.GetMoveType() & CAPTURE) != CAPTURE)
+                board.IncreaseHistoryValue(depth, move.GetFromSquare(), move.GetToSquare());
+
             alpha = score; // alpha acts like max in MiniMax
             pv.StorePVEntry(PVEntry{move, board.GetHash()});
         }

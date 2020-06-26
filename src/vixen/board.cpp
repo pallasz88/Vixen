@@ -158,8 +158,8 @@ constexpr void Board::ParseSideToMovePart(std::string_view splittedFen)
         whiteToMove = false;
 
     else
-        std::cerr << "ERROR IN FEN: SIDE TO MOVE"
-                  << "\n";
+        std::cerr << "ERROR IN FEN: SIDE TO MOVE\n";
+        
 }
 
 constexpr void Board::ParseCastlingRightPart(std::string_view parsedPosition)
@@ -363,19 +363,19 @@ template <uint8_t moveType> MoveGenerator Board::CreateGenerator() const
     return moveGenerator;
 }
 
-bool Board::MakeMove(std::string_view move)
+bool Board::MakeMove(std::string_view notation)
 {
     const std::regex moveRegex{"[a-h][1-8][a-h][1-8][q|r|b|n]?"};
     std::match_results<std::string_view::const_iterator> iterator;
-    if (!std::regex_match(begin(move), end(move), iterator, moveRegex))
+    if (!std::regex_match(begin(notation), end(notation), iterator, moveRegex))
         throw std::runtime_error("INVALID MOVE FORMAT. Use for example e2e4.");
 
-    const auto from = static_cast<unsigned>(Move::NotationToSquare(move.substr(0, 2)));
-    const auto to = static_cast<unsigned>(Move::NotationToSquare(move.substr(2, 2)));
+    const auto from = static_cast<unsigned>(Move::NotationToSquare(notation.substr(0, 2)));
+    const auto to = static_cast<unsigned>(Move::NotationToSquare(notation.substr(2, 2)));
 
     char promoted = ' ';
-    if (move.size() == 5)
-        promoted = move.substr(4)[0];
+    if (notation.size() == 5)
+        promoted = notation.back();
 
     uint8_t moveType = 0;
     if (promoted != ' ')

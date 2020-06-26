@@ -126,14 +126,20 @@ class VIXEN_API Board
         return killer;
     }
 
-    constexpr void SetKiller(const Move &move, const int depth)
+    constexpr void UpdateKillers(const Move &move, const int depth)
     {
+        killer[1U][static_cast<unsigned>(depth)] = killer[0U][static_cast<unsigned>(depth)];
         killer[0U][static_cast<unsigned>(depth)] = move;
     }
 
-    constexpr void CopyPreviousKiller(const int depth)
+    constexpr void IncreaseHistoryValue(const int depth, const unsigned from, const unsigned to)
     {
-        killer[1U][static_cast<unsigned>(depth)] = killer[0U][static_cast<unsigned>(depth)];
+        historyHeuristic[from][to] += static_cast<unsigned>(depth * depth);
+    }
+
+    [[nodiscard]] constexpr auto GetHistoryValue(const unsigned from, const unsigned to)
+    {
+        return historyHeuristic[from][to];
     }
 
     /**
@@ -198,11 +204,14 @@ class VIXEN_API Board
     }
 
   private:
-    std::array<std::array<Move, 2>, 64> killer;
+
+    std::array<std::array<Move, 2>, 64> killer{};
+
+    std::array<std::array<unsigned, Constants::SQUARE_NUMBER>, Constants::SQUARE_NUMBER> historyHeuristic{};
 
     std::array<History, 1024> history{};
 
-    std::array<unsigned char, Constants::SQUARE_NUMBER> pieceList;
+    std::array<unsigned char, Constants::SQUARE_NUMBER> pieceList{};
 
     BitBoards bitBoards;
 
