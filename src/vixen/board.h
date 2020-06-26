@@ -204,7 +204,6 @@ class VIXEN_API Board
     }
 
   private:
-
     std::array<std::array<Move, 2>, 64> killer{};
 
     std::array<std::array<unsigned, Constants::SQUARE_NUMBER>, Constants::SQUARE_NUMBER> historyHeuristic{};

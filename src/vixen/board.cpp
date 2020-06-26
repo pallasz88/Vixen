@@ -159,7 +159,6 @@ constexpr void Board::ParseSideToMovePart(std::string_view splittedFen)
 
     else
         std::cerr << "ERROR IN FEN: SIDE TO MOVE\n";
-        
 }
 
 constexpr void Board::ParseCastlingRightPart(std::string_view parsedPosition)

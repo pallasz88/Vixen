@@ -83,10 +83,9 @@ std::pair<int, Move> Search::Root(int depth, Board &board, SearchInfo &info)
 
         else if (board.GetKiller()[depth][0] == move)
             move.SetScore(800000);
-        
+
         else
             move.SetScore(board.GetHistoryValue(move.GetFromSquare(), move.GetToSquare()));
-        
     }
 
     while (!moveList.empty())
@@ -154,7 +153,7 @@ int Search::NegaMax(int depth, int alpha, int beta, Board &board, SearchInfo &in
 
         else if (board.GetKiller()[depth][0] == move)
             move.SetScore(800000);
-        
+
         else
             move.SetScore(board.GetHistoryValue(move.GetFromSquare(), move.GetToSquare()));
     }
