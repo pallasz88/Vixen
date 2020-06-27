@@ -3,6 +3,7 @@
 #include "anti_slider.h"
 #include "board.h"
 #include "slider.h"
+#include <memory_resource>
 
 namespace Vixen
 {
@@ -40,7 +41,11 @@ class VIXEN_API MoveGenerator
     template <Colors sideToMove, uint8_t moveType> void GenerateMoves(const Board &board) noexcept;
 
   private:
-    std::vector<Move> moveList{};
+    std::byte buffer[1024];
+
+    std::pmr::monotonic_buffer_resource resource{buffer, sizeof buffer};
+
+    std::pmr::vector<Move> moveList{&resource};
 
     template <Colors sideToMove> void GenerateCaptureMoves(const Board &board) noexcept;
 

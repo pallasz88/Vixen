@@ -70,8 +70,7 @@ void WaitUserInput(Vixen::Board &board)
 
         else if (command == "go")
         {
-            const auto generator = board.CreateGenerator<ALL_MOVE>();
-            const auto moves = generator.GetLegalMoveList(board);
+            auto moves = board.GetMoveList<ALL_MOVE>();
             std::uniform_int_distribution<unsigned> distribution(0, static_cast<unsigned>(moves.size()));
             board.MakeMove(moves[distribution(e1)]);
             board.PrintBoard();
@@ -102,9 +101,8 @@ void TakeBackMove(Board &board)
 
 void PrintMoveList(Board &board)
 {
-    const auto generator = board.CreateGenerator<ALL_MOVE>();
-    const auto movesList = generator.GetMoveList();
-    for (const auto move : movesList)
+    auto moveList = board.GetMoveList<ALL_MOVE>();
+    for (const auto move : moveList)
     {
         if (board.MakeMove(move))
         {

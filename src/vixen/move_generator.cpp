@@ -22,9 +22,9 @@ BitBoard PerftTest(int depth, Board &board) noexcept
         return 1;
 
     BitBoard nodes = 0;
-    const auto generator = board.CreateGenerator<ALL_MOVE>();
+    const auto moves = board.GetMoveList<ALL_MOVE>();
 
-    for (const auto move : generator.GetMoveList())
+    for (const auto move : moves)
     {
         if (!board.MakeMove(move))
             continue;
@@ -48,9 +48,9 @@ BitBoard Perft(int depth, Board &board) noexcept
     }
 
     BitBoard nodes = 0;
-    const auto generator = board.CreateGenerator<ALL_MOVE>();
+    const auto moves = board.GetMoveList<ALL_MOVE>();
 
-    for (const auto move : generator.GetMoveList())
+    for (const auto move : moves)
     {
         if (!board.MakeMove(move))
             continue;

@@ -269,15 +269,15 @@ BOOST_AUTO_TEST_CASE(Test_huge_amunt_of_moves)
 {
     board.SetBoard("R6R/3Q4/1Q4Q1/4Q3/2Q4Q/Q4Q2/pp1Q4/kBNN1KB1 w - - 0 1");
     board.PrintBoard();
-    BOOST_TEST(board.CreateGenerator<ALL_MOVE>().GetMoveList().size() == 218);
+    BOOST_TEST(board.GetMoveList<ALL_MOVE>().size() == 218);
 
     board.SetBoard("3Q4/1Q4Q1/4Q3/2Q4R/Q4Q2/3Q4/1Q4Rp/1K1BBNNk w - - 0 1");
     board.PrintBoard();
-    BOOST_TEST(board.CreateGenerator<ALL_MOVE>().GetMoveList().size() == 218);
+    BOOST_TEST(board.GetMoveList<ALL_MOVE>().size() == 218);
 
     board.SetBoard("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1");
     board.PrintBoard();
-    BOOST_TEST(board.CreateGenerator<ALL_MOVE>().GetMoveList().size() == 48);
+    BOOST_TEST(board.GetMoveList<ALL_MOVE>().size() == 48);
 }
 
 BOOST_AUTO_TEST_CASE(Test_making_moves)

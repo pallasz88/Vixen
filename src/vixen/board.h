@@ -190,7 +190,7 @@ class VIXEN_API Board
      * Returns a generator of pseudo-legal moves from given position.
      * @return pseudo-legal moves
      */
-    template <uint8_t moveType>[[nodiscard]] MoveGenerator CreateGenerator() const;
+    template <uint8_t moveType>[[nodiscard]] std::pmr::vector<Move> GetMoveList() const;
 
     [[nodiscard]] constexpr bool IsRepetition() const
     {

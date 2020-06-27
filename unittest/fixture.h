@@ -29,8 +29,7 @@ struct Fixture
 
     bool CheckMoveList(std::vector<Representation> &expectedMoveList) const
     {
-        const auto generator = board.CreateGenerator<ALL_MOVE>();
-        const auto moveList = generator.GetMoveList();
+        const auto moveList = board.GetMoveList<ALL_MOVE>();
 
         if (expectedMoveList.size() != moveList.size())
             return false;

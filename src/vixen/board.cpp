@@ -354,12 +354,12 @@ constexpr void Board::AddPiece(unsigned int position, char pieceType)
     hashBoard.HashPiece(position, pieceType);
 }
 
-template <uint8_t moveType> MoveGenerator Board::CreateGenerator() const
+template <uint8_t moveType> std::pmr::vector<Move> Board::GetMoveList() const
 {
     MoveGenerator moveGenerator;
     whiteToMove ? moveGenerator.GenerateMoves<Colors::WHITE, moveType>(*this)
                 : moveGenerator.GenerateMoves<Colors::BLACK, moveType>(*this);
-    return moveGenerator;
+    return moveGenerator.GetMoveList();
 }
 
 bool Board::MakeMove(std::string_view notation)
@@ -388,8 +388,7 @@ bool Board::MakeMove(std::string_view notation)
     const auto decodedPromotion = Move(from, to, moveType);
     const auto decodedMove = decodedPromotion.RemoveMoveType();
 
-    const auto generator = CreateGenerator<ALL_MOVE>();
-    const auto moves = generator.GetMoveList();
+    const auto moves = GetMoveList<ALL_MOVE>();
 
     for (const auto move : moves)
         if ((move.RemoveMoveType()) == decodedMove)
@@ -398,8 +397,8 @@ bool Board::MakeMove(std::string_view notation)
     return false;
 }
 
-template VIXEN_API MoveGenerator Board::CreateGenerator<CAPTURE>() const;
+template VIXEN_API std::pmr::vector<Move> Board::GetMoveList<CAPTURE>() const;
 
-template VIXEN_API MoveGenerator Board::CreateGenerator<ALL_MOVE>() const;
+template VIXEN_API std::pmr::vector<Move> Board::GetMoveList<ALL_MOVE>() const;
 
 } // namespace Vixen

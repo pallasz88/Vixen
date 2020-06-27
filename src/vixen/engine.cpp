@@ -54,8 +54,7 @@ Move Search::IterativeDeepening(Board &board, SearchInfo &info)
 
 std::pair<int, Move> Search::Root(int depth, Board &board, SearchInfo &info)
 {
-    const auto &generator = board.CreateGenerator<ALL_MOVE>();
-    auto moveList = generator.GetLegalMoveList(board);
+    auto moveList = board.GetMoveList<ALL_MOVE>();
     int alpha = -MATE;
     int beta = MATE;
     Move bestMove{0};
@@ -79,19 +78,22 @@ std::pair<int, Move> Search::Root(int depth, Board &board, SearchInfo &info)
         }
 
         else if (board.GetKiller()[depth][1] == move)
-            move.SetScore(900000);
+            move.SetScore(900000U);
 
         else if (board.GetKiller()[depth][0] == move)
-            move.SetScore(800000);
+            move.SetScore(800000U);
 
         else
             move.SetScore(board.GetHistoryValue(move.GetFromSquare(), move.GetToSquare()));
+
     }
 
     while (!moveList.empty())
     {
         const Move move = PickBest(moveList);
-        board.MakeMove(move);
+        if (!board.MakeMove(move))
+            continue;
+
         ++info.currentDepth;
         const int score = -NegaMax(depth - 1, -beta, -alpha, board, info);
         --info.currentDepth;
@@ -135,8 +137,7 @@ int Search::NegaMax(int depth, int alpha, int beta, Board &board, SearchInfo &in
 
     ++info.nodesCount;
 
-    const auto &generator = board.CreateGenerator<ALL_MOVE>();
-    auto moveList = generator.GetMoveList();
+    auto moveList = board.GetMoveList<ALL_MOVE>();
     unsigned legalMoveCount = 0;
 
     for (auto &move : moveList)
@@ -149,10 +150,10 @@ int Search::NegaMax(int depth, int alpha, int beta, Board &board, SearchInfo &in
         }
 
         else if (board.GetKiller()[depth][1] == move)
-            move.SetScore(900000);
+            move.SetScore(900000U);
 
         else if (board.GetKiller()[depth][0] == move)
-            move.SetScore(800000);
+            move.SetScore(800000U);
 
         else
             move.SetScore(board.GetHistoryValue(move.GetFromSquare(), move.GetToSquare()));
@@ -211,8 +212,7 @@ int Search::Quiescence(int alpha, int beta, Board &board, SearchInfo &info)
     if (alpha < stand_pat)
         alpha = stand_pat;
 
-    const auto &generator = board.CreateGenerator<CAPTURE>();
-    auto moveList = generator.GetMoveList();
+    auto moveList = board.GetMoveList<CAPTURE>();
 
     for (auto &move : moveList)
     {
