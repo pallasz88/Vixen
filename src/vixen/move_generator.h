@@ -13,6 +13,11 @@ namespace Vixen
 class VIXEN_API MoveGenerator
 {
   public:
+
+    MoveGenerator()
+    {
+        moveList.reserve(64);
+    }
     /**
      * Returns pseudo-legal move list.
      * @return moveList
@@ -23,15 +28,6 @@ class VIXEN_API MoveGenerator
     }
 
     [[nodiscard]] std::vector<Move> GetLegalMoveList(Board &board) const noexcept;
-
-    /**
-     * Returns pseudo-legal move list size.
-     * @return moveList
-     */
-    /*[[nodiscard]] constexpr unsigned GetListSize() const noexcept
-    {
-        return size;
-    }*/
 
     /**
      * Fills moveList by generating all pseudo moves.

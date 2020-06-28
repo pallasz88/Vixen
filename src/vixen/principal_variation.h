@@ -2,6 +2,7 @@
 #define VIXEN_PRINCIPALVARIATION_H
 
 #include <list>
+#include <memory_resource>
 
 #include "defs.h"
 #include "move.h"
@@ -34,11 +35,15 @@ class PrincipalVariation
     PVEntry GetPVEntry(PositionKey);
 
   private:
-    std::list<PVEntry> elements;
-
-    std::unordered_map<PositionKey, std::list<PVEntry>::iterator> hashTable;
-
     size_t capacity;
+
+    std::byte buffer[4096];
+
+    std::pmr::monotonic_buffer_resource resource{buffer, sizeof buffer};
+
+    std::pmr::list<PVEntry> elements{&resource};
+
+    std::pmr::unordered_map<PositionKey, std::list<PVEntry>::iterator> hashTable{&resource};
 };
 
 } // namespace Vixen
