@@ -121,9 +121,9 @@ class VIXEN_API Board
         return fiftyMoves;
     }
 
-    [[nodiscard]] constexpr auto GetKiller() const
+    [[nodiscard]] constexpr auto GetKiller(const int depth, const int index) const
     {
-        return killer;
+        return killer[depth][index];
     }
 
     constexpr void UpdateKillers(const Move &move, const int depth)

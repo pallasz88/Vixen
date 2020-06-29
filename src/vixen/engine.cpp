@@ -77,10 +77,10 @@ std::pair<int, Move> Search::Root(int depth, Board &board, SearchInfo &info)
             move.SetScore(mvvlvaTable[GetPieceIndex(attacker)][GetPieceIndex(victim)] + 1000000U);
         }
 
-        else if (board.GetKiller()[depth][1] == move)
+        else if (board.GetKiller(depth, 1) == move)
             move.SetScore(900000U);
 
-        else if (board.GetKiller()[depth][0] == move)
+        else if (board.GetKiller(depth, 0) == move)
             move.SetScore(800000U);
 
         else
@@ -149,10 +149,10 @@ int Search::NegaMax(int depth, int alpha, int beta, Board &board, SearchInfo &in
             move.SetScore(mvvlvaTable[GetPieceIndex(attacker)][GetPieceIndex(victim)] + 1000000U);
         }
 
-        else if (board.GetKiller()[depth][1] == move)
+        else if (board.GetKiller(depth, 1) == move)
             move.SetScore(900000U);
 
-        else if (board.GetKiller()[depth][0] == move)
+        else if (board.GetKiller(depth, 0) == move)
             move.SetScore(800000U);
 
         else

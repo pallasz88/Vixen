@@ -28,6 +28,7 @@ class PrincipalVariation
   public:
     explicit PrincipalVariation(size_t n) : capacity(n)
     {
+        hashTable.reserve(capacity);
     }
 
     void StorePVEntry(PVEntry &&);
