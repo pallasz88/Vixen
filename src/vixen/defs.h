@@ -404,12 +404,11 @@ constexpr bool IsBlackMoving(char c) noexcept
 #endif
 }
 
-template <class MoveList> constexpr auto PickBest(MoveList &moveList)
+template <class Iterator> constexpr auto PickBest(const Iterator &begin, const Iterator &end)
 {
-    auto maxElement = std::max_element(begin(moveList), end(moveList));
-    const auto maxValue = *maxElement;
-    moveList.erase(maxElement);
-    return maxValue;
+    auto maxElement = std::max_element(begin, end);
+    std::swap(*begin, *maxElement);
+    return *begin;
 }
 
 } // namespace Vixen

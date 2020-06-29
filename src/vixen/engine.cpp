@@ -88,9 +88,9 @@ std::pair<int, Move> Search::Root(int depth, Board &board, SearchInfo &info)
 
     }
 
-    while (!moveList.empty())
+    for (auto it = begin(moveList); it != end(moveList); ++it)
     {
-        const Move move = PickBest(moveList);
+        const Move &move = PickBest(it, end(moveList));
         if (!board.MakeMove(move))
             continue;
 
@@ -159,9 +159,9 @@ int Search::NegaMax(int depth, int alpha, int beta, Board &board, SearchInfo &in
             move.SetScore(board.GetHistoryValue(move.GetFromSquare(), move.GetToSquare()));
     }
 
-    while (!moveList.empty())
+    for (auto it = begin(moveList); it != end(moveList); ++it)
     {
-        const Move move = PickBest(moveList);
+        const Move &move = PickBest(it, end(moveList));
         if (!board.MakeMove(move))
             continue;
 
@@ -224,9 +224,9 @@ int Search::Quiescence(int alpha, int beta, Board &board, SearchInfo &info)
         }
     }
 
-    while (!moveList.empty())
+    for (auto it = begin(moveList); it != end(moveList); ++it)
     {
-        const Move move = PickBest(moveList);
+        const Move &move = PickBest(it, end(moveList));
         if (!board.MakeMove(move))
             continue;
 
