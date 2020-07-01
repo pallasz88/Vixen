@@ -3,6 +3,7 @@
 #include <chrono>
 
 #include "defs.h"
+#include "fixed_list.h"
 #include "principal_variation.h"
 
 namespace Vixen
@@ -128,7 +129,7 @@ class VIXEN_API Search
 
     static std::pair<int, Move> Root(int depth, Board &board, SearchInfo &info);
 
-    static std::vector<Move> GetPV(int, Board &);
+    static FixedList<Move> GetPV(int, Board &);
 };
 
 template std::array<int, 64ul> Vixen::Utility::MirrorTable<std::array<int, 64ul>>(std::array<int, 64ul> const &);

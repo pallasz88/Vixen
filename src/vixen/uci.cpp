@@ -21,7 +21,7 @@ Uci::~Uci()
 }
 
 void Uci::LogUci(const SearchInfo &info, const std::pair<int, Move> &result, int depth,
-                 const std::vector<Move> &bestLine)
+                 const FixedList<Move> &bestLine)
 {
     if (result.first > Search::MATE - info.maxDepth)
         std::cout << "info score mate " << (Search::MATE - result.first) / 2;

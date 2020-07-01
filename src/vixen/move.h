@@ -21,6 +21,12 @@ class Move
     {
     }
 
+    ~Move() = default;
+
+    constexpr Move(const Move &) = default;
+
+    constexpr Move &operator=(const Move &) = default;
+
     constexpr void SetScore(unsigned newScore) noexcept
     {
         score = newScore;

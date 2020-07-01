@@ -3,6 +3,7 @@
 #include <memory>
 
 #include "board.h"
+#include "fixed_list.h"
 
 namespace Vixen
 {
@@ -26,7 +27,7 @@ class VIXEN_API Uci
     void loop();
 
     static void LogUci(const SearchInfo &info, const std::pair<int, Move> &result, int depth,
-                       const std::vector<Move> &bestLine);
+                       const FixedList<Move> &bestLine);
 
   private:
     std::unique_ptr<Board> board;

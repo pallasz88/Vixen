@@ -10,9 +10,9 @@ namespace Vixen
 {
 PrincipalVariation Search::pv(megaByte / sizeof(PVEntry));
 
-std::vector<Move> Search::GetPV(int depth, Board &board)
+FixedList<Move> Search::GetPV(int depth, Board &board)
 {
-    std::vector<Move> moveList;
+    FixedList<Move> moveList;
     int ply = 0;
 
     for (; ply < depth;)

@@ -2,6 +2,7 @@
 
 #include "hash.h"
 #include "move.h"
+#include "fixed_list.h"
 
 namespace Vixen
 {
@@ -190,7 +191,7 @@ class VIXEN_API Board
      * Returns a generator of pseudo-legal moves from given position.
      * @return pseudo-legal moves
      */
-    template <uint8_t moveType>[[nodiscard]] std::pmr::vector<Move> GetMoveList() const;
+    template <uint8_t moveType>[[nodiscard]] FixedList<Move> GetMoveList() const;
 
     [[nodiscard]] constexpr bool IsRepetition() const
     {
@@ -210,7 +211,7 @@ class VIXEN_API Board
 
     std::array<History, 1024> history{};
 
-    std::array<unsigned char, Constants::SQUARE_NUMBER> pieceList{};
+    std::array<char, Constants::SQUARE_NUMBER> pieceList{};
 
     BitBoards bitBoards;
 

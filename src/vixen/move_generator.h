@@ -3,7 +3,7 @@
 #include "anti_slider.h"
 #include "board.h"
 #include "slider.h"
-#include <memory_resource>
+#include "fixed_list.h"
 
 namespace Vixen
 {
@@ -14,10 +14,6 @@ class VIXEN_API MoveGenerator
 {
   public:
 
-    MoveGenerator()
-    {
-        moveList.reserve(64);
-    }
     /**
      * Returns pseudo-legal move list.
      * @return moveList
@@ -27,7 +23,7 @@ class VIXEN_API MoveGenerator
         return moveList;
     }
 
-    [[nodiscard]] std::vector<Move> GetLegalMoveList(Board &board) const noexcept;
+    [[nodiscard]] auto GetLegalMoveList(Board &board) const noexcept;
 
     /**
      * Fills moveList by generating all pseudo moves.
@@ -37,11 +33,8 @@ class VIXEN_API MoveGenerator
     template <Colors sideToMove, uint8_t moveType> void GenerateMoves(const Board &board) noexcept;
 
   private:
-    std::byte buffer[1024];
 
-    std::pmr::monotonic_buffer_resource resource{buffer, sizeof buffer};
-
-    std::pmr::vector<Move> moveList{&resource};
+    FixedList<Move> moveList;
 
     template <Colors sideToMove> void GenerateCaptureMoves(const Board &board) noexcept;
 

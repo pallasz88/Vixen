@@ -2,7 +2,6 @@
 #define VIXEN_PRINCIPALVARIATION_H
 
 #include <list>
-#include <memory_resource>
 
 #include "defs.h"
 #include "move.h"
@@ -28,7 +27,6 @@ class PrincipalVariation
   public:
     explicit PrincipalVariation(size_t n) : capacity(n)
     {
-        hashTable.reserve(capacity);
     }
 
     void StorePVEntry(PVEntry &&);
@@ -36,15 +34,12 @@ class PrincipalVariation
     PVEntry GetPVEntry(PositionKey);
 
   private:
+    
     size_t capacity;
 
-    std::byte buffer[4096];
+    std::list<PVEntry> elements;
 
-    std::pmr::monotonic_buffer_resource resource{buffer, sizeof buffer};
-
-    std::pmr::list<PVEntry> elements{&resource};
-
-    std::pmr::unordered_map<PositionKey, std::list<PVEntry>::iterator> hashTable{&resource};
+    std::unordered_map<PositionKey, std::list<PVEntry>::iterator> hashTable;
 };
 
 } // namespace Vixen

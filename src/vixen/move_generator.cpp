@@ -240,9 +240,9 @@ template <Colors sideToMove, uint8_t moveType> void MoveGenerator::GenerateMoves
     GenerateQuietMoves<sideToMove>(board);
 }
 
-std::vector<Move> MoveGenerator::GetLegalMoveList(Board &board) const noexcept
+auto MoveGenerator::GetLegalMoveList(Board &board) const noexcept
 {
-    std::vector<Move> allLegalMoves;
+    FixedList<Move> allLegalMoves;
     const auto addLegal = [&board, &allLegalMoves](Move move) {
         if (board.MakeMove(move))
         {
