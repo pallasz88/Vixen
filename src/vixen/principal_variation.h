@@ -34,7 +34,6 @@ class PrincipalVariation
     PVEntry GetPVEntry(PositionKey);
 
   private:
-    
     size_t capacity;
 
     std::list<PVEntry> elements;

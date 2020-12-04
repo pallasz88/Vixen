@@ -1,4 +1,3 @@
-//#include <iostream>
 #include "engine.h"
 
 #include <algorithm>
@@ -19,7 +18,7 @@ FixedList<Move> Search::GetPV(int depth, Board &board)
     {
         const auto bestMove = pv.GetPVEntry(board.GetHash()).move;
 
-        if (bestMove == 0)
+        if (bestMove == 0U)
             break;
 
         if (board.MakeMove(bestMove))
@@ -40,12 +39,21 @@ FixedList<Move> Search::GetPV(int depth, Board &board)
 
 Move Search::IterativeDeepening(Board &board, SearchInfo &info)
 {
+    info.stopped = false;
+    info.startTime = std::chrono::high_resolution_clock::now();
     std::pair<int, Move> result;
+    Move bestMove{};
 
     for (int depth = 1; depth <= info.maxDepth; ++depth)
     {
         result = Search::Root(depth, board, info);
         const auto bestLine = GetPV(depth, board);
+        bestMove = static_cast<bool>(bestLine[0]) ? bestLine[0] : bestMove;
+        if (info.stopped)
+        {
+            info.stopped = false;
+            return bestMove;
+        }
         Uci::LogUci(info, result, depth, bestLine);
     }
 
@@ -57,14 +65,14 @@ std::pair<int, Move> Search::Root(int depth, Board &board, SearchInfo &info)
     auto moveList = board.GetMoveList<ALL_MOVE>();
     int alpha = -MATE;
     int beta = MATE;
-    Move bestMove{0};
+    Move bestMove{0U};
     ++info.nodesCount;
 
     const auto pvEntry = pv.GetPVEntry(board.GetHash());
 
     for (auto &move : moveList)
     {
-        if (pvEntry.move != 0 && move == pvEntry.move)
+        if (pvEntry.move != 0U && move == pvEntry.move)
         {
             move.SetScore(2000000U);
             continue;
@@ -85,7 +93,6 @@ std::pair<int, Move> Search::Root(int depth, Board &board, SearchInfo &info)
 
         else
             move.SetScore(board.GetHistoryValue(move.GetFromSquare(), move.GetToSquare()));
-
     }
 
     for (auto it = begin(moveList); it != end(moveList); ++it)
@@ -98,10 +105,10 @@ std::pair<int, Move> Search::Root(int depth, Board &board, SearchInfo &info)
         const int score = -NegaMax(depth - 1, -beta, -alpha, board, info);
         --info.currentDepth;
 
+        board.TakeBack();
+
         if (info.stopped)
             return {score, move};
-
-        board.TakeBack();
 
         if (score >= beta)
         {
@@ -127,15 +134,30 @@ std::pair<int, Move> Search::Root(int depth, Board &board, SearchInfo &info)
     return {alpha, bestMove};
 }
 
+void CheckTime(SearchInfo &info)
+{
+    info.endTime = std::chrono::high_resolution_clock::now();
+    const std::chrono::duration<double> duration = (info.endTime - info.startTime) * 1000;
+    if (duration.count() >= info.moveTime)
+    {
+        info.stopped = true;
+    }
+}
+
 int Search::NegaMax(int depth, int alpha, int beta, Board &board, SearchInfo &info)
 {
     if (depth == 0)
         return Quiescence(alpha, beta, board, info);
 
+    ++info.nodesCount;
+
     if (board.IsRepetition() || board.GetFiftyMoveCounter() >= 100)
         return 0;
 
-    ++info.nodesCount;
+    if (info.isTimeSet && !(info.nodesCount & 2047))
+    {
+        CheckTime(info);
+    }
 
     auto moveList = board.GetMoveList<ALL_MOVE>();
     unsigned legalMoveCount = 0;
@@ -170,6 +192,10 @@ int Search::NegaMax(int depth, int alpha, int beta, Board &board, SearchInfo &in
         const int score = -NegaMax(depth - 1, -beta, -alpha, board, info);
         --info.currentDepth;
         board.TakeBack();
+        if (info.stopped)
+        {
+            return 0;
+        }
 
         if (score >= beta)
         {
@@ -203,6 +229,11 @@ int Search::NegaMax(int depth, int alpha, int beta, Board &board, SearchInfo &in
 
 int Search::Quiescence(int alpha, int beta, Board &board, SearchInfo &info)
 {
+    if (info.isTimeSet && !(info.nodesCount & 2047))
+    {
+        CheckTime(info);
+    }
+
     ++info.nodesCount;
     int stand_pat = Evaluate(board);
 
@@ -232,6 +263,10 @@ int Search::Quiescence(int alpha, int beta, Board &board, SearchInfo &info)
 
         const int score = -Quiescence(-beta, -alpha, board, info);
         board.TakeBack();
+        if (info.stopped)
+        {
+            return 0;
+        }
 
         if (score >= beta)
             return beta;

@@ -1,35 +1,32 @@
 #ifndef _fixed_list
 #define _fixed_list
 
-#include <iterator>
 #include <array>
+#include <iterator>
 
-template <class T, std::size_t Capacity = 218>
-class FixedList
+template <class T, std::size_t Capacity = 218> class FixedList
 {
 
-public:
-
+  public:
     using value_type = T;
 
     using size_type = std::size_t;
 
     using difference_type = std::ptrdiff_t;
 
-    using reference = value_type&;
+    using reference = value_type &;
 
-    using const_reference = const value_type&;
+    using const_reference = const value_type &;
 
-    using pointer = T*;
+    using pointer = T *;
 
-    using const_pointer = const T*;
+    using const_pointer = const T *;
 
     using iterator = typename std::array<T, Capacity>::iterator;
 
     using const_iterator = typename std::array<T, Capacity>::const_iterator;
 
-    template <class... Args>
-    void emplace_back(Args&&... args)
+    template <class... Args> void emplace_back(Args &&... args)
     {
         _list[_size++] = value_type(std::forward<Args>(args)...);
     }
@@ -69,33 +66,28 @@ public:
         return _list[position];
     }
 
-private:
-    
+  private:
     std::array<T, Capacity> _list;
 
     size_type _size{};
 };
 
-template <class T>
-constexpr auto begin(FixedList<T> &list) noexcept
+template <class T> constexpr auto begin(FixedList<T> &list) noexcept
 {
     return list.begin();
 }
 
-template <class T>
-constexpr auto end(FixedList<T> &list)
+template <class T> constexpr auto end(FixedList<T> &list)
 {
     return list.begin() + list.size();
 }
 
-template <class T>
-constexpr auto begin(const FixedList<T> &list) noexcept
+template <class T> constexpr auto begin(const FixedList<T> &list) noexcept
 {
     return list.begin();
 }
 
-template <class T>
-constexpr auto end(const FixedList<T> &list)
+template <class T> constexpr auto end(const FixedList<T> &list)
 {
     return list.begin() + list.size();
 }

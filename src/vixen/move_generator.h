@@ -2,8 +2,8 @@
 
 #include "anti_slider.h"
 #include "board.h"
-#include "slider.h"
 #include "fixed_list.h"
+#include "slider.h"
 
 namespace Vixen
 {
@@ -13,7 +13,6 @@ namespace Vixen
 class VIXEN_API MoveGenerator
 {
   public:
-
     /**
      * Returns pseudo-legal move list.
      * @return moveList
@@ -33,7 +32,6 @@ class VIXEN_API MoveGenerator
     template <Colors sideToMove, uint8_t moveType> void GenerateMoves(const Board &board) noexcept;
 
   private:
-
     FixedList<Move> moveList;
 
     template <Colors sideToMove> void GenerateCaptureMoves(const Board &board) noexcept;

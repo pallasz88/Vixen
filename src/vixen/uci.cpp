@@ -20,8 +20,7 @@ Uci::~Uci()
     info.reset();
 }
 
-void Uci::LogUci(const SearchInfo &info, const std::pair<int, Move> &result, int depth,
-                 const FixedList<Move> &bestLine)
+void Uci::LogUci(const SearchInfo &info, const std::pair<int, Move> &result, int depth, const FixedList<Move> &bestLine)
 {
     if (result.first > Search::MATE - info.maxDepth)
         std::cout << "info score mate " << (Search::MATE - result.first) / 2;
@@ -49,24 +48,28 @@ void Uci::UpdateSearchInfo(std::istringstream &is, std::string &token)
         if (board->IsWhiteToMove() && token == "wtime")
         {
             is >> token;
+            info->isTimeSet = true;
             info->time[static_cast<int>(Colors::WHITE)] = std::stoi(token);
         }
 
         else if (!board->IsWhiteToMove() && token == "btime")
         {
             is >> token;
+            info->isTimeSet = true;
             info->time[static_cast<int>(Colors::BLACK)] = std::stoi(token);
         }
 
         if (board->IsWhiteToMove() && token == "winc")
         {
             is >> token;
+            info->isTimeSet = true;
             info->increment[static_cast<int>(Colors::WHITE)] = std::stoi(token);
         }
 
         else if (!board->IsWhiteToMove() && token == "binc")
         {
             is >> token;
+            info->isTimeSet = true;
             info->increment[static_cast<int>(Colors::BLACK)] = std::stoi(token);
         }
 
@@ -79,12 +82,14 @@ void Uci::UpdateSearchInfo(std::istringstream &is, std::string &token)
         if (token == "movetime")
         {
             is >> token;
+            info->isTimeSet = true;
             info->moveTime = std::stoi(token);
         }
 
         if (token == "depth")
         {
             is >> token;
+            info->isTimeSet = false;
             info->maxDepth = std::stoi(token);
         }
     }

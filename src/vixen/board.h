@@ -1,8 +1,8 @@
 #pragma once
 
+#include "fixed_list.h"
 #include "hash.h"
 #include "move.h"
-#include "fixed_list.h"
 
 namespace Vixen
 {

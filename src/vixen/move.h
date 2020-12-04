@@ -27,6 +27,11 @@ class Move
 
     constexpr Move &operator=(const Move &) = default;
 
+    constexpr operator bool() const
+    {
+        return represantation != 0;
+    }
+
     constexpr void SetScore(unsigned newScore) noexcept
     {
         score = newScore;
