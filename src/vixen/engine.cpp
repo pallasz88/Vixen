@@ -138,6 +138,7 @@ void CheckTime(SearchInfo &info)
 {
     info.endTime = std::chrono::high_resolution_clock::now();
     const std::chrono::duration<double> duration = (info.endTime - info.startTime) * 1000;
+
     if (duration.count() >= info.moveTime)
     {
         info.stopped = true;
@@ -155,9 +156,7 @@ int Search::NegaMax(int depth, int alpha, int beta, Board &board, SearchInfo &in
         return 0;
 
     if (info.isTimeSet && !(info.nodesCount & 2047))
-    {
         CheckTime(info);
-    }
 
     const bool inCheck = Check::IsInCheck<Colors::WHITE>(board) || Check::IsInCheck<Colors::BLACK>(board);
     if (inCheck)
@@ -188,6 +187,7 @@ int Search::NegaMax(int depth, int alpha, int beta, Board &board, SearchInfo &in
     for (auto it = begin(moveList); it != end(moveList); ++it)
     {
         const Move &move = PickBest(it, end(moveList));
+
         if (!board.MakeMove(move))
             continue;
 
@@ -196,10 +196,9 @@ int Search::NegaMax(int depth, int alpha, int beta, Board &board, SearchInfo &in
         const int score = -NegaMax(depth - 1, -beta, -alpha, board, info);
         --info.currentDepth;
         board.TakeBack();
+
         if (info.stopped)
-        {
             return 0;
-        }
 
         if (score >= beta)
         {
@@ -234,9 +233,7 @@ int Search::NegaMax(int depth, int alpha, int beta, Board &board, SearchInfo &in
 int Search::Quiescence(int alpha, int beta, Board &board, SearchInfo &info)
 {
     if (info.isTimeSet && !(info.nodesCount & 2047))
-    {
         CheckTime(info);
-    }
 
     ++info.nodesCount;
     int stand_pat = Evaluate(board);
@@ -262,15 +259,14 @@ int Search::Quiescence(int alpha, int beta, Board &board, SearchInfo &info)
     for (auto it = begin(moveList); it != end(moveList); ++it)
     {
         const Move &move = PickBest(it, end(moveList));
+
         if (!board.MakeMove(move))
             continue;
 
         const int score = -Quiescence(-beta, -alpha, board, info);
         board.TakeBack();
         if (info.stopped)
-        {
             return 0;
-        }
 
         if (score >= beta)
             return beta;
@@ -278,6 +274,7 @@ int Search::Quiescence(int alpha, int beta, Board &board, SearchInfo &info)
         if (score > alpha)
             alpha = score;
     }
+
     return alpha;
 }
 
@@ -297,6 +294,7 @@ int Search::Evaluate(const Board &board)
                 score -= arrayLookUp[static_cast<unsigned>(index)][i];
         }
     }
+
     return board.IsWhiteToMove() ? score : -score;
 }
 } // namespace Vixen
