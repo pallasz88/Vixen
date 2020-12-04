@@ -159,6 +159,10 @@ int Search::NegaMax(int depth, int alpha, int beta, Board &board, SearchInfo &in
         CheckTime(info);
     }
 
+    const bool inCheck = Check::IsInCheck<Colors::WHITE>(board) || Check::IsInCheck<Colors::BLACK>(board);
+    if (inCheck)
+        ++depth;
+
     auto moveList = board.GetMoveList<ALL_MOVE>();
     unsigned legalMoveCount = 0;
 
@@ -217,7 +221,7 @@ int Search::NegaMax(int depth, int alpha, int beta, Board &board, SearchInfo &in
 
     if (legalMoveCount == 0)
     {
-        if (Check::IsInCheck<Colors::WHITE>(board) || Check::IsInCheck<Colors::BLACK>(board))
+        if (inCheck)
             return -MATE + info.currentDepth;
 
         else
