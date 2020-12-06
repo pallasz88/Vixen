@@ -15,11 +15,12 @@ struct SearchInfo
     std::chrono::high_resolution_clock::time_point startTime{};
     std::chrono::high_resolution_clock::time_point endTime{};
     unsigned long long nodesCount{0};
+    size_t timeIndex{0};
     int maxDepth{64};
     int currentDepth{0};
     int movesToGo{30};
     int moveTime{0};
-    std::array<int, 2> time{};
+    std::array<int, 2> time{-1, -1};
     std::array<int, 2> increment{};
     bool stopped{false};
     bool isTimeSet{};

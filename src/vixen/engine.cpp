@@ -41,6 +41,7 @@ Move Search::IterativeDeepening(Board &board, SearchInfo &info)
 {
     info.stopped = false;
     info.startTime = std::chrono::high_resolution_clock::now();
+    info.timeIndex = static_cast<int>(!board.IsWhiteToMove());
     std::pair<int, Move> result;
     Move bestMove{};
 
@@ -138,11 +139,14 @@ void CheckTime(SearchInfo &info)
 {
     info.endTime = std::chrono::high_resolution_clock::now();
     const std::chrono::duration<double> duration = (info.endTime - info.startTime) * 1000;
+    double allocatedTime = info.moveTime;
+    if (info.isTimeSet)
+        if (info.time[info.timeIndex] != -1)
+            allocatedTime = static_cast<double>(info.time[info.timeIndex]) / 30. - 50;
 
-    if (duration.count() >= info.moveTime)
-    {
+    if (duration.count() >= allocatedTime)
         info.stopped = true;
-    }
+
 }
 
 int Search::NegaMax(int depth, int alpha, int beta, Board &board, SearchInfo &info)

@@ -178,9 +178,9 @@ class VIXEN_API Board
      * @param move
      * @return
      */
-    bool MakeMove(Move move);
+    [[nodiscard]] bool MakeMove(Move move);
 
-    bool MakeMove(std::string_view move);
+    [[nodiscard]] bool MakeMove(std::string_view move);
 
     /**
      * Rolls back to previous state of the board.
