@@ -182,6 +182,8 @@ class VIXEN_API Board
 
     [[nodiscard]] bool MakeMove(std::string_view move);
 
+    void MakeNullMove(Board& board);
+
     /**
      * Rolls back to previous state of the board.
      */

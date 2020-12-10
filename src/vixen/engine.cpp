@@ -71,6 +71,22 @@ std::pair<int, Move> Search::Root(int depth, Board &board, SearchInfo &info)
 
     const auto pvEntry = pv.GetPVEntry(board.GetHash());
 
+    const bool inCheck = Check::IsInCheck<Colors::WHITE>(board) || Check::IsInCheck<Colors::BLACK>(board);
+    if (inCheck)
+        ++depth;
+
+    if(!inCheck && depth >= 4)
+    {
+        board.MakeNullMove(board);
+        const auto val = -NegaMax(depth - 4, -beta, -beta + 1, board, info);
+        board.MakeNullMove(board);
+        if (info.stopped)
+            return {0, pvEntry.move};
+
+        if (val >= beta)
+            return {beta, pvEntry.move};
+    }
+
     for (auto &move : moveList)
     {
         if (pvEntry.move != 0U && move == pvEntry.move)

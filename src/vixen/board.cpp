@@ -185,6 +185,11 @@ constexpr void Board::ParseCastlingRightPart(std::string_view parsedPosition)
     }
 }
 
+void Board::MakeNullMove(Board &board)
+{
+    whiteToMove = !whiteToMove;
+}
+
 bool Board::MakeMove(Vixen::Move move)
 {
     const auto from = move.GetFromSquare();
