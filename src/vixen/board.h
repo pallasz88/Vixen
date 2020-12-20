@@ -143,6 +143,13 @@ class VIXEN_API Board
         return historyHeuristic[from][to];
     }
 
+    constexpr bool HasHeavyPieces() const
+    {
+        return IsWhiteToMove() ? 
+            static_cast<bool>(GetBitBoard('Q') | GetBitBoard('R') ) :
+            static_cast<bool>(GetBitBoard('q') | GetBitBoard('r'));
+    } 
+
     /**
      * Prints the board to console.
      */

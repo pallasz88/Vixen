@@ -86,6 +86,19 @@ BOOST_AUTO_TEST_CASE(Test_SetPosition)
 
     BOOST_CHECK_EQUAL(board.IsWhiteToMove(), true);
 }
+
+BOOST_AUTO_TEST_CASE(Test_HeavyPiecesBitboard)
+{
+    board.SetBoard("8/8/8/8/8/5k2/4p3/4K3 w - - 0 4");
+    board.PrintBoard();
+
+    BOOST_CHECK_EQUAL(board.HasHeavyPieces(), false);
+
+    board.SetBoard(Constants::TESTPOS2);
+    board.PrintBoard();
+
+    BOOST_CHECK_EQUAL(board.HasHeavyPieces(), true);
+}
 /*
     BOOST_AUTO_TEST_CASE(Test_SliderAttacks)
     {

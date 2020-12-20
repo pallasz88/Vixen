@@ -75,18 +75,6 @@ std::pair<int, Move> Search::Root(int depth, Board &board, SearchInfo &info)
     if (inCheck)
         ++depth;
 
-    if(!inCheck && depth >= 4)
-    {
-        board.MakeNullMove(board);
-        const auto val = -NegaMax(depth - 4, -beta, -beta + 1, board, info);
-        board.MakeNullMove(board);
-        if (info.stopped)
-            return {0, pvEntry.move};
-
-        if (val >= beta)
-            return {beta, pvEntry.move};
-    }
-
     for (auto &move : moveList)
     {
         if (pvEntry.move != 0U && move == pvEntry.move)
@@ -167,7 +155,7 @@ void CheckTime(SearchInfo &info)
 
 int Search::NegaMax(int depth, int alpha, int beta, Board &board, SearchInfo &info)
 {
-    if (depth == 0)
+    if (depth <= 0)
         return Quiescence(alpha, beta, board, info);
 
     ++info.nodesCount;
@@ -181,6 +169,18 @@ int Search::NegaMax(int depth, int alpha, int beta, Board &board, SearchInfo &in
     const bool inCheck = Check::IsInCheck<Colors::WHITE>(board) || Check::IsInCheck<Colors::BLACK>(board);
     if (inCheck)
         ++depth;
+
+    if(!inCheck && board.HasHeavyPieces())
+    {
+        board.MakeNullMove(board);
+        const auto val = -NegaMax(depth - 4, -beta, -beta + 1, board, info);
+        board.MakeNullMove(board);
+        if (info.stopped)
+            return 0;
+
+        if (val >= beta)
+            return beta;
+    }
 
     auto moveList = board.GetMoveList<ALL_MOVE>();
     unsigned legalMoveCount = 0;
