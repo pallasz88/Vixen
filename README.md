@@ -1,6 +1,8 @@
 # Vixen
 ## C++ chess engine
 
+[![Build Status](https://travis-ci.org/pallasz88/Vixen.svg?branch=master)](https://travis-ci.org/pallasz88/Vixen)
+
 
 **Implemented features so far**
 
@@ -21,7 +23,7 @@ _14. In-Check extension_
 
 **Future implementation**
 
-_1.   Time management
+1.   Time management
 
 
 **Prerequisites**
