@@ -7,6 +7,7 @@ set(CMAKE_INSTALL_PREFIX ${PROJECT_SOURCE_DIR})
 set(Vixen_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/src/vixen)
 set(CMAKE_VERBOSE_MAKEFILE FALSE)
 option(OPTIMIZE_FOR_NATIVE "Build with -march=native" ON)
+enable_testing()
 
 # Set RPATH
 if (CMAKE_HOST_UNIX)

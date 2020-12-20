@@ -28,5 +28,6 @@ before_script:
 
 script:
   - cmake .
-  - cmake --build . -- -j2
+  - cmake --build . --target install -- -j2
+  - ctest -j 2
   #- sonar-scanner
