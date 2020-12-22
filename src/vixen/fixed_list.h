@@ -26,7 +26,7 @@ template <class T, std::size_t Capacity = 218> class FixedList
 
     using const_iterator = typename std::array<T, Capacity>::const_iterator;
 
-    template <class... Args> void emplace_back(Args &&... args)
+    template <class... Args> constexpr void emplace_back(Args &&... args)
     {
         _list[_size++] = value_type(std::forward<Args>(args)...);
     }
