@@ -1,33 +1,40 @@
 language: cpp
-
+os: linux
+dist: xenial
 install:
   # Install CMake >= 3.15
   - python3 -m pip install cmake
 
+
 jobs:
-    include:
-      - os: linux
-        env: 
-          - GCC_VER="9"
-          - MATRIX_EVAL="CC=gcc-${GCC_VER} && CXX=g++-${GCC_VER}"
-        addons:
-          apt:
-            sources:
-              - ubuntu-toolchain-r-test
-            packages:
-              - gcc-9
-              - g++-9
-              - python3-pip
-            sonarcloud:
-              organization: "pallasz88"
-              token:
-                secure: "bXCLTQJ+gyNhYS2pIdzwPtzYsUu87gRVIwrqxo3XOVmZld8wAe791mO4L+lzaI+U4oR0R5tenQJ7EBCjsh2IxT/RtBhLjdDFimYk0tEGSZ1sPWYO/iweKXVTq/bHQIad4LZVlUrNDc65PckUPJVr1AqZ3FJwmohyJJWYWROaaQbvTyNj1+3QP9lqTmb+rBqbYIALgVOE7wthByO94F2rPQBTHGQ9CI7W9oTWvrXpSsJXKwO4bmJpA+GP9cO6pfdCTlOEB0X1EIMhRgsvk8jasVVr9sJZX9dsMdP7i9CuMlHfsWlTVZCdPl0Doaa2YYNZBJoUIa0HGlvbR5kbHeY/4jM7XvwaCex/4zvowBWn+yfDaPWgZuoeAq17YsBBlwkGhmwKn6/4fKPllwFGEukcekaqPW/+SCE0KO7uQV4cJTW4OeGqHbno47h4IfYfQ046ZMj6bpbeR+ICLDHf9rhJrRdBXm7FfGW0ruJ/L6L7TGhhaAy+dr9GNLFA5f3inl5nUEnnrt4QUZZctV0dDbDHlExD2ecQlCtQNbgwW6+nvKhpS/2VXj18Ax19d40N0GyCRCqH9h9HQvzs6hHoRBQOhVKKS7eiGGLej7a0kbMiDSKVPzOlq0HR7AWJ72x8gOb7mCtcEAdTbh25fzyh8iIy+KLmfooyS5RCR6sQbxaqJJE="
+  - os: linux
+    env: 
+      - GCC_VER="9"
+      - MATRIX_EVAL="CC=gcc-${GCC_VER} && CXX=g++-${GCC_VER}"
+    addons:
+      apt:
+        sources:
+          - ubuntu-toolchain-r-test
+        packages:
+          - gcc-9
+          - g++-9
+          - python3-pip
+      sonarcloud:
+        organization: "pallasz88"
+        token:
+          secure: "bXCLTQJ+gyNhYS2pIdzwPtzYsUu87gRVIwrqxo3XOVmZld8wAe791mO4L+lzaI+U4oR0R5tenQJ7EBCjsh2IxT/RtBhLjdDFimYk0tEGSZ1sPWYO/iweKXVTq/bHQIad4LZVlUrNDc65PckUPJVr1AqZ3FJwmohyJJWYWROaaQbvTyNj1+3QP9lqTmb+rBqbYIALgVOE7wthByO94F2rPQBTHGQ9CI7W9oTWvrXpSsJXKwO4bmJpA+GP9cO6pfdCTlOEB0X1EIMhRgsvk8jasVVr9sJZX9dsMdP7i9CuMlHfsWlTVZCdPl0Doaa2YYNZBJoUIa0HGlvbR5kbHeY/4jM7XvwaCex/4zvowBWn+yfDaPWgZuoeAq17YsBBlwkGhmwKn6/4fKPllwFGEukcekaqPW/+SCE0KO7uQV4cJTW4OeGqHbno47h4IfYfQ046ZMj6bpbeR+ICLDHf9rhJrRdBXm7FfGW0ruJ/L6L7TGhhaAy+dr9GNLFA5f3inl5nUEnnrt4QUZZctV0dDbDHlExD2ecQlCtQNbgwW6+nvKhpS/2VXj18Ax19d40N0GyCRCqH9h9HQvzs6hHoRBQOhVKKS7eiGGLej7a0kbMiDSKVPzOlq0HR7AWJ72x8gOb7mCtcEAdTbh25fzyh8iIy+KLmfooyS5RCR6sQbxaqJJE="
 
 before_script:
   - eval "${MATRIX_EVAL}"
 
 script:
+  - NUMBER_OF_PROCESSORS=$(nproc --all)
   - cmake .
-  - cmake --build . --target install -- -j2
-  - ctest -j 2
-  #- sonar-scanner
+  - build-wrapper-linux-x86-64 --out-dir bw-output cmake --build . --target install -- -j ${NUMBER_OF_PROCESSORS}
+  - ctest -j ${NUMBER_OF_PROCESSORS}
+    #  - sonar-scanner -Dsonar.cfamily.cache.enabled=true -Dsonar.cfamily.cache.path=${TRAVIS_HOME}/.cfamily -Dsonar.cfamily.threads=${NUMBER_OF_PROCESSORS}
+
+cache:
+  directories:
+    - $HOME/.sonar/cache
+    - $HOME/.cfamily
