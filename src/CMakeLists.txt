@@ -12,6 +12,10 @@ include_directories(vixen)
 add_subdirectory(vixen)
 
 add_executable(Vixen_0_0_5 ${SOURCE_FILES})
+if(MSVC)
+target_link_libraries(Vixen_0_0_5 Engine)
+else()
 target_link_libraries(Vixen_0_0_5 Engine pthread)
+endif()
 
 install(TARGETS Vixen_0_0_5 DESTINATION bin)

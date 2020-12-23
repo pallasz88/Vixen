@@ -134,5 +134,5 @@ class VIXEN_API Search
     static FixedList<Move> GetPV(int, Board &);
 };
 
-template std::array<int, 64ul> Vixen::Utility::MirrorTable<std::array<int, 64ul>>(std::array<int, 64ul> const &);
+template std::array<int, 64ul> Vixen::Utility::MirrorTable<std::array<int, 64ul>>(std::array<int, 64ul> const &) noexcept;
 } // namespace Vixen

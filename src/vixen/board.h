@@ -129,8 +129,8 @@ class VIXEN_API Board
 
     constexpr void UpdateKillers(const Move &move, const int depth)
     {
-        killer[1U][static_cast<unsigned>(depth)] = killer[0U][static_cast<unsigned>(depth)];
-        killer[0U][static_cast<unsigned>(depth)] = move;
+        killer[static_cast<unsigned>(depth)][1U] = killer[static_cast<unsigned>(depth)][0U];
+        killer[static_cast<unsigned>(depth)][0U] = move;
     }
 
     constexpr void IncreaseHistoryValue(const int depth, const unsigned from, const unsigned to)
@@ -250,8 +250,6 @@ class VIXEN_API Board
 
     template <size_t N, char delimiter = ' '>
     [[nodiscard]] constexpr auto SplitFenPosition(std::string_view position) const;
-
-    void ClearHistory();
 
     constexpr void MakeCapture(unsigned int to, char capturedPieceLetter, unsigned int moveType);
 

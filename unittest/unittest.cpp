@@ -8,6 +8,8 @@
 
 using namespace Vixen;
 
+Vixen::Hash::Keys Vixen::Hash::zobristKeys;
+
 BOOST_AUTO_TEST_CASE(Test_bit)
 {
     BOOST_TEST(1U == SquareToBitBoard(H1));

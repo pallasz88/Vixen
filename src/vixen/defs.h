@@ -2,11 +2,13 @@
 
 #include <algorithm>
 #include <array>
+#include <bit>
+#include <sstream>
 #include <string>
 #include <string_view>
 #include <unordered_map>
 
-#if defined _WIN32
+#if _MSC_VER >= 1910
 #define VIXEN_API __declspec(dllexport)
 #else
 #define VIXEN_API __attribute__((visibility("default")))
@@ -89,7 +91,7 @@ enum MoveTypes
     ALL_MOVE
 };
 
-enum class CastlingRights
+enum class CastlingRights : uint8_t
 {
     BQCA = 1,
     BKCA = 2,
@@ -227,10 +229,10 @@ struct Constants
          {CastlingRights::WQCA, static_cast<uint8_t>(D1)},
          {CastlingRights::WKCA, static_cast<uint8_t>(F1)}}};
 
-    static inline std::unordered_map<CastlingRights, uint8_t> castlingLookUp = {{{CastlingRights::WKCA, 3U},
-                                                                                 {CastlingRights::WQCA, 2U},
-                                                                                 {CastlingRights::BKCA, 1U},
-                                                                                 {CastlingRights::BQCA, 0U}}};
+    static inline std::unordered_map<CastlingRights, uint8_t> castlingLookUp = {{{CastlingRights::WKCA, static_cast<uint8_t>(3U)},
+                                                                                 {CastlingRights::WQCA, static_cast<uint8_t>(2U)},
+                                                                                 {CastlingRights::BKCA, static_cast<uint8_t>(1U)},
+                                                                                 {CastlingRights::BQCA, static_cast<uint8_t>(0U)}}};
 };
 
 #ifdef __cpp_lib_constexpr_algorithms
@@ -344,12 +346,12 @@ template <Colors pawnColor> constexpr BitBoard PawnCaptureRight(BitBoard pawns) 
 
 constexpr unsigned PopCount(BitBoard bitBoard) noexcept
 {
-    return static_cast<unsigned>(__builtin_popcountll(bitBoard));
+    return static_cast<unsigned>(std::popcount(bitBoard));
 }
 
 constexpr unsigned TrailingZeroCount(BitBoard bitBoard) noexcept
 {
-    return static_cast<unsigned>(__builtin_ctzll(bitBoard));
+    return static_cast<unsigned>(std::countr_zero(bitBoard));
 }
 
 constexpr unsigned GetPosition(BitBoard &bitBoard) noexcept

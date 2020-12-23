@@ -6,7 +6,7 @@ set(CMAKE_CXX_COMPILER_ARCHITECTURE_ID "x64")
 set(CMAKE_INSTALL_PREFIX ${PROJECT_SOURCE_DIR})
 set(Vixen_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/src/vixen)
 set(CMAKE_VERBOSE_MAKEFILE FALSE)
-option(OPTIMIZE_FOR_NATIVE "Build with -march=native" ON)
+option(OPTIMIZE_FOR_NATIVE "Build with -march=native" OFF)
 enable_testing()
 
 # Set RPATH
@@ -20,6 +20,7 @@ include(CheckCXXCompilerFlag)
 CHECK_CXX_COMPILER_FLAG("-march=native" COMPILER_SUPPORTS_MARCH_NATIVE)
 if (COMPILER_SUPPORTS_MARCH_NATIVE AND OPTIMIZE_FOR_NATIVE)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native")
+    MESSAGE(STATUS "We are optimizing for this machine.")
 endif ()
 
 add_subdirectory(src)

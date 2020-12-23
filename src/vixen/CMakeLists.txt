@@ -32,7 +32,7 @@ add_library(Engine SHARED ${SOURCE_FILES})
 target_link_libraries(Engine)
 
 if (MSVC)
-    target_compile_options(Engine PRIVATE /W4 /WX)
+    target_compile_options(Engine PRIVATE /W4)
 else ()
     set(CLANG_WARNINGS
             -Wall

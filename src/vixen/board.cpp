@@ -52,19 +52,14 @@ void Board::SetBoard(std::string_view position)
     ParseCastlingRightPart(parsedPosition[2]);
     SumUpBitBoards();
     enPassantBitBoard = SquareToBitBoard(Move::NotationToSquare(parsedPosition[3]));
-    std::from_chars(begin(parsedPosition[4]), end(parsedPosition[4]), fiftyMoves);
+    std::from_chars(parsedPosition[4].data(), parsedPosition[4].data() + parsedPosition[4].size(), fiftyMoves);
+    historyPly = fiftyMoves;
     AddHashBoard();
-    ClearHistory();
 }
 
 void Board::AddHashBoard()
 {
     hashBoard.ComputePositionKey(*this);
-}
-
-void Board::ClearHistory()
-{
-    historyPly = 0;
 }
 
 void Board::PrintBoard() const

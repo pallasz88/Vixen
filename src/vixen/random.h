@@ -2,6 +2,12 @@
 
 #include <cstdint>
 
+#if _MSC_VER >= 1910
+#undef max
+#undef min
+#define NOMINMAX
+#endif
+
 namespace Vixen
 {
 /**

@@ -4,8 +4,11 @@
 #include "fixture.h"
 #include "hash.h"
 #include "move_generator.h"
+#include <sstream>
 
 using namespace Vixen;
+
+Vixen::Hash::Keys Vixen::Hash::zobristKeys;
 
 BOOST_FIXTURE_TEST_SUITE(Test_perft, Fixture)
 

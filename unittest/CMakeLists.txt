@@ -1,17 +1,13 @@
 cmake_minimum_required(VERSION 3.13)
 
-if(CMAKE_CXX_COMPILER_ID MATCHES ".*Clang")
-    set(CMAKE_CXX_STANDARD 20)
-elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-    set(CMAKE_CXX_STANDARD 17)
-endif ()
+set(CMAKE_CXX_STANDARD 20)
 
 set(SOURCE_FILES unittest.cpp fixture.h)
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../src/vixen)
+include_directories(${PROJECT_SOURCE_DIR}/src/vixen)
 
-set(Boost_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../Extensions)
-set(BOOST_LIBRARYDIR ${CMAKE_CURRENT_SOURCE_DIR}/../Extensions/lib)
+set(Boost_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/Extensions)
+set(BOOST_LIBRARYDIR ${PROJECT_SOURCE_DIR}/Extensions/lib)
 set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME OFF)
 find_package(Boost)
