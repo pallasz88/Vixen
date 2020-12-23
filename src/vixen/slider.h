@@ -50,7 +50,7 @@ inline BitBoard GetRookAttack(unsigned int square, BitBoard occupied) noexcept
     return SliderUtils::RookTable[square].attacks[GetIndex(occupied, SliderUtils::RookTable[square])];
 }
 
-inline void GetNextCoordinate(int &file, int &rank, const Direction &direction) noexcept
+constexpr void GetNextCoordinate(int &file, int &rank, const Direction &direction) noexcept
 {
     file += direction[0], rank += direction[1];
 }
@@ -60,5 +60,5 @@ void InitMagics() noexcept;
 template <Slider slider>
 void InitSlidingAttack(unsigned int square, SliderDirections directions, Magic *table) noexcept;
 
-BitBoard SlidingAttack(unsigned int square, SliderDirections directions, BitBoard occupied) noexcept;
+constexpr BitBoard SlidingAttack(unsigned int square, SliderDirections directions, BitBoard occupied) noexcept;
 } // namespace Vixen::SliderUtils

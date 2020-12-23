@@ -41,7 +41,7 @@ template <Slider slider> void InitSlidingAttack(unsigned int square, SliderDirec
     } while (occupied);
 }
 
-BitBoard SlidingAttack(unsigned int square, SliderDirections directions, BitBoard occupied) noexcept
+constexpr BitBoard SlidingAttack(unsigned int square, SliderDirections directions, BitBoard occupied) noexcept
 {
     auto attacks = Constants::EMPTY_BOARD;
     for (const auto &direction : directions)

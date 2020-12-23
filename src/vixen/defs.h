@@ -309,7 +309,7 @@ constexpr bool IsValidCoordinate(int file, int rank) noexcept
 
 namespace
 {
-template <class T, class... Position> bool IsBitSet(const T &bits, Position &&... p) noexcept
+template <class T, class... Position> constexpr bool IsBitSet(const T &bits, Position &&... p) noexcept
 {
     return ((bits & (1ULL << p)) && ...);
 }
