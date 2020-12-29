@@ -41,7 +41,7 @@ Move Search::IterativeDeepening(Board &board, SearchInfo &info)
 {
     info.stopped = false;
     info.startTime = std::chrono::high_resolution_clock::now();
-    info.timeIndex = static_cast<int>(!board.IsWhiteToMove());
+    info.timeIndex = static_cast<size_t>(!board.IsWhiteToMove());
     std::pair<int, Move> result;
     Move bestMove{};
 
@@ -87,7 +87,9 @@ std::pair<int, Move> Search::Root(int depth, Board &board, SearchInfo &info)
         {
             const auto attacker = board.GetPieceList()[move.GetFromSquare()];
             const auto victim = board.GetPieceList()[move.GetToSquare()];
-            move.SetScore(mvvlvaTable[GetPieceIndex(attacker)][GetPieceIndex(victim)] + 1000000U);
+            move.SetScore(mvvlvaTable[static_cast<size_t>(GetPieceIndex(static_cast<unsigned char>(attacker)))]
+                                     [static_cast<size_t>(GetPieceIndex(static_cast<unsigned char>(victim)))] +
+                          1000000U);
         }
 
         else if (board.GetKiller(depth, 1) == move)
@@ -150,7 +152,6 @@ void CheckTime(SearchInfo &info)
 
     if (duration.count() >= allocatedTime)
         info.stopped = true;
-
 }
 
 int Search::NegaMax(int depth, int alpha, int beta, Board &board, SearchInfo &info)
@@ -170,11 +171,11 @@ int Search::NegaMax(int depth, int alpha, int beta, Board &board, SearchInfo &in
     if (inCheck)
         ++depth;
 
-    if(!inCheck && board.HasHeavyPieces())
+    if (!inCheck && board.HasHeavyPieces())
     {
-        board.MakeNullMove(board);
+        board.MakeNullMove();
         const auto val = -NegaMax(depth - 4, -beta, -beta + 1, board, info);
-        board.MakeNullMove(board);
+        board.TakeNullMove();
         if (info.stopped)
             return 0;
 
@@ -191,7 +192,9 @@ int Search::NegaMax(int depth, int alpha, int beta, Board &board, SearchInfo &in
         {
             const auto attacker = board.GetPieceList()[move.GetFromSquare()];
             const auto victim = board.GetPieceList()[move.GetToSquare()];
-            move.SetScore(mvvlvaTable[GetPieceIndex(attacker)][GetPieceIndex(victim)] + 1000000U);
+            move.SetScore(mvvlvaTable[static_cast<size_t>(GetPieceIndex(static_cast<unsigned char>(attacker)))]
+                                     [static_cast<size_t>(GetPieceIndex(static_cast<unsigned char>(victim)))] +
+                          1000000U);
         }
 
         else if (board.GetKiller(depth, 1) == move)
@@ -272,7 +275,9 @@ int Search::Quiescence(int alpha, int beta, Board &board, SearchInfo &info)
         {
             const auto attacker = board.GetPieceList()[move.GetFromSquare()];
             const auto victim = board.GetPieceList()[move.GetToSquare()];
-            move.SetScore(mvvlvaTable[GetPieceIndex(attacker)][GetPieceIndex(victim)] + 1000000U);
+            move.SetScore(mvvlvaTable[static_cast<size_t>(GetPieceIndex(static_cast<unsigned char>(attacker)))]
+                                     [static_cast<size_t>(GetPieceIndex(static_cast<unsigned char>(victim)))] +
+                          1000000U);
         }
     }
 

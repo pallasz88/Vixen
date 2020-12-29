@@ -108,7 +108,7 @@ constexpr void Board::ParseFenPiecePart(std::string_view parsedPosition)
         case 'r':
         case 'q':
         case 'k':
-            SetBit(bitBoards[static_cast<unsigned>(GetPieceIndex(fenChar))], squareIndex);
+            SetBit(bitBoards[static_cast<unsigned>(GetPieceIndex(static_cast<uint8_t>(fenChar)))], squareIndex);
             material += GetPieceMaterial(fenChar);
             pieceList[squareIndex] = fenChar;
             break;
@@ -180,11 +180,6 @@ constexpr void Board::ParseCastlingRightPart(std::string_view parsedPosition)
     }
 }
 
-void Board::MakeNullMove(Board &board)
-{
-    whiteToMove = !whiteToMove;
-}
-
 bool Board::MakeMove(Vixen::Move move)
 {
     const auto from = move.GetFromSquare();
@@ -227,8 +222,7 @@ bool Board::MakeMove(Vixen::Move move)
     if (moveType & PROMOTION)
     {
         char promotion = whiteToMove ? "NBRQ"[moveType & 3U] : "nbrq"[moveType & 3U];
-        material += GetPieceMaterial(promotion);
-        material -= (moveType & CAPTURE) ? GetPieceMaterial(movingPieceLetter) : 0;
+        material += GetPieceMaterial(promotion) - GetPieceMaterial(movingPieceLetter);
         RemovePiece(to, movingPieceLetter);
         AddPiece(to, promotion);
     }
@@ -312,8 +306,7 @@ void Board::TakeBack()
     else if (moveType & PROMOTION)
     {
         char promotion = whiteToMove ? "NBRQ"[moveType & 3U] : "nbrq"[moveType & 3U];
-        material -= GetPieceMaterial(promotion);
-        material += (moveType & CAPTURE) ? GetPieceMaterial(movingPieceLetter) : 0;
+        material -= GetPieceMaterial(promotion) - GetPieceMaterial(movingPieceLetter);
         RemovePiece(to, promotion);
         AddPiece(to, movingPieceLetter);
     }
@@ -339,19 +332,19 @@ void Board::TakeBack()
 constexpr void Board::RemovePiece(unsigned int position, char pieceType)
 {
     pieceList[position] = ' ';
-    ClearBit(bitBoards[static_cast<unsigned>(GetPieceIndex(pieceType))], position);
+    ClearBit(bitBoards[static_cast<unsigned>(GetPieceIndex(static_cast<uint8_t>(pieceType)))], position);
     ClearBit(bitBoards[static_cast<unsigned>(GetPieceIndex(IsBlackMoving(pieceType) ? 'S' : 'F'))], position);
     SetBit(bitBoards[GetPieceIndex(' ')], position);
-    hashBoard.HashPiece(position, pieceType);
+    hashBoard.HashPiece(position, static_cast<uint8_t>(pieceType));
 }
 
 constexpr void Board::AddPiece(unsigned int position, char pieceType)
 {
     pieceList[position] = pieceType;
-    SetBit(bitBoards[static_cast<unsigned>(GetPieceIndex(pieceType))], position);
+    SetBit(bitBoards[static_cast<unsigned>(GetPieceIndex(static_cast<uint8_t>(pieceType)))], position);
     SetBit(bitBoards[static_cast<unsigned>(GetPieceIndex(IsBlackMoving(pieceType) ? 'S' : 'F'))], position);
     ClearBit(bitBoards[GetPieceIndex(' ')], position);
-    hashBoard.HashPiece(position, pieceType);
+    hashBoard.HashPiece(position, static_cast<uint8_t>(pieceType));
 }
 
 template <uint8_t moveType> FixedList<Move> Board::GetMoveList() const

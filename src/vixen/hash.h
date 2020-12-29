@@ -63,9 +63,9 @@ class VIXEN_API Hash
     /**
      * For differentiating boards where white's or black's turn.
      */
-    void HashSide()
+    constexpr void HashSide()
     {
-        positionKey ^= zobristKeys.sideHashKey;
+        positionKey ^= sideKey;
     }
 
     static constexpr void InitZobristKeys()
@@ -79,10 +79,10 @@ class VIXEN_API Hash
                     PRNG::GenerateRandom(++i);
         }
 
-        zobristKeys.sideHashKey = PRNG::GenerateRandom(++i);
-
         for (auto &castleHashKey : zobristKeys.castleHashKeys)
             castleHashKey = PRNG::GenerateRandom(++i);
+
+        zobristKeys.sideHashKey = sideKey;
     }
 
     void ComputePositionKey(const Board &board);
@@ -96,6 +96,8 @@ class VIXEN_API Hash
 
   private:
     PositionKey positionKey;
+
+    static constexpr PositionKey sideKey = PRNG::GenerateRandom(70);
 
     static Keys zobristKeys;
 

@@ -143,7 +143,7 @@ void Uci::loop()
                 while (!is.eof())
                 {
                     is >> move;
-                    board->MakeMove(move);
+                    static_cast<void>(board->MakeMove(move));
                 }
             }
         }

@@ -30,8 +30,8 @@ struct History
 
     History() = default;
 
-    explicit History(BitBoard en, unsigned cr, unsigned fi, Move lastMove, char moved, char captured,
-                     PositionKey lastHash)
+    explicit constexpr History(BitBoard en, unsigned cr, unsigned fi, Move lastMove, char moved, char captured,
+                               PositionKey lastHash)
         : enPassant(en), hash(lastHash), castlingRights(cr), fiftyMoves(fi), move(lastMove), movedPiece(moved),
           capturedPiece(captured)
     {
@@ -124,7 +124,7 @@ class VIXEN_API Board
 
     [[nodiscard]] constexpr auto GetKiller(const int depth, const int index) const
     {
-        return killer[depth][index];
+        return killer[static_cast<size_t>(depth)][static_cast<size_t>(index)];
     }
 
     constexpr void UpdateKillers(const Move &move, const int depth)
@@ -143,12 +143,11 @@ class VIXEN_API Board
         return historyHeuristic[from][to];
     }
 
-    constexpr bool HasHeavyPieces() const
+    [[nodiscard]] constexpr bool HasHeavyPieces() const
     {
-        return IsWhiteToMove() ? 
-            static_cast<bool>(GetBitBoard('Q') | GetBitBoard('R') ) :
-            static_cast<bool>(GetBitBoard('q') | GetBitBoard('r'));
-    } 
+        return IsWhiteToMove() ? static_cast<bool>(GetBitBoard('Q') | GetBitBoard('R'))
+                               : static_cast<bool>(GetBitBoard('q') | GetBitBoard('r'));
+    }
 
     /**
      * Prints the board to console.
@@ -189,7 +188,23 @@ class VIXEN_API Board
 
     [[nodiscard]] bool MakeMove(std::string_view move);
 
-    void MakeNullMove(Board& board);
+    constexpr void MakeNullMove()
+    {
+        /*history[historyPly++] = History{enPassantBitBoard, castlingRights,      fiftyMoves,         Move{},
+                                        'Z', 'Z', hashBoard.GetHash()};*/
+        whiteToMove = !whiteToMove;
+        // hashBoard.HashSide();
+        // enPassantBitBoard = Constants::EMPTY_BOARD;
+        // hashBoard.HashEnPassant(enPassantBitBoard);
+    }
+
+    constexpr void TakeNullMove()
+    {
+        whiteToMove = !whiteToMove;
+        // hashBoard.HashSide();
+        // enPassantBitBoard = history[historyPly--].enPassant;
+        // hashBoard.HashEnPassant(enPassantBitBoard);
+    }
 
     /**
      * Rolls back to previous state of the board.

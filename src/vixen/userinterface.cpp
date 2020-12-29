@@ -72,7 +72,7 @@ void WaitUserInput(Vixen::Board &board)
         {
             auto moves = board.GetMoveList<ALL_MOVE>();
             std::uniform_int_distribution<unsigned> distribution(0, static_cast<unsigned>(moves.size()));
-            board.MakeMove(moves[distribution(e1)]);
+            static_cast<void>(board.MakeMove(moves[distribution(e1)]));
             board.PrintBoard();
         }
 

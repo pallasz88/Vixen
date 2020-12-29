@@ -298,7 +298,7 @@ BOOST_AUTO_TEST_CASE(Test_huge_amunt_of_moves)
 BOOST_AUTO_TEST_CASE(Test_making_moves)
 {
     board.SetBoard("7k/8/8/8/3P4/8/8/7K w - - 0 1");
-    board.MakeMove(Move{2332});
+    static_cast<void>(board.MakeMove(Move{2332}));
     board.PrintBoard();
     BOOST_TEST(board.GetBitBoard('P') == 68719476736ULL);
 
@@ -356,8 +356,8 @@ BOOST_AUTO_TEST_CASE(Test_making_moves)
     BOOST_TEST(board.GetCastlingRights() == 0b1111);
 
     // ENPASSANT
-    board.MakeMove(Move{6095});
-    board.MakeMove(Move{21982});
+    static_cast<void>(board.MakeMove(Move{6095}));
+    static_cast<void>(board.MakeMove(Move{21982}));
     board.PrintBoard();
     BOOST_TEST(board.GetBitBoard('P') == 68853720832ULL);
     BOOST_TEST(board.GetBitBoard('p') == 50676490932649984ULL);
@@ -374,8 +374,8 @@ BOOST_AUTO_TEST_CASE(Test_making_moves)
     BOOST_TEST(board.GetBitBoard('S') == 9925597129240281088ULL);
 
     board.TakeBack();
-    board.MakeMove(Move{17417});
-    board.MakeMove(Move{3771});
+    static_cast<void>(board.MakeMove(Move{17417}));
+    static_cast<void>(board.MakeMove(Move{3771}));
     board.PrintBoard();
     BOOST_TEST(Test::PerftTest(2, board) == 1790);
     board.TakeBack();
@@ -416,6 +416,8 @@ BOOST_AUTO_TEST_CASE(Test_material_balance)
     BOOST_TEST(board.GetMaterialBalance() == 500);
     UserInterface::TakeBackMove(board);
     BOOST_TEST(board.GetMaterialBalance() == -800);
+    UserInterface::MakeMove("e7d8q", board);
+    BOOST_TEST(board.GetMaterialBalance() == 900);
 
     board.SetBoard(Constants::TESTPOS1);
     const int materialBefore = board.GetMaterialBalance();

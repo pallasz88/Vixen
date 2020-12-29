@@ -229,10 +229,11 @@ struct Constants
          {CastlingRights::WQCA, static_cast<uint8_t>(D1)},
          {CastlingRights::WKCA, static_cast<uint8_t>(F1)}}};
 
-    static inline std::unordered_map<CastlingRights, uint8_t> castlingLookUp = {{{CastlingRights::WKCA, static_cast<uint8_t>(3U)},
-                                                                                 {CastlingRights::WQCA, static_cast<uint8_t>(2U)},
-                                                                                 {CastlingRights::BKCA, static_cast<uint8_t>(1U)},
-                                                                                 {CastlingRights::BQCA, static_cast<uint8_t>(0U)}}};
+    static inline std::unordered_map<CastlingRights, uint8_t> castlingLookUp = {
+        {{CastlingRights::WKCA, static_cast<uint8_t>(3U)},
+         {CastlingRights::WQCA, static_cast<uint8_t>(2U)},
+         {CastlingRights::BKCA, static_cast<uint8_t>(1U)},
+         {CastlingRights::BQCA, static_cast<uint8_t>(0U)}}};
 };
 
 #ifdef __cpp_lib_constexpr_algorithms
