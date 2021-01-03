@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <sstream>
+#include <thread>
 
 #include "board.h"
 #include "engine.h"
@@ -151,12 +152,18 @@ void Uci::loop()
         else if (token == "go")
         {
             UpdateSearchInfo(is, token);
-            const Move encodedMove = Search::IterativeDeepening(*board, *info);
-            std::cout << "bestmove " << encodedMove << '\n';
+            std::thread t(Search::IterativeDeepening, std::ref(*board), std::ref(*info));
+            t.detach();
         }
 
         else if (token == "quit")
             return;
+
+        else if (token == "stop")
+        {
+            info->stopped = true;
+        }
+        
     }
 }
 } // namespace Vixen

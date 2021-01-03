@@ -1,6 +1,7 @@
 #include "engine.h"
 
 #include <algorithm>
+#include <iostream>
 
 #include "move_generator.h"
 #include "uci.h"
@@ -37,7 +38,7 @@ FixedList<Move> Search::GetPV(int depth, Board &board)
     return moveList;
 }
 
-Move Search::IterativeDeepening(Board &board, SearchInfo &info)
+void Search::IterativeDeepening(Board &board, SearchInfo &info)
 {
     info.stopped = false;
     info.startTime = std::chrono::high_resolution_clock::now();
@@ -53,12 +54,12 @@ Move Search::IterativeDeepening(Board &board, SearchInfo &info)
         if (info.stopped)
         {
             info.stopped = false;
-            return bestMove;
+            std::cout << "bestmove " << result.second << std::endl;
+            return;
         }
         Uci::LogUci(info, result, depth, bestLine);
     }
-
-    return result.second;
+    std::cout << "bestmove " << bestMove << std::endl;
 }
 
 std::pair<int, Move> Search::Root(int depth, Board &board, SearchInfo &info)

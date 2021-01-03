@@ -1,6 +1,7 @@
 #pragma once
 
 #include <chrono>
+#include <thread>
 
 #include "defs.h"
 #include "fixed_list.h"
@@ -22,7 +23,7 @@ struct SearchInfo
     int moveTime{0};
     std::array<int, 2> time{-1, -1};
     std::array<int, 2> increment{};
-    bool stopped{false};
+    std::atomic_bool stopped{false};
     bool isTimeSet{};
 };
 
@@ -63,7 +64,7 @@ struct Utility
 class VIXEN_API Search
 {
   public:
-    static Move IterativeDeepening(Board &board, SearchInfo &info);
+    static void IterativeDeepening(Board &board, SearchInfo &info);
 
     static constexpr int MATE = 2999999;
 
