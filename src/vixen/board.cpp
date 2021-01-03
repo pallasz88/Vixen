@@ -194,6 +194,9 @@ bool Board::MakeMove(Vixen::Move move)
 
     ++fiftyMoves;
 
+    RemovePiece(from, movingPieceLetter);
+    UpdateCastlingRights(from, to);
+
     if (enPassantBitBoard != Constants::EMPTY_BOARD)
     {
         hashBoard.HashEnPassant(enPassantBitBoard);
@@ -215,17 +218,14 @@ bool Board::MakeMove(Vixen::Move move)
     else if (moveType == QUEEN_CASTLE)
         whiteToMove ? MoveCastlingWhiteRook(A1, D1) : MoveCastlingBlackRook(A8, D8);
 
-    RemovePiece(from, movingPieceLetter);
-    AddPiece(to, movingPieceLetter);
-    UpdateCastlingRights(from, to);
-
     if (moveType & PROMOTION)
     {
         char promotion = whiteToMove ? "NBRQ"[moveType & 3U] : "nbrq"[moveType & 3U];
         material += GetPieceMaterial(promotion) - GetPieceMaterial(movingPieceLetter);
-        RemovePiece(to, movingPieceLetter);
         AddPiece(to, promotion);
     }
+    else
+        AddPiece(to, movingPieceLetter);
 
     whiteToMove = !whiteToMove;
     hashBoard.HashSide();
