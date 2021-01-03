@@ -163,7 +163,6 @@ void Uci::loop()
         {
             info->stopped = true;
         }
-        
     }
 }
 } // namespace Vixen

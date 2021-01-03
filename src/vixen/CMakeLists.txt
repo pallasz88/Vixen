@@ -28,8 +28,9 @@ set(SOURCE_FILES
         userinterface.h
         userinterface.cpp)
 
+find_package(Threads)
 add_library(Engine SHARED ${SOURCE_FILES})
-target_link_libraries(Engine)
+target_link_libraries(Engine ${CMAKE_THREAD_LIBS_INIT})
 
 if (MSVC)
     target_compile_options(Engine PRIVATE /W4)
