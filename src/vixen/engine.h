@@ -1,7 +1,7 @@
 #pragma once
 
 #include <chrono>
-#include <thread>
+#include <atomic>
 
 #include "defs.h"
 #include "fixed_list.h"
