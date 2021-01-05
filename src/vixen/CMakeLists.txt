@@ -22,6 +22,7 @@ set(SOURCE_FILES
         random.h
         slider.cpp
         slider.h
+        small_map.h
         timer.h
         uci.h
         uci.cpp

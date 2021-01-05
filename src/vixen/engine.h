@@ -2,6 +2,7 @@
 
 #include <atomic>
 #include <chrono>
+#include <functional> 
 
 #include "defs.h"
 #include "fixed_list.h"
@@ -38,6 +39,7 @@ struct Utility
     {
         T reversed{};
         std::reverse_copy(begin(table), end(table), begin(reversed));
+	std::transform(cbegin(reversed), cend(reversed), begin(reversed), std::negate<typename T::value_type>());
         return reversed;
     }
 
@@ -98,16 +100,18 @@ class VIXEN_API Search
 
 #if (__cpp_lib_constexpr_algorithms)
 
-    static constexpr std::array pawnTable = Utility::MirrorTable(PawnTable);
+    static constexpr std::array pawnTable = Utility::NegateTable(Utility::MirrorTable(PawnTable));
 
-    static constexpr std::array knightTable = Utility::MirrorTable(KnightTable);
+    static constexpr std::array knightTable = Utility::NegateTable(Utility::MirrorTable(KnightTable));
 
-    static constexpr std::array bishopTable = Utility::MirrorTable(BishopTable);
+    static constexpr std::array bishopTable = Utility::NegateTable(Utility::MirrorTable(BishopTable));
 
-    static constexpr std::array rookTable = Utility::MirrorTable(RookTable);
+    static constexpr std::array rookTable = Utility::NegateTable(Utility::MirrorTable(RookTable));
 
-    static constexpr std::array arrayLookUp{pawnTable, knightTable, bishopTable, rookTable,
-                                            PawnTable, KnightTable, BishopTable, RookTable};
+    static constexpr std::array arrayLookUp = {{
+        {'p', pawnTable}, {'n', knightTable}, {'b', bishopTable}, {'r', rookTable},
+        {'P', PawnTable}, {'N', KnightTable}, {'B', BishopTable}, {'R', RookTable},
+    }};
 
 #else
 
@@ -119,8 +123,10 @@ class VIXEN_API Search
 
     static inline std::array rookTable = Utility::MirrorTable(RookTable);
 
-    static inline std::array arrayLookUp{pawnTable, knightTable, bishopTable, rookTable,
-                                         PawnTable, KnightTable, BishopTable, RookTable};
+    static inline std::array<std::pair<char, std::array<int, 64>>, 8> arrayLookUp = {{
+        {'p', pawnTable}, {'n', knightTable}, {'b', bishopTable}, {'r', rookTable},
+        {'P', PawnTable}, {'N', KnightTable}, {'B', BishopTable}, {'R', RookTable},
+    }};
 
 #endif
 
