@@ -1,5 +1,4 @@
 #include "engine.h"
-#include "small_map.h"
 
 #include <algorithm>
 #include <iostream>
@@ -307,17 +306,15 @@ int Search::Quiescence(int alpha, int beta, Board &board, SearchInfo &info)
 
 int Search::Evaluate(const Board &board)
 {
-    static
-#if (__cpp_lib_constexpr_algorithms)
-    constexpr
-#endif 
-    SmallMap lookUpMap{arrayLookUp};
     int score = board.GetMaterialBalance();
 
-    for (unsigned i = 0; i < Constants::SQUARE_NUMBER; ++i)
+    unsigned i = 0;
+    for (const char piece : board.GetPieceList())
     {
-        const char piece = board.GetPieceList()[i];
-        score += lookUpMap.at(piece)[i];
+        if (piece == 'P' || piece == 'N' || piece == 'B' || piece == 'R' ||
+            piece == 'p' || piece == 'n' || piece == 'b' || piece == 'r')
+            score += arrayLookUp[GetEvalIndex(piece)][i];
+        ++i;
     }
 
     return board.IsWhiteToMove() ? score : -score;
