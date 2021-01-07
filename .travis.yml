@@ -29,7 +29,7 @@ before_script:
 
 script:
   - NUMBER_OF_PROCESSORS=$(nproc --all)
-  - cmake .
+  - cmake -DBENCHMARK_DOWNLOAD_DEPENDENCIES=ON .
   - build-wrapper-linux-x86-64 --out-dir bw-output cmake --build . --target install -- -j ${NUMBER_OF_PROCESSORS}
   - ctest -j ${NUMBER_OF_PROCESSORS}
     #  - sonar-scanner -Dsonar.cfamily.cache.enabled=true -Dsonar.cfamily.cache.path=${TRAVIS_HOME}/.cfamily -Dsonar.cfamily.threads=${NUMBER_OF_PROCESSORS}
