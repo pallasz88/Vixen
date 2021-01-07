@@ -3,7 +3,9 @@
 #include <algorithm>
 #include <array>
 #include <bit>
+#if _MSC_VER >= 1910
 #include <sstream>
+#endif
 #include <string>
 #include <string_view>
 #include <unordered_map>
@@ -264,18 +266,26 @@ constexpr bool IsWhitePiece(char piece) noexcept
     return piece >= 'A' && piece < 'Z';
 }
 
-static constexpr std::array evalMap{std::make_pair('P', 4), std::make_pair('N', 5), std::make_pair('B', 6),
-                                    std::make_pair('R', 7), std::make_pair('p', 0), std::make_pair('n', 1),
-                                    std::make_pair('b', 2), std::make_pair('r', 3)};
-
 constexpr auto GetEvalIndex(char c) noexcept
 {
-    for (const auto &i : evalMap)
-    {
-        if (i.first == c)
-            return i.second;
-    }
-    return -1;
+    if (c == 'p')
+        return 0;
+    else if (c == 'n')
+        return 1;
+    else if (c == 'b')
+        return 2;
+    else if (c == 'r')
+        return 3;
+    else if (c == 'P')
+        return 4;
+    else if (c == 'N')
+        return 5;
+    else if (c == 'B')
+        return 6;
+    else if (c == 'R')
+        return 7;
+    else
+        return -1;
 }
 
 constexpr auto GetPieceMaterial(char c) noexcept

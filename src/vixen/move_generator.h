@@ -17,7 +17,7 @@ class VIXEN_API MoveGenerator
      * Returns pseudo-legal move list.
      * @return moveList
      */
-    [[nodiscard]] auto GetMoveList() const noexcept
+    [[nodiscard]] constexpr auto GetMoveList() const noexcept
     {
         return moveList;
     }

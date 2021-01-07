@@ -5,6 +5,13 @@
 #include "board.h"
 #include <iostream>
 
+Vixen::Hash::Keys Vixen::Hash::zobristKeys;
+
+
+static constexpr std::array evalMap{std::make_pair('P', 4), std::make_pair('N', 5), std::make_pair('B', 6),
+                                    std::make_pair('R', 7), std::make_pair('p', 0), std::make_pair('n', 1),
+                                    std::make_pair('b', 2), std::make_pair('r', 3)};
+
 constexpr int GetEvalIndexIfElse(char c) noexcept
 {
     if (c == 'p') return 0;
@@ -20,7 +27,7 @@ constexpr int GetEvalIndexIfElse(char c) noexcept
 
 constexpr auto GetEvalIndexLoop(char c) noexcept
 {
-    for (const auto &i : Vixen::evalMap)
+    for (const auto &i : evalMap)
     {
         if (i.first == c)
             return i.second;
@@ -59,15 +66,6 @@ int EvaluateLoop(const Vixen::Board &board)
 
     return board.IsWhiteToMove() ? score : -score;
 }
-
-static void BM_Evaluate(benchmark::State& state)
-{
-    Vixen::Board board;
-    board.SetBoard(Vixen::Constants::TESTPOS1);
-    for (auto _ : state)
-       benchmark::DoNotOptimize(Vixen::Search::Evaluate(board));
-}
-BENCHMARK(BM_Evaluate);
 
 static void BM_EvalIfElse(benchmark::State& state)
 {

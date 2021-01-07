@@ -88,9 +88,10 @@ std::pair<int, Move> Search::Root(int depth, Board &board, SearchInfo &info)
         {
             const auto attacker = board.GetPieceList()[move.GetFromSquare()];
             const auto victim = board.GetPieceList()[move.GetToSquare()];
-            move.SetScore(mvvlvaTable[static_cast<size_t>(GetPieceIndex(static_cast<unsigned char>(attacker)))]
-                                     [static_cast<size_t>(GetPieceIndex(static_cast<unsigned char>(victim)))] +
-                          1000000U);
+            const auto attackerIndex = static_cast<size_t>(GetPieceIndex(static_cast<unsigned char>(attacker)));
+            const auto victimIndex = static_cast<size_t>(GetPieceIndex(static_cast<unsigned char>(victim)));
+            if (attackerIndex < 13U && victimIndex < 13U)
+                move.SetScore(mvvlvaTable[attackerIndex][victimIndex] + 1000000U);
         }
 
         else if (board.GetKiller(depth, 1) == move)
@@ -193,9 +194,10 @@ int Search::NegaMax(int depth, int alpha, int beta, Board &board, SearchInfo &in
         {
             const auto attacker = board.GetPieceList()[move.GetFromSquare()];
             const auto victim = board.GetPieceList()[move.GetToSquare()];
-            move.SetScore(mvvlvaTable[static_cast<size_t>(GetPieceIndex(static_cast<unsigned char>(attacker)))]
-                                     [static_cast<size_t>(GetPieceIndex(static_cast<unsigned char>(victim)))] +
-                          1000000U);
+            const auto attackerIndex = static_cast<size_t>(GetPieceIndex(static_cast<unsigned char>(attacker)));
+            const auto victimIndex = static_cast<size_t>(GetPieceIndex(static_cast<unsigned char>(victim)));
+            if (attackerIndex < 13U && victimIndex < 13U)
+                move.SetScore(mvvlvaTable[attackerIndex][victimIndex] + 1000000U);
         }
 
         else if (board.GetKiller(depth, 1) == move)
@@ -276,9 +278,10 @@ int Search::Quiescence(int alpha, int beta, Board &board, SearchInfo &info)
         {
             const auto attacker = board.GetPieceList()[move.GetFromSquare()];
             const auto victim = board.GetPieceList()[move.GetToSquare()];
-            move.SetScore(mvvlvaTable[static_cast<size_t>(GetPieceIndex(static_cast<unsigned char>(attacker)))]
-                                     [static_cast<size_t>(GetPieceIndex(static_cast<unsigned char>(victim)))] +
-                          1000000U);
+            const auto attackerIndex = static_cast<size_t>(GetPieceIndex(static_cast<unsigned char>(attacker)));
+            const auto victimIndex = static_cast<size_t>(GetPieceIndex(static_cast<unsigned char>(victim)));
+            if (attackerIndex < 13U && victimIndex < 13U)
+                move.SetScore(mvvlvaTable[attackerIndex][victimIndex] + 1000000U);
         }
     }
 
@@ -313,7 +316,7 @@ int Search::Evaluate(const Board &board)
     {
         if (piece == 'P' || piece == 'N' || piece == 'B' || piece == 'R' ||
             piece == 'p' || piece == 'n' || piece == 'b' || piece == 'r')
-            score += arrayLookUp[GetEvalIndex(piece)][i];
+            score += arrayLookUp[static_cast<std::size_t>(GetEvalIndex(piece))][i];
         ++i;
     }
 

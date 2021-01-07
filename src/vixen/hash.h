@@ -55,7 +55,7 @@ class VIXEN_API Hash
      * @param square
      * @param pieceKey
      */
-    constexpr void HashPiece(unsigned square, unsigned char pieceKey)
+    constexpr void HashPiece(unsigned square, unsigned char pieceKey) noexcept
     {
         positionKey ^= zobristKeys.pieceHashKeys[square][static_cast<unsigned>(GetPieceIndex(pieceKey))];
     }

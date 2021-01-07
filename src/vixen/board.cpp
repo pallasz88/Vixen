@@ -26,7 +26,7 @@ Board::Board()
     SetBoard(Constants::START_POSITION);
 }
 
-template <size_t N, char delimiter>[[nodiscard]] constexpr auto Board::SplitFenPosition(std::string_view position) const
+template <size_t N, char delimiter>[[nodiscard]] constexpr auto Board::SplitFenPosition(std::string_view position) const noexcept
 {
     std::array<std::string_view, N> parts;
     auto part = 0ULL;
@@ -62,7 +62,7 @@ void Board::AddHashBoard()
     hashBoard.ComputePositionKey(*this);
 }
 
-void Board::PrintBoard() const
+void Board::PrintBoard() const noexcept
 {
     std::cout << "\n+---+---+---+---+---+---+---+---+\n";
     for (unsigned squareIndex = 64; squareIndex-- != 0;)
@@ -238,7 +238,7 @@ bool Board::MakeMove(Vixen::Move move)
     return true;
 }
 
-constexpr void Board::UpdateCastlingRights(unsigned int from, unsigned int to)
+constexpr void Board::UpdateCastlingRights(unsigned int from, unsigned int to) noexcept
 {
     hashBoard.HashCastling(castlingRights);
     castlingRights &= castlePermission[from];
@@ -246,25 +246,25 @@ constexpr void Board::UpdateCastlingRights(unsigned int from, unsigned int to)
     hashBoard.HashCastling(castlingRights);
 }
 
-constexpr void Board::MoveCastlingWhiteRook(unsigned int from, unsigned int to)
+constexpr void Board::MoveCastlingWhiteRook(unsigned int from, unsigned int to) noexcept
 {
     RemovePiece(from, 'R');
     AddPiece(to, 'R');
 }
 
-constexpr void Board::MoveCastlingBlackRook(unsigned int from, unsigned int to)
+constexpr void Board::MoveCastlingBlackRook(unsigned int from, unsigned int to) noexcept
 {
     RemovePiece(from, 'r');
     AddPiece(to, 'r');
 }
 
-constexpr void Board::MakeDoublePawnPush(unsigned int enPassantSquare)
+constexpr void Board::MakeDoublePawnPush(unsigned int enPassantSquare) noexcept
 {
     SetBit(enPassantBitBoard, enPassantSquare);
     hashBoard.HashEnPassant(enPassantBitBoard);
 }
 
-constexpr void Board::MakeCapture(unsigned int to, char capturedPieceLetter, unsigned int moveType)
+constexpr void Board::MakeCapture(unsigned int to, char capturedPieceLetter, unsigned int moveType) noexcept
 {
     fiftyMoves = 0;
     if (moveType != ENPASSANT)
@@ -329,7 +329,7 @@ void Board::TakeBack()
     hashBoard.SetHash(lastPosition.hash);
 }
 
-constexpr void Board::RemovePiece(unsigned int position, char pieceType)
+constexpr void Board::RemovePiece(unsigned int position, char pieceType) noexcept
 {
     pieceList[position] = ' ';
     ClearBit(bitBoards[static_cast<unsigned>(GetPieceIndex(static_cast<uint8_t>(pieceType)))], position);
@@ -338,7 +338,7 @@ constexpr void Board::RemovePiece(unsigned int position, char pieceType)
     hashBoard.HashPiece(position, static_cast<uint8_t>(pieceType));
 }
 
-constexpr void Board::AddPiece(unsigned int position, char pieceType)
+constexpr void Board::AddPiece(unsigned int position, char pieceType) noexcept
 {
     pieceList[position] = pieceType;
     SetBit(bitBoards[static_cast<unsigned>(GetPieceIndex(static_cast<uint8_t>(pieceType)))], position);
@@ -347,7 +347,7 @@ constexpr void Board::AddPiece(unsigned int position, char pieceType)
     hashBoard.HashPiece(position, static_cast<uint8_t>(pieceType));
 }
 
-template <uint8_t moveType> FixedList<Move> Board::GetMoveList() const
+template <uint8_t moveType> FixedList<Move> Board::GetMoveList() const noexcept
 {
     MoveGenerator moveGenerator;
     whiteToMove ? moveGenerator.GenerateMoves<Colors::WHITE, moveType>(*this)
@@ -390,8 +390,8 @@ bool Board::MakeMove(std::string_view notation)
     return false;
 }
 
-template VIXEN_API FixedList<Move> Board::GetMoveList<CAPTURE>() const;
+template VIXEN_API FixedList<Move> Board::GetMoveList<CAPTURE>() const noexcept;
 
-template VIXEN_API FixedList<Move> Board::GetMoveList<ALL_MOVE>() const;
+template VIXEN_API FixedList<Move> Board::GetMoveList<ALL_MOVE>() const noexcept;
 
 } // namespace Vixen
