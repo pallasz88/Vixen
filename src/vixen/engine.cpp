@@ -54,7 +54,7 @@ void Search::IterativeDeepening(Board &board, SearchInfo &info)
         if (info.stopped)
         {
             info.stopped = false;
-            std::cout << "bestmove " << result.second << std::endl;
+            std::cout << "bestmove " << bestMove << std::endl;
             return;
         }
         Uci::LogUci(info, result, depth, bestLine);

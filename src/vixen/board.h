@@ -190,20 +190,12 @@ class VIXEN_API Board
 
     constexpr void MakeNullMove()
     {
-        /*history[historyPly++] = History{enPassantBitBoard, castlingRights,      fiftyMoves,         Move{},
-                                        'Z', 'Z', hashBoard.GetHash()};*/
         whiteToMove = !whiteToMove;
-        // hashBoard.HashSide();
-        // enPassantBitBoard = Constants::EMPTY_BOARD;
-        // hashBoard.HashEnPassant(enPassantBitBoard);
     }
 
     constexpr void TakeNullMove()
     {
         whiteToMove = !whiteToMove;
-        // hashBoard.HashSide();
-        // enPassantBitBoard = history[historyPly--].enPassant;
-        // hashBoard.HashEnPassant(enPassantBitBoard);
     }
 
     /**
