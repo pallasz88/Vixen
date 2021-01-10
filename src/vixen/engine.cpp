@@ -314,8 +314,8 @@ int Search::Evaluate(const Board &board)
     unsigned i = 0;
     for (const char piece : board.GetPieceList())
     {
-        if (piece == 'P' || piece == 'N' || piece == 'B' || piece == 'R' ||
-            piece == 'p' || piece == 'n' || piece == 'b' || piece == 'r')
+        if (piece == 'P' || piece == 'N' || piece == 'B' || piece == 'R' || piece == 'p' || piece == 'n' ||
+            piece == 'b' || piece == 'r')
             score += arrayLookUp[static_cast<std::size_t>(GetEvalIndex(piece))][i];
         ++i;
     }

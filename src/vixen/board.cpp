@@ -26,7 +26,8 @@ Board::Board()
     SetBoard(Constants::START_POSITION);
 }
 
-template <size_t N, char delimiter>[[nodiscard]] constexpr auto Board::SplitFenPosition(std::string_view position) const noexcept
+template <size_t N, char delimiter>
+[[nodiscard]] constexpr auto Board::SplitFenPosition(std::string_view position) const noexcept
 {
     std::array<std::string_view, N> parts;
     auto part = 0ULL;
