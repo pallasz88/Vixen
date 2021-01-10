@@ -152,7 +152,7 @@ class VIXEN_API Board
     /**
      * Prints the board to console.
      */
-    void PrintBoard() const;
+    void PrintBoard() const noexcept;
 
     /**
      * Sets board from FEN position.
@@ -167,14 +167,14 @@ class VIXEN_API Board
      * @param position
      * @param pieceType
      */
-    constexpr void RemovePiece(unsigned int position, char pieceType);
+    constexpr void RemovePiece(unsigned int position, char pieceType) noexcept;
 
     /**
      * Adds given piece type to given position.
      * @param position
      * @param pieceType
      */
-    constexpr void AddPiece(unsigned int position, char pieceType);
+    constexpr void AddPiece(unsigned int position, char pieceType) noexcept;
 
     /**
      * Tries to move a pseudo-legal move.
@@ -207,7 +207,7 @@ class VIXEN_API Board
      * Returns a generator of pseudo-legal moves from given position.
      * @return pseudo-legal moves
      */
-    template <uint8_t moveType>[[nodiscard]] FixedList<Move> GetMoveList() const;
+    template <uint8_t moveType>[[nodiscard]] FixedList<Move> GetMoveList() const noexcept;
 
     [[nodiscard]] constexpr bool IsRepetition() const
     {
@@ -256,16 +256,16 @@ class VIXEN_API Board
     constexpr void ParseCastlingRightPart(std::string_view parsedPosition);
 
     template <size_t N, char delimiter = ' '>
-    [[nodiscard]] constexpr auto SplitFenPosition(std::string_view position) const;
+    [[nodiscard]] constexpr auto SplitFenPosition(std::string_view position) const noexcept;
 
-    constexpr void MakeCapture(unsigned int to, char capturedPieceLetter, unsigned int moveType);
+    constexpr void MakeCapture(unsigned int to, char capturedPieceLetter, unsigned int moveType) noexcept;
 
-    constexpr void MakeDoublePawnPush(unsigned int enPassantSquare);
+    constexpr void MakeDoublePawnPush(unsigned int enPassantSquare) noexcept;
 
-    constexpr void MoveCastlingWhiteRook(unsigned int from, unsigned int to);
+    constexpr void MoveCastlingWhiteRook(unsigned int from, unsigned int to) noexcept;
 
-    constexpr void MoveCastlingBlackRook(unsigned int from, unsigned int to);
+    constexpr void MoveCastlingBlackRook(unsigned int from, unsigned int to) noexcept;
 
-    constexpr void UpdateCastlingRights(unsigned int from, unsigned int to);
+    constexpr void UpdateCastlingRights(unsigned int from, unsigned int to) noexcept;
 };
 } // namespace Vixen
