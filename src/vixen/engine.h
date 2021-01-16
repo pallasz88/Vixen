@@ -137,6 +137,8 @@ class VIXEN_API Search
     static std::pair<int, Move> Root(int depth, Board &board, SearchInfo &info);
 
     static FixedList<Move> GetPV(int, Board &);
+
+    static void OrderCapture(const Board &board, Move &move);
 };
 
 template std::array<int, 64ul> Vixen::Utility::MirrorTable<std::array<int, 64ul>>(

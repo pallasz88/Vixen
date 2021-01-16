@@ -127,10 +127,22 @@ class VIXEN_API Board
         return killer[static_cast<size_t>(depth)][static_cast<size_t>(index)];
     }
 
+    constexpr void ResetKillers()
+    {
+        for (auto &k : killer)
+            std::fill(std::begin(k), std::end(k), Move());
+    }
+
     constexpr void UpdateKillers(const Move &move, const int depth)
     {
         killer[static_cast<unsigned>(depth)][1U] = killer[static_cast<unsigned>(depth)][0U];
         killer[static_cast<unsigned>(depth)][0U] = move;
+    }
+
+    constexpr void ResetHistory()
+    {
+        for (auto &h : historyHeuristic)
+            std::fill(std::begin(h), std::end(h), 0);
     }
 
     constexpr void IncreaseHistoryValue(const int depth, const unsigned from, const unsigned to)
@@ -184,16 +196,16 @@ class VIXEN_API Board
      * @param move
      * @return
      */
-    [[nodiscard]] bool MakeMove(Move move);
+    [[nodiscard]] bool MakeMove(Move move) noexcept;
 
     [[nodiscard]] bool MakeMove(std::string_view move);
 
-    constexpr void MakeNullMove()
+    constexpr void MakeNullMove() noexcept
     {
         whiteToMove = !whiteToMove;
     }
 
-    constexpr void TakeNullMove()
+    constexpr void TakeNullMove() noexcept
     {
         whiteToMove = !whiteToMove;
     }
@@ -209,7 +221,7 @@ class VIXEN_API Board
      */
     template <uint8_t moveType>[[nodiscard]] FixedList<Move> GetMoveList() const noexcept;
 
-    [[nodiscard]] constexpr bool IsRepetition() const
+    [[nodiscard]] constexpr bool IsRepetition() const noexcept
     {
 #ifdef __cpp_lib_constexpr_algorithms
         return std::find(begin(history) + historyPly - fiftyMoves, begin(history) + historyPly, hashBoard.GetHash()) !=

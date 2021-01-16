@@ -213,7 +213,7 @@ template <Colors sideToMove> constexpr void MoveGenerator::GenerateCastlingMoves
                !Check::IsSquareAttacked<sideToMove>(Constants::rookSquareAfterCastling[castlingRight], board);
     };
 
-    if (sideToMove == Colors::WHITE)
+    if constexpr (sideToMove == Colors::WHITE)
     {
         if (isCastlingAvailable(CastlingRights::WKCA))
             moveList.emplace_back(E1, G1, KING_CASTLE);
@@ -234,7 +234,7 @@ template <Colors sideToMove> constexpr void MoveGenerator::GenerateCastlingMoves
 template <Colors sideToMove, uint8_t moveType> void MoveGenerator::GenerateMoves(const Vixen::Board &board) noexcept
 {
     GenerateCaptureMoves<sideToMove>(board);
-    if (moveType == CAPTURE)
+    if constexpr (moveType == CAPTURE)
         return;
 
     GenerateQuietMoves<sideToMove>(board);

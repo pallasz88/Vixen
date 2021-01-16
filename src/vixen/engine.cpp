@@ -45,6 +45,9 @@ void Search::IterativeDeepening(Board &board, SearchInfo &info)
     info.timeIndex = static_cast<size_t>(!board.IsWhiteToMove());
     std::pair<int, Move> result;
     Move bestMove{};
+    ++info.nodesCount;
+    board.ResetKillers();
+    board.ResetHistory();
 
     for (int depth = 1; depth <= info.maxDepth; ++depth)
     {
@@ -62,13 +65,22 @@ void Search::IterativeDeepening(Board &board, SearchInfo &info)
     std::cout << "bestmove " << bestMove << std::endl;
 }
 
+void Search::OrderCapture(const Board &board, Move &move)
+{
+    const auto attacker = board.GetPieceList()[move.GetFromSquare()];
+    const auto victim = board.GetPieceList()[move.GetToSquare()];
+    const auto attackerIndex = static_cast<size_t>(GetPieceIndex(static_cast<unsigned char>(attacker)));
+    const auto victimIndex = static_cast<size_t>(GetPieceIndex(static_cast<unsigned char>(victim)));
+    if (attackerIndex < 13U && victimIndex < 13U)
+        move.SetScore(mvvlvaTable[attackerIndex][victimIndex] + 1000000U);
+}
+
 std::pair<int, Move> Search::Root(int depth, Board &board, SearchInfo &info)
 {
     auto moveList = board.GetMoveList<ALL_MOVE>();
     int alpha = -MATE;
     int beta = MATE;
     Move bestMove{0U};
-    ++info.nodesCount;
 
     const auto pvEntry = pv.GetPVEntry(board.GetHash());
 
@@ -85,14 +97,7 @@ std::pair<int, Move> Search::Root(int depth, Board &board, SearchInfo &info)
         }
 
         if ((move.GetMoveType() & CAPTURE) == CAPTURE)
-        {
-            const auto attacker = board.GetPieceList()[move.GetFromSquare()];
-            const auto victim = board.GetPieceList()[move.GetToSquare()];
-            const auto attackerIndex = static_cast<size_t>(GetPieceIndex(static_cast<unsigned char>(attacker)));
-            const auto victimIndex = static_cast<size_t>(GetPieceIndex(static_cast<unsigned char>(victim)));
-            if (attackerIndex < 13U && victimIndex < 13U)
-                move.SetScore(mvvlvaTable[attackerIndex][victimIndex] + 1000000U);
-        }
+            OrderCapture(board, move);
 
         else if (board.GetKiller(depth, 1) == move)
             move.SetScore(900000U);
@@ -150,7 +155,7 @@ void CheckTime(SearchInfo &info)
     double allocatedTime = info.moveTime;
     if (info.isTimeSet)
         if (info.time[info.timeIndex] != -1)
-            allocatedTime = static_cast<double>(info.time[info.timeIndex]) / 30. - 50;
+            allocatedTime = static_cast<double>(info.time[info.timeIndex]) / 30. - 50.;
 
     if (duration.count() >= allocatedTime)
         info.stopped = true;
@@ -191,14 +196,7 @@ int Search::NegaMax(int depth, int alpha, int beta, Board &board, SearchInfo &in
     for (auto &move : moveList)
     {
         if ((move.GetMoveType() & CAPTURE) == CAPTURE)
-        {
-            const auto attacker = board.GetPieceList()[move.GetFromSquare()];
-            const auto victim = board.GetPieceList()[move.GetToSquare()];
-            const auto attackerIndex = static_cast<size_t>(GetPieceIndex(static_cast<unsigned char>(attacker)));
-            const auto victimIndex = static_cast<size_t>(GetPieceIndex(static_cast<unsigned char>(victim)));
-            if (attackerIndex < 13U && victimIndex < 13U)
-                move.SetScore(mvvlvaTable[attackerIndex][victimIndex] + 1000000U);
-        }
+            OrderCapture(board, move);
 
         else if (board.GetKiller(depth, 1) == move)
             move.SetScore(900000U);
@@ -273,17 +271,8 @@ int Search::Quiescence(int alpha, int beta, Board &board, SearchInfo &info)
     auto moveList = board.GetMoveList<CAPTURE>();
 
     for (auto &move : moveList)
-    {
         if ((move.GetMoveType() & CAPTURE) == CAPTURE)
-        {
-            const auto attacker = board.GetPieceList()[move.GetFromSquare()];
-            const auto victim = board.GetPieceList()[move.GetToSquare()];
-            const auto attackerIndex = static_cast<size_t>(GetPieceIndex(static_cast<unsigned char>(attacker)));
-            const auto victimIndex = static_cast<size_t>(GetPieceIndex(static_cast<unsigned char>(victim)));
-            if (attackerIndex < 13U && victimIndex < 13U)
-                move.SetScore(mvvlvaTable[attackerIndex][victimIndex] + 1000000U);
-        }
-    }
+            OrderCapture(board, move);
 
     for (auto it = begin(moveList); it != end(moveList); ++it)
     {
