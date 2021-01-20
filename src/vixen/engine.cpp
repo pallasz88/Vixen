@@ -67,12 +67,18 @@ void Search::IterativeDeepening(Board &board, SearchInfo &info)
 
 void Search::OrderCapture(const Board &board, Move &move)
 {
-    const auto attacker = board.GetPieceList()[move.GetFromSquare()];
-    const auto victim = board.GetPieceList()[move.GetToSquare()];
-    const auto attackerIndex = static_cast<size_t>(GetPieceIndex(static_cast<unsigned char>(attacker)));
-    const auto victimIndex = static_cast<size_t>(GetPieceIndex(static_cast<unsigned char>(victim)));
-    if (attackerIndex < 13U && victimIndex < 13U)
+    if ((move.GetMoveType() & ENPASSANT) != ENPASSANT)
+    {
+        const auto attacker = board.GetPieceList()[move.GetFromSquare()];
+        const auto victim = board.GetPieceList()[move.GetToSquare()];
+        const auto attackerIndex = static_cast<size_t>(GetPieceIndex(static_cast<unsigned char>(attacker)));
+        const auto victimIndex = static_cast<size_t>(GetPieceIndex(static_cast<unsigned char>(victim)));
         move.SetScore(mvvlvaTable[attackerIndex][victimIndex] + 1000000U);
+    }
+    else
+    {
+        move.SetScore(1000105U);
+    }
 }
 
 std::pair<int, Move> Search::Root(int depth, Board &board, SearchInfo &info)
