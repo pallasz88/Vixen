@@ -3,8 +3,6 @@ project(Vixen C CXX)
 
 MESSAGE("STATUS: Building Vixen")
 
-set(CMAKE_CXX_STANDARD 20)
-
 set(SOURCE_FILES
         anti_slider.h
         anti_slider.cpp
@@ -58,5 +56,7 @@ else ()
             )
     target_compile_options(Engine PRIVATE ${CLANG_WARNINGS})
 endif ()
+
+target_compile_features(Engine PRIVATE cxx_std_20)
 
 install(TARGETS Engine DESTINATION bin)

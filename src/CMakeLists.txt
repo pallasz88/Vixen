@@ -3,8 +3,6 @@ project(main)
 
 MESSAGE("Status: Building main")
 
-set(CMAKE_CXX_STANDARD 20)
-
 set(SOURCE_FILES main.cpp)
 
 include_directories(vixen)
@@ -17,5 +15,6 @@ target_link_libraries(Vixen_0_0_5 Engine)
 else()
 target_link_libraries(Vixen_0_0_5 Engine pthread)
 endif()
+target_compile_features(Vixen_0_0_5 PRIVATE cxx_std_20)
 
 install(TARGETS Vixen_0_0_5 DESTINATION bin)
