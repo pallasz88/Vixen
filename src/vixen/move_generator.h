@@ -59,8 +59,8 @@ namespace Check
 {
 template <Colors sideToMove> constexpr bool IsSquareAttacked(unsigned int square, const Board &board) noexcept
 {
-    assert(square < Constants::SQUARE_NUMBER);
-    assert(square > Constants::EMPTY_BOARD);
+    assert(square <= A8);
+    assert(square >= H1);
     const auto blockers = ~board.GetBitBoard(' ');
     const auto pawns = sideToMove == Colors::WHITE ? board.GetBitBoard('p') : board.GetBitBoard('P');
     const auto knights = sideToMove == Colors::WHITE ? board.GetBitBoard('n') : board.GetBitBoard('N');
