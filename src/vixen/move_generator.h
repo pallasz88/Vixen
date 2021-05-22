@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cassert>
+
 #include "anti_slider.h"
 #include "board.h"
 #include "fixed_list.h"
@@ -57,6 +59,8 @@ namespace Check
 {
 template <Colors sideToMove> constexpr bool IsSquareAttacked(unsigned int square, const Board &board) noexcept
 {
+    assert(square < Constants::SQUARE_NUMBER);
+    assert(square > Constants::EMPTY_BOARD);
     const auto blockers = ~board.GetBitBoard(' ');
     const auto pawns = sideToMove == Colors::WHITE ? board.GetBitBoard('p') : board.GetBitBoard('P');
     const auto knights = sideToMove == Colors::WHITE ? board.GetBitBoard('n') : board.GetBitBoard('N');

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cassert>
+
 #include "defs.h"
 
 namespace Vixen::SliderUtils
@@ -37,6 +39,7 @@ extern Magic RookTable[Constants::SQUARE_NUMBER];
 
 constexpr unsigned GetIndex(BitBoard occupied, const Magic &table) noexcept
 {
+    assert(table.shift < Constants::SQUARE_NUMBER);
     return static_cast<unsigned>(((occupied & table.mask) * table.magic) >> table.shift);
 }
 
