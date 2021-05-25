@@ -2,7 +2,11 @@
 ## C++ chess engine
 
 [![Build Status](https://travis-ci.org/pallasz88/Vixen.svg?branch=master)](https://travis-ci.org/pallasz88/Vixen)
-[![Sonarcloud Status](https://sonarcloud.io/api/project_badges/measure?project=pallasz88_Vixen&metric=alert_status&branch=valgrind)](https://sonarcloud.io/dashboard?branch=valgrind&id=pallasz88_Vixen)
+[![Sonarcloud Status](https://sonarcloud.io/api/project_badges/measure?project=pallasz88_Vixen&metric=alert_status)](https://sonarcloud.io/dashboard?id=pallasz88_Vixen) 
+[![SonarCloud Coverage](https://sonarcloud.io/api/project_badges/measure?project=pallasz88_Vixen&metric=coverage)](https://sonarcloud.io/component_measures/metric/coverage/list?id=pallasz88_Vixen)
+[![SonarCloud Bugs](https://sonarcloud.io/api/project_badges/measure?project=pallasz88_Vixen&metric=bugs)](https://sonarcloud.io/component_measures/metric/reliability_rating/list?id=pallasz88_Vixen)
+[![SonarCloud Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=pallasz88_Vixen&metric=vulnerabilities)](https://sonarcloud.io/component_measures/metric/security_rating/list?id=pallasz88_Vixen)
+[![SonarCloud Code Smells](https://sonarcloud.io/api/project_badges/measure?project=pallasz88_Vixen&metric=code_smells)](https://sonarcloud.io/component_measures?id=pallasz88_Vixen&metric=code_smells)
 
 
 **Implemented features so far**
