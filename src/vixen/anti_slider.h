@@ -1,16 +1,22 @@
-#pragma once
+#ifndef ANTI_SLIDER_HPP_INCLUDED
+#define ANTI_SLIDER_HPP_INCLUDED
 
 #include "defs.h"
 
 namespace Vixen::AntSliderUtils
 {
-extern BitBoard pawnAttack[Constants::COLOR_NUMBER][Constants::SQUARE_NUMBER];
+extern const std::array<std::array<BitBoard, Constants::SQUARE_NUMBER>, Constants::COLOR_NUMBER> pawnAttack;
 
-extern BitBoard knightAttack[Constants::SQUARE_NUMBER];
+extern const std::array<BitBoard, Constants::SQUARE_NUMBER> knightAttack;
 
-extern BitBoard kingAttack[Constants::SQUARE_NUMBER];
+extern const std::array<BitBoard, Constants::SQUARE_NUMBER> kingAttack;
 
-void InitKnightKingAttack();
+template <AntiSliderDirections offset>
+[[nodiscard]] constexpr auto Init8DirectionAttack() noexcept -> std::array<BitBoard, Constants::SQUARE_NUMBER>;
 
-void InitPawnAttack();
+constexpr auto InitPawnAttack() noexcept
+    -> std::array<std::array<BitBoard, Constants::SQUARE_NUMBER>, Constants::COLOR_NUMBER>;
 } // namespace Vixen::AntSliderUtils
+
+#include "anti_slider.inl"
+#endif

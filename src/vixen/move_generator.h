@@ -44,7 +44,8 @@ class VIXEN_API MoveGenerator
     void GenerateSliderMoves(BitBoard pieces, BitBoard blockers, BitBoard targets) noexcept;
 
     template <uint8_t moveType>
-    constexpr void GenerateAntiSliderMoves(BitBoard targets, BitBoard pieces, const BitBoard *attackBoard) noexcept;
+    constexpr void GenerateAntiSliderMoves(BitBoard targets, BitBoard pieces,
+                                           const std::array<BitBoard, Constants::SQUARE_NUMBER> &attackBoard) noexcept;
 
     constexpr void GeneratePawnMoves(int pawnOffset, BitBoard pawnPushed, uint8_t moveType) noexcept;
 
