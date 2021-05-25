@@ -22,9 +22,7 @@ set(SOURCE_FILES
         slider.h
         timer.h
         uci.h
-        uci.cpp
-        userinterface.h
-        userinterface.cpp)
+        uci.cpp)
 
 find_package(Threads)
 add_library(Engine SHARED ${SOURCE_FILES})
