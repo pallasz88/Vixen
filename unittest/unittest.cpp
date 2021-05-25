@@ -4,6 +4,7 @@
 #include "fixture.h"
 #include "hash.h"
 #include "move_generator.h"
+#include "userinterface.h"
 
 using namespace Vixen;
 
@@ -381,7 +382,17 @@ BOOST_AUTO_TEST_CASE(Test_making_moves)
     board.TakeBack();
     board.PrintBoard();
 }
-/*
+
+BOOST_AUTO_TEST_CASE(Test_userinterface)
+{
+    board.SetBoard("7k/8/8/8/3P4/8/8/7K w - - 0 1");
+    UserInterface::PrintMoveList(board);
+    UserInterface::MakeMove("d4d5", board);
+    UserInterface::TakeBackMove(board);
+    board.PrintBoard();
+    BOOST_TEST(board.GetBitBoard('P') == 268435456ULL);
+}
+
 BOOST_AUTO_TEST_CASE(Test_material_balance)
 {
     board.SetBoard(Constants::START_POSITION);
@@ -413,5 +424,5 @@ BOOST_AUTO_TEST_CASE(Test_material_balance)
     Test::PerftTest(3, board);
     BOOST_TEST(materialBefore == board.GetMaterialBalance());
 }
-*/
+
 BOOST_AUTO_TEST_SUITE_END()
