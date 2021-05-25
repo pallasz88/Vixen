@@ -2,6 +2,7 @@
 ## C++ chess engine
 
 [![Build Status](https://travis-ci.org/pallasz88/Vixen.svg?branch=master)](https://travis-ci.org/pallasz88/Vixen)
+[![Sonarcloud Status](https://sonarcloud.io/api/project_badges/measure?project=pallasz88_Vixen&metric=alert_status&branch=valgrind)](https://sonarcloud.io/dashboard?branch=valgrind&id=pallasz88_Vixen)
 
 
 **Implemented features so far**
