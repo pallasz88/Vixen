@@ -139,6 +139,10 @@ class VIXEN_API Search
     static FixedList<Move> GetPV(int, Board &);
 
     static void OrderCapture(const Board &board, Move &move);
+
+    static void OrderNonPVMoves(int depth, const Board &board, Move &move);
+
+    static bool IsPVMove(const PVEntry &pvEntry, Move &move);
 };
 
 template std::array<int, 64ul> Vixen::Utility::MirrorTable<std::array<int, 64ul>>(

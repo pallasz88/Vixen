@@ -1,6 +1,5 @@
 #include "engine.h"
 
-#include <algorithm>
 #include <iostream>
 
 #include "move_generator.h"
@@ -96,23 +95,13 @@ std::pair<int, Move> Search::Root(int depth, Board &board, SearchInfo &info)
 
     for (auto &move : moveList)
     {
-        if (pvEntry.move != 0U && move == pvEntry.move)
+        if (IsPVMove(pvEntry, move))
         {
             move.SetScore(2000000U);
             continue;
         }
 
-        if ((move.GetMoveType() & CAPTURE) == CAPTURE)
-            OrderCapture(board, move);
-
-        else if (board.GetKiller(depth, 1) == move)
-            move.SetScore(900000U);
-
-        else if (board.GetKiller(depth, 0) == move)
-            move.SetScore(800000U);
-
-        else
-            move.SetScore(board.GetHistoryValue(move.GetFromSquare(), move.GetToSquare()));
+        OrderNonPVMoves(depth, board, move);
     }
 
     for (auto it = begin(moveList); it != end(moveList); ++it)
@@ -152,6 +141,26 @@ std::pair<int, Move> Search::Root(int depth, Board &board, SearchInfo &info)
         pv.StorePVEntry(PVEntry{bestMove, board.GetHash()});
 
     return {alpha, bestMove};
+}
+
+bool Search::IsPVMove(const PVEntry &pvEntry, Move &move)
+{
+    return pvEntry.move != 0U && move == pvEntry.move;
+}
+
+void Search::OrderNonPVMoves(int depth, const Board &board, Move &move)
+{
+    if ((move.GetMoveType() & CAPTURE) == CAPTURE)
+        OrderCapture(board, move);
+
+    else if (board.GetKiller(depth, 1) == move)
+        move.SetScore(900000U);
+
+    else if (board.GetKiller(depth, 0) == move)
+        move.SetScore(800000U);
+
+    else
+        move.SetScore(board.GetHistoryValue(move.GetFromSquare(), move.GetToSquare()));
 }
 
 void CheckTime(SearchInfo &info)
@@ -200,19 +209,7 @@ int Search::NegaMax(int depth, int alpha, int beta, Board &board, SearchInfo &in
     unsigned legalMoveCount = 0;
 
     for (auto &move : moveList)
-    {
-        if ((move.GetMoveType() & CAPTURE) == CAPTURE)
-            OrderCapture(board, move);
-
-        else if (board.GetKiller(depth, 1) == move)
-            move.SetScore(900000U);
-
-        else if (board.GetKiller(depth, 0) == move)
-            move.SetScore(800000U);
-
-        else
-            move.SetScore(board.GetHistoryValue(move.GetFromSquare(), move.GetToSquare()));
-    }
+        OrderNonPVMoves(depth, board, move);
 
     for (auto it = begin(moveList); it != end(moveList); ++it)
     {

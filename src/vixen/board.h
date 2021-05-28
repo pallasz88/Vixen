@@ -150,7 +150,7 @@ class VIXEN_API Board
         historyHeuristic[from][to] += static_cast<unsigned>(depth * depth);
     }
 
-    [[nodiscard]] constexpr auto GetHistoryValue(const unsigned from, const unsigned to)
+    [[nodiscard]] constexpr auto GetHistoryValue(const unsigned from, const unsigned to) const
     {
         return historyHeuristic[from][to];
     }
