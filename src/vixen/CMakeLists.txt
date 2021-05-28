@@ -5,6 +5,7 @@ MESSAGE("STATUS: Building Vixen")
 
 set(SOURCE_FILES
         anti_slider.h
+        anti_slider.inl
         anti_slider.cpp
         board.h
         board.cpp
@@ -19,6 +20,7 @@ set(SOURCE_FILES
         principal_variation.cpp
         random.h
         slider.cpp
+        slider.inl
         slider.h
         timer.h
         uci.h

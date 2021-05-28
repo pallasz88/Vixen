@@ -1,5 +1,5 @@
-#ifndef ANTI_SLIDER_HPP_INCLUDED
-#define ANTI_SLIDER_HPP_INCLUDED
+#ifndef VIXEN_ANTI_SLIDER_HPP_INCLUDED
+#define VIXEN_ANTI_SLIDER_HPP_INCLUDED
 
 #include "defs.h"
 
@@ -16,7 +16,9 @@ template <AntiSliderDirections offset>
 
 constexpr auto InitPawnAttack() noexcept
     -> std::array<std::array<BitBoard, Constants::SQUARE_NUMBER>, Constants::COLOR_NUMBER>;
-} // namespace Vixen::AntSliderUtils
 
 #include "anti_slider.inl"
-#endif
+
+} // namespace Vixen::AntSliderUtils
+
+#endif // VIXEN_ANTI_SLIDER_HPP_INCLUDED

@@ -1,8 +1,6 @@
-#ifndef ANTI_SLIDER_INL_INCLUDED
-#define ANTI_SLIDER_INL_INCLUDED
+#ifndef VIXEN_ANTI_SLIDER_INL_INCLUDED
+#define VIXEN_ANTI_SLIDER_INL_INCLUDED
 
-namespace Vixen::AntSliderUtils
-{
 template <AntiSliderDirections offset>
 [[nodiscard]] constexpr auto Init8DirectionAttack() noexcept -> std::array<BitBoard, Constants::SQUARE_NUMBER>
 {
@@ -43,5 +41,5 @@ constexpr auto InitPawnAttack() noexcept
     }
     return pawnBB;
 }
-} // namespace Vixen::AntSliderUtils
-#endif
+
+#endif // VIXEN_ANTI_SLIDER_INL_INCLUDED

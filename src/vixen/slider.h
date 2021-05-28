@@ -1,4 +1,5 @@
-#pragma once
+#ifndef VIXEN_SLIDER_HPP_INCLUDED
+#define VIXEN_SLIDER_HPP_INCLUDED
 
 #include <cassert>
 
@@ -29,39 +30,28 @@ struct Magic
     unsigned shift;
 };
 
-extern BitBoard BishopAttacks[Constants::BISHOP_ATTACK_TABLE_SIZE];
+extern std::array<Magic, Constants::SQUARE_NUMBER> BishopTable;
 
-extern BitBoard RookAttacks[Constants::ROOK_ATTACK_TABLE_SIZE];
+extern std::array<Magic, Constants::SQUARE_NUMBER> RookTable;
 
-extern Magic BishopTable[Constants::SQUARE_NUMBER];
+constexpr unsigned GetIndex(BitBoard occupied, const Magic &table) noexcept;
 
-extern Magic RookTable[Constants::SQUARE_NUMBER];
+inline BitBoard GetBishopAttack(unsigned int square, BitBoard occupied) noexcept;
 
-constexpr unsigned GetIndex(BitBoard occupied, const Magic &table) noexcept
-{
-    assert(table.shift < Constants::SQUARE_NUMBER);
-    return static_cast<unsigned>(((occupied & table.mask) * table.magic) >> table.shift);
-}
+inline BitBoard GetRookAttack(unsigned int square, BitBoard occupied) noexcept;
 
-inline BitBoard GetBishopAttack(unsigned int square, BitBoard occupied) noexcept
-{
-    return SliderUtils::BishopTable[square].attacks[GetIndex(occupied, SliderUtils::BishopTable[square])];
-}
-
-inline BitBoard GetRookAttack(unsigned int square, BitBoard occupied) noexcept
-{
-    return SliderUtils::RookTable[square].attacks[GetIndex(occupied, SliderUtils::RookTable[square])];
-}
-
-constexpr void GetNextCoordinate(int &file, int &rank, const Direction &direction) noexcept
-{
-    file += direction[0], rank += direction[1];
-}
-
-void InitMagics() noexcept;
-
-template <Slider slider>
-void InitSlidingAttack(unsigned int square, SliderDirections directions, Magic *table) noexcept;
+constexpr void GetNextCoordinate(int &file, int &rank, const Direction &direction) noexcept;
 
 constexpr BitBoard SlidingAttack(unsigned int square, SliderDirections directions, BitBoard occupied) noexcept;
+
+template <Slider slider>
+constexpr void InitSlidingAttack(unsigned int square, SliderDirections directions,
+                                 std::array<Magic, Constants::SQUARE_NUMBER> &table) noexcept;
+
+inline void InitMagics() noexcept;
+
+#include "slider.inl"
+
 } // namespace Vixen::SliderUtils
+
+#endif // VIXEN_SLIDER_HPP_INCLUDED
