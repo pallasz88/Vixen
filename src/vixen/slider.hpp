@@ -3,7 +3,7 @@
 
 #include <cassert>
 
-#include "defs.h"
+#include "defs.hpp"
 
 namespace Vixen::SliderUtils
 {

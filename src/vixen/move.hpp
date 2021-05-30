@@ -1,6 +1,7 @@
-#pragma once
+#ifndef VIXEN_MOVE_HPP_INCLUDED
+#define VIXEN_MOVE_HPP_INCLUDED
 
-#include "defs.h"
+#include "defs.hpp"
 
 namespace Vixen
 {
@@ -117,3 +118,5 @@ class Move
 };
 
 } // namespace Vixen
+
+#endif // VIXEN_MOVE_HPP_INCLUDED

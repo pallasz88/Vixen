@@ -2,9 +2,9 @@
 #define BOOST_TEST_MODULE Vixen_chess
 
 #include "fixture.h"
-#include "hash.h"
-#include "move_generator.h"
-#include "userinterface.h"
+#include "hash.hpp"
+#include "move_generator.hpp"
+#include "userinterface.hpp"
 
 using namespace Vixen;
 

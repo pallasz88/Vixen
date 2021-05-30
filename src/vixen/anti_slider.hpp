@@ -1,7 +1,7 @@
 #ifndef VIXEN_ANTI_SLIDER_HPP_INCLUDED
 #define VIXEN_ANTI_SLIDER_HPP_INCLUDED
 
-#include "defs.h"
+#include "defs.hpp"
 
 namespace Vixen::AntSliderUtils
 {

@@ -1,5 +1,5 @@
-#include "board.h"
-#include "uci.h"
+#include "board.hpp"
+#include "uci.hpp"
 
 Vixen::Hash::Keys Vixen::Hash::zobristKeys;
 

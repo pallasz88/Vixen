@@ -1,10 +1,10 @@
-#ifndef VIXEN_PRINCIPALVARIATION_H
-#define VIXEN_PRINCIPALVARIATION_H
+#ifndef VIXEN_PRINCIPAL_VARIATION_HPP_INCLUDED
+#define VIXEN_PRINCIPAL_VARIATION_HPP_INCLUDED
 
 #include <list>
 
-#include "defs.h"
-#include "move.h"
+#include "defs.hpp"
+#include "move.hpp"
 
 namespace Vixen
 {
@@ -43,4 +43,4 @@ class PrincipalVariation
 
 } // namespace Vixen
 
-#endif // VIXEN_PRINCIPALVARIATION_H
+#endif // VIXEN_PRINCIPAL_VARIATION_HPP_INCLUDED

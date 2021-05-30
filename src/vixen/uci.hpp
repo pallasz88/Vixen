@@ -1,9 +1,10 @@
-#pragma once
+#ifndef VIXEN_UCI_HPP_INCLUDED
+#define VIXEN_UCI_HPP_INCLUDED
 
 #include <memory>
 
-#include "board.h"
-#include "fixed_list.h"
+#include "board.hpp"
+#include "fixed_list.hpp"
 
 namespace Vixen
 {
@@ -38,3 +39,5 @@ class VIXEN_API Uci
 };
 
 } // namespace Vixen
+
+#endif // VIXEN_UCI_HPP_INCLUDED

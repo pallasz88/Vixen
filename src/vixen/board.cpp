@@ -1,12 +1,12 @@
-#include "board.h"
+#include "board.hpp"
 
 #include <bitset>
 #include <charconv>
 #include <iostream>
 #include <regex>
 
-#include "hash.h"
-#include "move_generator.h"
+#include "hash.hpp"
+#include "move_generator.hpp"
 
 namespace Vixen
 {

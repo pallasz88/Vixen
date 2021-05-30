@@ -1,4 +1,5 @@
-#pragma once
+#ifndef VIXEN_TIME_HPP_INCLUDED
+#define VIXEN_TIME_HPP_INCLUDED
 
 #include <chrono>
 #include <iostream>
@@ -25,4 +26,10 @@ template <class T> struct Timer
                                              : std::is_same_v<T, stc::microseconds> ? std::cout << " us." << std::endl
                                                                                     : std::cout << " ns." << std::endl;
     }
+
+    Timer(const Timer &) = delete;
+
+    Timer &operator=(const Timer &) = delete;
 };
+
+#endif // VIXEN_TIME_HPP_INCLUDED

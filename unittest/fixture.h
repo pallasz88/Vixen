@@ -2,8 +2,8 @@
 
 #include <boost/test/included/unit_test.hpp>
 
-#include "board.h"
-#include "move_generator.h"
+#include "board.hpp"
+#include "move_generator.hpp"
 
 namespace Vixen
 {

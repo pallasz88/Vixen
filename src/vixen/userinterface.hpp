@@ -1,4 +1,7 @@
-#include "defs.h"
+#ifndef VIXEN_USER_INTERFACE_HPP_INCLUDED
+#define VIXEN_USER_INTERFACE_HPP_INCLUDED
+
+#include "defs.hpp"
 
 namespace Vixen
 {
@@ -48,3 +51,6 @@ VIXEN_API void PrintMoveList(Board &board);
  */
 VIXEN_API void PrintHelp();
 } // namespace Vixen::UserInterface
+
+
+#endif // VIXEN_USER_INTERFACE_HPP_INCLUDED

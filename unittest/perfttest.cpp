@@ -2,8 +2,8 @@
 #define BOOST_TEST_MODULE Perft_test
 
 #include "fixture.h"
-#include "hash.h"
-#include "move_generator.h"
+#include "hash.hpp"
+#include "move_generator.hpp"
 #include <sstream>
 
 using namespace Vixen;

@@ -4,28 +4,28 @@ project(Vixen C CXX)
 MESSAGE("STATUS: Building Vixen")
 
 set(SOURCE_FILES
-        anti_slider.h
+        anti_slider.hpp
         anti_slider.inl
         anti_slider.cpp
-        board.h
+        board.hpp
         board.cpp
-        defs.h
-        engine.h
+        defs.hpp
+        engine.hpp
         engine.cpp
-        hash.h
+        hash.hpp
         hash.cpp
-        move_generator.h
+        move_generator.hpp
         move_generator.cpp
-        principal_variation.h
+        principal_variation.hpp
         principal_variation.cpp
-        random.h
+        random.hpp
         slider.cpp
         slider.inl
-        slider.h
-        timer.h
-        uci.h
+        slider.hpp
+        timer.hpp
+        uci.hpp
         uci.cpp
-        userinterface.h
+        userinterface.hpp
         userinterface.cpp)
 
 find_package(Threads)

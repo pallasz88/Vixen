@@ -1,4 +1,5 @@
-#pragma once
+#ifndef VIXEN_DEFS_HPP_INCLUDED
+#define VIXEN_DEFS_HPP_INCLUDED
 
 #include <algorithm>
 #include <array>
@@ -425,3 +426,5 @@ template <class Iterator> constexpr auto PickBest(const Iterator &begin, const I
 }
 
 } // namespace Vixen
+
+#endif // VIXEN_DEFS_HPP_INCLUDED

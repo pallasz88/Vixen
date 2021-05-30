@@ -1,5 +1,5 @@
-#ifndef _fixed_list
-#define _fixed_list
+#ifndef VIXEN_FIXED_LIST_HPP_INCLUDED
+#define VIXEN_FIXED_LIST_HPP_INCLUDED
 
 #include <array>
 #include <iterator>
@@ -92,4 +92,4 @@ template <class T> constexpr auto end(const FixedList<T> &list)
     return list.begin() + list.size();
 }
 
-#endif
+#endif //VIXEN_FIXED_LIST_HPP_INCLUDED

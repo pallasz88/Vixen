@@ -1,4 +1,4 @@
-#include "principal_variation.h"
+#include "principal_variation.hpp"
 
 namespace Vixen
 {

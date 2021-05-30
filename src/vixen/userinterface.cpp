@@ -1,11 +1,11 @@
-#include "userinterface.h"
+#include "userinterface.hpp"
 
 #include <iostream>
 #include <regex>
 
-#include "board.h"
-#include "move_generator.h"
-#include "timer.h"
+#include "board.hpp"
+#include "move_generator.hpp"
+#include "timer.hpp"
 
 namespace Vixen::UserInterface
 {

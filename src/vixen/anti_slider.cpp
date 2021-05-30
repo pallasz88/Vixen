@@ -1,4 +1,4 @@
-#include "anti_slider.h"
+#include "anti_slider.hpp"
 
 namespace Vixen::AntSliderUtils
 {

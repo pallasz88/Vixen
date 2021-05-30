@@ -1,8 +1,8 @@
 #include <benchmark/benchmark.h>
 #define private public
-#include "engine.h"
+#include "engine.hpp"
 #undef private
-#include "board.h"
+#include "board.hpp"
 #include <iostream>
 
 Vixen::Hash::Keys Vixen::Hash::zobristKeys;

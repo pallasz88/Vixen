@@ -1,8 +1,9 @@
-#pragma once
+#ifndef VIXEN_BOARD_HPP_INCLUDED
+#define VIXEN_BOARD_HPP_INCLUDED
 
-#include "fixed_list.h"
-#include "hash.h"
-#include "move.h"
+#include "fixed_list.hpp"
+#include "hash.hpp"
+#include "move.hpp"
 
 namespace Vixen
 {
@@ -281,3 +282,5 @@ class VIXEN_API Board
     constexpr void UpdateCastlingRights(unsigned int from, unsigned int to) noexcept;
 };
 } // namespace Vixen
+
+#endif // VIXEN_BOARD_HPP_INCLUDED

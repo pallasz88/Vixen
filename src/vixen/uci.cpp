@@ -1,12 +1,12 @@
-#include "uci.h"
+#include "uci.hpp"
 
 #include <iostream>
 #include <sstream>
 #include <thread>
 
-#include "board.h"
-#include "engine.h"
-#include "move_generator.h"
+#include "board.hpp"
+#include "engine.hpp"
+#include "move_generator.hpp"
 
 namespace Vixen
 {

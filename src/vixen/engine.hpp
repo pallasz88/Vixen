@@ -1,12 +1,13 @@
-#pragma once
+#ifndef VIXEN_ENGINE_HPP_INCLUDED
+#define VIXEN_ENGINE_HPP_INCLUDED
 
 #include <atomic>
 #include <chrono>
 #include <functional>
 
-#include "defs.h"
-#include "fixed_list.h"
-#include "principal_variation.h"
+#include "defs.hpp"
+#include "fixed_list.hpp"
+#include "principal_variation.hpp"
 
 namespace Vixen
 {
@@ -148,3 +149,5 @@ class VIXEN_API Search
 template std::array<int, 64ul> Vixen::Utility::MirrorTable<std::array<int, 64ul>>(
     std::array<int, 64ul> const &) noexcept;
 } // namespace Vixen
+
+#endif // VIXEN_ENGINE_HPP_INCLUDED

@@ -1,11 +1,12 @@
-#pragma once
+#ifndef VIXEN_MOVE_GENERATOR_HPP_INCLUDED
+#define VIXEN_MOVE_GENERATOR_HPP_INCLUDED
 
 #include <cassert>
 
-#include "anti_slider.h"
-#include "board.h"
-#include "fixed_list.h"
-#include "slider.h"
+#include "anti_slider.hpp"
+#include "board.hpp"
+#include "fixed_list.hpp"
+#include "slider.hpp"
 
 namespace Vixen
 {
@@ -108,3 +109,5 @@ VIXEN_API BitBoard PerftTest(int depth, Board &board) noexcept;
 VIXEN_API BitBoard Perft(int depth, Board &board) noexcept;
 } // namespace Test
 } // namespace Vixen
+
+#endif // VIXEN_MOVE_GENERATOR_HPP_INCLUDED

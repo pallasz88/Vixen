@@ -1,4 +1,5 @@
-#pragma once
+#ifndef VIXEN_RANDOM_HPP_INCLUDED
+#define VIXEN_RANDOM_HPP_INCLUDED
 
 #include <cstdint>
 
@@ -51,3 +52,5 @@ class PRNG
     }
 };
 } // namespace Vixen
+
+#endif // VIXEN_RANDOM_HPP_INCLUDED

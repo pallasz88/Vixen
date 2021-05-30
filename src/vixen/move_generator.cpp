@@ -1,4 +1,4 @@
-#include "move_generator.h"
+#include "move_generator.hpp"
 
 #include <iostream>
 

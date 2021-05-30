@@ -1,9 +1,9 @@
-#include "engine.h"
+#include "engine.hpp"
 
 #include <iostream>
 
-#include "move_generator.h"
-#include "uci.h"
+#include "move_generator.hpp"
+#include "uci.hpp"
 
 namespace Vixen
 {

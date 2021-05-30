@@ -1,7 +1,8 @@
-#pragma once
+#ifndef VIXEN_HASH_HPP_INCLUDED
+#define VIXEN_HASH_HPP_INCLUDED
 
-#include "defs.h"
-#include "random.h"
+#include "defs.hpp"
+#include "random.hpp"
 
 namespace Vixen
 {
@@ -104,3 +105,5 @@ class VIXEN_API Hash
     static constexpr int enPassantKey = 12;
 };
 } // namespace Vixen
+
+#endif // VIXEN_HASH_HPP_INCLUDED

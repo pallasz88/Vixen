@@ -1,6 +1,6 @@
-#include "hash.h"
+#include "hash.hpp"
 
-#include "board.h"
+#include "board.hpp"
 
 namespace Vixen
 {
