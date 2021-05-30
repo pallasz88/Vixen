@@ -3,12 +3,17 @@
 
 #include <memory>
 
-#include "board.hpp"
+#include "defs.hpp"
 #include "fixed_list.hpp"
 
 namespace Vixen
 {
+
 struct SearchInfo;
+
+class Board;
+
+class Move;
 
 class VIXEN_API Uci
 {

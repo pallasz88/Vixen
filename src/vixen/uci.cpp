@@ -6,7 +6,6 @@
 
 #include "board.hpp"
 #include "engine.hpp"
-#include "move_generator.hpp"
 
 namespace Vixen
 {

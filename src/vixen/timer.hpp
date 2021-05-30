@@ -30,6 +30,10 @@ template <class T> struct Timer
     Timer(const Timer &) = delete;
 
     Timer &operator=(const Timer &) = delete;
+
+    Timer(Timer &&) = delete;
+
+    Timer &operator=(Timer &&) = delete;
 };
 
 #endif // VIXEN_TIME_HPP_INCLUDED
