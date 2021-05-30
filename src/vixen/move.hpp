@@ -13,12 +13,12 @@ class Move
   public:
     Move() = default;
 
-    explicit Move(unsigned move) : represantation(move), score(0)
+    explicit Move(unsigned move) : representation(move), score(0)
     {
     }
 
     constexpr Move(unsigned from, unsigned to, uint8_t moveType)
-        : represantation(static_cast<unsigned>(moveType << 12U) | to << 6U | from), score(0)
+        : representation(static_cast<unsigned>(moveType << 12U) | to << 6U | from), score(0)
     {
     }
 
@@ -30,7 +30,7 @@ class Move
 
     constexpr explicit operator bool() const
     {
-        return represantation != 0;
+        return representation != 0;
     }
 
     constexpr void SetScore(unsigned newScore) noexcept
@@ -45,37 +45,37 @@ class Move
 
     [[nodiscard]] constexpr unsigned GetFromSquare() const noexcept
     {
-        return represantation & 0x3FU;
+        return representation & 0x3FU;
     }
 
     [[nodiscard]] constexpr unsigned GetToSquare() const noexcept
     {
-        return (represantation >> 6U) & 0x3FU;
+        return (representation >> 6U) & 0x3FU;
     }
 
     [[nodiscard]] constexpr unsigned GetMoveType() const noexcept
     {
-        return represantation >> 12U;
+        return representation >> 12U;
     }
 
     [[nodiscard]] constexpr unsigned RemoveMoveType() const noexcept
     {
-        return represantation & 0xFFFU;
+        return representation & 0xFFFU;
     }
 
     constexpr bool operator==(const Move &rhs) const noexcept
     {
-        return rhs.represantation == represantation;
+        return rhs.representation == representation;
     }
 
     constexpr bool operator==(const Representation rhs) const noexcept
     {
-        return this->represantation == rhs;
+        return this->representation == rhs;
     }
 
     constexpr bool operator!=(const Representation rhs) const noexcept
     {
-        return this->represantation != rhs;
+        return this->representation != rhs;
     }
 
     constexpr bool operator<(const Move &rhs) const noexcept
@@ -90,8 +90,8 @@ class Move
 
     friend std::ostream &operator<<(std::ostream &os, const Move &move) noexcept
     {
-        const std::string from = SquareToNotation(move.represantation & 0x3FU);
-        const std::string to = SquareToNotation((move.represantation & 0xFC0U) >> 6U);
+        const std::string from = SquareToNotation(move.representation & 0x3FU);
+        const std::string to = SquareToNotation((move.representation & 0xFC0U) >> 6U);
         os << from << to;
         return os;
     }
@@ -112,7 +112,7 @@ class Move
     }
 
   private:
-    Representation represantation;
+    Representation representation;
 
     unsigned score;
 };
