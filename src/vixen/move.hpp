@@ -28,7 +28,7 @@ class Move
 
     constexpr Move &operator=(const Move &) = default;
 
-    constexpr operator bool() const
+    constexpr explicit operator bool() const
     {
         return represantation != 0;
     }
@@ -38,27 +38,27 @@ class Move
         score = newScore;
     }
 
-    constexpr unsigned GetScore() const noexcept
+    [[maybe_unused]] [[nodiscard]] constexpr unsigned GetScore() const noexcept
     {
         return score;
     }
 
-    constexpr unsigned GetFromSquare() const noexcept
+    [[nodiscard]] constexpr unsigned GetFromSquare() const noexcept
     {
         return represantation & 0x3FU;
     }
 
-    constexpr unsigned GetToSquare() const noexcept
+    [[nodiscard]] constexpr unsigned GetToSquare() const noexcept
     {
         return (represantation >> 6U) & 0x3FU;
     }
 
-    constexpr unsigned GetMoveType() const noexcept
+    [[nodiscard]] constexpr unsigned GetMoveType() const noexcept
     {
         return represantation >> 12U;
     }
 
-    constexpr unsigned RemoveMoveType() const noexcept
+    [[nodiscard]] constexpr unsigned RemoveMoveType() const noexcept
     {
         return represantation & 0xFFFU;
     }
