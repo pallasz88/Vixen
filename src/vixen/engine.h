@@ -45,7 +45,7 @@ struct Utility
 
     static constexpr auto InitMvvLvaTable()
     {
-        std::array<unsigned, 12> victimScore{100, 200, 300, 400, 500, 600, 100, 200, 300, 400, 500, 600};
+        const std::array<unsigned, 12> victimScore{100, 200, 300, 400, 500, 600, 100, 200, 300, 400, 500, 600};
         std::array<std::array<unsigned, 12>, 12> mvvlvaTable{};
 
         for (unsigned attacker = 0; attacker < Constants::pieceKeys.size(); ++attacker)
