@@ -5,15 +5,14 @@
 #include <iostream>
 #include <regex>
 
-#include "hash.hpp"
 #include "move_generator.hpp"
 
 namespace Vixen
 {
-static constexpr unsigned castlePermission[Constants::SQUARE_NUMBER] = {
-    7,  15, 15, 3,  15, 15, 15, 11, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
-    15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
-    15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 13, 15, 15, 12, 15, 15, 15, 14};
+static constexpr std::array castlePermission = {
+    7U,  15U, 15U, 3U,  15U, 15U, 15U, 11U, 15U, 15U, 15U, 15U, 15U, 15U, 15U, 15U, 15U, 15U, 15U, 15U, 15U, 15U,
+    15U, 15U, 15U, 15U, 15U, 15U, 15U, 15U, 15U, 15U, 15U, 15U, 15U, 15U, 15U, 15U, 15U, 15U, 15U, 15U, 15U, 15U,
+    15U, 15U, 15U, 15U, 15U, 15U, 15U, 15U, 15U, 15U, 15U, 15U, 13U, 15U, 15U, 12U, 15U, 15U, 15U, 14U};
 
 Board::Board()
     : history{}, pieceList{' '}, bitBoards{Constants::EMPTY_BOARD}, enPassantBitBoard(Constants::EMPTY_BOARD),
