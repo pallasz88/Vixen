@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.13)
-project(Vixen C CXX)
+project(Vixen)
 
-MESSAGE("STATUS: Building Vixen")
+MESSAGE(STATUS "Building Vixen")
 
 set(SOURCE_FILES
         anti_slider.hpp
@@ -30,7 +30,7 @@ set(SOURCE_FILES
 
 find_package(Threads)
 add_library(Engine SHARED ${SOURCE_FILES})
-target_link_libraries(Engine ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(Engine PRIVATE ${CMAKE_THREAD_LIBS_INIT})
 
 if (MSVC)
     target_compile_options(Engine PRIVATE /W4)
@@ -58,6 +58,12 @@ else ()
             )
     target_compile_options(Engine PRIVATE ${CLANG_WARNINGS})
 endif ()
+
+if (ENABLE_COVERAGE)
+    message(STATUS "Generate GCOV input")
+    target_compile_options(Engine PRIVATE -O0 --coverage -fprofile-arcs -ftest-coverage -g)
+    target_link_libraries(Engine PRIVATE --coverage)
+endif()
 
 target_compile_features(Engine PRIVATE cxx_std_20)
 

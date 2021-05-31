@@ -168,9 +168,8 @@ void CheckTime(SearchInfo &info)
     info.endTime = std::chrono::high_resolution_clock::now();
     const std::chrono::duration<double> duration = (info.endTime - info.startTime) * 1000;
     double allocatedTime = info.moveTime;
-    if (info.isTimeSet)
-        if (info.time[info.timeIndex] != -1)
-            allocatedTime = static_cast<double>(info.time[info.timeIndex]) / 30. - 50.;
+    if (info.isTimeSet && info.time[info.timeIndex] != -1)
+        allocatedTime = static_cast<double>(info.time[info.timeIndex]) / 30. - 50.;
 
     if (duration.count() >= allocatedTime)
         info.stopped = true;
