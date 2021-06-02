@@ -1,0 +1,14 @@
+digraph "Vixen::Board::PrintBoard"
+{
+ // LATEX_PDF_SIZE
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="Vixen::Board::PrintBoard",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip=" "];
+  Node1 -> Node2 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="Vixen::Hash::GetHash",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_vixen_1_1_hash.html#a34ee924dfbd6be9e551de71159221454",tooltip=" "];
+  Node1 -> Node3 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="Vixen::Move::SquareToNotation",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_vixen_1_1_move.html#af8ba40bd727a0d2c57f80085e6150628",tooltip=" "];
+  Node1 -> Node4 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node4 [label="Vixen::TrailingZeroCount",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespace_vixen.html#afc21283acc3f92da5190de8be8f98222",tooltip=" "];
+}

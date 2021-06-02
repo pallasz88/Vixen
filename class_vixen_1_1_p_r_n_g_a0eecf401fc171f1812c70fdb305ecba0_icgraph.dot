@@ -1,0 +1,14 @@
+digraph "Vixen::PRNG::gen"
+{
+ // LATEX_PDF_SIZE
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="RL";
+  Node1 [label="Vixen::PRNG::gen",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip=" "];
+  Node1 -> Node2 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="Vixen::PRNG::GenerateRandom",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_vixen_1_1_p_r_n_g.html#a21f00a67039193bdbeda68db17419e7c",tooltip=" "];
+  Node2 -> Node3 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="Vixen::Hash::InitZobristKeys",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_vixen_1_1_hash.html#a01a1e578151adc0b575b62934beb3312",tooltip=" "];
+  Node1 -> Node4 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node4 [label="Vixen::PRNG::operator()",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_vixen_1_1_p_r_n_g.html#abe256e51dedd565f224ac701d3abc46d",tooltip=" "];
+}

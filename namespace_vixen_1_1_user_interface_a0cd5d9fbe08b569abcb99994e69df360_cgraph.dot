@@ -1,0 +1,22 @@
+digraph "Vixen::UserInterface::MakeMove"
+{
+ // LATEX_PDF_SIZE
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="Vixen::UserInterface\l::MakeMove",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip=" "];
+  Node1 -> Node2 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="Vixen::Board::MakeMove",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_vixen_1_1_board.html#ad16c211363674dd292182dc76aec9287",tooltip=" "];
+  Node2 -> Node3 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="Vixen::GetPieceMaterial",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespace_vixen.html#a346db8eff658754e9ca680a4cab5a6d8",tooltip=" "];
+  Node2 -> Node4 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node4 [label="Vixen::IsMovingPawn",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespace_vixen.html#a80eea465607beefddf7b3519f5a077fa",tooltip=" "];
+  Node1 -> Node5 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node5 [label="Vixen::Board::PrintBoard",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_vixen_1_1_board.html#a04e26b3c3ffd98e62a07656bd4f0dba5",tooltip=" "];
+  Node5 -> Node6 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node6 [label="Vixen::Hash::GetHash",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_vixen_1_1_hash.html#a34ee924dfbd6be9e551de71159221454",tooltip=" "];
+  Node5 -> Node7 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node7 [label="Vixen::Move::SquareToNotation",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_vixen_1_1_move.html#af8ba40bd727a0d2c57f80085e6150628",tooltip=" "];
+  Node5 -> Node8 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node8 [label="Vixen::TrailingZeroCount",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespace_vixen.html#afc21283acc3f92da5190de8be8f98222",tooltip=" "];
+}

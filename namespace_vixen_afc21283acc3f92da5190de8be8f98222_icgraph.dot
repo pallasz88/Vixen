@@ -1,0 +1,38 @@
+digraph "Vixen::TrailingZeroCount"
+{
+ // LATEX_PDF_SIZE
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="RL";
+  Node1 [label="Vixen::TrailingZeroCount",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip=" "];
+  Node1 -> Node2 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="Vixen::GetPosition",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespace_vixen.html#a736fab86560ad7e24ad05040aee6c414",tooltip=" "];
+  Node2 -> Node3 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="Vixen::MoveGenerator\l::GenerateAntiSliderMoves",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_vixen_1_1_move_generator.html#acb2d8969914f690fe26d8dfd9de19900",tooltip=" "];
+  Node2 -> Node4 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node4 [label="Vixen::MoveGenerator\l::GeneratePawnMoves",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_vixen_1_1_move_generator.html#a6754d85d6d2f1c4160efffe748a7f38c",tooltip=" "];
+  Node2 -> Node5 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node5 [label="Vixen::MoveGenerator\l::GeneratePawnPromotionCapture\lMoves",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_vixen_1_1_move_generator.html#a10e95c32977fc942f75bc123d2295db0",tooltip=" "];
+  Node2 -> Node6 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node6 [label="Vixen::MoveGenerator\l::GeneratePawnPromotionMoves",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_vixen_1_1_move_generator.html#a16160a54fe5e304d12b8f976eaf4d20a",tooltip=" "];
+  Node2 -> Node7 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node7 [label="Vixen::MoveGenerator\l::GenerateSliderMoves",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_vixen_1_1_move_generator.html#af4c844ff1b8cefec20d3446567ff142b",tooltip=" "];
+  Node1 -> Node8 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node8 [label="Vixen::Hash::HashEnPassant",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_vixen_1_1_hash.html#a2064e0c867cb1d4a1de4fb77f6a8d9fa",tooltip=" "];
+  Node8 -> Node9 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node9 [label="Vixen::Hash::ComputePositionKey",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_vixen_1_1_hash.html#a82571c5640597b580e85e3fe3363a8f7",tooltip=" "];
+  Node9 -> Node10 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node10 [label="Vixen::Board::AddHashBoard",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_vixen_1_1_board.html#a7b753bd2d697a01d00a5448b112b42af",tooltip=" "];
+  Node10 -> Node11 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node11 [label="Vixen::Board::SetBoard",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_vixen_1_1_board.html#a9eaed851e98252d8c11b5d4c430d3d59",tooltip=" "];
+  Node11 -> Node12 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node12 [label="Vixen::UserInterface\l::WaitUserInput",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespace_vixen_1_1_user_interface.html#a206b65ec1d4a20e2e086173d0b277bb1",tooltip=" "];
+  Node1 -> Node13 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node13 [label="Vixen::Check::IsInCheck",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespace_vixen_1_1_check.html#aeaad6b87661749f7bd6918f9c5512d4f",tooltip=" "];
+  Node1 -> Node14 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node14 [label="Vixen::Board::PrintBoard",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_vixen_1_1_board.html#a04e26b3c3ffd98e62a07656bd4f0dba5",tooltip=" "];
+  Node14 -> Node15 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node15 [label="Vixen::UserInterface\l::MakeMove",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespace_vixen_1_1_user_interface.html#a0cd5d9fbe08b569abcb99994e69df360",tooltip=" "];
+  Node15 -> Node12 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node14 -> Node12 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+}

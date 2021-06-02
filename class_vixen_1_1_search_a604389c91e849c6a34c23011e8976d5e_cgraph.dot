@@ -1,0 +1,30 @@
+digraph "Vixen::Search::OrderNonPVMoves"
+{
+ // LATEX_PDF_SIZE
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="Vixen::Search::OrderNonPVMoves",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip=" "];
+  Node1 -> Node2 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="Vixen::Move::GetFromSquare",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_vixen_1_1_move.html#af28a0ead25515122f30b9b17649aae4e",tooltip=" "];
+  Node1 -> Node3 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="Vixen::Board::GetHistory\lValue",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_vixen_1_1_board.html#aaea836a5b29d2ad47f27afef428a7df9",tooltip=" "];
+  Node1 -> Node4 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node4 [label="Vixen::Board::GetKiller",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_vixen_1_1_board.html#a3a01727d86e0d937060668a620754d56",tooltip=" "];
+  Node1 -> Node5 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node5 [label="Vixen::Move::GetMoveType",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_vixen_1_1_move.html#ac2efa0fcc405f9cba7bd435213934ae9",tooltip=" "];
+  Node1 -> Node6 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node6 [label="Vixen::Move::GetToSquare",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_vixen_1_1_move.html#a37fcb8968df4c582720d164fb9ff4c1a",tooltip=" "];
+  Node1 -> Node7 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node7 [label="Vixen::Search::OrderCapture",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_vixen_1_1_search.html#a400c3dee55b30e81b96ff5ec4b1e047e",tooltip=" "];
+  Node7 -> Node2 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node7 -> Node5 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node7 -> Node8 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node8 [label="Vixen::GetPieceIndex",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespace_vixen.html#ad0c24a407ca755f674677f53ba0cd3c3",tooltip=" "];
+  Node7 -> Node9 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node9 [label="Vixen::Board::GetPieceList",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_vixen_1_1_board.html#a097f472e08abfdbf4833f5d47092abcf",tooltip=" "];
+  Node7 -> Node6 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node7 -> Node10 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node10 [label="Vixen::Move::SetScore",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_vixen_1_1_move.html#a12359b9a11c149b7e15612ad64098946",tooltip=" "];
+  Node1 -> Node10 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+}

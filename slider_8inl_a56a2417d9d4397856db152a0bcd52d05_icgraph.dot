@@ -1,0 +1,14 @@
+digraph "GetIndex"
+{
+ // LATEX_PDF_SIZE
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="RL";
+  Node1 [label="GetIndex",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip=" "];
+  Node1 -> Node2 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="GetBishopAttack",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$slider_8inl.html#adbce14506a73884278a2b40e2d44d6d0",tooltip=" "];
+  Node1 -> Node3 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="GetRookAttack",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$slider_8inl.html#a0ae86fb5b3c0c94bf0b95a7524d1a098",tooltip=" "];
+  Node1 -> Node4 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node4 [label="InitSlidingAttack",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$slider_8inl.html#ad2f4b9db575e5b1981632d58b9e7e8f7",tooltip=" "];
+}

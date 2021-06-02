@@ -1,0 +1,19 @@
+var searchData=
+[
+  ['m_646',['m',['../struct_vixen_1_1_p_r_n_g_1_1_rand.html#a7f832623c13bd8eacfcfd07a5b73604f',1,'Vixen::PRNG::Rand']]],
+  ['magic_647',['magic',['../struct_vixen_1_1_slider_utils_1_1_magic.html#acd1f1e07520f244b7f9e6493611adad0',1,'Vixen::SliderUtils::Magic']]],
+  ['mask_648',['mask',['../struct_vixen_1_1_slider_utils_1_1_magic.html#a9fb674486384018c250ef8a465e786a6',1,'Vixen::SliderUtils::Magic']]],
+  ['mate_649',['MATE',['../class_vixen_1_1_search.html#aea840921b8f59e80bfc84a07f2d47741',1,'Vixen::Search']]],
+  ['material_650',['material',['../class_vixen_1_1_board.html#a8d4ebb4665849583a8f25e0b98010bb0',1,'Vixen::Board']]],
+  ['materialmap_651',['materialMap',['../struct_vixen_1_1_constants.html#adcc8ac4dda66cf6bfacf7b709ad3ba98',1,'Vixen::Constants']]],
+  ['max_5fmovelist_5fsize_652',['MAX_MOVELIST_SIZE',['../struct_vixen_1_1_constants.html#ae5924d48fb910f113ac3fee58abaf6d6',1,'Vixen::Constants']]],
+  ['max_5fsquare_5findex_653',['MAX_SQUARE_INDEX',['../struct_vixen_1_1_constants.html#a643bc95901477005031b4a65a8fad1c5',1,'Vixen::Constants']]],
+  ['maxdepth_654',['maxDepth',['../struct_vixen_1_1_search_info.html#afa67f3da2e2ab42bbf47ed263645f9ca',1,'Vixen::SearchInfo']]],
+  ['megabyte_655',['megaByte',['../class_vixen_1_1_search.html#ae7a3b5000b46c641fe06156f0c53ccba',1,'Vixen::Search']]],
+  ['move_656',['move',['../struct_vixen_1_1_history.html#aae4751f9303641b0150fee25908260bc',1,'Vixen::History::move()'],['../struct_vixen_1_1_p_v_entry.html#a1b15e3f20b807c08246d8c1ce2c96d62',1,'Vixen::PVEntry::move()']]],
+  ['movedpiece_657',['movedPiece',['../struct_vixen_1_1_history.html#a555725b1461cef2cf291ff9aa6e714ab',1,'Vixen::History']]],
+  ['movelist_658',['moveList',['../class_vixen_1_1_move_generator.html#a963abe9e731f5283cb1cd20115bf05ba',1,'Vixen::MoveGenerator']]],
+  ['movestogo_659',['movesToGo',['../struct_vixen_1_1_search_info.html#a5064f109766b3888ccdb2b118d3559e8',1,'Vixen::SearchInfo']]],
+  ['movetime_660',['moveTime',['../struct_vixen_1_1_search_info.html#ac550a9c2c26a9078de35286faebdfea9',1,'Vixen::SearchInfo']]],
+  ['mvvlvatable_661',['mvvlvaTable',['../class_vixen_1_1_search.html#aa4742d22ac46675466c58edbda97d7e9',1,'Vixen::Search']]]
+];

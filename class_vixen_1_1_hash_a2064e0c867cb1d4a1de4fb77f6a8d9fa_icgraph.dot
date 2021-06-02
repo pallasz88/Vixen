@@ -1,0 +1,16 @@
+digraph "Vixen::Hash::HashEnPassant"
+{
+ // LATEX_PDF_SIZE
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="RL";
+  Node1 [label="Vixen::Hash::HashEnPassant",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip=" "];
+  Node1 -> Node2 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="Vixen::Hash::ComputePositionKey",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_vixen_1_1_hash.html#a82571c5640597b580e85e3fe3363a8f7",tooltip=" "];
+  Node2 -> Node3 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="Vixen::Board::AddHashBoard",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_vixen_1_1_board.html#a7b753bd2d697a01d00a5448b112b42af",tooltip=" "];
+  Node3 -> Node4 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node4 [label="Vixen::Board::SetBoard",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_vixen_1_1_board.html#a9eaed851e98252d8c11b5d4c430d3d59",tooltip=" "];
+  Node4 -> Node5 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node5 [label="Vixen::UserInterface\l::WaitUserInput",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespace_vixen_1_1_user_interface.html#a206b65ec1d4a20e2e086173d0b277bb1",tooltip=" "];
+}

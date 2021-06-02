@@ -1,0 +1,15 @@
+digraph "Vixen::Move::SquareToNotation"
+{
+ // LATEX_PDF_SIZE
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="RL";
+  Node1 [label="Vixen::Move::SquareToNotation",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip=" "];
+  Node1 -> Node2 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="Vixen::Board::PrintBoard",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_vixen_1_1_board.html#a04e26b3c3ffd98e62a07656bd4f0dba5",tooltip=" "];
+  Node2 -> Node3 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="Vixen::UserInterface\l::MakeMove",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespace_vixen_1_1_user_interface.html#a0cd5d9fbe08b569abcb99994e69df360",tooltip=" "];
+  Node3 -> Node4 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node4 [label="Vixen::UserInterface\l::WaitUserInput",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespace_vixen_1_1_user_interface.html#a206b65ec1d4a20e2e086173d0b277bb1",tooltip=" "];
+  Node2 -> Node4 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+}

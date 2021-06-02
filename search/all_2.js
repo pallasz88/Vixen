@@ -1,0 +1,28 @@
+var searchData=
+[
+  ['b1_20',['B1',['../namespace_vixen.html#a62b2023f0d2fb4a1922431c57cee0a69ac3f1479b3dc51c31c20133b10e0cf29b',1,'Vixen']]],
+  ['b2_21',['B2',['../namespace_vixen.html#a62b2023f0d2fb4a1922431c57cee0a69a951e67a44f171bfafe44c7e182d524d7',1,'Vixen']]],
+  ['b3_22',['B3',['../namespace_vixen.html#a62b2023f0d2fb4a1922431c57cee0a69a5f363f7c8c707d02b1cbf48999ed571b',1,'Vixen']]],
+  ['b4_23',['B4',['../namespace_vixen.html#a62b2023f0d2fb4a1922431c57cee0a69a19f140a563c4c2266563ba7d1b3137fb',1,'Vixen']]],
+  ['b5_24',['B5',['../namespace_vixen.html#a62b2023f0d2fb4a1922431c57cee0a69a1f02382e427243caa7ea979ee830987b',1,'Vixen']]],
+  ['b6_25',['B6',['../namespace_vixen.html#a62b2023f0d2fb4a1922431c57cee0a69ada8c33988b03b523ccd228766a1b51d7',1,'Vixen']]],
+  ['b7_26',['B7',['../namespace_vixen.html#a62b2023f0d2fb4a1922431c57cee0a69a4caed083e97436aa222e4166f79536c3',1,'Vixen']]],
+  ['b8_27',['B8',['../namespace_vixen.html#a62b2023f0d2fb4a1922431c57cee0a69a6625037ed58713ed51a70d76f7039b09',1,'Vixen']]],
+  ['begin_28',['begin',['../class_fixed_list.html#a80f48fc26eaa576d9d891384e51b6623',1,'FixedList::begin() noexcept'],['../class_fixed_list.html#a3e61483e164f5c7add68344a14614576',1,'FixedList::begin() const noexcept'],['../fixed__list_8hpp.html#aafc20499170f5e761b59476819892f24',1,'begin(FixedList&lt; T &gt; &amp;list) noexcept:&#160;fixed_list.hpp'],['../fixed__list_8hpp.html#aead6b403ffa3b58df23dd0ec6eed2cee',1,'begin(const FixedList&lt; T &gt; &amp;list) noexcept:&#160;fixed_list.hpp']]],
+  ['bishop_29',['BISHOP',['../namespace_vixen.html#a9ebf7cbff5d3321e0ee0139851058e38a1834d375f684613c725d039a10db1976',1,'Vixen']]],
+  ['bishop_5fattack_5ftable_5fsize_30',['BISHOP_ATTACK_TABLE_SIZE',['../struct_vixen_1_1_constants.html#afcd3f0b992e0fbc5f6e5db1bb6123bb4',1,'Vixen::Constants']]],
+  ['bishop_5fpromo_5fcapture_31',['BISHOP_PROMO_CAPTURE',['../namespace_vixen.html#a8539a213e053090301441b518e89c7c5a8a670d277ba670e7576c65d859f8eb9f',1,'Vixen']]],
+  ['bishop_5fpromotion_32',['BISHOP_PROMOTION',['../namespace_vixen.html#a8539a213e053090301441b518e89c7c5a84416f30829b1501d3b9fe56fa9557fc',1,'Vixen']]],
+  ['bishopdirections_33',['bishopDirections',['../struct_vixen_1_1_constants.html#a4300fd790723fb430daf01a6de369d0b',1,'Vixen::Constants']]],
+  ['bishopmagic_34',['BishopMagic',['../struct_vixen_1_1_constants.html#afd792fb856d2bc1341ff246400476cb0',1,'Vixen::Constants']]],
+  ['bishoptable_35',['BishopTable',['../class_vixen_1_1_search.html#a7359abd34407edbb7a32184c247c6047',1,'Vixen::Search::BishopTable()'],['../class_vixen_1_1_search.html#a60b2176773873a6cdd72874b7da67943',1,'Vixen::Search::bishopTable()'],['../namespace_vixen_1_1_slider_utils.html#a45dfbc0d3de8e3422536746fdf63333d',1,'Vixen::SliderUtils::BishopTable()']]],
+  ['bitboard_36',['BitBoard',['../namespace_vixen.html#a78eb5bad65c10343d9aabe0cf55c2a8f',1,'Vixen']]],
+  ['bitboards_37',['bitBoards',['../class_vixen_1_1_board.html#a55354c140774ea1b41223b93bb114cb4',1,'Vixen::Board::bitBoards()'],['../namespace_vixen.html#a1c4db2aa450460072b28744718c1868a',1,'Vixen::BitBoards()']]],
+  ['bkca_38',['BKCA',['../namespace_vixen.html#ad293e7a2b58670f276c0ab08be9a29c9aee1bd41ea6cd9d0f6eb59b24cd186251',1,'Vixen']]],
+  ['black_39',['BLACK',['../namespace_vixen.html#a751074f3c87d1a16ffb5ccef40a5e640a08d0012388564e95c3b4a7407cf04965',1,'Vixen']]],
+  ['blackpiecekeys_40',['blackPieceKeys',['../struct_vixen_1_1_constants.html#a18c9cb7ee366f19b5a12a6222bea029f',1,'Vixen::Constants']]],
+  ['board_41',['Board',['../class_vixen_1_1_board.html',1,'Vixen::Board'],['../class_vixen_1_1_uci.html#af59ab86be36b4a24dbbe047df74922fe',1,'Vixen::Uci::board()'],['../class_vixen_1_1_board.html#a5e8494a7913e52cbf9144c4716da2825',1,'Vixen::Board::Board()']]],
+  ['board_2ecpp_42',['board.cpp',['../board_8cpp.html',1,'']]],
+  ['board_2ehpp_43',['board.hpp',['../board_8hpp.html',1,'']]],
+  ['bqca_44',['BQCA',['../namespace_vixen.html#ad293e7a2b58670f276c0ab08be9a29c9a5c2e271b5f3811ccecb00b65f6296d2b',1,'Vixen']]]
+];
