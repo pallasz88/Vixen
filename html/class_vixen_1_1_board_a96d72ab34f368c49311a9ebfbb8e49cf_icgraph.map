@@ -1,8 +1,0 @@
-<map id="Vixen::Board::IsWhiteToMove" name="Vixen::Board::IsWhiteToMove">
-<area shape="rect" id="node1" title=" " alt="" coords="605,75,799,102"/>
-<area shape="rect" id="node2" href="$class_vixen_1_1_board.html#a3c7cfa31e964f9f63316243095e8aeb7" title=" " alt="" coords="379,46,557,73"/>
-<area shape="rect" id="node6" href="$class_vixen_1_1_move_generator.html#a8d5e235d6ad6f5e3c60236058526242f" title=" " alt="" coords="393,97,543,139"/>
-<area shape="rect" id="node3" href="$class_vixen_1_1_user_interface.html#a78c365bbff36e79cafc3eb5cac9460e8" title=" " alt="" coords="192,5,331,47"/>
-<area shape="rect" id="node5" href="$class_vixen_1_1_user_interface.html#a1812f54321cf2df2f40fc1d0ecf90927" title=" " alt="" coords="192,71,331,112"/>
-<area shape="rect" id="node4" href="$class_vixen_1_1_user_interface.html#a5538d5430b4916f055baadaf4017a428" title=" " alt="" coords="5,39,144,80"/>
-</map>

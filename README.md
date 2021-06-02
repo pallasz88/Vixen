@@ -8,6 +8,7 @@
 [![SonarCloud Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=pallasz88_Vixen&metric=vulnerabilities)](https://sonarcloud.io/component_measures/metric/security_rating/list?id=pallasz88_Vixen)
 [![SonarCloud Code Smells](https://sonarcloud.io/api/project_badges/measure?project=pallasz88_Vixen&metric=code_smells)](https://sonarcloud.io/component_measures?id=pallasz88_Vixen&metric=code_smells)
 
+![](logo.png)
 
 **Implemented features so far**
 
