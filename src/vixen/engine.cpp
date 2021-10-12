@@ -14,14 +14,10 @@ FixedList<Move> Search::GetPV(int depth, Board &board)
     FixedList<Move> moveList;
     int ply = 0;
 
-    for (; ply < depth;)
+    while (ply < depth)
     {
-        const auto bestMove = pv.GetPVEntry(board.GetHash()).move;
-
-        if (bestMove == 0U)
-            break;
-
-        if (board.MakeMove(bestMove))
+        if (const auto bestMove = pv.GetPVEntry(board.GetHash()).move;
+            bestMove != 0U && board.MakeMove(bestMove))
         {
             ++ply;
             moveList.emplace_back(bestMove);
