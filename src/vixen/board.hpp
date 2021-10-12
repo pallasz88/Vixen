@@ -29,15 +29,6 @@ struct History
 
     char capturedPiece;
 
-    History() = default;
-
-    explicit constexpr History(BitBoard en, unsigned cr, unsigned fi, Move lastMove, char moved, char captured,
-                               PositionKey lastHash)
-        : enPassant(en), hash(lastHash), castlingRights(cr), fiftyMoves(fi), move(lastMove), movedPiece(moved),
-          capturedPiece(captured)
-    {
-    }
-
     [[nodiscard]] friend constexpr bool operator==(const History &history, PositionKey positionKey)
     {
         return history.hash == positionKey;

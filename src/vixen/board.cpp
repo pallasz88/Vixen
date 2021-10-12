@@ -187,8 +187,8 @@ bool Board::MakeMove(Vixen::Move move) noexcept
     const char movingPieceLetter = pieceList[from];
     const char capturedPieceLetter = pieceList[to];
 
-    history[historyPly++] = History{enPassantBitBoard, castlingRights,      fiftyMoves,         move,
-                                    movingPieceLetter, capturedPieceLetter, hashBoard.GetHash()};
+    history[historyPly++] = History{enPassantBitBoard, hashBoard.GetHash(), castlingRights, fiftyMoves, move,
+                                    movingPieceLetter, capturedPieceLetter};
 
     ++fiftyMoves;
 
