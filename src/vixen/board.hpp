@@ -188,7 +188,7 @@ class VIXEN_API Board
      * @param move
      * @return
      */
-    [[nodiscard]] bool MakeMove(Move move) noexcept;
+    [[nodiscard]] bool MakeMove(Move move);
 
     [[nodiscard]] bool MakeMove(std::string_view move);
 

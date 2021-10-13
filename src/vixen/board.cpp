@@ -178,7 +178,7 @@ constexpr void Board::ParseCastlingRightPart(std::string_view parsedPosition)
     }
 }
 
-bool Board::MakeMove(vixen::Move move) noexcept
+bool Board::MakeMove(vixen::Move move)
 {
     const auto from = move.GetFromSquare();
     const auto to = move.GetToSquare();
