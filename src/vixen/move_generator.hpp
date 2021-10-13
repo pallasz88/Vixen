@@ -94,8 +94,6 @@ template <Colors sideToMove> constexpr bool IsInCheck(const Board &board) noexce
 
 namespace Test
 {
-extern BitBoard leafs;
-
 /**
  * Helper function to validate move generation:
  *  - Perft method: https://www.chessprogramming.org/Perft
@@ -106,7 +104,7 @@ extern BitBoard leafs;
  */
 VIXEN_API BitBoard PerftTest(int depth, Board &board) noexcept;
 
-VIXEN_API BitBoard Perft(int depth, Board &board) noexcept;
+VIXEN_API BitBoard Perft(int depth, Board &board, BitBoard leafs) noexcept;
 } // namespace Test
 } // namespace Vixen
 

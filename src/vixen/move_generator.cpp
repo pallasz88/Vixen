@@ -6,7 +6,6 @@ namespace vixen
 {
 namespace Test
 {
-BitBoard leafs = 0;
 
 /**
  * Helper function to validate move generation:
@@ -18,6 +17,7 @@ BitBoard leafs = 0;
  */
 BitBoard PerftTest(int depth, Board &board) noexcept
 {
+    static BitBoard leafs = 0;
     if (depth == 0)
         return 1;
 
@@ -30,7 +30,7 @@ BitBoard PerftTest(int depth, Board &board) noexcept
             continue;
 
         BitBoard cumNodes = leafs;
-        nodes += Perft(depth - 1, board);
+        nodes += Perft(depth - 1, board, leafs);
         board.TakeBack();
         BitBoard olds = leafs - cumNodes;
         std::cout << move;
@@ -39,7 +39,7 @@ BitBoard PerftTest(int depth, Board &board) noexcept
     return nodes;
 }
 
-BitBoard Perft(int depth, Board &board) noexcept
+BitBoard Perft(int depth, Board &board, BitBoard leafs) noexcept
 {
     if (depth == 0)
     {
@@ -55,7 +55,7 @@ BitBoard Perft(int depth, Board &board) noexcept
         if (!board.MakeMove(move))
             continue;
 
-        nodes += Perft(depth - 1, board);
+        nodes += Perft(depth - 1, board, leafs);
         board.TakeBack();
     }
     return nodes;
