@@ -8,7 +8,7 @@
 #include "fixed_list.hpp"
 #include "slider.hpp"
 
-namespace Vixen
+namespace vixen
 {
 /**
  * Generates all pseudo-legal moves from Board class position.
@@ -71,11 +71,11 @@ template <Colors sideToMove> constexpr bool IsSquareAttacked(unsigned int square
     const auto queens = sideToMove == Colors::WHITE ? board.GetBitBoard('q') : board.GetBitBoard('Q');
     const auto kings = sideToMove == Colors::WHITE ? board.GetBitBoard('k') : board.GetBitBoard('K');
 
-    return AntSliderUtils::pawnAttack[static_cast<int>(sideToMove)][square] & pawns ||
-           AntSliderUtils::knightAttack[square] & knights ||
-           SliderUtils::GetBishopAttack(square, blockers) & (bishops | queens) ||
-           SliderUtils::GetRookAttack(square, blockers) & (rooks | queens) ||
-           AntSliderUtils::kingAttack[square] & kings;
+    return anti_slider_utils::pawnAttack[static_cast<int>(sideToMove)][square] & pawns ||
+           anti_slider_utils::knightAttack[square] & knights ||
+           slider_utils::GetBishopAttack(square, blockers) & (bishops | queens) ||
+           slider_utils::GetRookAttack(square, blockers) & (rooks | queens) ||
+           anti_slider_utils::kingAttack[square] & kings;
 }
 
 /**

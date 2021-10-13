@@ -9,7 +9,7 @@
 #define NOMINMAX
 #endif
 
-namespace Vixen
+namespace vixen
 {
 /**
  *   Xn+1=(aXn + C) mod m

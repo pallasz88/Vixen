@@ -6,7 +6,7 @@
 #include "defs.hpp"
 #include "move.hpp"
 
-namespace Vixen
+namespace vixen
 {
 
 struct PVEntry

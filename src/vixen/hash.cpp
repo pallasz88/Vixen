@@ -2,7 +2,7 @@
 
 #include "board.hpp"
 
-namespace Vixen
+namespace vixen
 {
 
 Hash::Keys Hash::zobristKeys;

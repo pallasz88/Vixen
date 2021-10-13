@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-namespace Vixen
+namespace vixen
 {
 namespace Test
 {
@@ -84,8 +84,8 @@ template <Colors sideToMove> void MoveGenerator::GenerateQuietMoves(const Board 
     GeneratePawnMoves(2 * pawnOffset, doublePawnPush, DOUBLE_PAWN_PUSH);
     GeneratePawnPromotionMoves(pawnOffset, pawnPromotion);
 
-    GenerateAntiSliderMoves<QUIET_MOVE>(targets, knights, AntSliderUtils::knightAttack);
-    GenerateAntiSliderMoves<QUIET_MOVE>(targets, kings, AntSliderUtils::kingAttack);
+    GenerateAntiSliderMoves<QUIET_MOVE>(targets, knights, anti_slider_utils::knightAttack);
+    GenerateAntiSliderMoves<QUIET_MOVE>(targets, kings, anti_slider_utils::kingAttack);
 
     GenerateSliderMoves<Slider::BISHOP, QUIET_MOVE>(bishops | queens, blockers, targets);
     GenerateSliderMoves<Slider::ROOK, QUIET_MOVE>(rooks | queens, blockers, targets);
@@ -114,11 +114,11 @@ template <Colors sideToMove> void MoveGenerator::GenerateCaptureMoves(const Boar
     GeneratePawnPromotionCaptureMoves(pawnLeftCapture, pawnPromotionLeft);
     GeneratePawnPromotionCaptureMoves(pawnRightCapture, pawnPromotionRight);
     GenerateAntiSliderMoves<CAPTURE>(targets & ~promotionRanks, pawns,
-                                     AntSliderUtils::pawnAttack[static_cast<int>(sideToMove)]);
-    GenerateAntiSliderMoves<ENPASSANT>(enPassant, pawns, AntSliderUtils::pawnAttack[static_cast<int>(sideToMove)]);
+                                     anti_slider_utils::pawnAttack[static_cast<int>(sideToMove)]);
+    GenerateAntiSliderMoves<ENPASSANT>(enPassant, pawns, anti_slider_utils::pawnAttack[static_cast<int>(sideToMove)]);
 
-    GenerateAntiSliderMoves<CAPTURE>(targets, knights, AntSliderUtils::knightAttack);
-    GenerateAntiSliderMoves<CAPTURE>(targets, kings, AntSliderUtils::kingAttack);
+    GenerateAntiSliderMoves<CAPTURE>(targets, knights, anti_slider_utils::knightAttack);
+    GenerateAntiSliderMoves<CAPTURE>(targets, kings, anti_slider_utils::kingAttack);
     GenerateSliderMoves<Slider::BISHOP, CAPTURE>(bishops | queens, blockers, targets);
     GenerateSliderMoves<Slider::ROOK, CAPTURE>(rooks | queens, blockers, targets);
 }
@@ -130,8 +130,8 @@ void MoveGenerator::GenerateSliderMoves(BitBoard pieces, BitBoard blockers, BitB
     while (pieces)
     {
         const auto from = GetPosition(pieces);
-        attacks |= slider == Slider::BISHOP ? SliderUtils::GetBishopAttack(from, blockers)
-                                            : SliderUtils::GetRookAttack(from, blockers);
+        attacks |= slider == Slider::BISHOP ? slider_utils::GetBishopAttack(from, blockers)
+                                            : slider_utils::GetRookAttack(from, blockers);
         attacks &= targets;
         while (attacks)
         {
@@ -231,7 +231,7 @@ template <Colors sideToMove> constexpr void MoveGenerator::GenerateCastlingMoves
     }
 }
 
-template <Colors sideToMove, uint8_t moveType> void MoveGenerator::GenerateMoves(const Vixen::Board &board) noexcept
+template <Colors sideToMove, uint8_t moveType> void MoveGenerator::GenerateMoves(const vixen::Board &board) noexcept
 {
     GenerateCaptureMoves<sideToMove>(board);
     if constexpr (moveType == CAPTURE)

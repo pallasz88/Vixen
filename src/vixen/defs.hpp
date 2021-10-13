@@ -17,7 +17,7 @@
 #define VIXEN_API __attribute__((visibility("default")))
 #endif
 
-namespace Vixen
+namespace vixen
 {
 
 enum Ranks : uint64_t
@@ -413,7 +413,7 @@ constexpr bool IsBlackMoving(char c) noexcept
     return std::find(begin(Constants::blackPieceKeys), end(Constants::blackPieceKeys), c) !=
            end(Constants::blackPieceKeys);
 #else
-    return Vixen::find(begin(Constants::blackPieceKeys), end(Constants::blackPieceKeys), c) !=
+    return vixen::find(begin(Constants::blackPieceKeys), end(Constants::blackPieceKeys), c) !=
            end(Constants::blackPieceKeys);
 #endif
 }

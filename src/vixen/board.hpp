@@ -5,7 +5,7 @@
 #include "hash.hpp"
 #include "move.hpp"
 
-namespace Vixen
+namespace vixen
 {
 
 class MoveGenerator;
@@ -219,7 +219,7 @@ class VIXEN_API Board
         return std::find(begin(history) + historyPly - fiftyMoves, begin(history) + historyPly, hashBoard.GetHash()) !=
                begin(history) + historyPly;
 #else
-        return Vixen::find(begin(history) + historyPly - fiftyMoves, begin(history) + historyPly,
+        return vixen::find(begin(history) + historyPly - fiftyMoves, begin(history) + historyPly,
                            hashBoard.GetHash()) != begin(history) + historyPly;
 #endif
     }

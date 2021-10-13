@@ -5,7 +5,7 @@
 #include "board.hpp"
 #include "move_generator.hpp"
 
-namespace Vixen
+namespace vixen
 {
 struct Fixture
 {

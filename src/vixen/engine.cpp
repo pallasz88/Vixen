@@ -5,7 +5,7 @@
 #include "move_generator.hpp"
 #include "uci.hpp"
 
-namespace Vixen
+namespace vixen
 {
 PrincipalVariation Search::pv(megaByte / sizeof(PVEntry));
 

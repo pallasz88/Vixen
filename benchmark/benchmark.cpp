@@ -5,7 +5,7 @@
 #include "board.hpp"
 #include <iostream>
 
-Vixen::Hash::Keys Vixen::Hash::zobristKeys;
+vixen::Hash::Keys vixen::Hash::zobristKeys;
 
 
 static constexpr std::array evalMap{std::make_pair('P', 4), std::make_pair('N', 5), std::make_pair('B', 6),
@@ -35,7 +35,7 @@ constexpr auto GetEvalIndexLoop(char c) noexcept
     return -1;
 }
 
-int EvaluateIfElse(const Vixen::Board &board)
+int EvaluateIfElse(const vixen::Board &board)
 {
     int score = board.GetMaterialBalance();
 
@@ -44,14 +44,14 @@ int EvaluateIfElse(const Vixen::Board &board)
     {
         if (piece == 'P' || piece == 'N' || piece == 'B' || piece == 'R' ||
             piece == 'p' || piece == 'n' || piece == 'b' || piece == 'r')
-            score += Vixen::Search::arrayLookUp[GetEvalIndexIfElse(piece)][i];
+            score += vixen::Search::arrayLookUp[GetEvalIndexIfElse(piece)][i];
         ++i;
     }
 
     return board.IsWhiteToMove() ? score : -score;
 }
 
-int EvaluateLoop(const Vixen::Board &board)
+int EvaluateLoop(const vixen::Board &board)
 {
     int score = board.GetMaterialBalance();
 
@@ -60,7 +60,7 @@ int EvaluateLoop(const Vixen::Board &board)
     {
         if (piece == 'P' || piece == 'N' || piece == 'B' || piece == 'R' ||
             piece == 'p' || piece == 'n' || piece == 'b' || piece == 'r')
-            score += Vixen::Search::arrayLookUp[GetEvalIndexLoop(piece)][i];
+            score += vixen::Search::arrayLookUp[GetEvalIndexLoop(piece)][i];
         ++i;
     }
 
@@ -69,8 +69,8 @@ int EvaluateLoop(const Vixen::Board &board)
 
 static void BM_EvalIfElse(benchmark::State& state)
 {
-    Vixen::Board board;
-    board.SetBoard(Vixen::Constants::TESTPOS1);
+    vixen::Board board;
+    board.SetBoard(vixen::Constants::TESTPOS1);
     for (auto _ : state)
         benchmark::DoNotOptimize(EvaluateIfElse(board));
 }
@@ -78,8 +78,8 @@ BENCHMARK(BM_EvalIfElse);
 
 static void BM_EvalLoop(benchmark::State& state)
 {
-    Vixen::Board board;
-    board.SetBoard(Vixen::Constants::TESTPOS1);
+    vixen::Board board;
+    board.SetBoard(vixen::Constants::TESTPOS1);
     for (auto _ : state)
         benchmark::DoNotOptimize(EvaluateLoop(board));
 }

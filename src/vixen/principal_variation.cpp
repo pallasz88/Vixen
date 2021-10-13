@@ -1,6 +1,6 @@
 #include "principal_variation.hpp"
 
-namespace Vixen
+namespace vixen
 {
 void PrincipalVariation::StorePVEntry(PVEntry &&entry)
 {

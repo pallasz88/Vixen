@@ -9,7 +9,7 @@
 #include "fixed_list.hpp"
 #include "principal_variation.hpp"
 
-namespace Vixen
+namespace vixen
 {
 class Board;
 
@@ -146,7 +146,7 @@ class VIXEN_API Search
     static bool IsPVMove(const PVEntry &pvEntry, Move &move);
 };
 
-template std::array<int, 64ul> Vixen::Utility::MirrorTable<std::array<int, 64ul>>(
+template std::array<int, 64ul> vixen::Utility::MirrorTable<std::array<int, 64ul>>(
     std::array<int, 64ul> const &) noexcept;
 } // namespace Vixen
 

@@ -3,7 +3,7 @@
 
 #include "defs.hpp"
 
-namespace Vixen::AntSliderUtils
+namespace vixen::anti_slider_utils
 {
 extern const std::array<std::array<BitBoard, Constants::SQUARE_NUMBER>, Constants::COLOR_NUMBER> pawnAttack;
 
@@ -19,6 +19,6 @@ constexpr auto InitPawnAttack() noexcept
 
 #include "anti_slider.inl"
 
-} // namespace Vixen::AntSliderUtils
+} // namespace Vixen::anti_slider_utils
 
 #endif // VIXEN_ANTI_SLIDER_HPP_INCLUDED

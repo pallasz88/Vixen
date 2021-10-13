@@ -6,9 +6,9 @@
 #include "move_generator.hpp"
 #include "userinterface.hpp"
 
-using namespace Vixen;
+using namespace vixen;
 
-Vixen::Hash::Keys Vixen::Hash::zobristKeys;
+vixen::Hash::Keys vixen::Hash::zobristKeys;
 
 BOOST_AUTO_TEST_CASE(Test_bit)
 {
@@ -26,7 +26,7 @@ BOOST_FIXTURE_TEST_SUITE(Test_unit, Fixture)
 
 BOOST_AUTO_TEST_CASE(Test_Startposition)
 {
-    Vixen::Board board;
+    vixen::Board board;
     BOOST_CHECK_EQUAL(board.GetBitBoard('K'), 8ULL);
     BOOST_CHECK_EQUAL(board.GetBitBoard('Q'), 16ULL);
     BOOST_CHECK_EQUAL(board.GetBitBoard('R'), 129ULL);

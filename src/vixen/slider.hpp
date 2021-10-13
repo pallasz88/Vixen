@@ -5,7 +5,7 @@
 
 #include "defs.hpp"
 
-namespace Vixen::SliderUtils
+namespace vixen::slider_utils
 {
 struct Magic
 {
@@ -52,6 +52,6 @@ inline void InitMagics() noexcept;
 
 #include "slider.inl"
 
-} // namespace Vixen::SliderUtils
+} // namespace Vixen::slider_utils
 
 #endif // VIXEN_SLIDER_HPP_INCLUDED

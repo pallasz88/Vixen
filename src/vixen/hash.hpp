@@ -4,7 +4,7 @@
 #include "defs.hpp"
 #include "random.hpp"
 
-namespace Vixen
+namespace vixen
 {
 
 class Board;

@@ -7,7 +7,7 @@
 #include "board.hpp"
 #include "engine.hpp"
 
-namespace Vixen
+namespace vixen
 {
 
 Uci::Uci() : board(std::make_unique<Board>()), info(std::make_unique<SearchInfo>())

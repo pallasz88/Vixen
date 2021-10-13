@@ -3,7 +3,7 @@
 
 #include "defs.hpp"
 
-namespace Vixen
+namespace vixen
 {
 
 using Representation = unsigned;

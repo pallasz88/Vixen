@@ -9,12 +9,12 @@ constexpr unsigned GetIndex(BitBoard occupied, const Magic &table) noexcept
 
 inline BitBoard GetBishopAttack(unsigned int square, BitBoard occupied) noexcept
 {
-    return SliderUtils::BishopTable[square].attacks[GetIndex(occupied, SliderUtils::BishopTable[square])];
+    return slider_utils::BishopTable[square].attacks[GetIndex(occupied, slider_utils::BishopTable[square])];
 }
 
 inline BitBoard GetRookAttack(unsigned int square, BitBoard occupied) noexcept
 {
-    return SliderUtils::RookTable[square].attacks[GetIndex(occupied, SliderUtils::RookTable[square])];
+    return slider_utils::RookTable[square].attacks[GetIndex(occupied, slider_utils::RookTable[square])];
 }
 
 constexpr void GetNextCoordinate(int &file, int &rank, const Direction &direction) noexcept

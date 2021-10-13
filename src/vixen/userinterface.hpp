@@ -3,14 +3,14 @@
 
 #include "defs.hpp"
 
-namespace Vixen
+namespace vixen
 {
 class MoveGenerator;
 
 class Board;
 } // namespace Vixen
 
-namespace Vixen::UserInterface
+namespace vixen::UserInterface
 {
 
 /**

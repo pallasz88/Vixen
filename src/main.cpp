@@ -1,11 +1,11 @@
 #include "board.hpp"
 #include "uci.hpp"
 
-Vixen::Hash::Keys Vixen::Hash::zobristKeys;
+vixen::Hash::Keys vixen::Hash::zobristKeys;
 
 int main()
 {
-    Vixen::Uci uci;
+    vixen::Uci uci;
     uci.loop();
     return 0;
 }

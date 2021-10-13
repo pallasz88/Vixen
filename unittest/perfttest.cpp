@@ -6,9 +6,9 @@
 #include "move_generator.hpp"
 #include <sstream>
 
-using namespace Vixen;
+using namespace vixen;
 
-Vixen::Hash::Keys Vixen::Hash::zobristKeys;
+vixen::Hash::Keys vixen::Hash::zobristKeys;
 
 BOOST_FIXTURE_TEST_SUITE(Test_perft, Fixture)
 

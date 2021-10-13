@@ -6,7 +6,7 @@
 #include "defs.hpp"
 #include "fixed_list.hpp"
 
-namespace Vixen
+namespace vixen
 {
 
 struct SearchInfo;

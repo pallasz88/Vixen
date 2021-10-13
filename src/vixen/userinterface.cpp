@@ -7,9 +7,9 @@
 #include "move_generator.hpp"
 #include "timer.hpp"
 
-namespace Vixen::UserInterface
+namespace vixen::UserInterface
 {
-void WaitUserInput(Vixen::Board &board)
+void WaitUserInput(vixen::Board &board)
 {
     while (true)
     {
@@ -70,7 +70,7 @@ void WaitUserInput(Vixen::Board &board)
     }
 }
 
-void MakeMove(std::string &&move, Vixen::Board &board)
+void MakeMove(std::string &&move, vixen::Board &board)
 {
     std::cout << "Your move is: " << move << "\n";
 

@@ -7,7 +7,7 @@
 
 #include "move_generator.hpp"
 
-namespace Vixen
+namespace vixen
 {
 static constexpr std::array castlePermission = {
     7U,  15U, 15U, 3U,  15U, 15U, 15U, 11U, 15U, 15U, 15U, 15U, 15U, 15U, 15U, 15U, 15U, 15U, 15U, 15U, 15U, 15U,
@@ -18,7 +18,7 @@ Board::Board()
     : history{}, pieceList{' '}, bitBoards{Constants::EMPTY_BOARD}, enPassantBitBoard(Constants::EMPTY_BOARD),
       hashBoard(Hash()), castlingRights(0), historyPly(0), fiftyMoves(0), material(0), whiteToMove(false)
 {
-    SliderUtils::InitMagics();
+    slider_utils::InitMagics();
     Hash::InitZobristKeys();
     SetBoard(Constants::START_POSITION);
 }
@@ -178,7 +178,7 @@ constexpr void Board::ParseCastlingRightPart(std::string_view parsedPosition)
     }
 }
 
-bool Board::MakeMove(Vixen::Move move) noexcept
+bool Board::MakeMove(vixen::Move move) noexcept
 {
     const auto from = move.GetFromSquare();
     const auto to = move.GetToSquare();
