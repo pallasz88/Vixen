@@ -114,25 +114,25 @@ enum class Slider
     ROOK
 };
 
-typedef uint64_t BitBoard;
+using BitBoard = uint64_t;
 
-typedef std::array<BitBoard, 15> BitBoards;
+using BitBoards = std::array<BitBoard, 15>;
 
-typedef std::array<int, 2> Direction;
+using Direction = std::array<int, 2>;
 
-typedef std::array<Direction, 4> SliderDirections;
+using SliderDirections = std::array<Direction, 4>;
 
-typedef std::array<Direction, 8> AntiSliderDirections;
+using AntiSliderDirections = std::array<Direction, 8>;
 
-typedef std::array<Direction, 2> PawnDirections;
+using PawnDirections = std::array<Direction, 2>;
 
-typedef std::array<std::array<BitBoard, 13>, 64> PieceHashKeys;
+using PieceHashKeys = std::array<std::array<BitBoard, 13>, 64>;
 
-typedef uint64_t SideHashKey;
+using SideHashKey = uint64_t;
 
-typedef uint64_t PositionKey;
+using PositionKey = uint64_t;
 
-typedef std::array<BitBoard, 16> CastleHashKeys;
+using CastleHashKeys = std::array<BitBoard, 16>;
 
 struct Constants
 {
