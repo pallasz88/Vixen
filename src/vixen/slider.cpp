@@ -3,8 +3,8 @@
 namespace vixen::slider_utils
 {
 
-std::array<Magic, Constants::SQUARE_NUMBER> BishopTable;
+const std::array<Magic, Constants::SQUARE_NUMBER> BishopTable = initMagics<BishopSliderInfo>();
 
-std::array<Magic, Constants::SQUARE_NUMBER> RookTable;
+const std::array<Magic, Constants::SQUARE_NUMBER> RookTable = initMagics<RookSliderInfo>();
 
-} // namespace Vixen::slider_utils
+} // namespace vixen::slider_utils

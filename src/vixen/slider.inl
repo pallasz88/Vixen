@@ -1,20 +1,14 @@
 #ifndef VIXEN_SLIDER_INL_INCLUDED
 #define VIXEN_SLIDER_INL_INCLUDED
 
-constexpr unsigned GetIndex(BitBoard occupied, const Magic &table) noexcept
-{
-    assert(table.shift < Constants::SQUARE_NUMBER);
-    return static_cast<unsigned>(((occupied & table.mask) * table.magic) >> table.shift);
-}
-
 inline BitBoard GetBishopAttack(unsigned int square, BitBoard occupied) noexcept
 {
-    return slider_utils::BishopTable[square].attacks[GetIndex(occupied, slider_utils::BishopTable[square])];
+    return BishopTable[square].GetAttack(occupied);
 }
 
 inline BitBoard GetRookAttack(unsigned int square, BitBoard occupied) noexcept
 {
-    return slider_utils::RookTable[square].attacks[GetIndex(occupied, slider_utils::RookTable[square])];
+    return RookTable[square].GetAttack(occupied);
 }
 
 constexpr void GetNextCoordinate(int &file, int &rank, const Direction &direction) noexcept
@@ -46,31 +40,19 @@ constexpr void InitSlidingAttack(unsigned int square, SliderDirections direction
     BitBoard edges = ((FILEA | FILEH) & ~(FILEH << square % 8)) | ((RANK1 | RANK8) & ~(RANK1 << 8 * (square / 8)));
     auto occupied = Constants::EMPTY_BOARD;
 
-    table[square].magic = slider == Slider::BISHOP ? Constants::BishopMagic[square] : Constants::RookMagic[square];
-    table[square].mask = SlidingAttack(square, directions, occupied) & ~edges;
-    table[square].shift = Constants::SQUARE_NUMBER - PopCount(table[square].mask);
+    auto &magics = table[square];
+    magics.magic = slider == Slider::BISHOP ? Constants::BishopMagic[square] : Constants::RookMagic[square];
+    magics.mask = SlidingAttack(square, directions, occupied) & ~edges;
+    magics.shift = Constants::SQUARE_NUMBER - PopCount(magics.mask);
 
     if (square != Constants::MAX_SQUARE_INDEX)
-        table[square + 1].attacks = table[square].attacks + (1ULL << PopCount(table[square].mask));
+        table[square + 1].attacks = magics.attacks + (1ULL << PopCount(magics.mask));
 
     do
     {
-        unsigned index = GetIndex(occupied, table[square]);
-        table[square].attacks[index] = SlidingAttack(square, directions, occupied);
-        occupied = (occupied - table[square].mask) & table[square].mask;
+        unsigned index = magics.GetIndex(occupied);
+        magics.attacks[index] = SlidingAttack(square, directions, occupied);
+        occupied = (occupied - magics.mask) & magics.mask;
     } while (occupied);
-}
-
-inline void InitMagics() noexcept
-{
-    static std::array<BitBoard, Constants::BISHOP_ATTACK_TABLE_SIZE> bishopAttacks{};
-    static std::array<BitBoard, Constants::ROOK_ATTACK_TABLE_SIZE> rookAttacks{};
-    RookTable[0].attacks = &rookAttacks[0];
-    BishopTable[0].attacks = &bishopAttacks[0];
-    for (unsigned square = 0; square < Constants::SQUARE_NUMBER; ++square)
-    {
-        InitSlidingAttack<Slider::ROOK>(square, Constants::rookDirections, RookTable);
-        InitSlidingAttack<Slider::BISHOP>(square, Constants::bishopDirections, BishopTable);
-    }
 }
 #endif // VIXEN_SLIDER_INL_INCLUDED
