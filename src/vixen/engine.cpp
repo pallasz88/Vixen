@@ -38,15 +38,14 @@ void Search::IterativeDeepening(Board &board, SearchInfo &info)
     info.stopped = false;
     info.startTime = std::chrono::high_resolution_clock::now();
     info.timeIndex = static_cast<size_t>(!board.IsWhiteToMove());
-    std::pair<int, Move> result;
-    Move bestMove{};
     ++info.nodesCount;
     board.ResetKillers();
     board.ResetHistory();
 
+    Move bestMove{};
     for (int depth = 1; depth <= info.maxDepth; ++depth)
     {
-        result = Search::Root(depth, board, info);
+        const auto result = Search::Root(depth, board, info);
         const auto bestLine = GetPV(depth, board);
         bestMove = static_cast<bool>(bestLine[0]) ? bestLine[0] : bestMove;
         if (info.stopped)
@@ -92,12 +91,11 @@ std::pair<int, Move> Search::Root(int depth, Board &board, SearchInfo &info)
     for (auto &move : moveList)
     {
         if (IsPVMove(pvEntry, move))
-        {
             move.SetScore(2000000U);
-            continue;
-        }
 
-        OrderNonPVMoves(depth, board, move);
+        else
+            OrderNonPVMoves(depth, board, move);
+
     }
 
     for (auto it = begin(moveList); it != end(moveList); ++it)
