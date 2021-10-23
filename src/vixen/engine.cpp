@@ -16,8 +16,7 @@ FixedList<Move> Search::GetPV(int depth, Board &board)
 
     while (ply < depth)
     {
-        if (const auto bestMove = pv.GetPVEntry(board.GetHash()).move;
-            bestMove != 0U && board.MakeMove(bestMove))
+        if (const auto bestMove = pv.GetPVEntry(board.GetHash()).move; bestMove != 0U && board.MakeMove(bestMove))
         {
             ++ply;
             moveList.emplace_back(bestMove);
@@ -61,7 +60,7 @@ void Search::IterativeDeepening(Board &board, SearchInfo &info)
 
 void Search::OrderCapture(const Board &board, Move &move)
 {
-    if ((move.GetMoveType() & ENPASSANT) != ENPASSANT)
+    if ((move.GetMoveType() & static_cast<uint8_t>(MoveTypes::ENPASSANT)) != static_cast<uint8_t>(MoveTypes::ENPASSANT))
     {
         const auto attacker = board.GetPieceList()[move.GetFromSquare()];
         const auto victim = board.GetPieceList()[move.GetToSquare()];
@@ -77,7 +76,7 @@ void Search::OrderCapture(const Board &board, Move &move)
 
 std::pair<int, Move> Search::Root(int depth, Board &board, SearchInfo &info)
 {
-    auto moveList = board.GetMoveList<ALL_MOVE>();
+    auto moveList = board.GetMoveList<static_cast<uint8_t>(MoveTypes::ALL_MOVE)>();
     int alpha = -MATE;
     int beta = MATE;
     Move bestMove{0U};
@@ -95,7 +94,6 @@ std::pair<int, Move> Search::Root(int depth, Board &board, SearchInfo &info)
 
         else
             OrderNonPVMoves(depth, board, move);
-
     }
 
     for (auto it = begin(moveList); it != end(moveList); ++it)
@@ -115,7 +113,8 @@ std::pair<int, Move> Search::Root(int depth, Board &board, SearchInfo &info)
 
         if (score >= beta)
         {
-            if ((move.GetMoveType() & CAPTURE) != CAPTURE)
+            if ((move.GetMoveType() & static_cast<uint8_t>(MoveTypes::CAPTURE)) !=
+                static_cast<uint8_t>(MoveTypes::CAPTURE))
                 board.UpdateKillers(move, depth);
 
             return {beta, move}; //  fail hard beta-cutoff
@@ -123,7 +122,8 @@ std::pair<int, Move> Search::Root(int depth, Board &board, SearchInfo &info)
 
         if (score > alpha)
         {
-            if ((move.GetMoveType() & CAPTURE) != CAPTURE)
+            if ((move.GetMoveType() & static_cast<uint8_t>(MoveTypes::CAPTURE)) !=
+                static_cast<uint8_t>(MoveTypes::CAPTURE))
                 board.IncreaseHistoryValue(depth, move.GetFromSquare(), move.GetToSquare());
 
             alpha = score; // alpha acts like max in MiniMax
@@ -144,7 +144,7 @@ bool Search::IsPVMove(const PVEntry &pvEntry, Move &move)
 
 void Search::OrderNonPVMoves(int depth, const Board &board, Move &move)
 {
-    if ((move.GetMoveType() & CAPTURE) == CAPTURE)
+    if ((move.GetMoveType() & static_cast<uint8_t>(MoveTypes::CAPTURE)) == static_cast<uint8_t>(MoveTypes::CAPTURE))
         OrderCapture(board, move);
 
     else if (board.GetKiller(depth, 1) == move)
@@ -198,7 +198,7 @@ int Search::NegaMax(int depth, int alpha, int beta, Board &board, SearchInfo &in
             return beta;
     }
 
-    auto moveList = board.GetMoveList<ALL_MOVE>();
+    auto moveList = board.GetMoveList<static_cast<uint8_t>(MoveTypes::ALL_MOVE)>();
     unsigned legalMoveCount = 0;
 
     for (auto &move : moveList)
@@ -222,7 +222,8 @@ int Search::NegaMax(int depth, int alpha, int beta, Board &board, SearchInfo &in
 
         if (score >= beta)
         {
-            if ((move.GetMoveType() & CAPTURE) != CAPTURE)
+            if ((move.GetMoveType() & static_cast<uint8_t>(MoveTypes::CAPTURE)) !=
+                static_cast<uint8_t>(MoveTypes::CAPTURE))
                 board.UpdateKillers(move, depth);
 
             return beta; //  fail hard beta-cutoff
@@ -230,7 +231,8 @@ int Search::NegaMax(int depth, int alpha, int beta, Board &board, SearchInfo &in
 
         if (score > alpha)
         {
-            if ((move.GetMoveType() & CAPTURE) != CAPTURE)
+            if ((move.GetMoveType() & static_cast<uint8_t>(MoveTypes::CAPTURE)) !=
+                static_cast<uint8_t>(MoveTypes::CAPTURE))
                 board.IncreaseHistoryValue(depth, move.GetFromSquare(), move.GetToSquare());
 
             alpha = score; // alpha acts like max in MiniMax
@@ -264,10 +266,10 @@ int Search::Quiescence(int alpha, int beta, Board &board, SearchInfo &info)
     if (alpha < stand_pat)
         alpha = stand_pat;
 
-    auto moveList = board.GetMoveList<CAPTURE>();
+    auto moveList = board.GetMoveList<static_cast<uint8_t>(MoveTypes::CAPTURE)>();
 
     for (auto &move : moveList)
-        if ((move.GetMoveType() & CAPTURE) == CAPTURE)
+        if ((move.GetMoveType() & static_cast<uint8_t>(MoveTypes::CAPTURE)) == static_cast<uint8_t>(MoveTypes::CAPTURE))
             OrderCapture(board, move);
 
     for (auto it = begin(moveList); it != end(moveList); ++it)
@@ -307,4 +309,4 @@ int Search::Evaluate(const Board &board)
 
     return board.IsWhiteToMove() ? score : -score;
 }
-} // namespace Vixen
+} // namespace vixen

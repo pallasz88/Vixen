@@ -37,7 +37,10 @@ template <Slider slider>
 constexpr void InitSlidingAttack(unsigned int square, SliderDirections directions,
                                  std::array<Magic, Constants::SQUARE_NUMBER> &table) noexcept
 {
-    BitBoard edges = ((FILEA | FILEH) & ~(FILEH << square % 8)) | ((RANK1 | RANK8) & ~(RANK1 << 8 * (square / 8)));
+    BitBoard edges = ((static_cast<BitBoard>(Files::FILEA) | static_cast<BitBoard>(Files::FILEH)) &
+                      ~(static_cast<BitBoard>(Files::FILEH) << square % 8)) |
+                     ((static_cast<BitBoard>(Ranks::RANK1) | static_cast<BitBoard>(Ranks::RANK8)) &
+                      ~(static_cast<BitBoard>(Ranks::RANK1) << 8 * (square / 8)));
     auto occupied = Constants::EMPTY_BOARD;
 
     auto &magics = table[square];

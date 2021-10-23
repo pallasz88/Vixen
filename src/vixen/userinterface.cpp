@@ -90,13 +90,13 @@ void TakeBackMove(Board &board)
 
 void PrintMoveList(Board &board)
 {
-    auto moveList = board.GetMoveList<ALL_MOVE>();
+    auto moveList = board.GetMoveList<static_cast<uint8_t>(MoveTypes::ALL_MOVE)>();
     for (const auto move : moveList)
     {
         if (board.MakeMove(move))
         {
             std::cout << move;
-            if ((move.GetMoveType()) & PROMOTION)
+            if ((move.GetMoveType()) & static_cast<uint8_t>(MoveTypes::PROMOTION))
                 std::cout << "nbrq"[static_cast<int>((move.GetMoveType()) & 3U)];
 
             std::cout << ", ";

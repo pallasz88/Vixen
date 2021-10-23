@@ -203,19 +203,21 @@ bool Board::MakeMove(vixen::Move move)
     if (IsMovingPawn(movingPieceLetter))
         fiftyMoves = 0;
 
-    if (moveType & CAPTURE)
+    if (moveType & static_cast<uint8_t>(MoveTypes::CAPTURE))
         MakeCapture(to, capturedPieceLetter, moveType);
 
-    else if (moveType == DOUBLE_PAWN_PUSH)
+    else if (moveType == static_cast<uint8_t>(MoveTypes::DOUBLE_PAWN_PUSH))
         MakeDoublePawnPush(enPassantSquare);
 
-    else if (moveType == KING_CASTLE)
-        whiteToMove ? MoveCastlingWhiteRook(H1, F1) : MoveCastlingBlackRook(H8, F8);
+    else if (moveType == static_cast<uint8_t>(MoveTypes::KING_CASTLE))
+        whiteToMove ? MoveCastlingWhiteRook(static_cast<unsigned>(Squares::H1), static_cast<unsigned>(Squares::F1))
+                    : MoveCastlingBlackRook(static_cast<unsigned>(Squares::H8), static_cast<unsigned>(Squares::F8));
 
-    else if (moveType == QUEEN_CASTLE)
-        whiteToMove ? MoveCastlingWhiteRook(A1, D1) : MoveCastlingBlackRook(A8, D8);
+    else if (moveType == static_cast<uint8_t>(MoveTypes::QUEEN_CASTLE))
+        whiteToMove ? MoveCastlingWhiteRook(static_cast<unsigned>(Squares::A1), static_cast<unsigned>(Squares::D1))
+                    : MoveCastlingBlackRook(static_cast<unsigned>(Squares::A8), static_cast<unsigned>(Squares::D8));
 
-    if (moveType & PROMOTION)
+    if (moveType & static_cast<uint8_t>(MoveTypes::PROMOTION))
     {
         char promotion = whiteToMove ? "NBRQ"[moveType & 3U] : "nbrq"[moveType & 3U];
         material += GetPieceMaterial(promotion) - GetPieceMaterial(movingPieceLetter);
@@ -264,7 +266,7 @@ constexpr void Board::MakeDoublePawnPush(unsigned int enPassantSquare) noexcept
 constexpr void Board::MakeCapture(unsigned int to, char capturedPieceLetter, unsigned int moveType) noexcept
 {
     fiftyMoves = 0;
-    if (moveType != ENPASSANT)
+    if (moveType != static_cast<uint8_t>(MoveTypes::ENPASSANT))
     {
         RemovePiece(to, capturedPieceLetter);
         material -= GetPieceMaterial(capturedPieceLetter);
@@ -294,13 +296,15 @@ void Board::TakeBack()
     enPassantBitBoard = lastPosition.enPassant;
     castlingRights = lastPosition.castlingRights;
 
-    if (moveType == KING_CASTLE)
-        whiteToMove ? MoveCastlingWhiteRook(F1, H1) : MoveCastlingBlackRook(F8, H8);
+    if (moveType == static_cast<uint8_t>(MoveTypes::KING_CASTLE))
+        whiteToMove ? MoveCastlingWhiteRook(static_cast<unsigned>(Squares::F1), static_cast<unsigned>(Squares::H1))
+                    : MoveCastlingBlackRook(static_cast<unsigned>(Squares::F8), static_cast<unsigned>(Squares::H8));
 
-    else if (moveType == QUEEN_CASTLE)
-        whiteToMove ? MoveCastlingWhiteRook(D1, A1) : MoveCastlingBlackRook(D8, A8);
+    else if (moveType == static_cast<uint8_t>(MoveTypes::QUEEN_CASTLE))
+        whiteToMove ? MoveCastlingWhiteRook(static_cast<unsigned>(Squares::D1), static_cast<unsigned>(Squares::A1))
+                    : MoveCastlingBlackRook(static_cast<unsigned>(Squares::D8), static_cast<unsigned>(Squares::A8));
 
-    else if (moveType & PROMOTION)
+    else if (moveType & static_cast<uint8_t>(MoveTypes::PROMOTION))
     {
         char promotion = whiteToMove ? "NBRQ"[moveType & 3U] : "nbrq"[moveType & 3U];
         material -= GetPieceMaterial(promotion) - GetPieceMaterial(movingPieceLetter);
@@ -311,13 +315,13 @@ void Board::TakeBack()
     RemovePiece(to, movingPieceLetter);
     AddPiece(from, movingPieceLetter);
 
-    if (moveType == ENPASSANT)
+    if (moveType == static_cast<uint8_t>(MoveTypes::ENPASSANT))
     {
         whiteToMove ? AddPiece(to - 8, 'p') : AddPiece(to + 8, 'P');
         material += whiteToMove ? GetPieceMaterial('p') : GetPieceMaterial('P');
     }
 
-    else if (moveType & CAPTURE)
+    else if (moveType & static_cast<uint8_t>(MoveTypes::CAPTURE))
     {
         material += GetPieceMaterial(capturedPieceLetter);
         AddPiece(to, capturedPieceLetter);
@@ -372,13 +376,13 @@ bool Board::MakeMove(std::string_view notation)
         moveType = static_cast<uint8_t>(GetPromotionType(promoted));
         const char capturedPiece = GetPieceList()[to];
         if (capturedPiece != ' ')
-            moveType |= static_cast<uint8_t>(CAPTURE);
+            moveType |= static_cast<uint8_t>(static_cast<uint8_t>(MoveTypes::CAPTURE));
     }
 
     const auto decodedPromotion = Move(from, to, moveType);
     const auto decodedMove = decodedPromotion.RemoveMoveType();
 
-    const auto moves = GetMoveList<ALL_MOVE>();
+    const auto moves = GetMoveList<static_cast<uint8_t>(MoveTypes::ALL_MOVE)>();
 
     for (const auto move : moves)
         if ((move.RemoveMoveType()) == decodedMove)
@@ -387,8 +391,8 @@ bool Board::MakeMove(std::string_view notation)
     return false;
 }
 
-template VIXEN_API FixedList<Move> Board::GetMoveList<CAPTURE>() const noexcept;
+template VIXEN_API FixedList<Move> Board::GetMoveList<static_cast<uint8_t>(MoveTypes::CAPTURE)>() const noexcept;
 
-template VIXEN_API FixedList<Move> Board::GetMoveList<ALL_MOVE>() const noexcept;
+template VIXEN_API FixedList<Move> Board::GetMoveList<static_cast<uint8_t>(MoveTypes::ALL_MOVE)>() const noexcept;
 
-} // namespace Vixen
+} // namespace vixen

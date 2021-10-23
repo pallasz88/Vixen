@@ -61,8 +61,8 @@ namespace Check
 {
 template <Colors sideToMove> constexpr bool IsSquareAttacked(unsigned int square, const Board &board) noexcept
 {
-    assert(square <= A8);
-    assert(square >= H1);
+    assert(square <= static_cast<unsigned>(vixen::Squares::A8));
+    assert(square >= static_cast<unsigned>(vixen::Squares::H1));
     const auto blockers = ~board.GetBitBoard(' ');
     const auto pawns = sideToMove == Colors::WHITE ? board.GetBitBoard('p') : board.GetBitBoard('P');
     const auto knights = sideToMove == Colors::WHITE ? board.GetBitBoard('n') : board.GetBitBoard('N');
@@ -106,6 +106,6 @@ VIXEN_API BitBoard PerftTest(int depth, Board &board) noexcept;
 
 VIXEN_API BitBoard Perft(int depth, Board &board, BitBoard leafs) noexcept;
 } // namespace Test
-} // namespace Vixen
+} // namespace vixen
 
 #endif // VIXEN_MOVE_GENERATOR_HPP_INCLUDED

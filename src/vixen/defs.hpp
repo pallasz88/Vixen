@@ -20,7 +20,7 @@
 namespace vixen
 {
 
-enum Ranks : uint64_t
+enum class Ranks : uint64_t
 {
     RANK1 = 255ULL,
     RANK2 = 65280ULL,
@@ -33,7 +33,7 @@ enum Ranks : uint64_t
     RANK78 = 18446462598732840960ULL
 };
 
-enum Files : uint64_t
+enum class Files : uint64_t
 {
     FILEA = 9259542123273814144ULL,
     FILEB = 4629771061636907072ULL,
@@ -46,7 +46,7 @@ enum Files : uint64_t
 };
 
 // clang-format off
-enum Squares : uint8_t
+enum class Squares : uint8_t
 {
     H1, G1, F1, E1, D1, C1, B1, A1,
     H2, G2, F2, E2, D2, C2, B2, A2,
@@ -59,7 +59,7 @@ enum Squares : uint8_t
 };
 // clang-format on
 
-enum MoveTypes
+enum class MoveTypes
 {
     QUIET_MOVE,
 
@@ -175,8 +175,10 @@ struct Constants
         std::make_pair('b', -300), std::make_pair('r', -500), std::make_pair('q', -900), std::make_pair('k', -2000)};
 
     static constexpr std::array<std::pair<unsigned char, int>, 4> promotionMap = {
-        std::make_pair('q', QUEEN_PROMOTION), std::make_pair('r', ROOK_PROMOTION),
-        std::make_pair('b', BISHOP_PROMOTION), std::make_pair('n', KNIGHT_PROMOTION)};
+        std::make_pair('q', static_cast<int>(MoveTypes::QUEEN_PROMOTION)),
+        std::make_pair('r', static_cast<int>(MoveTypes::ROOK_PROMOTION)),
+        std::make_pair('b', static_cast<int>(MoveTypes::BISHOP_PROMOTION)),
+        std::make_pair('n', static_cast<int>(MoveTypes::KNIGHT_PROMOTION))};
 
     static constexpr SliderDirections rookDirections = {{{-1, 0}, {0, -1}, {1, 0}, {0, 1}}};
 
@@ -227,10 +229,10 @@ struct Constants
     static constexpr PawnDirections pawnDirections = {{{-1, 1}, {1, 1}}};
 
     static inline std::unordered_map<CastlingRights, uint8_t> rookSquareAfterCastling = {
-        {{CastlingRights::BQCA, static_cast<uint8_t>(D8)},
-         {CastlingRights::BKCA, static_cast<uint8_t>(F8)},
-         {CastlingRights::WQCA, static_cast<uint8_t>(D1)},
-         {CastlingRights::WKCA, static_cast<uint8_t>(F1)}}};
+        {{CastlingRights::BQCA, static_cast<uint8_t>(Squares::D8)},
+         {CastlingRights::BKCA, static_cast<uint8_t>(Squares::F8)},
+         {CastlingRights::WQCA, static_cast<uint8_t>(Squares::D1)},
+         {CastlingRights::WKCA, static_cast<uint8_t>(Squares::F1)}}};
 
     static inline std::unordered_map<CastlingRights, uint8_t> castlingLookUp = {
         {{CastlingRights::WKCA, static_cast<uint8_t>(3U)},
@@ -323,9 +325,9 @@ constexpr bool IsValidCoordinate(int file, int rank) noexcept
 
 namespace
 {
-template <class T, class... Position> constexpr bool IsBitSet(T bits, Position &&... p) noexcept
+template <class T, class... Position> constexpr bool IsBitSet(T bits, Position &&...p) noexcept
 {
-    return ((bits & (1ULL << p)) && ...);
+    return ((bits & (1ULL << static_cast<BitBoard>(p))) && ...);
 }
 
 template <class T> constexpr void SetBit(T &bitBoard, unsigned position) noexcept
@@ -345,13 +347,13 @@ template <Colors pawnColor> constexpr BitBoard PushPawns(BitBoard pawns) noexcep
 
 template <Colors pawnColor> constexpr BitBoard PawnCaptureLeft(BitBoard pawns) noexcept
 {
-    pawns &= (pawnColor == Colors::WHITE) ? ~FILEA : ~FILEH;
+    pawns &= (pawnColor == Colors::WHITE) ? ~static_cast<BitBoard>(Files::FILEA) : ~static_cast<BitBoard>(Files::FILEH);
     return (pawnColor == Colors::WHITE) ? pawns << 9U : pawns >> 9U;
 }
 
 template <Colors pawnColor> constexpr BitBoard PawnCaptureRight(BitBoard pawns) noexcept
 {
-    pawns &= (pawnColor == Colors::WHITE) ? ~FILEH : ~FILEA;
+    pawns &= (pawnColor == Colors::WHITE) ? ~static_cast<BitBoard>(Files::FILEH) : ~static_cast<BitBoard>(Files::FILEA);
     return (pawnColor == Colors::WHITE) ? pawns << 7U : pawns >> 7U;
 }
 } // namespace
@@ -425,6 +427,6 @@ template <class Iterator> constexpr auto PickBest(const Iterator &begin, const I
     return *begin;
 }
 
-} // namespace Vixen
+} // namespace vixen
 
 #endif // VIXEN_DEFS_HPP_INCLUDED

@@ -72,7 +72,7 @@ class VIXEN_API Hash
     static constexpr void InitZobristKeys()
     {
         unsigned i = 0;
-        for (unsigned square = H1; square <= Constants::MAX_SQUARE_INDEX; ++square)
+        for (auto square = static_cast<unsigned>(Squares::H1); square <= Constants::MAX_SQUARE_INDEX; ++square)
         {
             zobristKeys.pieceHashKeys[square][enPassantKey] = PRNG::GenerateRandom(++i);
             for (const auto &pieceKey : Constants::pieceKeys)
@@ -104,6 +104,6 @@ class VIXEN_API Hash
 
     static constexpr int enPassantKey = 12;
 };
-} // namespace Vixen
+} // namespace vixen
 
 #endif // VIXEN_HASH_HPP_INCLUDED
