@@ -25,19 +25,23 @@ class VIXEN_API MoveGenerator
         return moveList;
     }
 
-    [[nodiscard]] auto GetLegalMoveList(Board &board) const noexcept;
-
     /**
      * Fills moveList by generating all pseudo moves.
      * @tparam sideToMove
      * @param board
      */
-    template <Colors sideToMove, uint8_t moveType> void GenerateMoves(const Board &board) noexcept;
+    template <Colors sideToMove> void GenerateAllMoves(const Board &board) noexcept;
+
+    /**
+     * Fills moveList by generating all pseudo capture moves.
+     * @tparam sideToMove
+     * @param board
+     */
+    template <Colors sideToMove> void GenerateCaptureMoves(const Board &board) noexcept;
 
   private:
-    FixedList<Move> moveList;
 
-    template <Colors sideToMove> void GenerateCaptureMoves(const Board &board) noexcept;
+    FixedList<Move> moveList;
 
     template <Colors sideToMove> void GenerateQuietMoves(const Board &board) noexcept;
 

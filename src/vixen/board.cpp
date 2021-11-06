@@ -355,11 +355,19 @@ constexpr void Board::AddPiece(unsigned int position, char pieceType) noexcept
     hashBoard.HashPiece(position, static_cast<uint8_t>(pieceType));
 }
 
-template <uint8_t moveType> FixedList<Move> Board::GetMoveList() const noexcept
+FixedList<Move> Board::GetAllMoveList() const noexcept
 {
     MoveGenerator moveGenerator;
-    whiteToMove ? moveGenerator.GenerateMoves<Colors::WHITE, moveType>(*this)
-                : moveGenerator.GenerateMoves<Colors::BLACK, moveType>(*this);
+    whiteToMove ? moveGenerator.GenerateAllMoves<Colors::WHITE>(*this)
+                : moveGenerator.GenerateAllMoves<Colors::BLACK>(*this);
+    return moveGenerator.GetMoveList();
+}
+
+FixedList<Move> Board::GetCaptureMoveList() const noexcept
+{
+    MoveGenerator moveGenerator;
+    whiteToMove ? moveGenerator.GenerateCaptureMoves<Colors::WHITE>(*this)
+                : moveGenerator.GenerateCaptureMoves<Colors::BLACK>(*this);
     return moveGenerator.GetMoveList();
 }
 
@@ -389,7 +397,7 @@ bool Board::MakeMove(std::string_view notation)
     const auto decodedPromotion = Move(from, to, moveType);
     const auto decodedMove = decodedPromotion.RemoveMoveType();
 
-    const auto moves = GetMoveList<static_cast<uint8_t>(MoveTypes::ALL_MOVE)>();
+    const auto moves = GetAllMoveList();
 
     for (const auto move : moves)
         if ((move.RemoveMoveType()) == decodedMove)
@@ -397,9 +405,5 @@ bool Board::MakeMove(std::string_view notation)
 
     return false;
 }
-
-template VIXEN_API FixedList<Move> Board::GetMoveList<static_cast<uint8_t>(MoveTypes::CAPTURE)>() const noexcept;
-
-template VIXEN_API FixedList<Move> Board::GetMoveList<static_cast<uint8_t>(MoveTypes::ALL_MOVE)>() const noexcept;
 
 } // namespace vixen

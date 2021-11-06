@@ -90,7 +90,7 @@ void TakeBackMove(Board &board)
 
 void PrintMoveList(Board &board)
 {
-    auto moveList = board.GetMoveList<static_cast<uint8_t>(MoveTypes::ALL_MOVE)>();
+    auto moveList = board.GetAllMoveList();
     for (const auto move : moveList)
     {
         if (board.MakeMove(move))

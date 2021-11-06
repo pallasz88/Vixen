@@ -22,7 +22,7 @@ BitBoard PerftTest(int depth, Board &board) noexcept
         return 1;
 
     BitBoard nodes = 0;
-    const auto moves = board.GetMoveList<static_cast<uint8_t>(MoveTypes::ALL_MOVE)>();
+    const auto moves = board.GetAllMoveList();
 
     for (const auto move : moves)
     {
@@ -33,8 +33,7 @@ BitBoard PerftTest(int depth, Board &board) noexcept
         nodes += Perft(depth - 1, board, leafs);
         board.TakeBack();
         BitBoard olds = leafs - cumNodes;
-        std::cout << move;
-        std::cout << ": " << olds << "\n";
+        std::cout << move << ": " << olds << "\n";
     }
     return nodes;
 }
@@ -48,7 +47,7 @@ BitBoard Perft(int depth, Board &board, BitBoard &leafs) noexcept
     }
 
     BitBoard nodes = 0;
-    const auto moves = board.GetMoveList<static_cast<uint8_t>(MoveTypes::ALL_MOVE)>();
+    const auto moves = board.GetAllMoveList();
 
     for (const auto move : moves)
     {
@@ -244,28 +243,10 @@ template <Colors sideToMove> constexpr void MoveGenerator::GenerateCastlingMoves
     }
 }
 
-template <Colors sideToMove, uint8_t moveType> void MoveGenerator::GenerateMoves(const vixen::Board &board) noexcept
+template <Colors sideToMove> void MoveGenerator::GenerateAllMoves(const vixen::Board &board) noexcept
 {
     GenerateCaptureMoves<sideToMove>(board);
-    if constexpr (moveType == static_cast<uint8_t>(MoveTypes::CAPTURE))
-        return;
-
     GenerateQuietMoves<sideToMove>(board);
-}
-
-auto MoveGenerator::GetLegalMoveList(Board &board) const noexcept
-{
-    FixedList<Move> allLegalMoves;
-    const auto addLegal = [&board, &allLegalMoves](Move move) {
-        if (board.MakeMove(move))
-        {
-            allLegalMoves.emplace_back(move);
-            board.TakeBack();
-        }
-    };
-
-    std::for_each(begin(moveList), end(moveList), addLegal);
-    return allLegalMoves;
 }
 
 template void MoveGenerator::GenerateCaptureMoves<Colors::WHITE>(const Board &) noexcept;
@@ -276,15 +257,7 @@ template void MoveGenerator::GenerateQuietMoves<Colors::WHITE>(const Board &) no
 
 template void MoveGenerator::GenerateQuietMoves<Colors::BLACK>(const Board &) noexcept;
 
-template void MoveGenerator::GenerateMoves<Colors::WHITE, static_cast<uint8_t>(MoveTypes::CAPTURE)>(
-    const Board &board) noexcept;
+template void MoveGenerator::GenerateAllMoves<Colors::WHITE>(const Board &board) noexcept;
 
-template void MoveGenerator::GenerateMoves<Colors::BLACK, static_cast<uint8_t>(MoveTypes::CAPTURE)>(
-    const Board &board) noexcept;
-
-template void MoveGenerator::GenerateMoves<Colors::WHITE, static_cast<uint8_t>(MoveTypes::ALL_MOVE)>(
-    const Board &board) noexcept;
-
-template void MoveGenerator::GenerateMoves<Colors::BLACK, static_cast<uint8_t>(MoveTypes::ALL_MOVE)>(
-    const Board &board) noexcept;
+template void MoveGenerator::GenerateAllMoves<Colors::BLACK>(const Board &board) noexcept;
 } // namespace vixen

@@ -224,6 +224,18 @@ class VIXEN_API Board
 #endif
     }
 
+    /**
+     * Returns a generator of pseudo-legal moves from given position.
+     * @return pseudo-legal moves
+     */
+    [[nodiscard]] FixedList<Move> GetAllMoveList() const noexcept;
+
+    /**
+     * Returns a generator of capturing pseudo-legal moves from given position.
+     * @return pseudo-legal moves
+     */
+    [[nodiscard]] FixedList<Move> GetCaptureMoveList() const noexcept;
+
   private:
     std::array<std::array<Move, 2>, Constants::SQUARE_NUMBER> killer{};
 
