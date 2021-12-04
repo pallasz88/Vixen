@@ -148,6 +148,6 @@ class VIXEN_API Search
 
 template std::array<int, 64ul> vixen::Utility::MirrorTable<std::array<int, 64ul>>(
     std::array<int, 64ul> const &) noexcept;
-} // namespace Vixen
+} // namespace vixen
 
 #endif // VIXEN_ENGINE_HPP_INCLUDED

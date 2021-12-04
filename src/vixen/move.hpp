@@ -117,6 +117,6 @@ class Move
     unsigned score;
 };
 
-} // namespace Vixen
+} // namespace vixen
 
 #endif // VIXEN_MOVE_HPP_INCLUDED

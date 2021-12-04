@@ -2,6 +2,7 @@
 #define VIXEN_RANDOM_HPP_INCLUDED
 
 #include <cstdint>
+#include <limits>
 
 #if _MSC_VER >= 1910
 #undef max
@@ -51,6 +52,6 @@ class PRNG
         return gen(min, max);
     }
 };
-} // namespace Vixen
+} // namespace vixen
 
 #endif // VIXEN_RANDOM_HPP_INCLUDED

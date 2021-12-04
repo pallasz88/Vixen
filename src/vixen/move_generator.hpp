@@ -104,7 +104,7 @@ namespace Test
  */
 VIXEN_API BitBoard PerftTest(int depth, Board &board) noexcept;
 
-VIXEN_API BitBoard Perft(int depth, Board &board, BitBoard leafs) noexcept;
+VIXEN_API BitBoard Perft(int depth, Board &board, BitBoard &leafs) noexcept;
 } // namespace Test
 } // namespace vixen
 

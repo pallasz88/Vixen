@@ -164,4 +164,4 @@ void Uci::loop()
         }
     }
 }
-} // namespace Vixen
+} // namespace vixen

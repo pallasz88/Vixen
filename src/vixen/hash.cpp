@@ -32,4 +32,4 @@ void Hash::ComputePositionKey(const Board &board)
 
     HashCastling(board.GetCastlingRights());
 }
-} // namespace Vixen
+} // namespace vixen

@@ -122,4 +122,4 @@ void PrintHelp()
     std::cout << "\tperft:\t\tcomputer generates legal moves from current "
                  "position to given depth\n";
 }
-} // namespace Vixen::UserInterface
+} // namespace vixen::UserInterface

@@ -26,7 +26,7 @@ template <class T, std::size_t Capacity = 218> class FixedList
 
     using const_iterator = typename std::array<T, Capacity>::const_iterator;
 
-    template <class... Args> constexpr void emplace_back(Args &&... args)
+    template <class... Args> constexpr void emplace_back(Args &&...args)
     {
         _list[_size++] = value_type(std::forward<Args>(args)...);
     }
@@ -92,4 +92,4 @@ template <class T> constexpr auto end(const FixedList<T> &list)
     return list.begin() + list.size();
 }
 
-#endif //VIXEN_FIXED_LIST_HPP_INCLUDED
+#endif // VIXEN_FIXED_LIST_HPP_INCLUDED

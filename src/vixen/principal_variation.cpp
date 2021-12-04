@@ -33,4 +33,4 @@ PVEntry PrincipalVariation::GetPVEntry(PositionKey key)
     else
         return {};
 }
-} // namespace Vixen
+} // namespace vixen

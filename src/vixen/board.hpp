@@ -211,7 +211,7 @@ class VIXEN_API Board
      * Returns a generator of pseudo-legal moves from given position.
      * @return pseudo-legal moves
      */
-    template <uint8_t moveType>[[nodiscard]] FixedList<Move> GetMoveList() const noexcept;
+    template <uint8_t moveType> [[nodiscard]] FixedList<Move> GetMoveList() const noexcept;
 
     [[nodiscard]] constexpr bool IsRepetition() const noexcept
     {
@@ -225,7 +225,7 @@ class VIXEN_API Board
     }
 
   private:
-    std::array<std::array<Move, 2>, 64> killer{};
+    std::array<std::array<Move, 2>, Constants::SQUARE_NUMBER> killer{};
 
     std::array<std::array<unsigned, Constants::SQUARE_NUMBER>, Constants::SQUARE_NUMBER> historyHeuristic{};
 
@@ -257,6 +257,17 @@ class VIXEN_API Board
 
     constexpr void ParseSideToMovePart(std::string_view splittedFen);
 
+    /**
+     * @brief Parses castling rights from the FEN notation's castling part and saves it to @code castlingRights <br>
+     * @param parsedPosition
+     *
+     * k -> 0 -> 1 <br>
+     * q -> 1 -> 2 <br>
+     * K -> 2 -> 4 <br>
+     * Q -> 3 -> 8 <br>
+     *
+     * Q K q k
+     */
     constexpr void ParseCastlingRightPart(std::string_view parsedPosition);
 
     template <size_t N, char delimiter = ' '>
@@ -272,6 +283,6 @@ class VIXEN_API Board
 
     constexpr void UpdateCastlingRights(unsigned int from, unsigned int to) noexcept;
 };
-} // namespace Vixen
+} // namespace vixen
 
 #endif // VIXEN_BOARD_HPP_INCLUDED

@@ -11,7 +11,7 @@ PrincipalVariation Search::pv(megaByte / sizeof(PVEntry));
 
 FixedList<Move> Search::GetPV(int depth, Board &board)
 {
-    FixedList<Move> moveList;
+    FixedList<Move> moveList{};
     int ply = 0;
 
     while (ply < depth)
@@ -46,12 +46,11 @@ void Search::IterativeDeepening(Board &board, SearchInfo &info)
     {
         const auto result = Search::Root(depth, board, info);
         const auto bestLine = GetPV(depth, board);
-        bestMove = static_cast<bool>(bestLine[0]) ? bestLine[0] : bestMove;
+        bestMove = bestLine[0];
         if (info.stopped)
         {
             info.stopped = false;
-            std::cout << "bestmove " << bestMove << std::endl;
-            return;
+            break;
         }
         Uci::LogUci(info, result, depth, bestLine);
     }
@@ -74,8 +73,28 @@ void Search::OrderCapture(const Board &board, Move &move)
     }
 }
 
+void CheckTime(SearchInfo &info)
+{
+    info.endTime = std::chrono::high_resolution_clock::now();
+    const std::chrono::duration<double> duration = (info.endTime - info.startTime) * 1000;
+    double allocatedTime = info.moveTime;
+    if (info.isTimeSet && info.time[info.timeIndex] != -1)
+        allocatedTime = static_cast<double>(info.time[info.timeIndex]) / 30.;
+
+    if (duration.count() >= allocatedTime)
+        info.stopped = true;
+}
+
+bool IsTimeCheckNeeded(SearchInfo &info)
+{
+    return info.isTimeSet && !(info.nodesCount & 2047);
+}
+
 std::pair<int, Move> Search::Root(int depth, Board &board, SearchInfo &info)
 {
+    if (IsTimeCheckNeeded(info))
+        CheckTime(info);
+
     auto moveList = board.GetMoveList<static_cast<uint8_t>(MoveTypes::ALL_MOVE)>();
     int alpha = -MATE;
     int beta = MATE;
@@ -157,18 +176,6 @@ void Search::OrderNonPVMoves(int depth, const Board &board, Move &move)
         move.SetScore(board.GetHistoryValue(move.GetFromSquare(), move.GetToSquare()));
 }
 
-void CheckTime(SearchInfo &info)
-{
-    info.endTime = std::chrono::high_resolution_clock::now();
-    const std::chrono::duration<double> duration = (info.endTime - info.startTime) * 1000;
-    double allocatedTime = info.moveTime;
-    if (info.isTimeSet && info.time[info.timeIndex] != -1)
-        allocatedTime = static_cast<double>(info.time[info.timeIndex]) / 30. - 50.;
-
-    if (duration.count() >= allocatedTime)
-        info.stopped = true;
-}
-
 int Search::NegaMax(int depth, int alpha, int beta, Board &board, SearchInfo &info)
 {
     if (depth <= 0)
@@ -176,11 +183,11 @@ int Search::NegaMax(int depth, int alpha, int beta, Board &board, SearchInfo &in
 
     ++info.nodesCount;
 
+    if (IsTimeCheckNeeded(info))
+        CheckTime(info);
+
     if (board.IsRepetition() || board.GetFiftyMoveCounter() >= 100)
         return 0;
-
-    if (info.isTimeSet && !(info.nodesCount & 2047))
-        CheckTime(info);
 
     const bool inCheck = Check::IsInCheck<Colors::WHITE>(board) || Check::IsInCheck<Colors::BLACK>(board);
     if (inCheck)
@@ -254,10 +261,12 @@ int Search::NegaMax(int depth, int alpha, int beta, Board &board, SearchInfo &in
 
 int Search::Quiescence(int alpha, int beta, Board &board, SearchInfo &info)
 {
-    if (info.isTimeSet && !(info.nodesCount & 2047))
+
+    if (IsTimeCheckNeeded(info))
         CheckTime(info);
 
     ++info.nodesCount;
+
     int stand_pat = Evaluate(board);
 
     if (stand_pat >= beta)

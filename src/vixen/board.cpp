@@ -9,10 +9,17 @@
 
 namespace vixen
 {
+// clang-format off
 static constexpr std::array castlePermission = {
-    7U,  15U, 15U, 3U,  15U, 15U, 15U, 11U, 15U, 15U, 15U, 15U, 15U, 15U, 15U, 15U, 15U, 15U, 15U, 15U, 15U, 15U,
-    15U, 15U, 15U, 15U, 15U, 15U, 15U, 15U, 15U, 15U, 15U, 15U, 15U, 15U, 15U, 15U, 15U, 15U, 15U, 15U, 15U, 15U,
-    15U, 15U, 15U, 15U, 15U, 15U, 15U, 15U, 15U, 15U, 15U, 15U, 13U, 15U, 15U, 12U, 15U, 15U, 15U, 14U};
+    11U, 15U, 15U,  3U, 15U, 15U, 15U,  7U,
+    15U, 15U, 15U, 15U, 15U, 15U, 15U, 15U,
+    15U, 15U, 15U, 15U, 15U, 15U, 15U, 15U,
+    15U, 15U, 15U, 15U, 15U, 15U, 15U, 15U,
+    15U, 15U, 15U, 15U, 15U, 15U, 15U, 15U,
+    15U, 15U, 15U, 15U, 15U, 15U, 15U, 15U,
+    15U, 15U, 15U, 15U, 15U, 15U, 15U, 15U,
+    14U, 15U, 15U, 12U, 15U, 15U, 15U, 13U};
+// clang-format on
 
 Board::Board()
     : history{}, pieceList{' '}, bitBoards{Constants::EMPTY_BOARD}, enPassantBitBoard(Constants::EMPTY_BOARD),

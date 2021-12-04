@@ -41,6 +41,6 @@ class PrincipalVariation
     std::unordered_map<PositionKey, std::list<PVEntry>::iterator> hashTable;
 };
 
-} // namespace Vixen
+} // namespace vixen
 
 #endif // VIXEN_PRINCIPAL_VARIATION_HPP_INCLUDED

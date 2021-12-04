@@ -43,6 +43,6 @@ class VIXEN_API Uci
     void UpdateSearchInfo(std::istringstream &is, std::string &token);
 };
 
-} // namespace Vixen
+} // namespace vixen
 
 #endif // VIXEN_UCI_HPP_INCLUDED

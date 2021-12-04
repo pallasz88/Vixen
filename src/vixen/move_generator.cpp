@@ -39,7 +39,7 @@ BitBoard PerftTest(int depth, Board &board) noexcept
     return nodes;
 }
 
-BitBoard Perft(int depth, Board &board, BitBoard leafs) noexcept
+BitBoard Perft(int depth, Board &board, BitBoard &leafs) noexcept
 {
     if (depth == 0)
     {

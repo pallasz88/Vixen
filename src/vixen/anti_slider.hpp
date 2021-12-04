@@ -19,6 +19,6 @@ constexpr auto InitPawnAttack() noexcept
 
 #include "anti_slider.inl"
 
-} // namespace Vixen::anti_slider_utils
+} // namespace vixen::anti_slider_utils
 
 #endif // VIXEN_ANTI_SLIDER_HPP_INCLUDED

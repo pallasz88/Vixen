@@ -96,10 +96,17 @@ enum class MoveTypes
 
 enum class CastlingRights : uint8_t
 {
-    BQCA = 1,
-    BKCA = 2,
-    WQCA = 4,
-    WKCA = 8
+    /// 0001
+    BKCA = 1,
+
+    /// 0010
+    BQCA = 2,
+
+    /// 0100
+    WKCA = 4,
+
+    /// 1000
+    WQCA = 8
 };
 
 enum class Colors

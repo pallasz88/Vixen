@@ -8,7 +8,7 @@ namespace vixen
 class MoveGenerator;
 
 class Board;
-} // namespace Vixen
+} // namespace vixen
 
 namespace vixen::UserInterface
 {
@@ -50,7 +50,6 @@ VIXEN_API void PrintMoveList(Board &board);
  * Lists all available commands for user.
  */
 VIXEN_API void PrintHelp();
-} // namespace Vixen::UserInterface
-
+} // namespace vixen::UserInterface
 
 #endif // VIXEN_USER_INTERFACE_HPP_INCLUDED

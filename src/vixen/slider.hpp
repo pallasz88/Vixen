@@ -87,6 +87,6 @@ struct BishopSliderInfo
 };
 #include "slider.inl"
 
-} // namespace Vixen::slider_utils
+} // namespace vixen::slider_utils
 
 #endif // VIXEN_SLIDER_HPP_INCLUDED
