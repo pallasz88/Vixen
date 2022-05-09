@@ -4,23 +4,25 @@ project(main)
 MESSAGE(STATUS "Building main")
 
 set(SOURCE_FILES main.cpp)
-
-include_directories(vixen)
+set(EXECUTABLE Vixen_0_0_5)
 
 add_subdirectory(vixen)
+add_subdirectory(container)
 
-add_executable(Vixen_0_0_5 ${SOURCE_FILES})
+add_executable(${EXECUTABLE} ${SOURCE_FILES})
+target_include_directories(${EXECUTABLE} PRIVATE vixen)
+
 if(MSVC)
-target_link_libraries(Vixen_0_0_5 PRIVATE Engine)
+target_link_libraries(${EXECUTABLE} PRIVATE Engine)
 else()
-target_link_libraries(Vixen_0_0_5 PRIVATE Engine pthread)
+target_link_libraries(${EXECUTABLE} PRIVATE Engine pthread)
 endif()
-target_compile_features(Vixen_0_0_5 PRIVATE cxx_std_20)
+target_compile_features(${EXECUTABLE} PRIVATE cxx_std_20)
 
 if (ENABLE_COVERAGE)
     message(STATUS "Generate GCOV input")
-    target_compile_options(Vixen_0_0_5 PRIVATE -O0 --coverage -fprofile-arcs -ftest-coverage -g)
-    target_link_libraries(Vixen_0_0_5 PRIVATE --coverage)
+    target_compile_options(${EXECUTABLE} PRIVATE -O0 --coverage -fprofile-arcs -ftest-coverage -g)
+    target_link_libraries(${EXECUTABLE} PRIVATE --coverage)
 endif()
 
-install(TARGETS Vixen_0_0_5 DESTINATION bin)
+install(TARGETS ${EXECUTABLE} DESTINATION bin)
