@@ -31,12 +31,7 @@ struct SearchInfo
 
 struct Utility
 {
-    template <class T>
-#if (__cpp_lib_constexpr_algorithms)
-    static constexpr T MirrorTable(const T &table) noexcept
-#else
-    static T MirrorTable(const T &table) noexcept
-#endif
+    template <class T> static constexpr T MirrorTable(const T &table) noexcept
     {
         T reversed{};
         std::reverse_copy(begin(table), end(table), begin(reversed));
@@ -99,8 +94,6 @@ class VIXEN_API Search
 
     static constexpr std::array mvvlvaTable = Utility::InitMvvLvaTable();
 
-#if (__cpp_lib_constexpr_algorithms)
-
     static constexpr std::array pawnTable = Utility::MirrorTable(PawnTable);
 
     static constexpr std::array knightTable = Utility::MirrorTable(KnightTable);
@@ -112,22 +105,6 @@ class VIXEN_API Search
     static constexpr std::array arrayLookUp = {
         pawnTable, knightTable, bishopTable, rookTable, PawnTable, KnightTable, BishopTable, RookTable,
     };
-
-#else
-
-    static inline std::array pawnTable = Utility::MirrorTable(PawnTable);
-
-    static inline std::array knightTable = Utility::MirrorTable(KnightTable);
-
-    static inline std::array bishopTable = Utility::MirrorTable(BishopTable);
-
-    static inline std::array rookTable = Utility::MirrorTable(RookTable);
-
-    static inline std::array arrayLookUp = {
-        pawnTable, knightTable, bishopTable, rookTable, PawnTable, KnightTable, BishopTable, RookTable,
-    };
-
-#endif
 
     static int Evaluate(const Board &board);
 

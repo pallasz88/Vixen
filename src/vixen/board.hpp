@@ -215,13 +215,8 @@ class VIXEN_API Board
 
     [[nodiscard]] constexpr bool IsRepetition() const noexcept
     {
-#ifdef __cpp_lib_constexpr_algorithms
         return std::find(begin(history) + historyPly - fiftyMoves, begin(history) + historyPly, hashBoard.GetHash()) !=
                begin(history) + historyPly;
-#else
-        return vixen::find(begin(history) + historyPly - fiftyMoves, begin(history) + historyPly,
-                           hashBoard.GetHash()) != begin(history) + historyPly;
-#endif
     }
 
   private:

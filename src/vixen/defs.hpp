@@ -248,7 +248,6 @@ struct Constants
          {CastlingRights::BQCA, static_cast<uint8_t>(0U)}}};
 };
 
-#ifdef __cpp_lib_constexpr_algorithms
 constexpr auto GetPieceIndex(unsigned char c) noexcept
 {
     auto iterator = std::find_if(std::begin(Constants::pieceMap), std::end(Constants::pieceMap),
@@ -259,17 +258,6 @@ constexpr auto GetPieceIndex(unsigned char c) noexcept
 
     return iterator->second;
 }
-#else
-constexpr auto GetPieceIndex(unsigned char c) noexcept
-{
-    for (const auto &i : Constants::pieceMap)
-    {
-        if (i.first == c)
-            return i.second;
-    }
-    return -1;
-}
-#endif
 
 constexpr bool IsWhitePiece(char piece) noexcept
 {
@@ -387,29 +375,6 @@ constexpr bool IsMovingPawn(char movingPiece) noexcept
     return movingPiece == 'P' || movingPiece == 'p';
 }
 
-#ifndef __cpp_lib_constexpr_algorithms
-/**
- * Replaces std::find until it will become constexpr function.
- * @tparam InputIt
- * @tparam T
- * @param first
- * @param last
- * @param value
- * @return
- */
-template <class InputIt, class T> constexpr InputIt find(InputIt first, InputIt last, const T &value) noexcept
-{
-    for (; first != last; ++first)
-    {
-        if (*first == value)
-        {
-            return first;
-        }
-    }
-    return last;
-}
-#endif
-
 /**
  * Returns true if the moving piece is black
  * C++20 std::find function will be constexpr.
@@ -418,13 +383,8 @@ template <class InputIt, class T> constexpr InputIt find(InputIt first, InputIt 
  */
 constexpr bool IsBlackMoving(char c) noexcept
 {
-#ifdef __cpp_lib_constexpr_algorithms
     return std::find(begin(Constants::blackPieceKeys), end(Constants::blackPieceKeys), c) !=
            end(Constants::blackPieceKeys);
-#else
-    return vixen::find(begin(Constants::blackPieceKeys), end(Constants::blackPieceKeys), c) !=
-           end(Constants::blackPieceKeys);
-#endif
 }
 
 template <class Iterator> constexpr auto PickBest(const Iterator &begin, const Iterator &end)
