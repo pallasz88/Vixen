@@ -44,7 +44,7 @@ script:
   - build-wrapper-linux-x86-64 --out-dir bw-output cmake --build . --target install -- -j ${NUMBER_OF_PROCESSORS}
   - ctest -j ${NUMBER_OF_PROCESSORS}
   - cd -
-  - find . -name "*.cpp" -exec sh -c 'gcov -b -c {} -o ./build/src/vixen/CMakeFiles/Engine.dir/{}.gcno' \;
+  - find src/vixen -name "*.cpp" -exec sh -c 'gcov -b -c build/src/vixen/CMakeFiles/Engine.dir/$(basename {}).cpp' \;
   - doxygen Doxyfile
   - sonar-scanner -Dsonar.cfamily.cache.enabled=true -Dsonar.cfamily.cache.path=${TRAVIS_HOME}/.cfamily -Dsonar.cfamily.threads=${NUMBER_OF_PROCESSORS}
 
