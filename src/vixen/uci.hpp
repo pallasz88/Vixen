@@ -32,6 +32,8 @@ class VIXEN_API Uci
 
     void loop();
 
+    void benchmark() const;
+
     static void LogUci(const SearchInfo &info, const std::pair<int, Move> &result, int depth,
                        const FixedList<Move> &bestLine);
 
