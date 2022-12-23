@@ -35,6 +35,8 @@ before_install:
   - sudo apt-get -y install g++-11
   - sudo apt-get -y install python3-pip
   - sudo apt-get -y install doxygen
+  - sudo apt-get -y install valgrind
+  - sudo apt-get -y install linux-tools-common linux-tools-generic
 
 script:
   - mkdir build
@@ -46,6 +48,9 @@ script:
   - cd -
   - find src/vixen -name "*.cpp" -exec sh -c 'gcov -b -c build/src/vixen/CMakeFiles/Engine.dir/$(basename {}).cpp' \;
   - doxygen Doxyfile
+  - valgrind --tool=callgrind --error-exitcode=1 ./bin/Vixen_0_0_5 --benchmark
+  - perf record ./bin/Vixen_0_0_5 --benchmark
+  - perf report
   - sonar-scanner -Dsonar.cfamily.cache.enabled=true -Dsonar.cfamily.cache.path=${TRAVIS_HOME}/.cfamily -Dsonar.cfamily.threads=${NUMBER_OF_PROCESSORS}
 
 cache:
