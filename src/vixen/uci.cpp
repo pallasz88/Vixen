@@ -168,7 +168,7 @@ void Uci::loop()
 void Uci::benchmark() const
 {
     board->SetBoard("rnbq1k1r/pp1Pbppp/2p5/8/2B5/8/PPP1NnPP/RNBQK2R w KQ - 1 8");
-    info->maxDepth = 12;
+    info->maxDepth = 10;
     Search::IterativeDeepening(*board, *info);
 }
 
