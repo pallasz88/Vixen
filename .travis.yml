@@ -48,8 +48,11 @@ script:
   - cd -
   - find src/vixen -name "*.cpp" -exec sh -c 'gcov -b -c build/src/vixen/CMakeFiles/Engine.dir/$(basename {}).cpp' \;
   - doxygen Doxyfile
+  - mkdir rel_build
+  - cd rel_build
   - cmake -DCMAKE_BUILD_TYPE=Release ..
   - build-wrapper-linux-x86-64 --out-dir bw-output cmake --build . --target install -- -j ${NUMBER_OF_PROCESSORS}
+  - cd -
   - valgrind --tool=callgrind --error-exitcode=1 ./bin/Vixen_0_0_5 --benchmark
   - perf record ./bin/Vixen_0_0_5 --benchmark
   - perf report
