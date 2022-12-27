@@ -13,12 +13,12 @@ class Move
   public:
     Move() = default;
 
-    explicit Move(unsigned move) : representation(move), score(0)
+    explicit Move(unsigned move) : representation(move)
     {
     }
 
     constexpr Move(unsigned from, unsigned to, uint8_t moveType)
-        : representation(static_cast<unsigned>(moveType << 12U) | to << 6U | from), score(0)
+        : representation(static_cast<unsigned>(moveType << 12U) | to << 6U | from)
     {
     }
 
@@ -114,7 +114,7 @@ class Move
   private:
     Representation representation;
 
-    unsigned score;
+    unsigned score{0U};
 };
 
 } // namespace vixen

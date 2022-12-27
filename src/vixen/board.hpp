@@ -226,23 +226,23 @@ class VIXEN_API Board
 
     std::array<History, 1024> history{};
 
-    std::array<char, Constants::SQUARE_NUMBER> pieceList{};
+    std::array<char, Constants::SQUARE_NUMBER> pieceList{' '};
 
-    BitBoards bitBoards;
+    BitBoards bitBoards{Constants::EMPTY_BOARD};
 
-    BitBoard enPassantBitBoard;
+    BitBoard enPassantBitBoard{Constants::EMPTY_BOARD};
 
-    Hash hashBoard;
+    Hash hashBoard{};
 
-    unsigned castlingRights;
+    unsigned castlingRights{0};
 
-    unsigned historyPly;
+    unsigned historyPly{0};
 
-    unsigned fiftyMoves;
+    unsigned fiftyMoves{0};
 
-    int material;
+    int material{0};
 
-    bool whiteToMove;
+    bool whiteToMove{false};
 
     constexpr void SumUpBitBoards();
 

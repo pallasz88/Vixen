@@ -22,8 +22,6 @@ static constexpr std::array castlePermission = {
 // clang-format on
 
 Board::Board()
-    : history{}, pieceList{' '}, bitBoards{Constants::EMPTY_BOARD}, enPassantBitBoard(Constants::EMPTY_BOARD),
-      hashBoard(Hash()), castlingRights(0), historyPly(0), fiftyMoves(0), material(0), whiteToMove(false)
 {
     Hash::InitZobristKeys();
     SetBoard(Constants::START_POSITION);
