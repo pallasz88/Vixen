@@ -151,7 +151,7 @@ void Uci::loop()
         else if (token == "go")
         {
             UpdateSearchInfo(is, token);
-            std::thread t(&Search::IterativeDeepening, std::ref(*board), std::ref(*info));
+            std::jthread t(&Search::IterativeDeepening, std::ref(*board), std::ref(*info));
             t.detach();
         }
 
