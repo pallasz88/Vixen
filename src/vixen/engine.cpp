@@ -278,8 +278,7 @@ int Search::Quiescence(int alpha, int beta, Board &board, SearchInfo &info)
     auto moveList = board.GetMoveList<static_cast<uint8_t>(MoveTypes::CAPTURE)>();
 
     for (auto &move : moveList)
-        if ((move.GetMoveType() & static_cast<uint8_t>(MoveTypes::CAPTURE)) == static_cast<uint8_t>(MoveTypes::CAPTURE))
-            OrderCapture(board, move);
+        OrderCapture(board, move);
 
     for (auto it = begin(moveList); it != end(moveList); ++it)
     {
