@@ -211,7 +211,7 @@ class VIXEN_API Board
      * Returns a generator of pseudo-legal moves from given position.
      * @return pseudo-legal moves
      */
-    template <uint8_t moveType> [[nodiscard]] FixedList<Move> GetMoveList() const noexcept;
+    template <MoveTypes moveType> [[nodiscard]] FixedList<Move> GetMoveList() const noexcept;
 
     [[nodiscard]] constexpr bool IsRepetition() const noexcept
     {

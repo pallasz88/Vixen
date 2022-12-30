@@ -95,7 +95,7 @@ std::pair<int, Move> Search::Root(int depth, Board &board, SearchInfo &info)
     if (IsTimeCheckNeeded(info))
         CheckTime(info);
 
-    auto moveList = board.GetMoveList<static_cast<uint8_t>(MoveTypes::ALL_MOVE)>();
+    auto moveList = board.GetMoveList<MoveTypes::ALL_MOVE>();
     int alpha = -MATE;
     int beta = MATE;
     Move bestMove{0U};
@@ -205,7 +205,7 @@ int Search::NegaMax(int depth, int alpha, int beta, Board &board, SearchInfo &in
             return beta;
     }
 
-    auto moveList = board.GetMoveList<static_cast<uint8_t>(MoveTypes::ALL_MOVE)>();
+    auto moveList = board.GetMoveList<MoveTypes::ALL_MOVE>();
     unsigned legalMoveCount = 0;
 
     for (auto &move : moveList)
@@ -275,7 +275,7 @@ int Search::Quiescence(int alpha, int beta, Board &board, SearchInfo &info)
     if (alpha < stand_pat)
         alpha = stand_pat;
 
-    auto moveList = board.GetMoveList<static_cast<uint8_t>(MoveTypes::CAPTURE)>();
+    auto moveList = board.GetMoveList<MoveTypes::CAPTURE>();
 
     for (auto &move : moveList)
         OrderCapture(board, move);

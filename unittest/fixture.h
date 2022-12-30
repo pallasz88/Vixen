@@ -29,7 +29,7 @@ struct Fixture
 
     bool CheckMoveList(std::vector<Representation> &expectedMoveList) const
     {
-        const auto moveList = board.GetMoveList<static_cast<uint8_t>(MoveTypes::ALL_MOVE)>();
+        const auto moveList = board.GetMoveList<MoveTypes::ALL_MOVE>();
 
         if (expectedMoveList.size() != moveList.size())
             return false;

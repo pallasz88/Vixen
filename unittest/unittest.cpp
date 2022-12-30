@@ -130,6 +130,19 @@ BOOST_AUTO_TEST_CASE(Test_HeavyPiecesBitboard)
    40625000104349712ULL);
     }
 */
+
+BOOST_AUTO_TEST_CASE(Test_GetMoveList_AllMoves)
+{
+    // Set up the board with a simple starting position
+    board.SetBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+
+    // Get the list of all moves
+    auto moveList = board.GetMoveList<MoveTypes::ALL_MOVE>();
+
+    // Check that the correct number of moves is generated
+    BOOST_CHECK_EQUAL(moveList.size(), 20);
+}
+
 BOOST_AUTO_TEST_CASE(Test_pawnmovement)
 {
     board.SetBoard("8/8/8/8/3P4/8/8/8 w - - 0 1");
@@ -284,15 +297,15 @@ BOOST_AUTO_TEST_CASE(Test_huge_amunt_of_moves)
 {
     board.SetBoard("R6R/3Q4/1Q4Q1/4Q3/2Q4Q/Q4Q2/pp1Q4/kBNN1KB1 w - - 0 1");
     board.PrintBoard();
-    BOOST_TEST(board.GetMoveList<static_cast<uint8_t>(MoveTypes::ALL_MOVE)>().size() == 218);
+    BOOST_TEST(board.GetMoveList<MoveTypes::ALL_MOVE>().size() == 218);
 
     board.SetBoard("3Q4/1Q4Q1/4Q3/2Q4R/Q4Q2/3Q4/1Q4Rp/1K1BBNNk w - - 0 1");
     board.PrintBoard();
-    BOOST_TEST(board.GetMoveList<static_cast<uint8_t>(MoveTypes::ALL_MOVE)>().size() == 218);
+    BOOST_TEST(board.GetMoveList<MoveTypes::ALL_MOVE>().size() == 218);
 
     board.SetBoard("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1");
     board.PrintBoard();
-    BOOST_TEST(board.GetMoveList<static_cast<uint8_t>(MoveTypes::ALL_MOVE)>().size() == 48);
+    BOOST_TEST(board.GetMoveList<MoveTypes::ALL_MOVE>().size() == 48);
 }
 
 BOOST_AUTO_TEST_CASE(Test_making_moves)

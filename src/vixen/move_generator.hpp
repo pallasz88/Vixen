@@ -32,7 +32,7 @@ class VIXEN_API MoveGenerator
      * @tparam sideToMove
      * @param board
      */
-    template <Colors sideToMove, uint8_t moveType> void GenerateMoves(const Board &board) noexcept;
+    template <Colors sideToMove, MoveTypes moveType> void GenerateMoves(const Board &board) noexcept;
 
   private:
     FixedList<Move> moveList;
