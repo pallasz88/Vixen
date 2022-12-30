@@ -22,9 +22,9 @@ template <class T> struct Timer
 
         T duration = stc::duration_cast<T>(end - start);
         std::cout << "Execution of " << name << " took " << duration.count();
-        std::is_same_v<T, stc::milliseconds>   ? std::cout << " ms." << std::endl
-        : std::is_same_v<T, stc::microseconds> ? std::cout << " us." << std::endl
-                                               : std::cout << " ns." << std::endl;
+        std::is_same_v<T, stc::milliseconds> ? std::cout << " ms." << std::endl
+                                             : std::is_same_v<T, stc::microseconds> ? std::cout << " us." << std::endl
+                                                                                    : std::cout << " ns." << std::endl;
     }
 
     Timer(const Timer &) = delete;

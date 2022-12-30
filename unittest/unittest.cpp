@@ -131,16 +131,37 @@ BOOST_AUTO_TEST_CASE(Test_HeavyPiecesBitboard)
     }
 */
 
-BOOST_AUTO_TEST_CASE(Test_GetMoveList_AllMoves)
+BOOST_AUTO_TEST_CASE(Test_GetMoveList_AllWhiteMoves)
 {
     // Set up the board with a simple starting position
-    board.SetBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+    board.SetBoard(Constants::START_POSITION);
 
     // Get the list of all moves
-    auto moveList = board.GetMoveList<MoveTypes::ALL_MOVE>();
+    const auto moveList = board.GetMoveList<MoveTypes::ALL_MOVE>();
 
     // Check that the correct number of moves is generated
     BOOST_CHECK_EQUAL(moveList.size(), 20);
+}
+
+BOOST_AUTO_TEST_CASE(Test_GetMoveList_AllBlackMoves)
+{
+    // Set up the board with a position where it's black's turn
+    board.SetBoard(Constants::TESTPOS3);
+
+    // Get the list of all moves
+    const auto moveList = board.GetMoveList<MoveTypes::ALL_MOVE>();
+
+    // Check that the correct number of pseudo moves is generated
+    BOOST_CHECK_EQUAL(moveList.size(), 46);
+}
+
+BOOST_AUTO_TEST_CASE(Test_Takeback)
+{
+    // Set up the board with a simple starting position
+    board.SetBoard(Constants::START_POSITION);
+
+    // Take back move. Since we do not have moves we expect throw
+    BOOST_REQUIRE_THROW(board.TakeBack(), std::runtime_error);
 }
 
 BOOST_AUTO_TEST_CASE(Test_pawnmovement)

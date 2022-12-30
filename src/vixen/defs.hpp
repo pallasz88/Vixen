@@ -163,6 +163,8 @@ struct Constants
 
     static constexpr std::string_view TESTPOS2 = "rnbqkb1r/pp1ppppp/5n2/8/3p1B2/4P3/PPP2PPP/RN1QKBNR w KQkq - 0 4";
 
+    static constexpr std::string_view TESTPOS3 = "r1bq1b1r/ppp2kpp/2n5/3np3/2B5/5Q2/PPPP1PPP/RNB1K2R b KQ - 0 1";
+
     static constexpr std::string_view CASTLERIGHTS = "kqKQ";
 
     static constexpr std::array<unsigned char, 12> pieceKeys = {'P', 'N', 'B', 'R', 'Q', 'K',
@@ -320,7 +322,7 @@ constexpr bool IsValidCoordinate(int file, int rank) noexcept
 
 namespace
 {
-template <class T, class... Position> constexpr bool IsBitSet(T bits, Position &&...p) noexcept
+template <class T, class... Position> constexpr bool IsBitSet(T bits, Position &&... p) noexcept
 {
     return ((bits & (1ULL << static_cast<BitBoard>(p))) && ...);
 }

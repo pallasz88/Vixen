@@ -276,15 +276,11 @@ template void MoveGenerator::GenerateQuietMoves<Colors::WHITE>(const Board &) no
 
 template void MoveGenerator::GenerateQuietMoves<Colors::BLACK>(const Board &) noexcept;
 
-template void MoveGenerator::GenerateMoves<Colors::WHITE, MoveTypes::CAPTURE>(
-    const Board &board) noexcept;
+template void MoveGenerator::GenerateMoves<Colors::WHITE, MoveTypes::CAPTURE>(const Board &board) noexcept;
 
-template void MoveGenerator::GenerateMoves<Colors::BLACK, MoveTypes::CAPTURE>(
-    const Board &board) noexcept;
+template void MoveGenerator::GenerateMoves<Colors::BLACK, MoveTypes::CAPTURE>(const Board &board) noexcept;
 
-template void MoveGenerator::GenerateMoves<Colors::WHITE, MoveTypes::ALL_MOVE>(
-    const Board &board) noexcept;
+template void MoveGenerator::GenerateMoves<Colors::WHITE, MoveTypes::ALL_MOVE>(const Board &board) noexcept;
 
-template void MoveGenerator::GenerateMoves<Colors::BLACK, MoveTypes::ALL_MOVE>(
-    const Board &board) noexcept;
+template void MoveGenerator::GenerateMoves<Colors::BLACK, MoveTypes::ALL_MOVE>(const Board &board) noexcept;
 } // namespace vixen
