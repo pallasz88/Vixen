@@ -381,15 +381,13 @@ bool Board::MakeMove(std::string_view notation)
         moveType = static_cast<uint8_t>(GetPromotionType(promoted));
         const char capturedPiece = GetPieceList()[to];
         if (capturedPiece != ' ')
-            moveType |= static_cast<uint8_t>(static_cast<uint8_t>(MoveTypes::CAPTURE));
+            moveType |= static_cast<uint8_t>(MoveTypes::CAPTURE);
     }
 
     const auto decodedPromotion = Move(from, to, moveType);
     const auto decodedMove = decodedPromotion.RemoveMoveType();
 
-    const auto moves = GetMoveList<MoveTypes::ALL_MOVE>();
-
-    for (const auto move : moves)
+    for (const auto &move : GetMoveList<MoveTypes::ALL_MOVE>())
         if ((move.RemoveMoveType()) == decodedMove)
             return (moveType == 0) ? MakeMove(move) : MakeMove(decodedPromotion);
 
