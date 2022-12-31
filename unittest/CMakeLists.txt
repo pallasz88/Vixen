@@ -20,6 +20,11 @@ if (Boost_FOUND)
     add_test(NAME UnitTest COMMAND unittest WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
     target_link_libraries(unittest PRIVATE Engine ${Boost_LIBRARIES})
     target_compile_features(unittest PRIVATE cxx_std_20)
+
+    add_executable(principal vixen_principal_variation_test.cpp)
+    add_test(NAME PrincipalTest COMMAND principal WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
+    target_link_libraries(principal PRIVATE Engine ${Boost_LIBRARIES})
+    target_compile_features(principal PRIVATE cxx_std_20)
     
     add_executable(perft_start_position perft_start_position.cpp)
     add_test(NAME PerftTestStart COMMAND perft_start_position WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
@@ -55,6 +60,9 @@ if (Boost_FOUND)
         message(STATUS "Generate GCOV input")
         target_compile_options(unittest PRIVATE -O0 --coverage -fprofile-arcs -ftest-coverage -g)
         target_link_libraries(unittest PRIVATE --coverage)
+
+        target_compile_options(principal PRIVATE -O0 --coverage -fprofile-arcs -ftest-coverage -g)
+        target_link_libraries(principal PRIVATE --coverage)
         
         target_compile_options(perft_start_position PRIVATE -O0 --coverage -fprofile-arcs -ftest-coverage -g)
         target_link_libraries(perft_start_position PRIVATE --coverage)
@@ -75,7 +83,8 @@ if (Boost_FOUND)
 
     install(
         TARGETS 
-            unittest 
+            unittest
+            principal
             perft_start_position
             perft_kiwipete_position
             perft_rook_pawn_position

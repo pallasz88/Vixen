@@ -59,7 +59,7 @@ enum class Squares : uint8_t
 };
 // clang-format on
 
-enum class MoveTypes
+enum class MoveTypes : std::uint16_t
 {
     QUIET_MOVE,
 

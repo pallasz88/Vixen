@@ -11,7 +11,7 @@ using Representation = unsigned;
 class Move
 {
   public:
-    Move() = default;
+    constexpr Move() = default;
 
     explicit Move(unsigned move) : representation(move)
     {
@@ -112,7 +112,7 @@ class Move
     }
 
   private:
-    Representation representation;
+    Representation representation{};
 
     unsigned score{0U};
 };

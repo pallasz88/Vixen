@@ -20,6 +20,14 @@ struct PVEntry
     explicit PVEntry(Move m, PositionKey key) : move(m), positionKey(key)
     {
     }
+
+    bool operator==(const PVEntry &rhs)
+    {
+        if (move == rhs.move && positionKey == rhs.positionKey)
+            return true;
+
+        return false;
+    }
 };
 
 class PrincipalVariation
