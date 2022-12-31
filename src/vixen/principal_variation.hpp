@@ -29,7 +29,7 @@ class PrincipalVariation
     {
     }
 
-    void StorePVEntry(PVEntry &&);
+    void StorePVEntry(const PVEntry &);
 
     PVEntry GetPVEntry(PositionKey);
 

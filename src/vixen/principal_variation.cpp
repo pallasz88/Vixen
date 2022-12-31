@@ -2,7 +2,7 @@
 
 namespace vixen
 {
-void PrincipalVariation::StorePVEntry(PVEntry &&entry)
+void PrincipalVariation::StorePVEntry(const PVEntry &entry)
 {
     const auto &reference = hashTable.find(entry.positionKey);
 
