@@ -53,6 +53,14 @@ constexpr void GetNextCoordinate(int &file, int &rank, const Direction &directio
 
 constexpr BitBoard SlidingAttack(unsigned int square, SliderDirections directions, BitBoard occupied) noexcept;
 
+/**
+ * Initializes the magic numbers and attack tables for a sliding piece (bishop or rook) at a given square.
+ *
+ * @tparam slider   The type of sliding piece. Must be either `Slider::BISHOP` or `Slider::ROOK`.
+ * @param square    The square on the chessboard for which to initialize the magic numbers and attack tables.
+ * @param directions The directions in which the sliding piece can move.
+ * @param table     The table of magic numbers and attack tables to be initialized.
+ */
 template <Slider slider>
 constexpr void InitSlidingAttack(unsigned int square, SliderDirections directions,
                                  std::array<Magic, Constants::SQUARE_NUMBER> &table) noexcept;
