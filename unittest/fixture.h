@@ -45,4 +45,4 @@ struct Fixture
 
     Board board;
 };
-} // namespace Vixen
+} // namespace vixen
