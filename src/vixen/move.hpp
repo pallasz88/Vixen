@@ -93,6 +93,21 @@ class Move
         const std::string from = SquareToNotation(move.representation & 0x3FU);
         const std::string to = SquareToNotation((move.representation & 0xFC0U) >> 6U);
         os << from << to;
+        const std::unordered_map<unsigned, std::string> promotionMap{
+            {static_cast<unsigned>(vixen::MoveTypes::QUEEN_PROMOTION), "q"},
+            {static_cast<unsigned>(vixen::MoveTypes::QUEEN_PROMO_CAPTURE), "q"},
+            {static_cast<unsigned>(vixen::MoveTypes::ROOK_PROMOTION), "r"},
+            {static_cast<unsigned>(vixen::MoveTypes::ROOK_PROMO_CAPTURE), "r"},
+            {static_cast<unsigned>(vixen::MoveTypes::BISHOP_PROMOTION), "b"},
+            {static_cast<unsigned>(vixen::MoveTypes::BISHOP_PROMO_CAPTURE), "b"},
+            {static_cast<unsigned>(vixen::MoveTypes::KNIGHT_PROMOTION), "n"},
+            {static_cast<unsigned>(vixen::MoveTypes::KNIGHT_PROMO_CAPTURE), "n"}
+        };
+        
+        if (move.GetMoveType() & static_cast<unsigned>(vixen::MoveTypes::PROMOTION))
+        {
+            os << promotionMap.at(move.GetMoveType());
+        }
         return os;
     }
 
