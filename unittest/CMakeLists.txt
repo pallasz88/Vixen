@@ -6,7 +6,7 @@ set(Boost_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/Extensions)
 set(BOOST_LIBRARYDIR ${PROJECT_SOURCE_DIR}/Extensions/lib)
 set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME OFF)
-find_package(Boost REQUIRED COMPONENTS unit_test_framework)
+find_package(Boost)
 
 message(STATUS "Boost Include: ${Boost_INCLUDE_DIR}")
 message(STATUS "Boost Libraries: ${Boost_LIBRARY_DIRS}")

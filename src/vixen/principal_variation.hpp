@@ -30,7 +30,7 @@ struct PVEntry
     }
 };
 
-class PrincipalVariation
+class VIXEN_API PrincipalVariation
 {
   public:
     explicit PrincipalVariation(size_t n) : capacity(n)
