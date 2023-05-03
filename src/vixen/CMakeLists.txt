@@ -14,6 +14,7 @@ set(SOURCE_FILES
         engine.cpp
         hash.hpp
         hash.cpp
+        move.hpp
         move_generator.hpp
         move_generator.cpp
         principal_variation.hpp
