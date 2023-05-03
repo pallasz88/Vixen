@@ -101,9 +101,8 @@ class Move
             {static_cast<unsigned>(vixen::MoveTypes::BISHOP_PROMOTION), "b"},
             {static_cast<unsigned>(vixen::MoveTypes::BISHOP_PROMO_CAPTURE), "b"},
             {static_cast<unsigned>(vixen::MoveTypes::KNIGHT_PROMOTION), "n"},
-            {static_cast<unsigned>(vixen::MoveTypes::KNIGHT_PROMO_CAPTURE), "n"}
-        };
-        
+            {static_cast<unsigned>(vixen::MoveTypes::KNIGHT_PROMO_CAPTURE), "n"}};
+
         if (move.GetMoveType() & static_cast<unsigned>(vixen::MoveTypes::PROMOTION))
         {
             os << promotionMap.at(move.GetMoveType());

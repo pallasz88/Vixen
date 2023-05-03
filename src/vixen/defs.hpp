@@ -322,7 +322,7 @@ constexpr bool IsValidCoordinate(int file, int rank) noexcept
 
 namespace
 {
-template <class T, class... Position> constexpr bool IsBitSet(T bits, Position &&... p) noexcept
+template <class T, class... Position> constexpr bool IsBitSet(T bits, Position &&...p) noexcept
 {
     return ((bits & (1ULL << static_cast<BitBoard>(p))) && ...);
 }
