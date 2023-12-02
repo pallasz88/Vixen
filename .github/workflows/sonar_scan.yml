@@ -3,7 +3,7 @@ name: SonarQube Scan
 on:
   push:
     branches:
-      - main
+      - master
 
 jobs:
   sonarqube-scan:
