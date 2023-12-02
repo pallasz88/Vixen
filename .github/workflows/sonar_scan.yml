@@ -13,9 +13,13 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4.1.1
 
-    - name: Install misc packages
+    - name: Install build-wrapper
       run: |
-        sudo apt-get update && sudo apt upgrade && sudo apt install linux-tools-common linux-tools-generic
+        # Download and install build-wrapper
+        curl -L https://sonarcloud.io/static/cpp/build-wrapper-linux-x86.zip -o build-wrapper.zip
+        unzip build-wrapper.zip
+        chmod +x build-wrapper-linux-x86/build-wrapper
+        sudo mv build-wrapper-linux-x86 /usr/local/bin/build-wrapper
 
     - name: Set reusable strings
       id: strings
