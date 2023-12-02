@@ -13,13 +13,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest]
         build_type: [Release]
-        c_compiler: [gcc, clang-17, cl]
+        c_compiler: [gcc, clang-17]
         include:
-          - os: windows-latest
-            c_compiler: cl
-            cpp_compiler: cl
           - os: ubuntu-latest
             c_compiler: gcc
             cpp_compiler: g++
@@ -39,17 +36,13 @@ jobs:
 
     - name: Install misc packages
       run: |
-        if [[ "$OSTYPE" == "Linux" ]]; then
-          sudo apt-get update && sudo apt upgrade && sudo apt install wget
-        fi
+        sudo apt-get update && sudo apt upgrade && sudo apt install wget
 
     - name: Install newer Clang
       run: |
-       if [[ "$OSTYPE" == "Linux" ]]; then
         wget https://apt.llvm.org/llvm.sh
         chmod +x ./llvm.sh
         sudo ./llvm.sh 17
-       fi
 
     - name: Set reusable strings
       id: strings
