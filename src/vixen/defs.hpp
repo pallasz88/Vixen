@@ -20,7 +20,7 @@
 namespace vixen
 {
 
-enum class Ranks : uint64_t
+enum class Ranks : std::uint64_t
 {
     RANK1 = 255ULL,
     RANK2 = 65280ULL,
@@ -33,7 +33,7 @@ enum class Ranks : uint64_t
     RANK78 = 18446462598732840960ULL
 };
 
-enum class Files : uint64_t
+enum class Files : std::uint64_t
 {
     FILEA = 9259542123273814144ULL,
     FILEB = 4629771061636907072ULL,
@@ -121,7 +121,7 @@ enum class Slider
     ROOK
 };
 
-using BitBoard = uint64_t;
+using BitBoard = std::uint64_t;
 
 using BitBoards = std::array<BitBoard, 15>;
 
@@ -135,9 +135,9 @@ using PawnDirections = std::array<Direction, 2>;
 
 using PieceHashKeys = std::array<std::array<BitBoard, 13>, 64>;
 
-using SideHashKey = uint64_t;
+using SideHashKey = std::uint64_t;
 
-using PositionKey = uint64_t;
+using PositionKey = std::uint64_t;
 
 using CastleHashKeys = std::array<BitBoard, 16>;
 
