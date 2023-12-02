@@ -30,21 +30,21 @@ jobs:
           - os: windows-latest
             c_compiler: gcc
           - os: windows-latest
-            c_compiler: clang
+            c_compiler: clang-17
           - os: ubuntu-latest
             c_compiler: cl
 
     steps:
     - uses: actions/checkout@v4.1.1
 
-    - name: Install misc packages
-      run: sudo apt-get update && sudo apt upgrade && sudo apt install wget
+    # - name: Install misc packages
+      # run: sudo apt-get update && sudo apt upgrade && sudo apt install wget
 
-    - name: Install newer Clang
-      run: |
-       wget https://apt.llvm.org/llvm.sh
-       chmod +x ./llvm.sh
-       sudo ./llvm.sh 17
+    # - name: Install newer Clang
+      # run: |
+      #  wget https://apt.llvm.org/llvm.sh
+      #  chmod +x ./llvm.sh
+      #  sudo ./llvm.sh 17
 
     - name: Set reusable strings
       id: strings
