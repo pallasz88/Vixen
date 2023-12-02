@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <array>
 #include <bit>
+#include <cstdint>
 #if _MSC_VER >= 1910
 #include <sstream>
 #endif

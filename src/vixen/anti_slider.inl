@@ -1,6 +1,8 @@
 #ifndef VIXEN_ANTI_SLIDER_INL_INCLUDED
 #define VIXEN_ANTI_SLIDER_INL_INCLUDED
 
+#include "defs.hpp"
+
 template <AntiSliderDirections offset>
 [[nodiscard]] constexpr auto Init8DirectionAttack() noexcept -> std::array<BitBoard, Constants::SQUARE_NUMBER>
 {
