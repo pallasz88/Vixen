@@ -1,0 +1,43 @@
+name: SonarQube Scan
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  sonarqube-scan:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4.1.1
+
+    - name: CMake with coverage enable
+      run: |
+        cmake -DCMAKE_BUILD_TYPE=Debug -DENABLE_COVERAGE=ON ..
+
+    - name: Set reusable strings
+      id: strings
+      shell: bash
+      run: |
+        echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
+
+    - name: Build
+      run: |
+        build-wrapper-linux-x86-64 --out-dir bw-output cmake --build ${{ steps.strings.outputs.build-output-dir }} . --target install -- -j ${NUMBER_OF_PROCESSORS}
+
+    - name: Run tests
+      run: |
+        ctest
+
+    - name: SonarQube Scan
+      run: |
+        # Your SonarQube scan command here
+        sonar-scanner \
+          -Dsonar.projectKey=Vixen \
+          -Dsonar.organization=pallasz88 \
+          -Dsonar.host.url=https://sonarcloud.io \
+          -Dsonar.login=${{ secrets.SONAR_TOKEN }} \
+          -Dsonar.cfamily.build-wrapper-output=build-wrapper-output \
+          -Dsonar.cfamily.gcov.reportsPath=${{ steps.strings.outputs.build-output-dir }}
