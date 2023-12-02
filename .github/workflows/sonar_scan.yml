@@ -46,12 +46,16 @@ jobs:
       run: |
         ctest
 
+    - name: Set up SonarCloud
+      uses: sonarsource/sonarcloud-github-action@master
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
     - name: SonarQube Scan
       run: |
-        /usr/local/bin/sonar-scanner/sonar-scanner-5.0.1.3006-linux/bin/sonar-scanner \
-          -Dsonar.projectKey=Vixen \
-          -Dsonar.organization=pallasz88 \
-          -Dsonar.host.url=https://sonarcloud.io \
-          -Dsonar.login=${{ secrets.SONAR_TOKEN }} \
-          -Dsonar.cfamily.build-wrapper-output=bw-output \
-          -Dsonar.cfamily.gcov.reportsPath=${{ steps.strings.outputs.build-output-dir }}
+        /usr/local/bin/sonar-scanner/sonar-scanner-5.0.1.3006-linux/bin/sonar-scanner
+
+    - name: SonarCloud Quality Gate
+      uses: sonarsource/sonarcloud-github-action@master
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
