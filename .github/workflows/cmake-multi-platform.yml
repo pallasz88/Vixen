@@ -46,9 +46,9 @@ jobs:
 
     - name: Set reusable strings
       id: strings
+      shell: bash
       run: |
-        echo "build-output-dir=${{ github.workspace }}/build" >> $GITHUB_ENV
-        echo "build-install-dir=${{ github.workspace }}/install" >> $GITHUB_ENV
+        echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
 
     - name: Configure CMake
       run: >
@@ -59,10 +59,9 @@ jobs:
         -S ${{ github.workspace }}
 
     - name: Build
-      run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}
+      run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }} --target install
 
     - name: Test
-      working-directory: ${{ env.build-install-dir }}
+      working-directory: ${{ steps.strings.outputs.build-install-dir }}
       run: |
-        cmake --build ${{ env.build-install-dir }} --config ${{ matrix.build_type }} --target install
         ctest --build-config ${{ matrix.build_type }}
