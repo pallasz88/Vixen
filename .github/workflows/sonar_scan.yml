@@ -12,7 +12,11 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4.1.1
- 
+
+    - name: Install misc packages
+      run: |
+        sudo apt-get update && sudo apt upgrade && sudo apt install linux-tools-common linux-tools-generic
+
     - name: Set reusable strings
       id: strings
       shell: bash
