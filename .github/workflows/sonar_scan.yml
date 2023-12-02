@@ -12,16 +12,16 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4.1.1
-
-    - name: CMake with coverage enable
-      run: |
-        cmake -DCMAKE_BUILD_TYPE=Debug -DENABLE_COVERAGE=ON ..
-
+ 
     - name: Set reusable strings
       id: strings
       shell: bash
       run: |
         echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
+
+    - name: CMake with coverage enable
+      run: |
+        cmake -B ${{ steps.strings.outputs.build-output-dir }} -DCMAKE_BUILD_TYPE=Debug -DENABLE_COVERAGE=ON
 
     - name: Build
       run: |
