@@ -15,7 +15,7 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest]
         build_type: [Release]
-        c_compiler: [gcc, clang, cl]
+        c_compiler: [gcc, clang-17, cl]
         include:
           - os: windows-latest
             c_compiler: cl
@@ -37,14 +37,19 @@ jobs:
     steps:
     - uses: actions/checkout@v4.1.1
 
-    # - name: Install misc packages
-      # run: sudo apt-get update && sudo apt upgrade && sudo apt install wget
+    - name: Install misc packages
+      run: |
+        if [[ "$OSTYPE" == "Linux" ]]; then
+          sudo apt-get update && sudo apt upgrade && sudo apt install wget
+        fi
 
-    # - name: Install newer Clang
-      # run: |
-      #  wget https://apt.llvm.org/llvm.sh
-      #  chmod +x ./llvm.sh
-      #  sudo ./llvm.sh 17
+    - name: Install newer Clang
+      run: |
+       if [[ "$OSTYPE" == "Linux" ]]; then
+        wget https://apt.llvm.org/llvm.sh
+        chmod +x ./llvm.sh
+        sudo ./llvm.sh 17
+       fi
 
     - name: Set reusable strings
       id: strings
