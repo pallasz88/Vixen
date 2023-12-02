@@ -65,5 +65,5 @@ jobs:
     - name: Test
       working-directory: ${{ steps.strings.outputs.build-install-dir }}
       run: |
-        cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }} --target install
+        cmake --build ${{ steps.strings.outputs.build-install-dir }} --config ${{ matrix.build_type }} --target install
         ctest --build-config ${{ matrix.build_type }}
