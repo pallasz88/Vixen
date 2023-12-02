@@ -49,7 +49,7 @@ jobs:
     - name: SonarQube Scan
       run: |
         # Your SonarQube scan command here
-        /usr/local/bin/sonar-scanner/sonar-scanner-5.0.1.3006-linux/sonar-scanner \
+        /usr/local/bin/sonar-scanner/sonar-scanner-5.0.1.3006-linux/bin/sonar-scanner \
           -Dsonar.projectKey=Vixen \
           -Dsonar.organization=pallasz88 \
           -Dsonar.host.url=https://sonarcloud.io \
