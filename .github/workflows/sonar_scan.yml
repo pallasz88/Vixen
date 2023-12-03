@@ -45,6 +45,7 @@ jobs:
     - name: Run tests
       run: |
         ctest
+      working-directory: ${{ steps.strings.outputs.build-output-dir }}
 
     - name: Set up SonarCloud
       uses: sonarsource/sonarcloud-github-action@master
@@ -54,6 +55,7 @@ jobs:
     - name: SonarQube Scan
       run: |
         /usr/local/bin/sonar-scanner/sonar-scanner-5.0.1.3006-linux/bin/sonar-scanner
+      working-directory: ${{ steps.strings.outputs.build-output-dir }}
 
     - name: SonarCloud Quality Gate
       uses: sonarsource/sonarcloud-github-action@master
