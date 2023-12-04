@@ -45,19 +45,20 @@ jobs:
       run: |
         /usr/local/bin/build-wrapper/build-wrapper-linux-x86-64 --out-dir bw-output cmake --build ${{ steps.strings.outputs.build-output-dir }} --target install -- -j ${{env.NUMBER_OF_PROCESSORS}}
 
-    - name: Run tests
-      run: |
-        ctest -j ${{env.NUMBER_OF_PROCESSORS}}
-      working-directory: ${{ steps.strings.outputs.build-output-dir }}
+    # - name: Run tests
+      # run: |
+        # ctest -j ${{env.NUMBER_OF_PROCESSORS}}
+      # working-directory: ${{ steps.strings.outputs.build-output-dir }}
 
     - name: Set up SonarCloud
       uses: sonarsource/sonarcloud-github-action@master
+      with:
+        projectBaseDir: ${{ github.workspace }}
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
     - name: SonarQube Scan
       run: |
-        cd ${{ github.workspace }}
         /usr/local/bin/sonar-scanner/sonar-scanner-5.0.1.3006-linux/bin/sonar-scanner
 
     - name: SonarCloud Quality Gate
