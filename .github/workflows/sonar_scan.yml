@@ -5,6 +5,9 @@ on:
     branches:
       - master
 
+env:
+  NUMBER_OF_PROCESSORS: $(nproc --all)
+
 jobs:
   sonarqube-scan:
     runs-on: ubuntu-latest
@@ -40,11 +43,11 @@ jobs:
 
     - name: Build
       run: |
-        /usr/local/bin/build-wrapper/build-wrapper-linux-x86-64 --out-dir bw-output cmake --build ${{ steps.strings.outputs.build-output-dir }} --target install -- -j ${NUMBER_OF_PROCESSORS}
+        /usr/local/bin/build-wrapper/build-wrapper-linux-x86-64 --out-dir bw-output cmake --build ${{ steps.strings.outputs.build-output-dir }} --target install -- -j ${{env.NUMBER_OF_PROCESSORS}}
 
     - name: Run tests
       run: |
-        ctest
+        ctest -j ${{env.NUMBER_OF_PROCESSORS}}
       working-directory: ${{ steps.strings.outputs.build-output-dir }}
 
     - name: Set up SonarCloud
