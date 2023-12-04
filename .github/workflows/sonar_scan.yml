@@ -34,11 +34,12 @@ jobs:
       - name: Run build-wrapper
         run: |
           mkdir build
-          cmake -S . -B build
-          build-wrapper-linux-x86-64 --out-dir ${{ env.BUILD_WRAPPER_OUT_DIR }} cmake --build build/ --config Debug -DENABLE_COVERAGE=ON -- -j ${{env.NUMBER_OF_PROCESSORS}}
+          cmake -S . -B build -DENABLE_COVERAGE=ON
+          build-wrapper-linux-x86-64 --out-dir ${{ env.BUILD_WRAPPER_OUT_DIR }} cmake --build build/ --config Debug -j ${{env.NUMBER_OF_PROCESSORS}} -t install
       - name: Run tests to generate coverage statistics
         run: |
           ctest -j ${{env.NUMBER_OF_PROCESSORS}}
+        working-directory: ${{ env.BUILD_WRAPPER_OUT_DIR }}
       - name: Collect coverage into one XML report
         run: |
           gcovr --sonarqube > coverage.xml
