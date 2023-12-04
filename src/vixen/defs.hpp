@@ -5,6 +5,7 @@
 #include <array>
 #include <bit>
 #include <cstdint>
+#include <ranges>
 #if _MSC_VER >= 1910
 #include <sstream>
 #endif
@@ -253,10 +254,8 @@ struct Constants
 
 constexpr auto GetPieceIndex(unsigned char c) noexcept
 {
-    auto iterator = std::find_if(std::begin(Constants::pieceMap), std::end(Constants::pieceMap),
-                                 [c](auto p) { return p.first == c; });
-
-    if (iterator == std::end(Constants::pieceMap))
+    if (const auto &iterator = std::ranges::find_if(Constants::pieceMap, [c](auto p) { return p.first == c; });
+        iterator == std::end(Constants::pieceMap))
         return -1;
 
     return iterator->second;
@@ -380,14 +379,12 @@ constexpr bool IsMovingPawn(char movingPiece) noexcept
 
 /**
  * Returns true if the moving piece is black
- * C++20 std::find function will be constexpr.
  * @param c
  * @return
  */
 constexpr bool IsBlackMoving(char c) noexcept
 {
-    return std::find(begin(Constants::blackPieceKeys), end(Constants::blackPieceKeys), c) !=
-           end(Constants::blackPieceKeys);
+    return std::ranges::find(Constants::blackPieceKeys, c) != std::end(Constants::blackPieceKeys);
 }
 
 template <class Iterator> constexpr auto PickBest(const Iterator &begin, const Iterator &end)
