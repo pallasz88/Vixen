@@ -3,6 +3,7 @@
 #include <bitset>
 #include <charconv>
 #include <iostream>
+#include <ranges>
 #include <regex>
 
 #include "move_generator.hpp"
@@ -169,9 +170,9 @@ constexpr void Board::ParseCastlingRightPart(std::string_view parsedPosition)
         case 'Q':
         case 'k':
         case 'q':
-            SetBit(castlingRights, static_cast<unsigned>(std::distance(
-                                       begin(Constants::CASTLERIGHTS),
-                                       std::find(begin(Constants::CASTLERIGHTS), end(Constants::CASTLERIGHTS), it))));
+            SetBit(castlingRights,
+                   static_cast<unsigned>(
+                       std::distance(begin(Constants::CASTLERIGHTS), std::ranges::find(Constants::CASTLERIGHTS, it))));
             break;
         case '-':
             break;
