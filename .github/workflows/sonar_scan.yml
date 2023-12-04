@@ -3,65 +3,49 @@ name: SonarQube Scan
 on:
   push:
     branches:
-      - master
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened]
 
 env:
   NUMBER_OF_PROCESSORS: $(nproc --all)
 
 jobs:
-  sonarqube-scan:
+  build:
+    name: sonarqube-scan
     runs-on: ubuntu-latest
+    env:
+      BUILD_WRAPPER_OUT_DIR: build_wrapper_output_directory
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4.1.1
-
-    - name: Install build-wrapper
-      run: |
-        # Download and install build-wrapper
-        curl -L https://sonarcloud.io/static/cpp/build-wrapper-linux-x86.zip -o build-wrapper.zip
-        unzip build-wrapper.zip
-        sudo mv build-wrapper-linux-x86 /usr/local/bin/build-wrapper
-
-    - name: Install SonarScanner
-      run: |
-        # Download and install the latest SonarScanner using wget
-        wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-linux.zip
-        unzip sonar-scanner-cli-5.0.1.3006-linux.zip
-        sudo mkdir /usr/local/bin/sonar-scanner
-        sudo mv sonar-scanner-* /usr/local/bin/sonar-scanner
-
-    - name: Set reusable strings
-      id: strings
-      shell: bash
-      run: |
-        echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
-
-    - name: CMake with coverage enable
-      run: |
-        cmake -B ${{ steps.strings.outputs.build-output-dir }} -DCMAKE_BUILD_TYPE=Debug -DENABLE_COVERAGE=ON
-
-    - name: Build
-      run: |
-        /usr/local/bin/build-wrapper/build-wrapper-linux-x86-64 --out-dir bw-output cmake --build ${{ steps.strings.outputs.build-output-dir }} --target install -- -j ${{env.NUMBER_OF_PROCESSORS}}
-
-    # - name: Run tests
-      # run: |
-        # ctest -j ${{env.NUMBER_OF_PROCESSORS}}
-      # working-directory: ${{ steps.strings.outputs.build-output-dir }}
-
-    - name: Set up SonarCloud
-      uses: sonarsource/sonarcloud-github-action@master
-      with:
-        projectBaseDir: ${{ github.workspace }}
-      env:
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
-    - name: SonarQube Scan
-      run: |
-        /usr/local/bin/sonar-scanner/sonar-scanner-5.0.1.3006-linux/bin/sonar-scanner
-
-    - name: SonarCloud Quality Gate
-      uses: sonarsource/sonarcloud-github-action@master
-      env:
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
+      - uses: actions/checkout@v4
+      - name: Set up Python 3.8 for gcovr
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.8
+      - name: install gcovr 5.0
+        run: |
+          pip install gcovr==5.0 # 5.1 is not supported
+      - name: Install sonar-scanner and build-wrapper
+        uses: SonarSource/sonarcloud-github-c-cpp@v2
+      - name: Run build-wrapper
+        run: |
+          mkdir build
+          cmake -S . -B build
+          build-wrapper-linux-x86-64 --out-dir ${{ env.BUILD_WRAPPER_OUT_DIR }} cmake --build build/ -DCMAKE_BUILD_TYPE=Debug -DENABLE_COVERAGE=ON -- -j ${{env.NUMBER_OF_PROCESSORS}}
+      - name: Run tests to generate coverage statistics
+        run: |
+          ctest -j ${{env.NUMBER_OF_PROCESSORS}}
+      - name: Collect coverage into one XML report
+        run: |
+          gcovr --sonarqube > coverage.xml
+      - name: Run sonar-scanner
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }} 
+        run: |
+          sonar-scanner \
+            --define sonar.cfamily.build-wrapper-output="${{ env.BUILD_WRAPPER_OUT_DIR }}" \
+            --define sonar.coverageReportPaths=coverage.xml
