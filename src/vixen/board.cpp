@@ -365,8 +365,9 @@ template <MoveTypes moveType> FixedList<Move> Board::GetMoveList() const noexcep
 bool Board::MakeMove(std::string_view notation)
 {
     const std::regex moveRegex{"[a-h][1-8][a-h][1-8][q|r|b|n]?"};
-    std::match_results<std::string_view::const_iterator> iterator;
-    if (!std::regex_match(begin(notation), end(notation), iterator, moveRegex))
+
+    if (std::match_results<std::string_view::const_iterator> iterator;
+        !std::regex_match(begin(notation), end(notation), iterator, moveRegex))
         throw std::runtime_error("INVALID MOVE FORMAT. Use for example e2e4.");
 
     const auto from = static_cast<unsigned>(Move::NotationToSquare(notation.substr(0, 2)));
