@@ -1,9 +1,9 @@
 #ifndef VIXEN_BOARD_HPP_INCLUDED
 #define VIXEN_BOARD_HPP_INCLUDED
-
 #include "fixed_list.hpp"
 #include "hash.hpp"
 #include "move.hpp"
+#include <ranges>
 
 namespace vixen
 {
@@ -134,7 +134,7 @@ class VIXEN_API Board
     constexpr void ResetHistory()
     {
         for (auto &h : historyHeuristic)
-            std::fill(std::begin(h), std::end(h), 0);
+            std::ranges::fill(h, 0);
     }
 
     constexpr void IncreaseHistoryValue(const int depth, const unsigned from, const unsigned to)
