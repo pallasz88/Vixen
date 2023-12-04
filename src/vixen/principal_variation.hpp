@@ -21,7 +21,7 @@ struct PVEntry
     {
     }
 
-    bool operator==(const PVEntry &rhs)
+    bool operator==(const PVEntry &rhs) const
     {
         if (move == rhs.move && positionKey == rhs.positionKey)
             return true;
