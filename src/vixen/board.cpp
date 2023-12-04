@@ -86,7 +86,7 @@ void Board::PrintBoard() const noexcept
                                ? Move::SquareToNotation(TrailingZeroCount(enPassantBitBoard))
                                : "-";
     std::cout << "En passant square: " << enPassantSquare << "\n";
-    std::cout << "Castling rights: " << std::bitset<4>(static_cast<unsigned>(castlingRights)) << "\n";
+    std::cout << "Castling rights: " << std::bitset<4>(castlingRights) << "\n";
     std::cout << "Position key: " << std::hex << hashBoard.GetHash() << std::dec << "\n";
     std::cout << "\n\n";
 }
