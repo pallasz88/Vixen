@@ -11,11 +11,9 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - run:
-            mkdir docs/html -p
       - uses: DenverCoder1/doxygen-github-pages-action@v1.3.0
         with:
           github_token:
           branch: gh-pages
-          folder: docs/html
+          folder:
           config_file: Doxyfile
