@@ -39,7 +39,6 @@ jobs:
       - name: Run tests to generate coverage statistics
         run: |
           ctest -j ${{env.NUMBER_OF_PROCESSORS}}
-        working-directory: ${{ env.BUILD_WRAPPER_OUT_DIR }}
       - name: Collect coverage into one XML report
         run: |
           gcovr --sonarqube > coverage.xml
