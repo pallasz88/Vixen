@@ -254,8 +254,8 @@ struct Constants
 
 constexpr auto GetPieceIndex(unsigned char c) noexcept
 {
-    if (const auto &iterator = std::ranges::find_if(Constants::pieceMap, [c](auto p) { return p.first == c; });
-        iterator == std::end(Constants::pieceMap))
+    const auto &iterator = std::ranges::find_if(Constants::pieceMap, [c](auto p) { return p.first == c; });
+    if (iterator == std::end(Constants::pieceMap))
         return -1;
 
     return iterator->second;
