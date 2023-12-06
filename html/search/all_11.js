@@ -1,0 +1,28 @@
+var searchData=
+[
+  ['rand_0',['rand',['../structvixen_1_1_p_r_n_g_1_1_rand.html',1,'vixen::PRNG::Rand'],['../classvixen_1_1_p_r_n_g.html#a1d6b9b7c273c22c8355c3d1658753f6b',1,'vixen::PRNG::rand']]],
+  ['random_2ehpp_1',['random.hpp',['../random_8hpp.html',1,'']]],
+  ['rank1_2',['RANK1',['../namespacevixen.html#a1e31019285bb9e479632109eccea116aaf9048720b5029f00f8a3336be60b8f67',1,'vixen']]],
+  ['rank12_3',['RANK12',['../namespacevixen.html#a1e31019285bb9e479632109eccea116aa687564b6a07ac49e700c98be9b115fa6',1,'vixen']]],
+  ['rank18_4',['RANK18',['../namespacevixen.html#a1e31019285bb9e479632109eccea116aa6237409e62415634547a75cb322836df',1,'vixen']]],
+  ['rank2_5',['RANK2',['../namespacevixen.html#a1e31019285bb9e479632109eccea116aa74cd9a3e265c51bf8aff3094a7b3dcc4',1,'vixen']]],
+  ['rank3_6',['RANK3',['../namespacevixen.html#a1e31019285bb9e479632109eccea116aad21c33d8ac92ef32c6df68959f602813',1,'vixen']]],
+  ['rank6_7',['RANK6',['../namespacevixen.html#a1e31019285bb9e479632109eccea116aac642e0c1600ea4571cc815fadcf06ed1',1,'vixen']]],
+  ['rank7_8',['RANK7',['../namespacevixen.html#a1e31019285bb9e479632109eccea116aaffd01ac323bba823bf5dc27c466def5a',1,'vixen']]],
+  ['rank78_9',['RANK78',['../namespacevixen.html#a1e31019285bb9e479632109eccea116aa40e9a8ac990a9ebbdfc02c3363a75b12',1,'vixen']]],
+  ['rank8_10',['RANK8',['../namespacevixen.html#a1e31019285bb9e479632109eccea116aa47ecb4e3d9b78f8f8721c91c29cc1af3',1,'vixen']]],
+  ['ranks_11',['Ranks',['../namespacevixen.html#a1e31019285bb9e479632109eccea116a',1,'vixen']]],
+  ['reference_12',['reference',['../class_fixed_list.html#a52b9e161276908ef81b810f545ae614b',1,'FixedList']]],
+  ['removemovetype_13',['RemoveMoveType',['../classvixen_1_1_move.html#a484273000c4db7a7f97b17410425defe',1,'vixen::Move']]],
+  ['representation_14',['representation',['../namespacevixen.html#a628c6cea5a654b3c37366e62f2b9a591',1,'vixen::Representation'],['../classvixen_1_1_move.html#aaac2e3407ec582b1de5540c9f63f5d30',1,'vixen::Move::representation']]],
+  ['rook_15',['ROOK',['../namespacevixen.html#a67726617760d3886ae588bc6bb45566ca97c60a3a4e61ee21e3f38a2f950fe293',1,'vixen']]],
+  ['rook_5fattack_5ftable_5fsize_16',['ROOK_ATTACK_TABLE_SIZE',['../structvixen_1_1_constants.html#a5f6202a2646d2405728e54cfd6c71d04',1,'vixen::Constants']]],
+  ['rook_5fpromo_5fcapture_17',['ROOK_PROMO_CAPTURE',['../namespacevixen.html#a614234df605484be1dce2581ed5606cea8f313f28288d26a79f6acc1f0a4c733e',1,'vixen']]],
+  ['rook_5fpromotion_18',['ROOK_PROMOTION',['../namespacevixen.html#a614234df605484be1dce2581ed5606cea1f1a5b88c3554ac4c8836a3d98d67db3',1,'vixen']]],
+  ['rookdirections_19',['rookDirections',['../structvixen_1_1_constants.html#ae9634366e51e3e916a30e2e6133fc737',1,'vixen::Constants']]],
+  ['rookmagic_20',['RookMagic',['../structvixen_1_1_constants.html#a204d3011c87039645854a48ca79fe17f',1,'vixen::Constants']]],
+  ['rooksliderinfo_21',['RookSliderInfo',['../structvixen_1_1slider__utils_1_1_rook_slider_info.html',1,'vixen::slider_utils']]],
+  ['rooksquareaftercastling_22',['rookSquareAfterCastling',['../structvixen_1_1_constants.html#a334f4e073f63d104a50d5808f32c58fb',1,'vixen::Constants']]],
+  ['rooktable_23',['rooktable',['../classvixen_1_1_search.html#a819fb5509b783aee712a4b19eb0362ed',1,'vixen::Search::RookTable'],['../classvixen_1_1_search.html#a363fbc66e120c853fc0cfb05f0a5eb12',1,'vixen::Search::rookTable'],['../namespacevixen_1_1slider__utils.html#a21840648090ff8f5b1d92f4f511b90b0',1,'vixen::slider_utils::RookTable']]],
+  ['root_24',['Root',['../classvixen_1_1_search.html#a99f5b2ea6f46596814e7c01312496eef',1,'vixen::Search']]]
+];

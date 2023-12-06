@@ -1,0 +1,13 @@
+<map id="vixen::GetPosition" name="vixen::GetPosition">
+<area shape="rect" id="Node000001" title=" " alt="" coords="271,150,396,176"/>
+<area shape="rect" id="Node000002" href="$classvixen_1_1_move_generator.html#a7845368738462ace22a7856609f05c60" title=" " alt="" coords="26,5,202,46"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="310,140,271,100,221,61,196,49,198,44,224,57,275,96,314,136"/>
+<area shape="rect" id="Node000003" href="$classvixen_1_1_move_generator.html#aea49d3af5f539f92d80b0908f04dc9b4" title=" " alt="" coords="38,71,190,111"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="282,147,222,126,187,114,188,109,224,120,284,142"/>
+<area shape="rect" id="Node000004" href="$classvixen_1_1_move_generator.html#a1940ada12201cd60503adf7ed7b1c98c" title=" " alt="" coords="5,135,223,191"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="255,166,223,166,223,160,255,160"/>
+<area shape="rect" id="Node000005" href="$classvixen_1_1_move_generator.html#adb8609b09f5f87423ca001a46a9af54f" title=" " alt="" coords="8,215,220,255"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="284,184,224,206,188,217,187,212,222,200,282,179"/>
+<area shape="rect" id="Node000006" href="$classvixen_1_1_move_generator.html#a9ce6eda0c7df2b1a65541109e60fc3b5" title=" " alt="" coords="38,280,190,321"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="314,190,275,230,224,269,192,284,189,279,221,265,271,226,310,186"/>
+</map>

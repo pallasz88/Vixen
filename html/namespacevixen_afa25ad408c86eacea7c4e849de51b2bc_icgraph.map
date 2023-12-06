@@ -1,0 +1,21 @@
+<map id="vixen::TrailingZeroCount" name="vixen::TrailingZeroCount">
+<area shape="rect" id="Node000001" title=" " alt="" coords="507,309,666,335"/>
+<area shape="rect" id="Node000002" href="$namespacevixen.html#a430ae01eee665346d7d47d25630fa593" title=" " alt="" coords="302,186,428,212"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="547,303,389,215,391,210,550,299"/>
+<area shape="rect" id="Node000008" href="$classvixen_1_1_hash.html#a2209589615c5d1d5e0c64a8274b8321c" title=" " alt="" coords="271,309,459,335"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="492,324,459,324,459,319,492,319"/>
+<area shape="rect" id="Node000010" href="$namespacevixen_1_1_check.html#a7fb42cdb39739e3c79ea9326768f8bab" title=" " alt="" coords="285,358,445,384"/>
+<area shape="poly" id="edge9_Node000001_Node000010" title=" " alt="" coords="511,341,427,360,425,355,510,336"/>
+<area shape="rect" id="Node000003" href="$classvixen_1_1_move_generator.html#a7845368738462ace22a7856609f05c60" title=" " alt="" coords="26,5,202,46"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="343,176,292,118,258,88,221,61,196,49,199,44,224,57,261,83,295,114,347,172"/>
+<area shape="rect" id="Node000004" href="$classvixen_1_1_move_generator.html#aea49d3af5f539f92d80b0908f04dc9b4" title=" " alt="" coords="38,71,190,111"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="328,180,278,152,222,125,190,114,191,109,224,121,281,148,331,176"/>
+<area shape="rect" id="Node000005" href="$classvixen_1_1_move_generator.html#a1940ada12201cd60503adf7ed7b1c98c" title=" " alt="" coords="5,135,223,191"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="286,190,223,181,224,176,287,185"/>
+<area shape="rect" id="Node000006" href="$classvixen_1_1_move_generator.html#adb8609b09f5f87423ca001a46a9af54f" title=" " alt="" coords="8,215,220,255"/>
+<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="287,213,220,222,220,217,286,208"/>
+<area shape="rect" id="Node000007" href="$classvixen_1_1_move_generator.html#a9ce6eda0c7df2b1a65541109e60fc3b5" title=" " alt="" coords="38,280,190,321"/>
+<area shape="poly" id="edge6_Node000002_Node000007" title=" " alt="" coords="326,222,224,269,189,282,187,277,222,265,324,217"/>
+<area shape="rect" id="Node000009" href="$classvixen_1_1_hash.html#ac833f1fab5ce4549061c273bd2fc6c0a" title=" " alt="" coords="6,345,222,371"/>
+<area shape="poly" id="edge8_Node000008_Node000009" title=" " alt="" coords="256,340,209,347,208,342,255,335"/>
+</map>

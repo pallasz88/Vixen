@@ -1,0 +1,6 @@
+<map id="vixen::Move::SquareToNotation" name="vixen::Move::SquareToNotation">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,29,206,55"/>
+<area shape="rect" id="Node000002" href="$anti__slider_8inl.html#a6f14655a99ca18901e6452bea4aa313f" title=" " alt="" coords="254,29,389,55"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="206,40,238,40,238,45,206,45"/>
+<area shape="poly" id="edge2_Node000002_Node000002" title=" " alt="" coords="285,31,278,21,283,11,297,5,321,3,348,5,361,12,359,17,346,10,321,8,299,10,286,15,284,20,290,27"/>
+</map>

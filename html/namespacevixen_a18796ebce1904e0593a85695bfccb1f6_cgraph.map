@@ -1,0 +1,6 @@
+<map id="vixen::SquareToBitBoard" name="vixen::SquareToBitBoard">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,29,169,55"/>
+<area shape="rect" id="Node000002" href="$anti__slider_8inl.html#a6f14655a99ca18901e6452bea4aa313f" title=" " alt="" coords="217,29,352,55"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="169,40,201,40,201,45,169,45"/>
+<area shape="poly" id="edge2_Node000002_Node000002" title=" " alt="" coords="251,30,245,21,249,11,262,5,284,3,309,5,321,12,318,17,307,10,284,8,264,10,253,15,250,20,256,27"/>
+</map>

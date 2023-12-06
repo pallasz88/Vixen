@@ -1,0 +1,10 @@
+<map id="vixen::Check::IsSquareAttacked" name="vixen::Check::IsSquareAttacked">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,78,210,104"/>
+<area shape="rect" id="Node000002" href="$namespacevixen_1_1slider__utils.html#ab618043317e00ab8bf4738f77dca4afa" title=" " alt="" coords="262,5,389,46"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="152,75,246,47,248,52,154,80"/>
+<area shape="rect" id="Node000003" href="$namespacevixen_1_1slider__utils.html#af72e36e604b35faa3fba786ec353331d" title=" " alt="" coords="266,71,385,111"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="210,88,250,88,250,94,210,94"/>
+<area shape="rect" id="Node000004" href="$anti__slider_8inl.html#a6f14655a99ca18901e6452bea4aa313f" title=" " alt="" coords="258,160,393,185"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="145,102,275,151,274,156,143,107"/>
+<area shape="poly" id="edge4_Node000004_Node000004" title=" " alt="" coords="289,161,282,151,286,141,301,135,325,133,352,136,366,142,363,147,351,141,325,138,302,140,290,145,287,150,293,157"/>
+</map>

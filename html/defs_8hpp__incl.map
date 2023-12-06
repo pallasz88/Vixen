@@ -1,0 +1,19 @@
+<map id="src/vixen/defs.hpp" name="src/vixen/defs.hpp">
+<area shape="rect" id="Node000001" title=" " alt="" coords="247,5,374,31"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,79,80,105"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="266,34,95,79,94,74,264,29"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="103,79,153,105"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="280,34,168,78,166,73,279,29"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="177,79,215,105"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="292,34,230,73,227,68,290,29"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="239,79,299,105"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="306,33,286,67,281,64,301,30"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="323,79,383,105"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="320,30,340,64,336,67,315,33"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="408,79,461,105"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="333,29,402,69,399,73,330,34"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="486,79,573,105"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="348,29,478,71,477,76,347,34"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="597,79,707,105"/>
+<area shape="poly" id="edge8_Node000001_Node000009" title=" " alt="" coords="369,29,582,73,581,78,368,34"/>
+</map>

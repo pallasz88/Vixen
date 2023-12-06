@@ -1,0 +1,9 @@
+<map id="vixen::PrincipalVariation::StorePVEntry" name="vixen::PrincipalVariation::StorePVEntry">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,23,164,64"/>
+<area shape="rect" id="Node000002" href="$fixed__list_8hpp.html#aafc20499170f5e761b59476819892f24" title=" " alt="" coords="212,5,264,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="164,28,196,22,197,28,165,33"/>
+<area shape="rect" id="Node000003" href="$anti__slider_8inl.html#a6f14655a99ca18901e6452bea4aa313f" title=" " alt="" coords="312,31,447,56"/>
+<area shape="poly" id="edge4_Node000001_Node000003" title=" " alt="" coords="164,41,297,41,297,46,164,46"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="265,20,298,26,297,31,264,25"/>
+<area shape="poly" id="edge3_Node000003_Node000003" title=" " alt="" coords="355,31,350,22,353,13,363,6,380,4,397,7,406,13,403,18,395,12,380,9,365,11,358,16,356,22,360,29"/>
+</map>
