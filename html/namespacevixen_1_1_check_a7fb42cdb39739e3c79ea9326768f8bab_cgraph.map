@@ -1,9 +1,0 @@
-<map id="vixen::Check::IsInCheck" name="vixen::Check::IsInCheck">
-<area shape="rect" id="Node000001" title=" " alt="" coords="5,29,165,55"/>
-<area shape="rect" id="Node000002" href="$anti__slider_8inl.html#a6f14655a99ca18901e6452bea4aa313f" title=" " alt="" coords="420,29,555,55"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="165,40,405,40,405,45,165,45"/>
-<area shape="rect" id="Node000003" href="$namespacevixen.html#afa25ad408c86eacea7c4e849de51b2bc" title=" " alt="" coords="213,55,372,80"/>
-<area shape="poly" id="edge3_Node000001_Node000003" title=" " alt="" coords="165,49,198,53,197,59,165,55"/>
-<area shape="poly" id="edge2_Node000002_Node000002" title=" " alt="" coords="455,30,449,21,452,11,466,5,488,3,512,5,524,12,521,17,510,10,488,8,467,10,456,15,454,20,459,27"/>
-<area shape="poly" id="edge4_Node000003_Node000002" title=" " alt="" coords="372,54,404,50,405,56,373,60"/>
-</map>

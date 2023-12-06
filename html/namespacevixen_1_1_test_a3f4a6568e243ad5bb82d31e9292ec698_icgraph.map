@@ -1,8 +1,0 @@
-<map id="vixen::Test::Perft" name="vixen::Test::Perft">
-<area shape="rect" id="Node000001" title=" " alt="" coords="381,29,498,55"/>
-<area shape="poly" id="edge1_Node000001_Node000001" title=" " alt="" coords="470,16,460,10,440,8,421,10,411,15,409,20,414,28,409,30,404,21,407,11,420,5,440,3,461,5,473,12"/>
-<area shape="rect" id="Node000002" href="$namespacevixen_1_1_test.html#ae256ca73247b8098184ac65e61eb8db0" title=" " alt="" coords="190,29,333,55"/>
-<area shape="poly" id="edge2_Node000001_Node000002" title=" " alt="" coords="365,45,333,45,333,40,365,40"/>
-<area shape="rect" id="Node000003" href="$namespacevixen_1_1_user_interface.html#a59f9c4b81e5b5c6149ad9bb2feab56f7" title=" " alt="" coords="5,22,142,63"/>
-<area shape="poly" id="edge3_Node000002_Node000003" title=" " alt="" coords="174,45,142,45,142,40,174,40"/>
-</map>

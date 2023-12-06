@@ -1,9 +1,0 @@
-<map id="SlidingAttack" name="SlidingAttack">
-<area shape="rect" id="Node000001" title=" " alt="" coords="5,31,104,56"/>
-<area shape="rect" id="Node000002" href="$slider_8inl.html#a70b3ea52469773851eb41f6bb583355c" title=" " alt="" coords="152,5,283,31"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="104,33,136,28,137,33,105,38"/>
-<area shape="rect" id="Node000003" href="$anti__slider_8inl.html#a6f14655a99ca18901e6452bea4aa313f" title=" " alt="" coords="331,31,466,56"/>
-<area shape="poly" id="edge4_Node000001_Node000003" title=" " alt="" coords="104,41,316,41,316,46,104,46"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="284,25,316,29,315,35,283,30"/>
-<area shape="poly" id="edge3_Node000003_Node000003" title=" " alt="" coords="368,32,362,22,366,12,378,6,399,4,421,7,432,13,430,18,419,12,399,9,380,11,370,16,367,21,373,29"/>
-</map>

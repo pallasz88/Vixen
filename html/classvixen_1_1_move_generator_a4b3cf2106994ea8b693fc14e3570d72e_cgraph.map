@@ -1,6 +1,0 @@
-<map id="vixen::MoveGenerator::GenerateMoves" name="vixen::MoveGenerator::GenerateMoves">
-<area shape="rect" id="Node000001" title=" " alt="" coords="5,22,152,63"/>
-<area shape="rect" id="Node000002" href="$anti__slider_8inl.html#a6f14655a99ca18901e6452bea4aa313f" title=" " alt="" coords="200,29,335,55"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="152,40,184,40,184,45,152,45"/>
-<area shape="poly" id="edge2_Node000002_Node000002" title=" " alt="" coords="236,30,229,21,233,11,246,5,267,3,290,5,302,12,300,16,289,10,267,8,248,10,237,15,235,20,240,27"/>
-</map>

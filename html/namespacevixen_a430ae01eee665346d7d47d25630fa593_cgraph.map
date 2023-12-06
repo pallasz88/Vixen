@@ -1,9 +1,0 @@
-<map id="vixen::GetPosition" name="vixen::GetPosition">
-<area shape="rect" id="Node000001" title=" " alt="" coords="5,29,131,55"/>
-<area shape="rect" id="Node000002" href="$anti__slider_8inl.html#a6f14655a99ca18901e6452bea4aa313f" title=" " alt="" coords="386,29,521,55"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="131,40,371,40,371,45,131,45"/>
-<area shape="rect" id="Node000003" href="$namespacevixen.html#afa25ad408c86eacea7c4e849de51b2bc" title=" " alt="" coords="179,55,338,80"/>
-<area shape="poly" id="edge3_Node000001_Node000003" title=" " alt="" coords="132,48,163,52,163,57,131,53"/>
-<area shape="poly" id="edge2_Node000002_Node000002" title=" " alt="" coords="421,30,415,21,418,11,432,5,454,3,478,5,490,12,487,17,476,10,454,8,433,10,422,15,420,20,425,27"/>
-<area shape="poly" id="edge4_Node000003_Node000002" title=" " alt="" coords="338,54,370,50,371,56,339,60"/>
-</map>

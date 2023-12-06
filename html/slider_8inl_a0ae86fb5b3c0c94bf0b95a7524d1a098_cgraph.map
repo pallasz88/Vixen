@@ -1,6 +1,0 @@
-<map id="GetRookAttack" name="GetRookAttack">
-<area shape="rect" id="Node000001" title=" " alt="" coords="5,29,116,55"/>
-<area shape="rect" id="Node000002" href="$anti__slider_8inl.html#a6f14655a99ca18901e6452bea4aa313f" title=" " alt="" coords="164,29,299,55"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="116,40,149,40,149,45,116,45"/>
-<area shape="poly" id="edge2_Node000002_Node000002" title=" " alt="" coords="202,30,197,21,200,11,212,5,231,3,252,5,263,12,260,16,250,10,231,8,214,10,204,15,202,20,207,28"/>
-</map>

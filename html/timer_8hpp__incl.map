@@ -1,9 +1,0 @@
-<map id="src/vixen/timer.hpp" name="src/vixen/timer.hpp">
-<area shape="rect" id="Node000001" title=" " alt="" coords="60,5,190,31"/>
-<area shape="rect" id="Node000002" title=" " alt="" coords="5,79,66,105"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="111,34,64,71,61,67,108,29"/>
-<area shape="rect" id="Node000003" title=" " alt="" coords="89,79,161,105"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="128,31,128,63,122,63,122,31"/>
-<area shape="rect" id="Node000004" title=" " alt="" coords="184,79,244,105"/>
-<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="142,29,189,67,186,71,138,34"/>
-</map>
