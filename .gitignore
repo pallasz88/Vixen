@@ -1,8 +1,0 @@
-.idea/*
-.vscode/*
-bin/*
-build/*
-cmake-build-debug/*
-cmake-build-release/*
-include/*
-lib/*
