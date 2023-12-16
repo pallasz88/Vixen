@@ -44,12 +44,10 @@ struct Utility
         const std::array<unsigned, 12> victimScore{100, 200, 300, 400, 500, 600, 100, 200, 300, 400, 500, 600};
         std::array<std::array<unsigned, 12>, 12> mvvlvaTable{};
 
-        for (unsigned attacker = 0; attacker < Constants::pieceKeys.size(); ++attacker)
+        for (unsigned attackerIndex = 0; attackerIndex < Constants::pieceKeys.size(); ++attackerIndex)
         {
-            for (unsigned victim = 0; victim < Constants::pieceKeys.size(); ++victim)
+            for (unsigned victimIndex = 0; victimIndex < Constants::pieceKeys.size(); ++victimIndex)
             {
-                const auto attackerIndex = static_cast<unsigned>(Constants::pieceMap[attacker].second);
-                const auto victimIndex = static_cast<unsigned>(Constants::pieceMap[victim].second);
                 mvvlvaTable[attackerIndex][victimIndex] =
                     victimScore[victimIndex] + 6U - victimScore[attackerIndex] / 100;
             }

@@ -175,10 +175,10 @@ struct Constants
     static constexpr std::array<unsigned char, 6> blackPieceKeys = {'p', 'n', 'b', 'r', 'q', 'k'};
 
     static constexpr std::array<std::pair<unsigned char, int>, 15> pieceMap = {
-        std::make_pair('P', 0),  std::make_pair('N', 1),  std::make_pair('B', 2),  std::make_pair('R', 3),
-        std::make_pair('Q', 4),  std::make_pair('K', 5),  std::make_pair('p', 6),  std::make_pair('n', 7),
-        std::make_pair('b', 8),  std::make_pair('r', 9),  std::make_pair('q', 10), std::make_pair('k', 11),
-        std::make_pair('F', 12), std::make_pair('S', 13), std::make_pair(' ', 14)};
+        std::make_pair(' ', 14), std::make_pair('B', 2),  std::make_pair('F', 12), std::make_pair('K', 5),
+        std::make_pair('N', 1),  std::make_pair('P', 0),  std::make_pair('Q', 4),  std::make_pair('R', 3),
+        std::make_pair('S', 13), std::make_pair('b', 8),  std::make_pair('k', 11), std::make_pair('n', 7),
+        std::make_pair('p', 6),  std::make_pair('q', 10), std::make_pair('r', 9)};
 
     static constexpr std::array<std::pair<unsigned char, int>, 12> materialMap = {
         std::make_pair('P', 100),  std::make_pair('N', 300),  std::make_pair('B', 300),  std::make_pair('R', 500),
@@ -254,11 +254,13 @@ struct Constants
 
 constexpr auto GetPieceIndex(unsigned char c) noexcept
 {
-    const auto &iterator = std::ranges::find_if(Constants::pieceMap, [c](auto p) { return p.first == c; });
-    if (iterator == std::end(Constants::pieceMap))
-        return -1;
+    auto iterator = std::lower_bound(std::begin(Constants::pieceMap), std::end(Constants::pieceMap), c,
+                                     [](const auto &pair, unsigned char value) { return pair.first < value; });
 
-    return iterator->second;
+    if (iterator != std::end(Constants::pieceMap) && iterator->first == c)
+        return iterator->second;
+
+    return -1;
 }
 
 constexpr bool IsWhitePiece(char piece) noexcept
