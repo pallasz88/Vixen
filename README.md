@@ -2,6 +2,7 @@
 ## C++ chess engine
 
 [![CMake on multiple platforms](https://github.com/pallasz88/Vixen/actions/workflows/cmake-multi-platform.yml/badge.svg)](https://github.com/pallasz88/Vixen/actions/workflows/cmake-multi-platform.yml)
+[![sonarqube-scan](https://github.com/pallasz88/Vixen/actions/workflows/sonar_scan.yml/badge.svg)](https://github.com/pallasz88/Vixen/actions/workflows/sonar_scan.yml)
 [![Sonarcloud Status](https://sonarcloud.io/api/project_badges/measure?project=pallasz88_Vixen&metric=alert_status)](https://sonarcloud.io/dashboard?id=pallasz88_Vixen) 
 [![SonarCloud Coverage](https://sonarcloud.io/api/project_badges/measure?project=pallasz88_Vixen&metric=coverage)](https://sonarcloud.io/component_measures/metric/coverage/list?id=pallasz88_Vixen)
 [![SonarCloud Bugs](https://sonarcloud.io/api/project_badges/measure?project=pallasz88_Vixen&metric=bugs)](https://sonarcloud.io/component_measures/metric/reliability_rating/list?id=pallasz88_Vixen)
