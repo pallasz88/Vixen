@@ -53,7 +53,7 @@ class VIXEN_API Board
      */
     [[nodiscard]] constexpr BitBoard GetBitBoard(unsigned char piece) const
     {
-        return bitBoards[static_cast<unsigned>(GetPieceIndex(piece))];
+        return bitBoards[GetPieceIndex(piece)];
     }
 
     /**

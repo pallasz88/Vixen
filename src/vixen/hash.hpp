@@ -58,7 +58,7 @@ class VIXEN_API Hash
      */
     constexpr void HashPiece(unsigned square, unsigned char pieceKey) noexcept
     {
-        positionKey ^= zobristKeys.pieceHashKeys[square][static_cast<unsigned>(GetPieceIndex(pieceKey))];
+        positionKey ^= zobristKeys.pieceHashKeys[square][GetPieceIndex(pieceKey)];
     }
 
     /**
@@ -76,8 +76,7 @@ class VIXEN_API Hash
         {
             zobristKeys.pieceHashKeys[square][enPassantKey] = PRNG::GenerateRandom(++i);
             for (const auto &pieceKey : Constants::pieceKeys)
-                zobristKeys.pieceHashKeys[square][static_cast<unsigned>(GetPieceIndex(pieceKey))] =
-                    PRNG::GenerateRandom(++i);
+                zobristKeys.pieceHashKeys[square][GetPieceIndex(pieceKey)] = PRNG::GenerateRandom(++i);
         }
 
         for (auto &castleHashKey : zobristKeys.castleHashKeys)

@@ -111,7 +111,7 @@ constexpr void Board::ParseFenPiecePart(std::string_view parsedPosition)
         case 'r':
         case 'q':
         case 'k':
-            SetBit(bitBoards[static_cast<unsigned>(GetPieceIndex(static_cast<uint8_t>(fenChar)))], squareIndex);
+            SetBit(bitBoards[GetPieceIndex(static_cast<uint8_t>(fenChar))], squareIndex);
             material += GetPieceMaterial(fenChar);
             pieceList[squareIndex] = fenChar;
             break;
@@ -339,8 +339,8 @@ void Board::TakeBack()
 constexpr void Board::RemovePiece(unsigned int position, char pieceType) noexcept
 {
     pieceList[position] = ' ';
-    ClearBit(bitBoards[static_cast<unsigned>(GetPieceIndex(static_cast<uint8_t>(pieceType)))], position);
-    ClearBit(bitBoards[static_cast<unsigned>(GetPieceIndex(IsBlackMoving(pieceType) ? 'S' : 'F'))], position);
+    ClearBit(bitBoards[GetPieceIndex(static_cast<uint8_t>(pieceType))], position);
+    ClearBit(bitBoards[GetPieceIndex(IsBlackMoving(pieceType) ? 'S' : 'F')], position);
     SetBit(bitBoards[GetPieceIndex(' ')], position);
     hashBoard.HashPiece(position, static_cast<uint8_t>(pieceType));
 }
@@ -348,8 +348,8 @@ constexpr void Board::RemovePiece(unsigned int position, char pieceType) noexcep
 constexpr void Board::AddPiece(unsigned int position, char pieceType) noexcept
 {
     pieceList[position] = pieceType;
-    SetBit(bitBoards[static_cast<unsigned>(GetPieceIndex(static_cast<uint8_t>(pieceType)))], position);
-    SetBit(bitBoards[static_cast<unsigned>(GetPieceIndex(IsBlackMoving(pieceType) ? 'S' : 'F'))], position);
+    SetBit(bitBoards[GetPieceIndex(static_cast<uint8_t>(pieceType))], position);
+    SetBit(bitBoards[GetPieceIndex(IsBlackMoving(pieceType) ? 'S' : 'F')], position);
     ClearBit(bitBoards[GetPieceIndex(' ')], position);
     hashBoard.HashPiece(position, static_cast<uint8_t>(pieceType));
 }
