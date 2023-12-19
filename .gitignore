@@ -1,7 +1,7 @@
 .idea/*
 .vscode/*
 bin/*
-build/*
+build*/*
 cmake-build-debug/*
 cmake-build-release/*
 include/*
