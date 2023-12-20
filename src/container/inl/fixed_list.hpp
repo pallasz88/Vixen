@@ -1,5 +1,5 @@
-#ifndef VIXEN_FIXED_LIST_HPP_INCLUDED
-#define VIXEN_FIXED_LIST_HPP_INCLUDED
+#ifndef CONTAINER_FIXED_LIST_HPP_INCLUDED
+#define CONTAINER_FIXED_LIST_HPP_INCLUDED
 
 #include <array>
 #include <iterator>
@@ -25,6 +25,17 @@ template <class T, std::size_t Capacity = 218> class FixedList
     using iterator = typename std::array<T, Capacity>::iterator;
 
     using const_iterator = typename std::array<T, Capacity>::const_iterator;
+
+    constexpr FixedList() = default;
+
+    // Initializer list constructor
+    constexpr FixedList(std::initializer_list<T> initList)
+    {
+        for (const auto &element : initList)
+        {
+            emplace_back(element);
+        }
+    }
 
     template <class... Args> constexpr void emplace_back(Args &&...args)
     {
@@ -92,4 +103,4 @@ template <class T> constexpr auto end(const FixedList<T> &list)
     return list.begin() + list.size();
 }
 
-#endif // VIXEN_FIXED_LIST_HPP_INCLUDED
+#endif // CONTAINER_FIXED_LIST_HPP_INCLUDED

@@ -8,6 +8,7 @@ set(SOURCE_FILES main.cpp)
 include_directories(vixen)
 
 add_subdirectory(vixen)
+add_subdirectory(container)
 
 add_executable(Vixen_0_0_5 ${SOURCE_FILES})
 if(MSVC)
@@ -22,5 +23,6 @@ if (ENABLE_COVERAGE)
     target_compile_options(Vixen_0_0_5 PRIVATE -O0 --coverage -fprofile-arcs -ftest-coverage -g)
     target_link_libraries(Vixen_0_0_5 PRIVATE --coverage)
 endif()
+target_include_directories(Vixen_0_0_5 PRIVATE ${CMAKE_SOURCE_DIR}/src/container/inl)
 
 install(TARGETS Vixen_0_0_5 DESTINATION bin)

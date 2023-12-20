@@ -32,6 +32,7 @@ set(SOURCE_FILES
 find_package(Threads)
 add_library(Engine SHARED ${SOURCE_FILES})
 target_link_libraries(Engine PRIVATE ${CMAKE_THREAD_LIBS_INIT})
+target_include_directories(Engine PRIVATE ${CMAKE_SOURCE_DIR}/src/container/inl)
 
 if (MSVC)
     target_compile_options(Engine PRIVATE /W4)
