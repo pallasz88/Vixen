@@ -1,5 +1,6 @@
 #ifndef VIXEN_BOARD_HPP_INCLUDED
 #define VIXEN_BOARD_HPP_INCLUDED
+#include "defs.hpp"
 #include "fixed_list.hpp"
 #include "hash.hpp"
 #include "move.hpp"
@@ -60,7 +61,7 @@ class VIXEN_API Board
      * Returns piece square list.
      * @return
      */
-    [[nodiscard]] constexpr auto GetPieceList() const
+    [[nodiscard]] constexpr auto GetPieceList() const noexcept
     {
         return pieceList;
     }

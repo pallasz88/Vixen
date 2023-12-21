@@ -2,6 +2,7 @@
 
 #include <iostream>
 
+#include "defs.hpp"
 #include "move_generator.hpp"
 #include "uci.hpp"
 
@@ -306,13 +307,16 @@ int Search::Evaluate(const Board &board)
 {
     int score = board.GetMaterialBalance();
 
-    unsigned i = 0;
-    for (const char piece : board.GetPieceList())
+    auto occupied = ~board.GetBitBoard(' ');
+    while (occupied)
     {
+        const auto position = GetPosition(occupied);
+        const auto piece = board.GetPieceList()[position];
         if (piece == 'P' || piece == 'N' || piece == 'B' || piece == 'R' || piece == 'p' || piece == 'n' ||
             piece == 'b' || piece == 'r')
-            score += arrayLookUp[static_cast<std::size_t>(GetEvalIndex(piece))][i];
-        ++i;
+        {
+            score += arrayLookUp[static_cast<std::size_t>(GetEvalIndex(piece))][position];
+        }
     }
 
     return board.IsWhiteToMove() ? score : -score;
