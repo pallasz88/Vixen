@@ -6,6 +6,7 @@
 #include <ranges>
 #include <regex>
 
+#include "defs.hpp"
 #include "move_generator.hpp"
 
 namespace vixen
@@ -340,8 +341,8 @@ constexpr void Board::RemovePiece(unsigned int position, char pieceType) noexcep
 {
     pieceList[position] = ' ';
     ClearBit(bitBoards[GetPieceIndex(static_cast<uint8_t>(pieceType))], position);
-    ClearBit(bitBoards[GetPieceIndex(IsBlackMoving(pieceType) ? 'S' : 'F')], position);
-    SetBit(bitBoards[GetPieceIndex(' ')], position);
+    ClearBit(bitBoards[IsBlackMoving(pieceType) ? Constants::ALL_BLACK_INDEX : Constants::ALL_WHITE_INDEX], position);
+    SetBit(bitBoards[14U], position);
     hashBoard.HashPiece(position, static_cast<uint8_t>(pieceType));
 }
 
@@ -349,8 +350,8 @@ constexpr void Board::AddPiece(unsigned int position, char pieceType) noexcept
 {
     pieceList[position] = pieceType;
     SetBit(bitBoards[GetPieceIndex(static_cast<uint8_t>(pieceType))], position);
-    SetBit(bitBoards[GetPieceIndex(IsBlackMoving(pieceType) ? 'S' : 'F')], position);
-    ClearBit(bitBoards[GetPieceIndex(' ')], position);
+    SetBit(bitBoards[IsBlackMoving(pieceType) ? Constants::ALL_BLACK_INDEX : Constants::ALL_WHITE_INDEX], position);
+    ClearBit(bitBoards[14U], position);
     hashBoard.HashPiece(position, static_cast<uint8_t>(pieceType));
 }
 

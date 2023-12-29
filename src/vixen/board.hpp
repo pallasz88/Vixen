@@ -49,12 +49,12 @@ class VIXEN_API Board
 
     /**
      * Returns piece bitboard from bitBoards
-     * @param piece
+     * @param index
      * @return
      */
-    [[nodiscard]] constexpr BitBoard GetBitBoard(unsigned char piece) const
+    [[nodiscard]] constexpr BitBoard GetBitBoard(std::size_t index) const
     {
-        return bitBoards[GetPieceIndex(piece)];
+        return bitBoards[index];
     }
 
     /**
@@ -150,8 +150,10 @@ class VIXEN_API Board
 
     [[nodiscard]] constexpr bool HasHeavyPieces() const
     {
-        return IsWhiteToMove() ? static_cast<bool>(GetBitBoard('Q') | GetBitBoard('R'))
-                               : static_cast<bool>(GetBitBoard('q') | GetBitBoard('r'));
+        return IsWhiteToMove() ? static_cast<bool>(GetBitBoard(Constants::WHITE_QUEEN_INDEX) |
+                                                   GetBitBoard(Constants::WHITE_ROOK_INDEX))
+                               : static_cast<bool>(GetBitBoard(Constants::BLACK_QUEEN_INDEX) |
+                                                   GetBitBoard(Constants::BLACK_ROOK_INDEX));
     }
 
     /**

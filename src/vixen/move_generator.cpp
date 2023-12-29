@@ -1,4 +1,5 @@
 #include "move_generator.hpp"
+#include "defs.hpp"
 
 #include <iostream>
 
@@ -64,13 +65,19 @@ BitBoard Perft(int depth, Board &board, BitBoard &leafs) noexcept
 
 template <Colors sideToMove> void MoveGenerator::GenerateQuietMoves(const Board &board) noexcept
 {
-    const auto pawns = sideToMove == Colors::WHITE ? board.GetBitBoard('P') : board.GetBitBoard('p');
-    const auto kings = sideToMove == Colors::WHITE ? board.GetBitBoard('K') : board.GetBitBoard('k');
-    const auto knights = sideToMove == Colors::WHITE ? board.GetBitBoard('N') : board.GetBitBoard('n');
-    const auto bishops = sideToMove == Colors::WHITE ? board.GetBitBoard('B') : board.GetBitBoard('b');
-    const auto rooks = sideToMove == Colors::WHITE ? board.GetBitBoard('R') : board.GetBitBoard('r');
-    const auto queens = sideToMove == Colors::WHITE ? board.GetBitBoard('Q') : board.GetBitBoard('q');
-    const auto targets = board.GetBitBoard(' ');
+    const auto pawns = sideToMove == Colors::WHITE ? board.GetBitBoard(Constants::WHITE_PAWN_INDEX)
+                                                   : board.GetBitBoard(Constants::BLACK_PAWN_INDEX);
+    const auto kings = sideToMove == Colors::WHITE ? board.GetBitBoard(Constants::WHITE_KING_INDEX)
+                                                   : board.GetBitBoard(Constants::BLACK_KING_INDEX);
+    const auto knights = sideToMove == Colors::WHITE ? board.GetBitBoard(Constants::WHITE_KNIGHT_INDEX)
+                                                     : board.GetBitBoard(Constants::BLACK_KNIGHT_INDEX);
+    const auto bishops = sideToMove == Colors::WHITE ? board.GetBitBoard(Constants::WHITE_BISHOP_INDEX)
+                                                     : board.GetBitBoard(Constants::BLACK_BISHOP_INDEX);
+    const auto rooks = sideToMove == Colors::WHITE ? board.GetBitBoard(Constants::WHITE_ROOK_INDEX)
+                                                   : board.GetBitBoard(Constants::BLACK_ROOK_INDEX);
+    const auto queens = sideToMove == Colors::WHITE ? board.GetBitBoard(Constants::WHITE_QUEEN_INDEX)
+                                                    : board.GetBitBoard(Constants::BLACK_QUEEN_INDEX);
+    const auto targets = board.GetBitBoard(Constants::ALL_EMPTY_INDEX);
     const auto blockers = ~targets;
 
     constexpr auto pawnOffset = sideToMove == Colors::WHITE ? 8 : -8;
@@ -99,14 +106,21 @@ template <Colors sideToMove> void MoveGenerator::GenerateQuietMoves(const Board 
 
 template <Colors sideToMove> void MoveGenerator::GenerateCaptureMoves(const Board &board) noexcept
 {
-    const auto pawns = sideToMove == Colors::WHITE ? board.GetBitBoard('P') : board.GetBitBoard('p');
-    const auto kings = sideToMove == Colors::WHITE ? board.GetBitBoard('K') : board.GetBitBoard('k');
-    const auto knights = sideToMove == Colors::WHITE ? board.GetBitBoard('N') : board.GetBitBoard('n');
-    const auto bishops = sideToMove == Colors::WHITE ? board.GetBitBoard('B') : board.GetBitBoard('b');
-    const auto rooks = sideToMove == Colors::WHITE ? board.GetBitBoard('R') : board.GetBitBoard('r');
-    const auto queens = sideToMove == Colors::WHITE ? board.GetBitBoard('Q') : board.GetBitBoard('q');
-    const auto targets = sideToMove == Colors::WHITE ? board.GetBitBoard('S') : board.GetBitBoard('F');
-    const auto blockers = ~board.GetBitBoard(' ');
+    const auto pawns = sideToMove == Colors::WHITE ? board.GetBitBoard(Constants::WHITE_PAWN_INDEX)
+                                                   : board.GetBitBoard(Constants::BLACK_PAWN_INDEX);
+    const auto kings = sideToMove == Colors::WHITE ? board.GetBitBoard(Constants::WHITE_KING_INDEX)
+                                                   : board.GetBitBoard(Constants::BLACK_KING_INDEX);
+    const auto knights = sideToMove == Colors::WHITE ? board.GetBitBoard(Constants::WHITE_KNIGHT_INDEX)
+                                                     : board.GetBitBoard(Constants::BLACK_KNIGHT_INDEX);
+    const auto bishops = sideToMove == Colors::WHITE ? board.GetBitBoard(Constants::WHITE_BISHOP_INDEX)
+                                                     : board.GetBitBoard(Constants::BLACK_BISHOP_INDEX);
+    const auto rooks = sideToMove == Colors::WHITE ? board.GetBitBoard(Constants::WHITE_ROOK_INDEX)
+                                                   : board.GetBitBoard(Constants::BLACK_ROOK_INDEX);
+    const auto queens = sideToMove == Colors::WHITE ? board.GetBitBoard(Constants::WHITE_QUEEN_INDEX)
+                                                    : board.GetBitBoard(Constants::BLACK_QUEEN_INDEX);
+    const auto targets = sideToMove == Colors::WHITE ? board.GetBitBoard(Constants::ALL_BLACK_INDEX)
+                                                     : board.GetBitBoard(Constants::ALL_WHITE_INDEX);
+    const auto blockers = ~board.GetBitBoard(Constants::ALL_EMPTY_INDEX);
 
     constexpr auto pawnLeftCapture = sideToMove == Colors::WHITE ? 9 : -9;
     constexpr auto pawnRightCapture = sideToMove == Colors::WHITE ? 7 : -7;
@@ -206,7 +220,7 @@ constexpr void MoveGenerator::GeneratePawnPromotionCaptureMoves(int offset, BitB
 template <Colors sideToMove> constexpr void MoveGenerator::GenerateCastlingMoves(const Board &board) noexcept
 {
     const auto currentCastlingRights = board.GetCastlingRights();
-    const auto emptySquaresBitBoard = board.GetBitBoard(' ');
+    const auto emptySquaresBitBoard = board.GetBitBoard(Constants::ALL_EMPTY_INDEX);
 
     const std::array castleEmptySquareLookUp = {IsBitSet(emptySquaresBitBoard, Squares::B8, Squares::C8, Squares::D8),
                                                 IsBitSet(emptySquaresBitBoard, Squares::F8, Squares::G8),

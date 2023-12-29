@@ -307,7 +307,7 @@ int Search::Evaluate(const Board &board)
 {
     int score = board.GetMaterialBalance();
 
-    auto occupied = ~board.GetBitBoard(' ');
+    auto occupied = ~board.GetBitBoard(Constants::ALL_EMPTY_INDEX);
     while (occupied)
     {
         const auto position = GetPosition(occupied);

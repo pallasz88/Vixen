@@ -27,19 +27,19 @@ BOOST_FIXTURE_TEST_SUITE(Test_unit, Fixture)
 BOOST_AUTO_TEST_CASE(Test_Startposition)
 {
     vixen::Board board;
-    BOOST_CHECK_EQUAL(board.GetBitBoard('K'), 8ULL);
-    BOOST_CHECK_EQUAL(board.GetBitBoard('Q'), 16ULL);
-    BOOST_CHECK_EQUAL(board.GetBitBoard('R'), 129ULL);
-    BOOST_CHECK_EQUAL(board.GetBitBoard('B'), 36ULL);
-    BOOST_CHECK_EQUAL(board.GetBitBoard('N'), 66ULL);
-    BOOST_CHECK_EQUAL(board.GetBitBoard('P'), static_cast<BitBoard>(Ranks::RANK2));
+    BOOST_CHECK_EQUAL(board.GetBitBoard(Constants::WHITE_KING_INDEX), 8ULL);
+    BOOST_CHECK_EQUAL(board.GetBitBoard(Constants::WHITE_QUEEN_INDEX), 16ULL);
+    BOOST_CHECK_EQUAL(board.GetBitBoard(Constants::WHITE_ROOK_INDEX), 129ULL);
+    BOOST_CHECK_EQUAL(board.GetBitBoard(Constants::WHITE_BISHOP_INDEX), 36ULL);
+    BOOST_CHECK_EQUAL(board.GetBitBoard(Constants::WHITE_KNIGHT_INDEX), 66ULL);
+    BOOST_CHECK_EQUAL(board.GetBitBoard(Constants::WHITE_PAWN_INDEX), static_cast<BitBoard>(Ranks::RANK2));
 
-    BOOST_CHECK_EQUAL(board.GetBitBoard('p'), static_cast<BitBoard>(Ranks::RANK7));
-    BOOST_CHECK_EQUAL(board.GetBitBoard('n'), 4755801206503243776ULL);
-    BOOST_CHECK_EQUAL(board.GetBitBoard('b'), 2594073385365405696ULL);
-    BOOST_CHECK_EQUAL(board.GetBitBoard('r'), 9295429630892703744ULL);
-    BOOST_CHECK_EQUAL(board.GetBitBoard('q'), 1152921504606846976ULL);
-    BOOST_CHECK_EQUAL(board.GetBitBoard('k'), 576460752303423488ULL);
+    BOOST_CHECK_EQUAL(board.GetBitBoard(Constants::BLACK_PAWN_INDEX), static_cast<BitBoard>(Ranks::RANK7));
+    BOOST_CHECK_EQUAL(board.GetBitBoard(Constants::BLACK_KNIGHT_INDEX), 4755801206503243776ULL);
+    BOOST_CHECK_EQUAL(board.GetBitBoard(Constants::BLACK_BISHOP_INDEX), 2594073385365405696ULL);
+    BOOST_CHECK_EQUAL(board.GetBitBoard(Constants::BLACK_ROOK_INDEX), 9295429630892703744ULL);
+    BOOST_CHECK_EQUAL(board.GetBitBoard(Constants::BLACK_QUEEN_INDEX), 1152921504606846976ULL);
+    BOOST_CHECK_EQUAL(board.GetBitBoard(Constants::BLACK_KING_INDEX), 576460752303423488ULL);
 
     BOOST_CHECK_EQUAL(board.GetCastlingRights(), 0xF);
 
@@ -53,38 +53,38 @@ BOOST_AUTO_TEST_CASE(Test_SetPosition)
     board.SetBoard(Constants::TESTPOS1);
     board.PrintBoard();
 
-    BOOST_CHECK_EQUAL(board.GetBitBoard('K'), 2ULL);
-    BOOST_CHECK_EQUAL(board.GetBitBoard('Q'), 524288ULL);
-    BOOST_CHECK_EQUAL(board.GetBitBoard('R'), 132ULL);
-    BOOST_CHECK_EQUAL(board.GetBitBoard('B'), 67109376ULL);
-    BOOST_CHECK_EQUAL(board.GetBitBoard('N'), 4096ULL);
-    BOOST_CHECK_EQUAL(board.GetBitBoard('P'), 103081542656ULL);
+    BOOST_CHECK_EQUAL(board.GetBitBoard(Constants::WHITE_KING_INDEX), 2ULL);
+    BOOST_CHECK_EQUAL(board.GetBitBoard(Constants::WHITE_QUEEN_INDEX), 524288ULL);
+    BOOST_CHECK_EQUAL(board.GetBitBoard(Constants::WHITE_ROOK_INDEX), 132ULL);
+    BOOST_CHECK_EQUAL(board.GetBitBoard(Constants::WHITE_BISHOP_INDEX), 67109376ULL);
+    BOOST_CHECK_EQUAL(board.GetBitBoard(Constants::WHITE_KNIGHT_INDEX), 4096ULL);
+    BOOST_CHECK_EQUAL(board.GetBitBoard(Constants::WHITE_PAWN_INDEX), 103081542656ULL);
 
-    BOOST_CHECK_EQUAL(board.GetBitBoard('p'), 3802523525709824ULL);
-    BOOST_CHECK_EQUAL(board.GetBitBoard('n'), 536870912ULL);
-    BOOST_CHECK_EQUAL(board.GetBitBoard('b'), 5066549580791808ULL);
-    BOOST_CHECK_EQUAL(board.GetBitBoard('r'), 2594073385365405696ULL);
-    BOOST_CHECK_EQUAL(board.GetBitBoard('q'), 1152921504606846976ULL);
-    BOOST_CHECK_EQUAL(board.GetBitBoard('k'), 144115188075855872ULL);
+    BOOST_CHECK_EQUAL(board.GetBitBoard(Constants::BLACK_PAWN_INDEX), 3802523525709824ULL);
+    BOOST_CHECK_EQUAL(board.GetBitBoard(Constants::BLACK_KNIGHT_INDEX), 536870912ULL);
+    BOOST_CHECK_EQUAL(board.GetBitBoard(Constants::BLACK_BISHOP_INDEX), 5066549580791808ULL);
+    BOOST_CHECK_EQUAL(board.GetBitBoard(Constants::BLACK_ROOK_INDEX), 2594073385365405696ULL);
+    BOOST_CHECK_EQUAL(board.GetBitBoard(Constants::BLACK_QUEEN_INDEX), 1152921504606846976ULL);
+    BOOST_CHECK_EQUAL(board.GetBitBoard(Constants::BLACK_KING_INDEX), 144115188075855872ULL);
 
     BOOST_CHECK_EQUAL(board.IsWhiteToMove(), true);
 
     board.SetBoard(Constants::TESTPOS2);
     board.PrintBoard();
 
-    BOOST_CHECK_EQUAL(board.GetBitBoard('K'), 8ULL);
-    BOOST_CHECK_EQUAL(board.GetBitBoard('Q'), 16ULL);
-    BOOST_CHECK_EQUAL(board.GetBitBoard('R'), 129ULL);
-    BOOST_CHECK_EQUAL(board.GetBitBoard('B'), 67108868ULL);
-    BOOST_CHECK_EQUAL(board.GetBitBoard('N'), 66ULL);
-    BOOST_CHECK_EQUAL(board.GetBitBoard('P'), 583424ULL);
+    BOOST_CHECK_EQUAL(board.GetBitBoard(Constants::WHITE_KING_INDEX), 8ULL);
+    BOOST_CHECK_EQUAL(board.GetBitBoard(Constants::WHITE_QUEEN_INDEX), 16ULL);
+    BOOST_CHECK_EQUAL(board.GetBitBoard(Constants::WHITE_ROOK_INDEX), 129ULL);
+    BOOST_CHECK_EQUAL(board.GetBitBoard(Constants::WHITE_BISHOP_INDEX), 67108868ULL);
+    BOOST_CHECK_EQUAL(board.GetBitBoard(Constants::WHITE_KNIGHT_INDEX), 66ULL);
+    BOOST_CHECK_EQUAL(board.GetBitBoard(Constants::WHITE_PAWN_INDEX), 583424ULL);
 
-    BOOST_CHECK_EQUAL(board.GetBitBoard('p'), 62768920074911744ULL);
-    BOOST_CHECK_EQUAL(board.GetBitBoard('n'), 4611690416473899008ULL);
-    BOOST_CHECK_EQUAL(board.GetBitBoard('b'), 2594073385365405696ULL);
-    BOOST_CHECK_EQUAL(board.GetBitBoard('r'), 9295429630892703744ULL);
-    BOOST_CHECK_EQUAL(board.GetBitBoard('q'), 1152921504606846976ULL);
-    BOOST_CHECK_EQUAL(board.GetBitBoard('k'), 576460752303423488ULL);
+    BOOST_CHECK_EQUAL(board.GetBitBoard(Constants::BLACK_PAWN_INDEX), 62768920074911744ULL);
+    BOOST_CHECK_EQUAL(board.GetBitBoard(Constants::BLACK_KNIGHT_INDEX), 4611690416473899008ULL);
+    BOOST_CHECK_EQUAL(board.GetBitBoard(Constants::BLACK_BISHOP_INDEX), 2594073385365405696ULL);
+    BOOST_CHECK_EQUAL(board.GetBitBoard(Constants::BLACK_ROOK_INDEX), 9295429630892703744ULL);
+    BOOST_CHECK_EQUAL(board.GetBitBoard(Constants::BLACK_QUEEN_INDEX), 1152921504606846976ULL);
+    BOOST_CHECK_EQUAL(board.GetBitBoard(Constants::BLACK_KING_INDEX), 576460752303423488ULL);
 
     BOOST_CHECK_EQUAL(board.IsWhiteToMove(), true);
 }
@@ -105,28 +105,28 @@ BOOST_AUTO_TEST_CASE(Test_HeavyPiecesBitboard)
     BOOST_AUTO_TEST_CASE(Test_SliderAttacks)
     {
         auto bitBoards = board.GetBitBoards();
-        BOOST_CHECK_EQUAL(GetRookAttack(D4, ~board.GetBitBoard(' ')),
+        BOOST_CHECK_EQUAL(GetRookAttack(D4, ~board.GetBitBoard(Constants::ALL_EMPTY_INDEX)),
    4521264543698944ULL); BOOST_CHECK_EQUAL(GetBishopAttack(D4,
-   ~board.GetBitBoard(' ')), 36666685564404736ULL);
-        BOOST_CHECK_EQUAL(GetQueenAttack(D4, ~board.GetBitBoard(' ')),
+   ~board.GetBitBoard(Constants::ALL_EMPTY_INDEX)), 36666685564404736ULL);
+        BOOST_CHECK_EQUAL(GetQueenAttack(D4, ~board.GetBitBoard(Constants::ALL_EMPTY_INDEX)),
    41187950108103680ULL);
 
-        BOOST_CHECK_EQUAL(GetRookAttack(H1, ~board.GetBitBoard(' ')), 258ULL);
-        BOOST_CHECK_EQUAL(GetBishopAttack(H1, ~board.GetBitBoard(' ')), 512ULL);
-        BOOST_CHECK_EQUAL(GetQueenAttack(H1, ~board.GetBitBoard(' ')), 770ULL);
+        BOOST_CHECK_EQUAL(GetRookAttack(H1, ~board.GetBitBoard(Constants::ALL_EMPTY_INDEX)), 258ULL);
+        BOOST_CHECK_EQUAL(GetBishopAttack(H1, ~board.GetBitBoard(Constants::ALL_EMPTY_INDEX)), 512ULL);
+        BOOST_CHECK_EQUAL(GetQueenAttack(H1, ~board.GetBitBoard(Constants::ALL_EMPTY_INDEX)), 770ULL);
 
-        BOOST_CHECK_EQUAL(GetRookAttack(D8, ~board.GetBitBoard(' ')),
+        BOOST_CHECK_EQUAL(GetRookAttack(D8, ~board.GetBitBoard(Constants::ALL_EMPTY_INDEX)),
    2886807361144487936ULL); BOOST_CHECK_EQUAL(GetBishopAttack(D8,
-   ~board.GetBitBoard(' ')), 11258999068426240ULL);
-        BOOST_CHECK_EQUAL(GetQueenAttack(D8, ~board.GetBitBoard(' ')),
+   ~board.GetBitBoard(Constants::ALL_EMPTY_INDEX)), 11258999068426240ULL);
+        BOOST_CHECK_EQUAL(GetQueenAttack(D8, ~board.GetBitBoard(Constants::ALL_EMPTY_INDEX)),
    2898066360212914176ULL);
 
         board.SetBoard(TESTPOS2);
         bitBoards = board.GetBitBoards();
-        BOOST_CHECK_EQUAL(GetRookAttack(D4, ~board.GetBitBoard(' ')),
+        BOOST_CHECK_EQUAL(GetRookAttack(D4, ~board.GetBitBoard(Constants::ALL_EMPTY_INDEX)),
    4521264493367312ULL); BOOST_CHECK_EQUAL(GetBishopAttack(D4,
-   ~board.GetBitBoard(' ')), 36103735610982400ULL);
-        BOOST_CHECK_EQUAL(GetQueenAttack(D4, ~board.GetBitBoard(' ')),
+   ~board.GetBitBoard(Constants::ALL_EMPTY_INDEX)), 36103735610982400ULL);
+        BOOST_CHECK_EQUAL(GetQueenAttack(D4, ~board.GetBitBoard(Constants::ALL_EMPTY_INDEX)),
    40625000104349712ULL);
     }
 */
@@ -334,35 +334,35 @@ BOOST_AUTO_TEST_CASE(Test_making_moves)
     board.SetBoard("7k/8/8/8/3P4/8/8/7K w - - 0 1");
     static_cast<void>(board.MakeMove(Move{2332}));
     board.PrintBoard();
-    BOOST_TEST(board.GetBitBoard('P') == 68719476736ULL);
+    BOOST_TEST(board.GetBitBoard(Constants::WHITE_PAWN_INDEX) == 68719476736ULL);
 
     board.SetBoard("1n1qb1r1/2P2P2/8/k7/8/8/8/4K3 w - - 0 1");
     BOOST_TEST(board.MakeMove(Move{65266}));
     board.PrintBoard();
-    BOOST_TEST(board.GetBitBoard('P') == 9007199254740992ULL);
-    BOOST_TEST(board.GetBitBoard('Q') == 576460752303423488ULL);
-    BOOST_TEST(board.GetBitBoard('b') == Constants::EMPTY_BOARD);
-    BOOST_TEST(board.GetBitBoard(' ') == 11952552861285482487ULL);
-    BOOST_TEST(board.GetBitBoard('F') == 585467951558164488ULL);
-    BOOST_TEST(board.GetBitBoard('S') == 5908723260865904640ULL);
+    BOOST_TEST(board.GetBitBoard(Constants::WHITE_PAWN_INDEX) == 9007199254740992ULL);
+    BOOST_TEST(board.GetBitBoard(Constants::WHITE_QUEEN_INDEX) == 576460752303423488ULL);
+    BOOST_TEST(board.GetBitBoard(Constants::BLACK_BISHOP_INDEX) == Constants::EMPTY_BOARD);
+    BOOST_TEST(board.GetBitBoard(Constants::ALL_EMPTY_INDEX) == 11952552861285482487ULL);
+    BOOST_TEST(board.GetBitBoard(Constants::ALL_WHITE_INDEX) == 585467951558164488ULL);
+    BOOST_TEST(board.GetBitBoard(Constants::ALL_BLACK_INDEX) == 5908723260865904640ULL);
 
     board.TakeBack();
     board.PrintBoard();
-    BOOST_TEST(board.GetBitBoard('P') == 10133099161583616ULL);
-    BOOST_TEST(board.GetBitBoard('Q') == Constants::EMPTY_BOARD);
-    BOOST_TEST(board.GetBitBoard('b') == 576460752303423488ULL);
-    BOOST_TEST(board.GetBitBoard(' ') == 11951426961378639863ULL);
-    BOOST_TEST(board.GetBitBoard('F') == 10133099161583624ULL);
-    BOOST_TEST(board.GetBitBoard('S') == 6485184013169328128ULL);
+    BOOST_TEST(board.GetBitBoard(Constants::WHITE_PAWN_INDEX) == 10133099161583616ULL);
+    BOOST_TEST(board.GetBitBoard(Constants::WHITE_QUEEN_INDEX) == Constants::EMPTY_BOARD);
+    BOOST_TEST(board.GetBitBoard(Constants::BLACK_BISHOP_INDEX) == 576460752303423488ULL);
+    BOOST_TEST(board.GetBitBoard(Constants::ALL_EMPTY_INDEX) == 11951426961378639863ULL);
+    BOOST_TEST(board.GetBitBoard(Constants::ALL_WHITE_INDEX) == 10133099161583624ULL);
+    BOOST_TEST(board.GetBitBoard(Constants::ALL_BLACK_INDEX) == 6485184013169328128ULL);
 
     board.SetBoard("r3k2r/8/8/8/8/p6p/P6P/R3K2R w KQkq - 0 1");
     BOOST_TEST(board.MakeMove(Move{8259}));
     board.PrintBoard();
-    BOOST_TEST(board.GetBitBoard('K') == 2ULL);
-    BOOST_TEST(board.GetBitBoard('R') == 132ULL);
-    BOOST_TEST(board.GetBitBoard(' ') == 8574853690504937081ULL);
-    BOOST_TEST(board.GetBitBoard('F') == 33158ULL);
-    BOOST_TEST(board.GetBitBoard('S') == 9871890383204581376ULL);
+    BOOST_TEST(board.GetBitBoard(Constants::WHITE_KING_INDEX) == 2ULL);
+    BOOST_TEST(board.GetBitBoard(Constants::WHITE_ROOK_INDEX) == 132ULL);
+    BOOST_TEST(board.GetBitBoard(Constants::ALL_EMPTY_INDEX) == 8574853690504937081ULL);
+    BOOST_TEST(board.GetBitBoard(Constants::ALL_WHITE_INDEX) == 33158ULL);
+    BOOST_TEST(board.GetBitBoard(Constants::ALL_BLACK_INDEX) == 9871890383204581376ULL);
     BOOST_TEST(board.GetCastlingRights() == 0b0011);
 
     board.SetBoard("R6R/3Q4/1Q4Q1/4Q3/2Q4Q/Q4Q2/pp1Q4/kBNN1KB1 b - - 0 1");
@@ -373,39 +373,39 @@ BOOST_AUTO_TEST_CASE(Test_making_moves)
     board.SetBoard("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1");
     BOOST_TEST(board.MakeMove(Move{8259}));
     board.PrintBoard();
-    BOOST_TEST(board.GetBitBoard('K') == 2ULL);
-    BOOST_TEST(board.GetBitBoard('R') == 132ULL);
-    BOOST_TEST(board.GetBitBoard(' ') == 8521146841253412985ULL);
-    BOOST_TEST(board.GetBitBoard('F') == 103215857542ULL);
-    BOOST_TEST(board.GetBitBoard('S') == 9925597129240281088ULL);
+    BOOST_TEST(board.GetBitBoard(Constants::WHITE_KING_INDEX) == 2ULL);
+    BOOST_TEST(board.GetBitBoard(Constants::WHITE_ROOK_INDEX) == 132ULL);
+    BOOST_TEST(board.GetBitBoard(Constants::ALL_EMPTY_INDEX) == 8521146841253412985ULL);
+    BOOST_TEST(board.GetBitBoard(Constants::ALL_WHITE_INDEX) == 103215857542ULL);
+    BOOST_TEST(board.GetBitBoard(Constants::ALL_BLACK_INDEX) == 9925597129240281088ULL);
     BOOST_TEST(board.GetCastlingRights() == 0b0011);
 
     board.TakeBack();
     board.PrintBoard();
-    BOOST_TEST(board.GetBitBoard('K') == 8ULL);
-    BOOST_TEST(board.GetBitBoard('R') == 129ULL);
-    BOOST_TEST(board.GetBitBoard(' ') == 8521146841253412982ULL);
-    BOOST_TEST(board.GetBitBoard('F') == 103215857545ULL);
-    BOOST_TEST(board.GetBitBoard('S') == 9925597129240281088ULL);
+    BOOST_TEST(board.GetBitBoard(Constants::WHITE_KING_INDEX) == 8ULL);
+    BOOST_TEST(board.GetBitBoard(Constants::WHITE_ROOK_INDEX) == 129ULL);
+    BOOST_TEST(board.GetBitBoard(Constants::ALL_EMPTY_INDEX) == 8521146841253412982ULL);
+    BOOST_TEST(board.GetBitBoard(Constants::ALL_WHITE_INDEX) == 103215857545ULL);
+    BOOST_TEST(board.GetBitBoard(Constants::ALL_BLACK_INDEX) == 9925597129240281088ULL);
     BOOST_TEST(board.GetCastlingRights() == 0b1111);
 
     // ENPASSANT
     static_cast<void>(board.MakeMove(Move{6095}));
     static_cast<void>(board.MakeMove(Move{21982}));
     board.PrintBoard();
-    BOOST_TEST(board.GetBitBoard('P') == 68853720832ULL);
-    BOOST_TEST(board.GetBitBoard('p') == 50676490932649984ULL);
-    BOOST_TEST(board.GetBitBoard(' ') == 8521146842318798966ULL);
-    BOOST_TEST(board.GetBitBoard('F') == 103215824777ULL);
-    BOOST_TEST(board.GetBitBoard('S') == 9925597128174927872ULL);
+    BOOST_TEST(board.GetBitBoard(Constants::WHITE_PAWN_INDEX) == 68853720832ULL);
+    BOOST_TEST(board.GetBitBoard(Constants::BLACK_PAWN_INDEX) == 50676490932649984ULL);
+    BOOST_TEST(board.GetBitBoard(Constants::ALL_EMPTY_INDEX) == 8521146842318798966ULL);
+    BOOST_TEST(board.GetBitBoard(Constants::ALL_WHITE_INDEX) == 103215824777ULL);
+    BOOST_TEST(board.GetBitBoard(Constants::ALL_BLACK_INDEX) == 9925597128174927872ULL);
 
     board.TakeBack();
     board.PrintBoard();
-    BOOST_TEST(board.GetBitBoard('P') == 71001204480ULL);
-    BOOST_TEST(board.GetBitBoard('p') == 50676491998003200ULL);
-    BOOST_TEST(board.GetBitBoard(' ') == 8521146839105962102ULL);
-    BOOST_TEST(board.GetBitBoard('F') == 105363308425ULL);
-    BOOST_TEST(board.GetBitBoard('S') == 9925597129240281088ULL);
+    BOOST_TEST(board.GetBitBoard(Constants::WHITE_PAWN_INDEX) == 71001204480ULL);
+    BOOST_TEST(board.GetBitBoard(Constants::BLACK_PAWN_INDEX) == 50676491998003200ULL);
+    BOOST_TEST(board.GetBitBoard(Constants::ALL_EMPTY_INDEX) == 8521146839105962102ULL);
+    BOOST_TEST(board.GetBitBoard(Constants::ALL_WHITE_INDEX) == 105363308425ULL);
+    BOOST_TEST(board.GetBitBoard(Constants::ALL_BLACK_INDEX) == 9925597129240281088ULL);
 
     board.TakeBack();
     static_cast<void>(board.MakeMove(Move{17417}));
@@ -424,7 +424,7 @@ BOOST_AUTO_TEST_CASE(Test_userinterface)
     UserInterface::MakeMove("d4d5", board);
     UserInterface::TakeBackMove(board);
     board.PrintBoard();
-    BOOST_TEST(board.GetBitBoard('P') == 268435456ULL);
+    BOOST_TEST(board.GetBitBoard(Constants::WHITE_PAWN_INDEX) == 268435456ULL);
 }
 
 BOOST_AUTO_TEST_CASE(Test_material_balance)

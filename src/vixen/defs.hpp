@@ -158,6 +158,38 @@ struct Constants
 
     static constexpr unsigned ROOK_ATTACK_TABLE_SIZE = 0x19000U;
 
+    static constexpr std::size_t WHITE_PAWN_INDEX = 0U;
+
+    static constexpr std::size_t WHITE_KNIGHT_INDEX = 1U;
+
+    static constexpr std::size_t WHITE_BISHOP_INDEX = 2U;
+
+    static constexpr std::size_t WHITE_ROOK_INDEX = 3U;
+
+    static constexpr std::size_t WHITE_QUEEN_INDEX = 4U;
+
+    static constexpr std::size_t WHITE_KING_INDEX = 5U;
+
+    static constexpr std::size_t BLACK_PAWN_INDEX = 6U;
+
+    static constexpr std::size_t BLACK_KNIGHT_INDEX = 7U;
+
+    static constexpr std::size_t BLACK_BISHOP_INDEX = 8U;
+
+    static constexpr std::size_t BLACK_ROOK_INDEX = 9U;
+
+    static constexpr std::size_t BLACK_QUEEN_INDEX = 10U;
+
+    static constexpr std::size_t BLACK_KING_INDEX = 11U;
+
+    static constexpr std::size_t ALL_WHITE_INDEX = 12U;
+
+    static constexpr std::size_t ALL_BLACK_INDEX = 13U;
+
+    static constexpr std::size_t ALL_EMPTY_INDEX = 14U;
+
+    static constexpr std::size_t ALL_OCCUPIED_INDEX = 15U;
+
     static constexpr BitBoard EMPTY_BOARD = 0ULL;
 
     static constexpr std::string_view START_POSITION = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
