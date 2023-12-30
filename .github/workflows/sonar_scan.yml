@@ -28,6 +28,8 @@ jobs:
           python-version: 3.8
       - name: install gcovr 5.0
         run: |
+          sudo apt-get install libxml2-dev libxslt-dev
+          pip install lxml
           pip install gcovr==5.0 # 5.1 is not supported
       - name: Install sonar-scanner and build-wrapper
         uses: SonarSource/sonarcloud-github-c-cpp@v2
