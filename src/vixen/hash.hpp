@@ -1,5 +1,5 @@
-#ifndef VIXEN_HASH_HPP_INCLUDED
-#define VIXEN_HASH_HPP_INCLUDED
+#ifndef SRC_VIXEN_HASH_HPP_
+#define SRC_VIXEN_HASH_HPP_
 
 #include "defs.hpp"
 #include "random.hpp"
@@ -56,9 +56,9 @@ class VIXEN_API Hash
      * @param square
      * @param pieceKey
      */
-    constexpr void HashPiece(unsigned square, unsigned char pieceKey) noexcept
+    constexpr void HashPiece(unsigned square, PieceType pieceKey)
     {
-        positionKey ^= zobristKeys.pieceHashKeys[square][GetPieceIndex(pieceKey)];
+        positionKey ^= zobristKeys.pieceHashKeys[square][pieceKey];
     }
 
     /**
@@ -71,12 +71,12 @@ class VIXEN_API Hash
 
     static constexpr void InitZobristKeys()
     {
-        unsigned i = 0;
+        unsigned i = 0U;
         for (auto square = static_cast<unsigned>(Squares::H1); square <= Constants::MAX_SQUARE_INDEX; ++square)
         {
             zobristKeys.pieceHashKeys[square][enPassantKey] = PRNG::GenerateRandom(++i);
             for (const auto &pieceKey : Constants::pieceKeys)
-                zobristKeys.pieceHashKeys[square][GetPieceIndex(pieceKey)] = PRNG::GenerateRandom(++i);
+                zobristKeys.pieceHashKeys[square][pieceKey] = PRNG::GenerateRandom(++i);
         }
 
         for (auto &castleHashKey : zobristKeys.castleHashKeys)
@@ -89,13 +89,13 @@ class VIXEN_API Hash
 
     struct Keys
     {
-        PieceHashKeys pieceHashKeys;
-        SideHashKey sideHashKey;
-        CastleHashKeys castleHashKeys;
+        PieceHashKeys pieceHashKeys{};
+        SideHashKey sideHashKey{};
+        CastleHashKeys castleHashKeys{};
     };
 
   private:
-    PositionKey positionKey;
+    PositionKey positionKey{};
 
     static constexpr PositionKey sideKey = PRNG::GenerateRandom(70);
 
@@ -105,4 +105,4 @@ class VIXEN_API Hash
 };
 } // namespace vixen
 
-#endif // VIXEN_HASH_HPP_INCLUDED
+#endif // SRC_VIXEN_HASH_HPP_

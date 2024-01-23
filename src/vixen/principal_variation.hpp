@@ -1,7 +1,8 @@
-#ifndef VIXEN_PRINCIPAL_VARIATION_HPP_INCLUDED
-#define VIXEN_PRINCIPAL_VARIATION_HPP_INCLUDED
+#ifndef SRC_VIXEN_PRINCIPAL_VARIATION_HPP_
+#define SRC_VIXEN_PRINCIPAL_VARIATION_HPP_
 
 #include <list>
+#include <unordered_map>
 
 #include "defs.hpp"
 #include "move.hpp"
@@ -11,19 +12,19 @@ namespace vixen
 
 struct PVEntry
 {
-    Move move;
+    PositionKey positionKey{};
 
-    PositionKey positionKey;
+    Move moveEntry{};
 
     PVEntry() = default;
 
-    explicit PVEntry(Move m, PositionKey key) : move(m), positionKey(key)
+    explicit PVEntry(Move m, PositionKey key) : positionKey(key), moveEntry(m)
     {
     }
 
-    bool operator==(const PVEntry &rhs) const
+    [[nodiscard]] constexpr bool operator==(const PVEntry &rhs) const
     {
-        if (move == rhs.move && positionKey == rhs.positionKey)
+        if (moveEntry == rhs.moveEntry && positionKey == rhs.positionKey)
             return true;
 
         return false;
@@ -51,4 +52,4 @@ class VIXEN_API PrincipalVariation
 
 } // namespace vixen
 
-#endif // VIXEN_PRINCIPAL_VARIATION_HPP_INCLUDED
+#endif // SRC_VIXEN_PRINCIPAL_VARIATION_HPP_

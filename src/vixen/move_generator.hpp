@@ -1,5 +1,5 @@
-#ifndef VIXEN_MOVE_GENERATOR_HPP_INCLUDED
-#define VIXEN_MOVE_GENERATOR_HPP_INCLUDED
+#ifndef SRC_VIXEN_MOVE_GENERATOR_HPP_
+#define SRC_VIXEN_MOVE_GENERATOR_HPP_
 
 #include <cassert>
 
@@ -62,8 +62,7 @@ namespace Check
 {
 template <Colors sideToMove> constexpr bool IsSquareAttacked(unsigned int square, const Board &board) noexcept
 {
-    assert(square <= static_cast<unsigned>(vixen::Squares::A8));
-    assert(square >= static_cast<unsigned>(vixen::Squares::H1));
+    assert(square <= static_cast<unsigned>(vixen::Constants::MAX_SQUARE_INDEX));
     const auto blockers = ~board.GetBitBoard(Constants::ALL_EMPTY_INDEX);
     const auto pawns = sideToMove == Colors::WHITE ? board.GetBitBoard(Constants::BLACK_PAWN_INDEX)
                                                    : board.GetBitBoard(Constants::WHITE_PAWN_INDEX);
@@ -116,4 +115,4 @@ VIXEN_API BitBoard Perft(int depth, Board &board, BitBoard &leafs) noexcept;
 } // namespace Test
 } // namespace vixen
 
-#endif // VIXEN_MOVE_GENERATOR_HPP_INCLUDED
+#endif // SRC_VIXEN_MOVE_GENERATOR_HPP_

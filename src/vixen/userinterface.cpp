@@ -1,7 +1,7 @@
 #include "userinterface.hpp"
 
 #include <iostream>
-#include <regex>
+#include <string>
 
 #include "board.hpp"
 #include "move_generator.hpp"
@@ -39,20 +39,23 @@ void WaitUserInput(vixen::Board &board)
         }
 
         else if (command.substr(0, 4) == "move")
+        {
             try
             {
                 UserInterface::MakeMove(command.substr(5), board);
             }
-            catch (std::runtime_error &error)
+            catch (const std::runtime_error &error)
             {
                 std::cerr << error.what() << "\n";
             }
-            catch (std::out_of_range &error)
+            catch (const std::out_of_range &error)
             {
                 std::cerr << "INVALID MOVE FORMAT. Use for example e2e4.\n";
             }
+        }
 
         else if (command == "undo")
+        {
             try
             {
                 TakeBackMove(board);
@@ -61,6 +64,7 @@ void WaitUserInput(vixen::Board &board)
             {
                 std::cerr << "ERROR HAPPENED: " << error.what() << "\n";
             }
+        }
 
         else if (command == "list")
             PrintMoveList(board);

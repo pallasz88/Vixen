@@ -1,6 +1,7 @@
 #include "engine.hpp"
 
 #include <iostream>
+#include <utility>
 
 #include "defs.hpp"
 #include "move_generator.hpp"
@@ -17,7 +18,7 @@ FixedList<Move> Search::GetPV(int depth, Board &board)
 
     while (ply < depth)
     {
-        if (const auto bestMove = pv.GetPVEntry(board.GetHash()).move; bestMove != 0U && board.MakeMove(bestMove))
+        if (const auto bestMove = pv.GetPVEntry(board.GetHash()).moveEntry; bestMove != 0U && board.MakeMove(bestMove))
         {
             ++ply;
             moveList.emplace_back(bestMove);
@@ -62,10 +63,8 @@ void Search::OrderCapture(const Board &board, Move &move)
 {
     if ((move.GetMoveType() & static_cast<uint8_t>(MoveTypes::ENPASSANT)) != static_cast<uint8_t>(MoveTypes::ENPASSANT))
     {
-        const auto attacker = board.GetPieceList()[move.GetFromSquare()];
-        const auto victim = board.GetPieceList()[move.GetToSquare()];
-        const auto attackerIndex = static_cast<size_t>(GetPieceIndex(static_cast<unsigned char>(attacker)));
-        const auto victimIndex = static_cast<size_t>(GetPieceIndex(static_cast<unsigned char>(victim)));
+        const auto attackerIndex = board.GetPieceList()[move.GetFromSquare()];
+        const auto victimIndex = board.GetPieceList()[move.GetToSquare()];
         move.SetScore(mvvlvaTable[attackerIndex][victimIndex] + 1000000U);
     }
     else
@@ -86,7 +85,7 @@ void CheckTime(SearchInfo &info)
         info.stopped = true;
 }
 
-bool IsTimeCheckNeeded(SearchInfo &info)
+bool IsTimeCheckNeeded(const SearchInfo &info)
 {
     return info.isTimeSet && !(info.nodesCount & 2047);
 }
@@ -157,9 +156,9 @@ std::pair<int, Move> Search::Root(int depth, Board &board, SearchInfo &info)
     return {alpha, bestMove};
 }
 
-bool Search::IsPVMove(const PVEntry &pvEntry, Move &move)
+bool Search::IsPVMove(const PVEntry &pvEntry, const Move &move)
 {
-    return pvEntry.move != 0U && move == pvEntry.move;
+    return pvEntry.moveEntry != 0U && move == pvEntry.moveEntry;
 }
 
 void Search::OrderNonPVMoves(int depth, const Board &board, Move &move)
@@ -312,10 +311,9 @@ int Search::Evaluate(const Board &board)
     {
         const auto position = GetPosition(occupied);
         const auto piece = board.GetPieceList()[position];
-        if (piece == 'P' || piece == 'N' || piece == 'B' || piece == 'R' || piece == 'p' || piece == 'n' ||
-            piece == 'b' || piece == 'r')
+        if (piece >= Constants::WHITE_PAWN_INDEX && piece <= Constants::BLACK_KING_INDEX)
         {
-            score += arrayLookUp[static_cast<std::size_t>(GetEvalIndex(piece))][position];
+            score += arrayLookUp[piece][position];
         }
     }
 

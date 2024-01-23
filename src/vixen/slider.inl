@@ -11,12 +11,12 @@ inline BitBoard GetRookAttack(unsigned int square, BitBoard occupied) noexcept
     return RookTable[square].GetAttack(occupied);
 }
 
-constexpr void GetNextCoordinate(int &file, int &rank, const Direction &direction) noexcept
+constexpr void GetNextCoordinate(int &file, int &rank, const DirectionVector &direction) noexcept
 {
     file += direction[0], rank += direction[1];
 }
 
-constexpr BitBoard SlidingAttack(unsigned int square, SliderDirections directions, BitBoard occupied) noexcept
+constexpr BitBoard SlidingAttack(unsigned int square, const SliderDirections &directions, BitBoard occupied) noexcept
 {
     auto attacks = Constants::EMPTY_BOARD;
     for (const auto &direction : directions)

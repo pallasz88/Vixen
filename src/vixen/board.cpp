@@ -3,7 +3,6 @@
 #include <bitset>
 #include <charconv>
 #include <iostream>
-#include <ranges>
 #include <regex>
 
 #include "defs.hpp"
@@ -49,7 +48,7 @@ void Board::SetBoard(std::string_view position)
 {
     material = 0;
     bitBoards.fill(Constants::EMPTY_BOARD);
-    pieceList.fill(' ');
+    pieceList.fill(Constants::ALL_EMPTY_INDEX);
     std::array parsedPosition = SplitFenPosition<5>(position);
     ParseFenPiecePart(parsedPosition[0]);
     ParseSideToMovePart(parsedPosition[1]);
@@ -101,20 +100,64 @@ constexpr void Board::ParseFenPiecePart(std::string_view parsedPosition)
         switch (fenChar)
         {
         case 'P':
+            material += GetPieceMaterial(Constants::WHITE_PAWN_INDEX).value();
+            pieceList[squareIndex] = Constants::WHITE_PAWN_INDEX;
+            SetBit(bitBoards[Constants::WHITE_PAWN_INDEX], squareIndex);
+            break;
         case 'N':
+            material += GetPieceMaterial(Constants::WHITE_KNIGHT_INDEX).value();
+            pieceList[squareIndex] = Constants::WHITE_KNIGHT_INDEX;
+            SetBit(bitBoards[Constants::WHITE_KNIGHT_INDEX], squareIndex);
+            break;
         case 'B':
+            material += GetPieceMaterial(Constants::WHITE_BISHOP_INDEX).value();
+            pieceList[squareIndex] = Constants::WHITE_BISHOP_INDEX;
+            SetBit(bitBoards[Constants::WHITE_BISHOP_INDEX], squareIndex);
+            break;
         case 'R':
+            material += GetPieceMaterial(Constants::WHITE_ROOK_INDEX).value();
+            pieceList[squareIndex] = Constants::WHITE_ROOK_INDEX;
+            SetBit(bitBoards[Constants::WHITE_ROOK_INDEX], squareIndex);
+            break;
         case 'Q':
+            material += GetPieceMaterial(Constants::WHITE_QUEEN_INDEX).value();
+            pieceList[squareIndex] = Constants::WHITE_QUEEN_INDEX;
+            SetBit(bitBoards[Constants::WHITE_QUEEN_INDEX], squareIndex);
+            break;
         case 'K':
+            material += GetPieceMaterial(Constants::WHITE_KING_INDEX).value();
+            pieceList[squareIndex] = Constants::WHITE_KING_INDEX;
+            SetBit(bitBoards[Constants::WHITE_KING_INDEX], squareIndex);
+            break;
         case 'p':
+            material += GetPieceMaterial(Constants::BLACK_PAWN_INDEX).value();
+            pieceList[squareIndex] = Constants::BLACK_PAWN_INDEX;
+            SetBit(bitBoards[Constants::BLACK_PAWN_INDEX], squareIndex);
+            break;
         case 'n':
+            material += GetPieceMaterial(Constants::BLACK_KNIGHT_INDEX).value();
+            pieceList[squareIndex] = Constants::BLACK_KNIGHT_INDEX;
+            SetBit(bitBoards[Constants::BLACK_KNIGHT_INDEX], squareIndex);
+            break;
         case 'b':
+            material += GetPieceMaterial(Constants::BLACK_BISHOP_INDEX).value();
+            pieceList[squareIndex] = Constants::BLACK_BISHOP_INDEX;
+            SetBit(bitBoards[Constants::BLACK_BISHOP_INDEX], squareIndex);
+            break;
         case 'r':
+            material += GetPieceMaterial(Constants::BLACK_ROOK_INDEX).value();
+            pieceList[squareIndex] = Constants::BLACK_ROOK_INDEX;
+            SetBit(bitBoards[Constants::BLACK_ROOK_INDEX], squareIndex);
+            break;
         case 'q':
+            material += GetPieceMaterial(Constants::BLACK_QUEEN_INDEX).value();
+            pieceList[squareIndex] = Constants::BLACK_QUEEN_INDEX;
+            SetBit(bitBoards[Constants::BLACK_QUEEN_INDEX], squareIndex);
+            break;
         case 'k':
-            SetBit(bitBoards[GetPieceIndex(static_cast<uint8_t>(fenChar))], squareIndex);
-            material += GetPieceMaterial(fenChar);
-            pieceList[squareIndex] = fenChar;
+            material += GetPieceMaterial(Constants::BLACK_KING_INDEX).value();
+            pieceList[squareIndex] = Constants::BLACK_KING_INDEX;
+            SetBit(bitBoards[Constants::BLACK_KING_INDEX], squareIndex);
             break;
         case '/':
             continue;
@@ -139,13 +182,16 @@ constexpr void Board::ParseFenPiecePart(std::string_view parsedPosition)
 
 constexpr void Board::SumUpBitBoards()
 {
-    bitBoards[GetPieceIndex('F')] = bitBoards[GetPieceIndex('K')] | bitBoards[GetPieceIndex('Q')] |
-                                    bitBoards[GetPieceIndex('R')] | bitBoards[GetPieceIndex('B')] |
-                                    bitBoards[GetPieceIndex('N')] | bitBoards[GetPieceIndex('P')];
-    bitBoards[GetPieceIndex('S')] = bitBoards[GetPieceIndex('k')] | bitBoards[GetPieceIndex('q')] |
-                                    bitBoards[GetPieceIndex('r')] | bitBoards[GetPieceIndex('b')] |
-                                    bitBoards[GetPieceIndex('n')] | bitBoards[GetPieceIndex('p')];
-    bitBoards[GetPieceIndex(' ')] = ~(bitBoards[GetPieceIndex('F')] | bitBoards[GetPieceIndex('S')]);
+    bitBoards[Constants::ALL_WHITE_INDEX] =
+        bitBoards[Constants::WHITE_KING_INDEX] | bitBoards[Constants::WHITE_QUEEN_INDEX] |
+        bitBoards[Constants::WHITE_ROOK_INDEX] | bitBoards[Constants::WHITE_BISHOP_INDEX] |
+        bitBoards[Constants::WHITE_KNIGHT_INDEX] | bitBoards[Constants::WHITE_PAWN_INDEX];
+    bitBoards[Constants::ALL_BLACK_INDEX] =
+        bitBoards[Constants::BLACK_KING_INDEX] | bitBoards[Constants::BLACK_QUEEN_INDEX] |
+        bitBoards[Constants::BLACK_ROOK_INDEX] | bitBoards[Constants::BLACK_BISHOP_INDEX] |
+        bitBoards[Constants::BLACK_KNIGHT_INDEX] | bitBoards[Constants::BLACK_PAWN_INDEX];
+    bitBoards[Constants::ALL_EMPTY_INDEX] =
+        ~(bitBoards[Constants::ALL_WHITE_INDEX] | bitBoards[Constants::ALL_BLACK_INDEX]);
 }
 
 constexpr void Board::ParseSideToMovePart(std::string_view splittedFen)
@@ -190,15 +236,15 @@ bool Board::MakeMove(vixen::Move move)
     const auto to = move.GetToSquare();
     const auto moveType = move.GetMoveType();
     const auto enPassantSquare = whiteToMove ? to - 8 : to + 8;
-    const char movingPieceLetter = pieceList[from];
-    const char capturedPieceLetter = pieceList[to];
+    const auto movingPiece{pieceList[from]};
+    const auto capturedPiece{pieceList[to]};
 
-    history[historyPly++] = History{enPassantBitBoard, hashBoard.GetHash(), castlingRights, fiftyMoves, move,
-                                    movingPieceLetter, capturedPieceLetter};
+    history[historyPly++] =
+        History{enPassantBitBoard, hashBoard.GetHash(), castlingRights, fiftyMoves, move, movingPiece, capturedPiece};
 
     ++fiftyMoves;
 
-    RemovePiece(from, movingPieceLetter);
+    RemovePiece(from, movingPiece);
     UpdateCastlingRights(from, to);
 
     if (enPassantBitBoard != Constants::EMPTY_BOARD)
@@ -207,11 +253,11 @@ bool Board::MakeMove(vixen::Move move)
         enPassantBitBoard = Constants::EMPTY_BOARD;
     }
 
-    if (IsMovingPawn(movingPieceLetter))
+    if (IsMovingPawn(movingPiece))
         fiftyMoves = 0;
 
     if (moveType & static_cast<uint8_t>(MoveTypes::CAPTURE))
-        MakeCapture(to, capturedPieceLetter, moveType);
+        MakeCapture(to, capturedPiece, moveType);
 
     else if (moveType == static_cast<uint8_t>(MoveTypes::DOUBLE_PAWN_PUSH))
         MakeDoublePawnPush(enPassantSquare);
@@ -226,12 +272,16 @@ bool Board::MakeMove(vixen::Move move)
 
     if (moveType & static_cast<uint8_t>(MoveTypes::PROMOTION))
     {
-        char promotion = whiteToMove ? "NBRQ"[moveType & 3U] : "nbrq"[moveType & 3U];
-        material += GetPieceMaterial(promotion) - GetPieceMaterial(movingPieceLetter);
+        PieceType promotion = static_cast<PieceType>(
+            whiteToMove ? std::array{Constants::WHITE_KNIGHT_INDEX, Constants::WHITE_BISHOP_INDEX,
+                                     Constants::WHITE_ROOK_INDEX, Constants::WHITE_QUEEN_INDEX}[moveType & 3U]
+                        : std::array{Constants::BLACK_KNIGHT_INDEX, Constants::BLACK_BISHOP_INDEX,
+                                     Constants::BLACK_ROOK_INDEX, Constants::BLACK_QUEEN_INDEX}[moveType & 3U]);
+        material += GetPieceMaterial(promotion).value() - GetPieceMaterial(movingPiece).value();
         AddPiece(to, promotion);
     }
     else
-        AddPiece(to, movingPieceLetter);
+        AddPiece(to, movingPiece);
 
     whiteToMove = !whiteToMove;
     hashBoard.HashSide();
@@ -252,16 +302,16 @@ constexpr void Board::UpdateCastlingRights(unsigned int from, unsigned int to) n
     hashBoard.HashCastling(castlingRights);
 }
 
-constexpr void Board::MoveCastlingWhiteRook(unsigned int from, unsigned int to) noexcept
+constexpr void Board::MoveCastlingWhiteRook(unsigned int from, unsigned int to)
 {
-    RemovePiece(from, 'R');
-    AddPiece(to, 'R');
+    RemovePiece(from, Constants::WHITE_ROOK_INDEX);
+    AddPiece(to, Constants::WHITE_ROOK_INDEX);
 }
 
-constexpr void Board::MoveCastlingBlackRook(unsigned int from, unsigned int to) noexcept
+constexpr void Board::MoveCastlingBlackRook(unsigned int from, unsigned int to)
 {
-    RemovePiece(from, 'r');
-    AddPiece(to, 'r');
+    RemovePiece(from, Constants::BLACK_ROOK_INDEX);
+    AddPiece(to, Constants::BLACK_ROOK_INDEX);
 }
 
 constexpr void Board::MakeDoublePawnPush(unsigned int enPassantSquare) noexcept
@@ -270,18 +320,20 @@ constexpr void Board::MakeDoublePawnPush(unsigned int enPassantSquare) noexcept
     hashBoard.HashEnPassant(enPassantBitBoard);
 }
 
-constexpr void Board::MakeCapture(unsigned int to, char capturedPieceLetter, unsigned int moveType) noexcept
+constexpr void Board::MakeCapture(unsigned int to, PieceType capturedPiece, unsigned int moveType)
 {
     fiftyMoves = 0;
     if (moveType != static_cast<uint8_t>(MoveTypes::ENPASSANT))
     {
-        RemovePiece(to, capturedPieceLetter);
-        material -= GetPieceMaterial(capturedPieceLetter);
+        RemovePiece(to, capturedPiece);
+        material -= GetPieceMaterial(capturedPiece).value();
     }
     else
     {
-        whiteToMove ? RemovePiece(to - 8, 'p') : RemovePiece(to + 8, 'P');
-        material -= whiteToMove ? GetPieceMaterial('p') : GetPieceMaterial('P');
+        whiteToMove ? RemovePiece(to - 8, Constants::BLACK_PAWN_INDEX)
+                    : RemovePiece(to + 8, Constants::WHITE_PAWN_INDEX);
+        material -= whiteToMove ? GetPieceMaterial(Constants::BLACK_PAWN_INDEX).value()
+                                : GetPieceMaterial(Constants::WHITE_PAWN_INDEX).value();
     }
 }
 
@@ -295,8 +347,8 @@ void Board::TakeBack()
     const auto from = lastPosition.move.GetFromSquare();
     const auto to = lastPosition.move.GetToSquare();
     const auto moveType = lastPosition.move.GetMoveType();
-    const char movingPieceLetter = lastPosition.movedPiece;
-    const char capturedPieceLetter = lastPosition.capturedPiece;
+    const auto movingPiece = lastPosition.movedPiece;
+    const auto capturedPiece = lastPosition.capturedPiece;
 
     whiteToMove = !whiteToMove;
     fiftyMoves = lastPosition.fiftyMoves;
@@ -313,43 +365,48 @@ void Board::TakeBack()
 
     else if (moveType & static_cast<uint8_t>(MoveTypes::PROMOTION))
     {
-        char promotion = whiteToMove ? "NBRQ"[moveType & 3U] : "nbrq"[moveType & 3U];
-        material -= GetPieceMaterial(promotion) - GetPieceMaterial(movingPieceLetter);
+        PieceType promotion = static_cast<PieceType>(
+            whiteToMove ? std::array{Constants::WHITE_KNIGHT_INDEX, Constants::WHITE_BISHOP_INDEX,
+                                     Constants::WHITE_ROOK_INDEX, Constants::WHITE_QUEEN_INDEX}[moveType & 3U]
+                        : std::array{Constants::BLACK_KNIGHT_INDEX, Constants::BLACK_BISHOP_INDEX,
+                                     Constants::BLACK_ROOK_INDEX, Constants::BLACK_QUEEN_INDEX}[moveType & 3U]);
+        material -= GetPieceMaterial(promotion).value() - GetPieceMaterial(movingPiece).value();
         RemovePiece(to, promotion);
-        AddPiece(to, movingPieceLetter);
+        AddPiece(to, movingPiece);
     }
 
-    RemovePiece(to, movingPieceLetter);
-    AddPiece(from, movingPieceLetter);
+    RemovePiece(to, movingPiece);
+    AddPiece(from, movingPiece);
 
     if (moveType == static_cast<uint8_t>(MoveTypes::ENPASSANT))
     {
-        whiteToMove ? AddPiece(to - 8, 'p') : AddPiece(to + 8, 'P');
-        material += whiteToMove ? GetPieceMaterial('p') : GetPieceMaterial('P');
+        whiteToMove ? AddPiece(to - 8, Constants::BLACK_PAWN_INDEX) : AddPiece(to + 8, Constants::WHITE_PAWN_INDEX);
+        material += whiteToMove ? GetPieceMaterial(Constants::BLACK_PAWN_INDEX).value()
+                                : GetPieceMaterial(Constants::WHITE_PAWN_INDEX).value();
     }
 
     else if (moveType & static_cast<uint8_t>(MoveTypes::CAPTURE))
     {
-        material += GetPieceMaterial(capturedPieceLetter);
-        AddPiece(to, capturedPieceLetter);
+        material += GetPieceMaterial(capturedPiece).value();
+        AddPiece(to, capturedPiece);
     }
 
     hashBoard.SetHash(lastPosition.hash);
 }
 
-constexpr void Board::RemovePiece(unsigned int position, char pieceType) noexcept
+constexpr void Board::RemovePiece(unsigned int position, PieceType pieceType)
 {
-    pieceList[position] = ' ';
-    ClearBit(bitBoards[GetPieceIndex(static_cast<uint8_t>(pieceType))], position);
+    pieceList[position] = Constants::ALL_EMPTY_INDEX;
+    ClearBit(bitBoards[pieceType], position);
     ClearBit(bitBoards[IsBlackMoving(pieceType) ? Constants::ALL_BLACK_INDEX : Constants::ALL_WHITE_INDEX], position);
     SetBit(bitBoards[Constants::ALL_EMPTY_INDEX], position);
     hashBoard.HashPiece(position, static_cast<uint8_t>(pieceType));
 }
 
-constexpr void Board::AddPiece(unsigned int position, char pieceType) noexcept
+constexpr void Board::AddPiece(unsigned int position, PieceType pieceType)
 {
     pieceList[position] = pieceType;
-    SetBit(bitBoards[GetPieceIndex(static_cast<uint8_t>(pieceType))], position);
+    SetBit(bitBoards[pieceType], position);
     SetBit(bitBoards[IsBlackMoving(pieceType) ? Constants::ALL_BLACK_INDEX : Constants::ALL_WHITE_INDEX], position);
     ClearBit(bitBoards[Constants::ALL_EMPTY_INDEX], position);
     hashBoard.HashPiece(position, static_cast<uint8_t>(pieceType));
@@ -358,8 +415,10 @@ constexpr void Board::AddPiece(unsigned int position, char pieceType) noexcept
 template <MoveTypes moveType> FixedList<Move> Board::GetMoveList() const noexcept
 {
     MoveGenerator moveGenerator;
-    whiteToMove ? moveGenerator.GenerateMoves<Colors::WHITE, moveType>(*this)
-                : moveGenerator.GenerateMoves<Colors::BLACK, moveType>(*this);
+    if (whiteToMove)
+        moveGenerator.GenerateMoves<Colors::WHITE, moveType>(*this);
+    else
+        moveGenerator.GenerateMoves<Colors::BLACK, moveType>(*this);
     return moveGenerator.GetMoveList();
 }
 
@@ -381,9 +440,8 @@ bool Board::MakeMove(std::string_view notation)
     uint8_t moveType = 0;
     if (promoted != ' ')
     {
-        moveType = static_cast<uint8_t>(GetPromotionType(promoted));
-        const char capturedPiece = GetPieceList()[to];
-        if (capturedPiece != ' ')
+        moveType = static_cast<uint8_t>(GetPromotionType(promoted).value());
+        if (const PieceType capturedPiece{GetPieceList()[to]}; capturedPiece != Constants::ALL_EMPTY_INDEX)
             moveType |= static_cast<uint8_t>(MoveTypes::CAPTURE);
     }
 

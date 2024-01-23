@@ -1,8 +1,8 @@
-#ifndef CONTAINER_FIXED_LIST_HPP_INCLUDED
-#define CONTAINER_FIXED_LIST_HPP_INCLUDED
+#ifndef SRC_CONTAINER_INL_FIXED_LIST_HPP_
+#define SRC_CONTAINER_INL_FIXED_LIST_HPP_
 
 #include <array>
-#include <iterator>
+#include <utility>
 
 template <class T, std::size_t Capacity = 218> class FixedList
 {
@@ -103,4 +103,4 @@ template <class T> constexpr auto end(const FixedList<T> &list)
     return list.begin() + list.size();
 }
 
-#endif // CONTAINER_FIXED_LIST_HPP_INCLUDED
+#endif // SRC_CONTAINER_INL_FIXED_LIST_HPP_

@@ -11,7 +11,7 @@ void Hash::ComputePositionKey(const Board &board)
 {
     positionKey = 0;
 
-    for (auto square = static_cast<unsigned>(Squares::H1); square <= Constants::MAX_SQUARE_INDEX; ++square)
+    for (auto square = 0U; square <= Constants::MAX_SQUARE_INDEX; ++square)
     {
         for (const auto &pieceKey : Constants::pieceKeys)
         {

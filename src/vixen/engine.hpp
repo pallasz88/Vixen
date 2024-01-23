@@ -1,9 +1,11 @@
-#ifndef VIXEN_ENGINE_HPP_INCLUDED
-#define VIXEN_ENGINE_HPP_INCLUDED
+#ifndef SRC_VIXEN_ENGINE_HPP_
+#define SRC_VIXEN_ENGINE_HPP_
 
+#include <algorithm>
 #include <atomic>
 #include <chrono>
 #include <functional>
+#include <utility>
 
 #include "defs.hpp"
 #include "fixed_list.hpp"
@@ -17,8 +19,8 @@ struct SearchInfo
 {
     std::chrono::high_resolution_clock::time_point startTime{};
     std::chrono::high_resolution_clock::time_point endTime{};
-    unsigned long long nodesCount{0};
-    size_t timeIndex{0};
+    std::uint64_t nodesCount{0};
+    std::size_t timeIndex{0};
     int maxDepth{64};
     int currentDepth{0};
     int movesToGo{30};
@@ -90,6 +92,8 @@ class VIXEN_API Search
         0, 0, 5, 10, 10, 5, 0, 0, 0, 0, 5, 10, 10, 5, 0, 0, 0,  0,  5,  10, 10, 5,  0,  0,  0, 0, 5, 10, 10, 5, 0, 0,
         0, 0, 5, 10, 10, 5, 0, 0, 0, 0, 5, 10, 10, 5, 0, 0, 25, 25, 25, 25, 25, 25, 25, 25, 0, 0, 5, 10, 10, 5, 0, 0};
 
+    static constexpr std::array<int, Constants::SQUARE_NUMBER> emptyTable{0};
+
     static constexpr std::array mvvlvaTable = Utility::InitMvvLvaTable();
 
     static constexpr std::array pawnTable = Utility::MirrorTable(PawnTable);
@@ -100,9 +104,8 @@ class VIXEN_API Search
 
     static constexpr std::array rookTable = Utility::MirrorTable(RookTable);
 
-    static constexpr std::array arrayLookUp = {
-        pawnTable, knightTable, bishopTable, rookTable, PawnTable, KnightTable, BishopTable, RookTable,
-    };
+    static constexpr std::array arrayLookUp = {PawnTable, KnightTable, BishopTable, RookTable, emptyTable, emptyTable,
+                                               pawnTable, knightTable, bishopTable, rookTable, emptyTable, emptyTable};
 
     static int Evaluate(const Board &board);
 
@@ -118,11 +121,11 @@ class VIXEN_API Search
 
     static void OrderNonPVMoves(int depth, const Board &board, Move &move);
 
-    static bool IsPVMove(const PVEntry &pvEntry, Move &move);
+    static bool IsPVMove(const PVEntry &pvEntry, const Move &move);
 };
 
 template std::array<int, 64ul> vixen::Utility::MirrorTable<std::array<int, 64ul>>(
     std::array<int, 64ul> const &) noexcept;
 } // namespace vixen
 
-#endif // VIXEN_ENGINE_HPP_INCLUDED
+#endif // SRC_VIXEN_ENGINE_HPP_

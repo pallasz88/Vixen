@@ -1,11 +1,11 @@
-#ifndef VIXEN_DEFS_HPP_INCLUDED
-#define VIXEN_DEFS_HPP_INCLUDED
+#ifndef SRC_VIXEN_DEFS_HPP_
+#define SRC_VIXEN_DEFS_HPP_
 
 #include <algorithm>
 #include <array>
 #include <bit>
 #include <cstdint>
-#include <ranges>
+#include <optional>
 #include <stdexcept>
 #if _MSC_VER >= 1910
 #include <sstream>
@@ -13,6 +13,7 @@
 #include <string>
 #include <string_view>
 #include <unordered_map>
+#include <utility>
 
 #if _MSC_VER >= 1910
 #define VIXEN_API __declspec(dllexport)
@@ -124,25 +125,43 @@ enum class Slider
     ROOK
 };
 
+static constexpr unsigned BITBOARD_ELEMENT_NUMBER = 15U;
+
+static constexpr unsigned COORDIBATES_2D = 2U;
+
+static constexpr unsigned SQUARE_NUMBER = 64U;
+
+static constexpr unsigned PAWN_CAPTURE_DIRECTION_NUMBER = 4U;
+
+static constexpr unsigned SLIDER_DIRECTION_NUMBER = 4U;
+
+static constexpr unsigned ANTI_SLIDER_DIRECTION_NUMBER = 8U;
+
+static constexpr unsigned PIECE_TYPE_NUMBER = 13U;
+
+static constexpr unsigned CASTLING_STATE_NUMBER = 16U;
+
+using PieceType = std::uint16_t;
+
 using BitBoard = std::uint64_t;
 
-using BitBoards = std::array<BitBoard, 15>;
+using BitBoards = std::array<BitBoard, BITBOARD_ELEMENT_NUMBER>;
 
-using Direction = std::array<int, 2>;
+using DirectionVector = std::array<int, COORDIBATES_2D>;
 
-using SliderDirections = std::array<Direction, 4>;
+using SliderDirections = std::array<DirectionVector, SLIDER_DIRECTION_NUMBER>;
 
-using AntiSliderDirections = std::array<Direction, 8>;
+using AntiSliderDirections = std::array<DirectionVector, ANTI_SLIDER_DIRECTION_NUMBER>;
 
-using PawnDirections = std::array<Direction, 2>;
+using PawnDirections = std::array<DirectionVector, PAWN_CAPTURE_DIRECTION_NUMBER>;
 
-using PieceHashKeys = std::array<std::array<BitBoard, 13>, 64>;
+using PieceHashKeys = std::array<std::array<BitBoard, PIECE_TYPE_NUMBER>, 64>;
 
 using SideHashKey = std::uint64_t;
 
 using PositionKey = std::uint64_t;
 
-using CastleHashKeys = std::array<BitBoard, 16>;
+using CastleHashKeys = std::array<BitBoard, CASTLING_STATE_NUMBER>;
 
 struct Constants
 {
@@ -202,8 +221,11 @@ struct Constants
 
     static constexpr std::string_view CASTLERIGHTS = "kqKQ";
 
-    static constexpr std::array<unsigned char, 12> pieceKeys = {'P', 'N', 'B', 'R', 'Q', 'K',
-                                                                'p', 'n', 'b', 'r', 'q', 'k'};
+    static constexpr std::array<PieceType, 12> pieceKeys = {
+        Constants::WHITE_PAWN_INDEX, Constants::WHITE_KNIGHT_INDEX, Constants::WHITE_BISHOP_INDEX,
+        Constants::WHITE_ROOK_INDEX, Constants::WHITE_QUEEN_INDEX,  Constants::WHITE_KING_INDEX,
+        Constants::BLACK_PAWN_INDEX, Constants::BLACK_KNIGHT_INDEX, Constants::BLACK_BISHOP_INDEX,
+        Constants::BLACK_ROOK_INDEX, Constants::BLACK_QUEEN_INDEX,  Constants::BLACK_KING_INDEX};
 
     static constexpr std::array<unsigned char, 6> blackPieceKeys = {'p', 'n', 'b', 'r', 'q', 'k'};
 
@@ -213,10 +235,13 @@ struct Constants
         std::make_pair('S', 13U), std::make_pair('b', 8U),  std::make_pair('k', 11U), std::make_pair('n', 7U),
         std::make_pair('p', 6U),  std::make_pair('q', 10U), std::make_pair('r', 9U)};
 
-    static constexpr std::array<std::pair<unsigned char, int>, 12> materialMap = {
-        std::make_pair('P', 100),  std::make_pair('N', 300),  std::make_pair('B', 300),  std::make_pair('R', 500),
-        std::make_pair('Q', 900),  std::make_pair('K', 2000), std::make_pair('p', -100), std::make_pair('n', -300),
-        std::make_pair('b', -300), std::make_pair('r', -500), std::make_pair('q', -900), std::make_pair('k', -2000)};
+    static constexpr std::array<std::pair<PieceType, int>, 12> materialMap = {
+        std::make_pair(Constants::WHITE_PAWN_INDEX, 100),    std::make_pair(Constants::WHITE_KNIGHT_INDEX, 300),
+        std::make_pair(Constants::WHITE_BISHOP_INDEX, 300),  std::make_pair(Constants::WHITE_ROOK_INDEX, 500),
+        std::make_pair(Constants::WHITE_QUEEN_INDEX, 900),   std::make_pair(Constants::WHITE_KING_INDEX, 2000),
+        std::make_pair(Constants::BLACK_PAWN_INDEX, -100),   std::make_pair(Constants::BLACK_KNIGHT_INDEX, -300),
+        std::make_pair(Constants::BLACK_BISHOP_INDEX, -300), std::make_pair(Constants::BLACK_ROOK_INDEX, -500),
+        std::make_pair(Constants::BLACK_QUEEN_INDEX, -900),  std::make_pair(Constants::BLACK_KING_INDEX, -2000)};
 
     static constexpr std::array<std::pair<unsigned char, int>, 4> promotionMap = {
         std::make_pair('q', static_cast<int>(MoveTypes::QUEEN_PROMOTION)),
@@ -285,62 +310,29 @@ struct Constants
          {CastlingRights::BQCA, static_cast<uint8_t>(0U)}}};
 };
 
-constexpr auto GetPieceIndex(unsigned char c)
-{
-    auto iterator = std::lower_bound(std::begin(Constants::pieceMap), std::end(Constants::pieceMap), c,
-                                     [](const auto &pair, unsigned char value) { return pair.first < value; });
-
-    if (iterator != std::end(Constants::pieceMap) && iterator->first == c)
-        return iterator->second;
-
-    throw std::runtime_error("Invalid piece index");
-}
-
 constexpr bool IsWhitePiece(char piece) noexcept
 {
     return piece >= 'A' && piece < 'Z';
 }
 
-constexpr auto GetEvalIndex(char c) noexcept
+constexpr std::optional<int> GetPieceMaterial(PieceType c) noexcept
 {
-    if (c == 'p')
-        return 0;
-    else if (c == 'n')
-        return 1;
-    else if (c == 'b')
-        return 2;
-    else if (c == 'r')
-        return 3;
-    else if (c == 'P')
-        return 4;
-    else if (c == 'N')
-        return 5;
-    else if (c == 'B')
-        return 6;
-    else if (c == 'R')
-        return 7;
+    if (const auto &it =
+            std::ranges::find_if(Constants::materialMap, [c](const auto &element) { return c == element.first; });
+        it != end(Constants::materialMap))
+        return it->second;
     else
-        return -1;
+        return {};
 }
 
-constexpr auto GetPieceMaterial(char c) noexcept
+constexpr std::optional<int> GetPromotionType(char c) noexcept
 {
-    for (const auto &i : Constants::materialMap)
-    {
-        if (i.first == c)
-            return i.second;
-    }
-    return -1;
-}
-
-constexpr auto GetPromotionType(char c) noexcept
-{
-    for (const auto &i : Constants::promotionMap)
-    {
-        if (i.first == c)
-            return i.second;
-    }
-    return -1;
+    if (const auto &it =
+            std::ranges::find_if(Constants::promotionMap, [c](const auto &element) { return c == element.first; });
+        it != end(Constants::promotionMap))
+        return it->second;
+    else
+        return {};
 }
 
 constexpr BitBoard SquareToBitBoard(int square) noexcept
@@ -407,9 +399,9 @@ constexpr unsigned GetPosition(BitBoard &bitBoard) noexcept
     return from;
 }
 
-constexpr bool IsMovingPawn(char movingPiece) noexcept
+constexpr bool IsMovingPawn(PieceType movingPiece) noexcept
 {
-    return movingPiece == 'P' || movingPiece == 'p';
+    return movingPiece == Constants::WHITE_PAWN_INDEX || movingPiece == Constants::BLACK_PAWN_INDEX;
 }
 
 /**
@@ -417,9 +409,9 @@ constexpr bool IsMovingPawn(char movingPiece) noexcept
  * @param c
  * @return
  */
-constexpr bool IsBlackMoving(char c) noexcept
+constexpr bool IsBlackMoving(PieceType c) noexcept
 {
-    return std::ranges::find(Constants::blackPieceKeys, c) != std::end(Constants::blackPieceKeys);
+    return c >= Constants::BLACK_PAWN_INDEX;
 }
 
 template <class Iterator> constexpr auto PickBest(const Iterator &begin, const Iterator &end)
@@ -431,4 +423,4 @@ template <class Iterator> constexpr auto PickBest(const Iterator &begin, const I
 
 } // namespace vixen
 
-#endif // VIXEN_DEFS_HPP_INCLUDED
+#endif // SRC_VIXEN_DEFS_HPP_

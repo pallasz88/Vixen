@@ -1,5 +1,8 @@
-#ifndef VIXEN_MOVE_HPP_INCLUDED
-#define VIXEN_MOVE_HPP_INCLUDED
+#ifndef SRC_VIXEN_MOVE_HPP_
+#define SRC_VIXEN_MOVE_HPP_
+
+#include <string>
+#include <unordered_map>
 
 #include "defs.hpp"
 
@@ -133,4 +136,4 @@ class Move
 
 } // namespace vixen
 
-#endif // VIXEN_MOVE_HPP_INCLUDED
+#endif // SRC_VIXEN_MOVE_HPP_

@@ -4,7 +4,6 @@
 #include "fixture.h"
 #include "hash.hpp"
 #include "move_generator.hpp"
-#include <sstream>
 
 vixen::Hash::Keys vixen::Hash::zobristKeys;
 

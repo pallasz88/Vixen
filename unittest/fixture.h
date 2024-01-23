@@ -1,15 +1,15 @@
 #pragma once
 
 #include <boost/test/included/unit_test.hpp>
+#include <vector>
 
 #include "board.hpp"
-#include "move_generator.hpp"
 
 namespace vixen
 {
 struct Fixture
 {
-    Fixture() : board(Board())
+    Fixture()
     {
         BOOST_TEST_MESSAGE("setup fixture");
     }
@@ -27,7 +27,7 @@ struct Fixture
 
     Fixture &operator=(Fixture &&) = delete;
 
-    bool CheckMoveList(std::vector<Representation> &expectedMoveList) const
+    bool CheckMoveList(const std::vector<Representation> &expectedMoveList) const
     {
         const auto moveList = board.GetMoveList<MoveTypes::ALL_MOVE>();
 
@@ -43,6 +43,6 @@ struct Fixture
         return true;
     }
 
-    Board board;
+    Board board{};
 };
 } // namespace vixen

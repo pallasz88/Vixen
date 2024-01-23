@@ -1,5 +1,5 @@
-#ifndef VIXEN_SLIDER_HPP_INCLUDED
-#define VIXEN_SLIDER_HPP_INCLUDED
+#ifndef SRC_VIXEN_SLIDER_HPP_
+#define SRC_VIXEN_SLIDER_HPP_
 
 #include <cassert>
 
@@ -49,9 +49,9 @@ inline BitBoard GetBishopAttack(unsigned int square, BitBoard occupied) noexcept
 
 inline BitBoard GetRookAttack(unsigned int square, BitBoard occupied) noexcept;
 
-constexpr void GetNextCoordinate(int &file, int &rank, const Direction &direction) noexcept;
+constexpr void GetNextCoordinate(int &file, int &rank, const DirectionVector &direction) noexcept;
 
-constexpr BitBoard SlidingAttack(unsigned int square, SliderDirections directions, BitBoard occupied) noexcept;
+constexpr BitBoard SlidingAttack(unsigned int square, const SliderDirections &directions, BitBoard occupied) noexcept;
 
 /**
  * Initializes the magic numbers and attack tables for a sliding piece (bishop or rook) at a given square.
@@ -97,4 +97,4 @@ struct BishopSliderInfo
 
 } // namespace vixen::slider_utils
 
-#endif // VIXEN_SLIDER_HPP_INCLUDED
+#endif // SRC_VIXEN_SLIDER_HPP_

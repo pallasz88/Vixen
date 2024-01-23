@@ -21,30 +21,30 @@ BOOST_AUTO_TEST_CASE(StorePVEntryTest)
     vixen::PVEntry entry1{move1, 1};
     pv.StorePVEntry(entry1);
     BOOST_CHECK_EQUAL(pv.GetPVEntry(1).positionKey, 1);
-    BOOST_CHECK_EQUAL(pv.GetPVEntry(1).move, move1);
+    BOOST_CHECK_EQUAL(pv.GetPVEntry(1).moveEntry, move1);
 
     // Test storing an entry with an existing position key
     vixen::PVEntry entry2{move2, 1};
     pv.StorePVEntry(entry2);
     BOOST_CHECK_EQUAL(pv.GetPVEntry(1).positionKey, 1);
-    BOOST_CHECK_EQUAL(pv.GetPVEntry(1).move, move2);
+    BOOST_CHECK_EQUAL(pv.GetPVEntry(1).moveEntry, move2);
 
     // Test storing an entry when the capacity is reached
     vixen::PVEntry entry3{move3, 2};
     pv.StorePVEntry(entry3);
     BOOST_CHECK_EQUAL(pv.GetPVEntry(1).positionKey, 1);
-    BOOST_CHECK_EQUAL(pv.GetPVEntry(1).move, move2);
+    BOOST_CHECK_EQUAL(pv.GetPVEntry(1).moveEntry, move2);
     BOOST_CHECK_EQUAL(pv.GetPVEntry(2).positionKey, 2);
-    BOOST_CHECK_EQUAL(pv.GetPVEntry(2).move, move3);
+    BOOST_CHECK_EQUAL(pv.GetPVEntry(2).moveEntry, move3);
 
     vixen::PVEntry entry4{move4, 3};
     pv.StorePVEntry(entry4);
     BOOST_CHECK_EQUAL(pv.GetPVEntry(1).positionKey, 1);
-    BOOST_CHECK_EQUAL(pv.GetPVEntry(1).move, move2);
+    BOOST_CHECK_EQUAL(pv.GetPVEntry(1).moveEntry, move2);
     BOOST_CHECK_EQUAL(pv.GetPVEntry(2).positionKey, 2);
-    BOOST_CHECK_EQUAL(pv.GetPVEntry(2).move, move3);
+    BOOST_CHECK_EQUAL(pv.GetPVEntry(2).moveEntry, move3);
     BOOST_CHECK_EQUAL(pv.GetPVEntry(3).positionKey, 3);
-    BOOST_CHECK_EQUAL(pv.GetPVEntry(3).move, move4);
+    BOOST_CHECK_EQUAL(pv.GetPVEntry(3).moveEntry, move4);
 }
 
 BOOST_AUTO_TEST_CASE(GetPVEntry_test)
@@ -69,6 +69,6 @@ BOOST_AUTO_TEST_CASE(GetPVEntry_test)
     BOOST_CHECK(pv.GetPVEntry(1) == vixen::PVEntry{});
 
     // Test retrieving an entry that exists in the hash table
-    BOOST_CHECK_EQUAL(pv.GetPVEntry(2).move, entry2.move);
-    BOOST_CHECK_EQUAL(pv.GetPVEntry(3).move, entry3.move);
+    BOOST_CHECK_EQUAL(pv.GetPVEntry(2).moveEntry, entry2.moveEntry);
+    BOOST_CHECK_EQUAL(pv.GetPVEntry(3).moveEntry, entry3.moveEntry);
 }

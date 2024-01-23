@@ -1,10 +1,9 @@
-#ifndef VIXEN_BOARD_HPP_INCLUDED
-#define VIXEN_BOARD_HPP_INCLUDED
+#ifndef SRC_VIXEN_BOARD_HPP_
+#define SRC_VIXEN_BOARD_HPP_
 #include "defs.hpp"
 #include "fixed_list.hpp"
 #include "hash.hpp"
 #include "move.hpp"
-#include <ranges>
 
 namespace vixen
 {
@@ -26,9 +25,9 @@ struct History
 
     Move move;
 
-    char movedPiece;
+    PieceType movedPiece;
 
-    char capturedPiece;
+    PieceType capturedPiece;
 
     [[nodiscard]] friend constexpr bool operator==(const History &history, PositionKey positionKey)
     {
@@ -174,14 +173,14 @@ class VIXEN_API Board
      * @param position
      * @param pieceType
      */
-    constexpr void RemovePiece(unsigned int position, char pieceType) noexcept;
+    constexpr void RemovePiece(unsigned int position, PieceType pieceType);
 
     /**
      * Adds given piece type to given position.
      * @param position
      * @param pieceType
      */
-    constexpr void AddPiece(unsigned int position, char pieceType) noexcept;
+    constexpr void AddPiece(unsigned int position, PieceType pieceType);
 
     /**
      * Tries to move a pseudo-legal move.
@@ -223,17 +222,17 @@ class VIXEN_API Board
     }
 
   private:
+    std::array<History, 1024> history{};
+
     std::array<std::array<Move, 2>, Constants::SQUARE_NUMBER> killer{};
 
     std::array<std::array<unsigned, Constants::SQUARE_NUMBER>, Constants::SQUARE_NUMBER> historyHeuristic{};
 
-    std::array<History, 1024> history{};
+    std::array<PieceType, Constants::SQUARE_NUMBER> pieceList;
 
-    std::array<char, Constants::SQUARE_NUMBER> pieceList{' '};
+    BitBoards bitBoards{};
 
-    BitBoards bitBoards{Constants::EMPTY_BOARD};
-
-    BitBoard enPassantBitBoard{Constants::EMPTY_BOARD};
+    BitBoard enPassantBitBoard{};
 
     Hash hashBoard{};
 
@@ -271,16 +270,16 @@ class VIXEN_API Board
     template <size_t N, char delimiter = ' '>
     [[nodiscard]] constexpr auto SplitFenPosition(std::string_view position) const noexcept;
 
-    constexpr void MakeCapture(unsigned int to, char capturedPieceLetter, unsigned int moveType) noexcept;
+    constexpr void MakeCapture(unsigned int to, PieceType capturedPieceLetter, unsigned int moveType);
 
     constexpr void MakeDoublePawnPush(unsigned int enPassantSquare) noexcept;
 
-    constexpr void MoveCastlingWhiteRook(unsigned int from, unsigned int to) noexcept;
+    constexpr void MoveCastlingWhiteRook(unsigned int from, unsigned int to);
 
-    constexpr void MoveCastlingBlackRook(unsigned int from, unsigned int to) noexcept;
+    constexpr void MoveCastlingBlackRook(unsigned int from, unsigned int to);
 
     constexpr void UpdateCastlingRights(unsigned int from, unsigned int to) noexcept;
 };
 } // namespace vixen
 
-#endif // VIXEN_BOARD_HPP_INCLUDED
+#endif // SRC_VIXEN_BOARD_HPP_
