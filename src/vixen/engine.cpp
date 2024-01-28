@@ -311,7 +311,7 @@ int Search::Evaluate(const Board &board)
     {
         const auto position = GetPosition(occupied);
         const auto piece = board.GetPieceList()[position];
-        if (piece >= Constants::WHITE_PAWN_INDEX && piece <= Constants::BLACK_KING_INDEX)
+        if (piece <= Constants::BLACK_KING_INDEX)
         {
             score += arrayLookUp[piece][position];
         }
