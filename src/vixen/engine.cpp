@@ -4,7 +4,9 @@
 #include <utility>
 
 #include "defs.hpp"
+#include "move.hpp"
 #include "move_generator.hpp"
+#include "principal_variation.hpp"
 #include "uci.hpp"
 
 namespace vixen
@@ -90,6 +92,13 @@ bool IsTimeCheckNeeded(const SearchInfo &info)
     return info.isTimeSet && !(info.nodesCount & 2047);
 }
 
+Move Search::GetBestMove(Move bestMove, Move move)
+{
+    if (bestMove == 0U)
+        return move;
+    return bestMove;
+}
+
 std::pair<int, Move> Search::Root(int depth, Board &board, SearchInfo &info)
 {
     if (IsTimeCheckNeeded(info))
@@ -128,7 +137,11 @@ std::pair<int, Move> Search::Root(int depth, Board &board, SearchInfo &info)
         board.TakeBack();
 
         if (info.stopped)
+        {
+            bestMove = GetBestMove(bestMove, move);
+            pv.StorePVEntry(PVEntry{bestMove, board.GetHash()});
             return {score, move};
+        }
 
         if (score >= beta)
         {
@@ -147,18 +160,16 @@ std::pair<int, Move> Search::Root(int depth, Board &board, SearchInfo &info)
 
             alpha = score; // alpha acts like max in MiniMax
             bestMove = move;
+            pv.StorePVEntry(PVEntry{bestMove, board.GetHash()});
         }
     }
-
-    if (!info.stopped)
-        pv.StorePVEntry(PVEntry{bestMove, board.GetHash()});
 
     return {alpha, bestMove};
 }
 
 bool Search::IsPVMove(const PVEntry &pvEntry, const Move &move)
 {
-    return pvEntry.moveEntry != 0U && move == pvEntry.moveEntry;
+    return move == pvEntry.moveEntry;
 }
 
 void Search::OrderNonPVMoves(int depth, const Board &board, Move &move)
