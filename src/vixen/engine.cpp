@@ -92,13 +92,6 @@ bool IsTimeCheckNeeded(const SearchInfo &info)
     return info.isTimeSet && !(info.nodesCount & 2047);
 }
 
-Move Search::GetBestMove(Move bestMove, Move move)
-{
-    if (bestMove == 0U)
-        return move;
-    return bestMove;
-}
-
 std::pair<int, Move> Search::Root(int depth, Board &board, SearchInfo &info)
 {
     if (IsTimeCheckNeeded(info))
@@ -138,7 +131,7 @@ std::pair<int, Move> Search::Root(int depth, Board &board, SearchInfo &info)
 
         if (info.stopped)
         {
-            bestMove = GetBestMove(bestMove, move);
+            bestMove = vixen::GetBestMove(bestMove, move);
             pv.StorePVEntry(PVEntry{bestMove, board.GetHash()});
             return {score, move};
         }

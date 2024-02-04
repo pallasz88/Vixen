@@ -1,17 +1,18 @@
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MODULE Vixen_chess
 
+#include "defs.hpp"
+#include "engine.hpp"
 #include "fixture.h"
 #include "hash.hpp"
 #include "move_generator.hpp"
 #include "userinterface.hpp"
 
-using namespace vixen;
-
 vixen::Hash::Keys vixen::Hash::zobristKeys;
 
 BOOST_AUTO_TEST_CASE(Test_bit)
 {
+    using namespace vixen;
     BOOST_TEST(1U == SquareToBitBoard(static_cast<unsigned>(Squares::H1)));
     BOOST_TEST(128U == SquareToBitBoard(static_cast<unsigned>(Squares::A1)));
     BOOST_TEST(1099511627776U == SquareToBitBoard(static_cast<unsigned>(Squares::H6)));
@@ -22,11 +23,12 @@ BOOST_AUTO_TEST_CASE(Test_bit)
     BOOST_TEST(17 == TrailingZeroCount(4620710852818501632ULL));
 }
 
-BOOST_FIXTURE_TEST_SUITE(Test_unit, Fixture)
+BOOST_FIXTURE_TEST_SUITE(Test_unit, vixen::Fixture)
 
 BOOST_AUTO_TEST_CASE(Test_Startposition)
 {
-    vixen::Board board;
+    using namespace vixen;
+    Board board;
     BOOST_CHECK_EQUAL(board.GetBitBoard(Constants::WHITE_KING_INDEX), 8ULL);
     BOOST_CHECK_EQUAL(board.GetBitBoard(Constants::WHITE_QUEEN_INDEX), 16ULL);
     BOOST_CHECK_EQUAL(board.GetBitBoard(Constants::WHITE_ROOK_INDEX), 129ULL);
@@ -50,6 +52,7 @@ BOOST_AUTO_TEST_CASE(Test_Startposition)
 
 BOOST_AUTO_TEST_CASE(Test_SetPosition)
 {
+    using namespace vixen;
     board.SetBoard(Constants::TESTPOS1);
     board.PrintBoard();
 
@@ -91,6 +94,7 @@ BOOST_AUTO_TEST_CASE(Test_SetPosition)
 
 BOOST_AUTO_TEST_CASE(Test_HeavyPiecesBitboard)
 {
+    using namespace vixen;
     board.SetBoard("8/8/8/8/8/5k2/4p3/4K3 w - - 0 4");
     board.PrintBoard();
 
@@ -133,6 +137,7 @@ BOOST_AUTO_TEST_CASE(Test_HeavyPiecesBitboard)
 
 BOOST_AUTO_TEST_CASE(Test_GetMoveList_AllWhiteMoves)
 {
+    using namespace vixen;
     // Set up the board with a simple starting position
     board.SetBoard(Constants::START_POSITION);
 
@@ -145,6 +150,7 @@ BOOST_AUTO_TEST_CASE(Test_GetMoveList_AllWhiteMoves)
 
 BOOST_AUTO_TEST_CASE(Test_GetMoveList_AllBlackMoves)
 {
+    using namespace vixen;
     // Set up the board with a position where it's black's turn
     board.SetBoard(Constants::TESTPOS3);
 
@@ -157,6 +163,7 @@ BOOST_AUTO_TEST_CASE(Test_GetMoveList_AllBlackMoves)
 
 BOOST_AUTO_TEST_CASE(Test_Takeback)
 {
+    using namespace vixen;
     // Set up the board with a simple starting position
     board.SetBoard(Constants::START_POSITION);
 
@@ -166,6 +173,7 @@ BOOST_AUTO_TEST_CASE(Test_Takeback)
 
 BOOST_AUTO_TEST_CASE(Test_pawnmovement)
 {
+    using namespace vixen;
     board.SetBoard("8/8/8/8/3P4/8/8/8 w - - 0 1");
     board.PrintBoard();
     std::vector<Representation> expectedMoveList{2332};
@@ -206,6 +214,7 @@ BOOST_AUTO_TEST_CASE(Test_pawnmovement)
 
 BOOST_AUTO_TEST_CASE(Test_knightmovement)
 {
+    using namespace vixen;
     board.SetBoard("8/8/8/8/3N4/8/8/8 w - - 0 1");
     board.PrintBoard();
     std::vector<Representation> expectedMoveList{732, 860, 1180, 1436, 2204, 2460, 2780, 2908};
@@ -231,6 +240,7 @@ BOOST_AUTO_TEST_CASE(Test_knightmovement)
 
 BOOST_AUTO_TEST_CASE(Test_bishopmovement)
 {
+    using namespace vixen;
     board.SetBoard("8/8/8/8/3B4/8/8/8 w - - 0 1");
     board.PrintBoard();
     std::vector<Representation> expectedMoveList{92,   476,  668,  924,  1244, 1372, 2268,
@@ -256,6 +266,7 @@ BOOST_AUTO_TEST_CASE(Test_bishopmovement)
 
 BOOST_AUTO_TEST_CASE(Test_rookmovement)
 {
+    using namespace vixen;
     board.SetBoard("8/8/8/8/3R4/8/8/8 w - - 0 1");
     board.PrintBoard();
     std::vector<Representation> expectedMoveList{284,  796,  1308, 1564, 1628, 1692, 1756,
@@ -281,6 +292,7 @@ BOOST_AUTO_TEST_CASE(Test_rookmovement)
 
 BOOST_AUTO_TEST_CASE(Test_queenmovement)
 {
+    using namespace vixen;
     board.SetBoard("8/8/8/8/3Q4/8/8/8 w - - 0 1");
     board.PrintBoard();
     std::vector<Representation> expectedMoveList{92,   476,  668,  924,  1244, 1372, 2268, 2396, 2716,
@@ -298,6 +310,7 @@ BOOST_AUTO_TEST_CASE(Test_queenmovement)
 
 BOOST_AUTO_TEST_CASE(Test_kingmovement)
 {
+    using namespace vixen;
     board.SetBoard("8/8/8/8/3K4/8/8/8 w - - 0 1");
     board.PrintBoard();
     std::vector<Representation> expectedMoveList{1244, 1308, 1372, 1756, 1884, 2268, 2332, 2396};
@@ -316,6 +329,7 @@ BOOST_AUTO_TEST_CASE(Test_kingmovement)
 
 BOOST_AUTO_TEST_CASE(Test_huge_amunt_of_moves)
 {
+    using namespace vixen;
     board.SetBoard("R6R/3Q4/1Q4Q1/4Q3/2Q4Q/Q4Q2/pp1Q4/kBNN1KB1 w - - 0 1");
     board.PrintBoard();
     BOOST_TEST(board.GetMoveList<MoveTypes::ALL_MOVE>().size() == 218);
@@ -331,6 +345,7 @@ BOOST_AUTO_TEST_CASE(Test_huge_amunt_of_moves)
 
 BOOST_AUTO_TEST_CASE(Test_making_moves)
 {
+    using namespace vixen;
     board.SetBoard("7k/8/8/8/3P4/8/8/7K w - - 0 1");
     static_cast<void>(board.MakeMove(Move{2332}));
     board.PrintBoard();
@@ -419,6 +434,7 @@ BOOST_AUTO_TEST_CASE(Test_making_moves)
 
 BOOST_AUTO_TEST_CASE(Test_userinterface)
 {
+    using namespace vixen;
     board.SetBoard("7k/8/8/8/3P4/8/8/7K w - - 0 1");
     UserInterface::PrintMoveList(board);
     UserInterface::MakeMove("d4d5", board);
@@ -429,6 +445,7 @@ BOOST_AUTO_TEST_CASE(Test_userinterface)
 
 BOOST_AUTO_TEST_CASE(Test_material_balance)
 {
+    using namespace vixen;
     board.SetBoard(Constants::START_POSITION);
     UserInterface::MakeMove("e2e4", board);
     UserInterface::MakeMove("d7d5", board);
@@ -457,6 +474,16 @@ BOOST_AUTO_TEST_CASE(Test_material_balance)
     const int materialBefore = board.GetMaterialBalance();
     Test::PerftTest(3, board);
     BOOST_TEST(materialBefore == board.GetMaterialBalance());
+}
+
+BOOST_AUTO_TEST_CASE(Test_Get_BestMove)
+{
+    using namespace vixen;
+    const Move nullMove{};
+    const Move move{3U, 4U, static_cast<std::uint8_t>(vixen::MoveTypes::CAPTURE)};
+    BOOST_TEST(move == GetBestMove(nullMove, move));
+    BOOST_TEST(move == GetBestMove(move, move));
+    BOOST_TEST(move == GetBestMove(move, nullMove));
 }
 
 BOOST_AUTO_TEST_SUITE_END()

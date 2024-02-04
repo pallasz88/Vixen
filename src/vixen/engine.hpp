@@ -60,6 +60,13 @@ struct Utility
     }
 };
 
+constexpr VIXEN_API Move GetBestMove(vixen::Move bestMove, vixen::Move move)
+{
+    if (bestMove == 0U)
+        return move;
+    return bestMove;
+}
+
 class VIXEN_API Search
 {
   public:
