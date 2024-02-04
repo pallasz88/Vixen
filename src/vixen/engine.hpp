@@ -9,6 +9,7 @@
 
 #include "defs.hpp"
 #include "fixed_list.hpp"
+#include "move.hpp"
 #include "principal_variation.hpp"
 
 namespace vixen
@@ -122,6 +123,15 @@ class VIXEN_API Search
     static void OrderNonPVMoves(int depth, const Board &board, Move &move);
 
     static bool IsPVMove(const PVEntry &pvEntry, const Move &move);
+
+    /**
+     * @brief Return move as best move if bestMove is a null move
+     *
+     * @param bestmove Holds best move from PV table
+     * @param move Current move in the moveList loop
+     * @return bestMove or move as best move
+     */
+    static Move GetBestMove(Move bestMove, Move move);
 };
 
 template std::array<int, 64ul> vixen::Utility::MirrorTable<std::array<int, 64ul>>(
