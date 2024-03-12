@@ -42,6 +42,7 @@ void Uci::LogUci(const SearchInfo &info, const std::pair<int, Move> &result, int
 void Uci::UpdateSearchInfo(std::istringstream &is, std::string &token)
 {
     info->nodesCount = 0;
+    info->maxDepth = 64;
 
     while (is >> token)
     {
