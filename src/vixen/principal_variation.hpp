@@ -40,7 +40,7 @@ class VIXEN_API PrincipalVariation
 
     void StorePVEntry(const PVEntry &);
 
-    PVEntry GetPVEntry(PositionKey);
+    PVEntry GetPVEntry(PositionKey) const;
 
   private:
     size_t capacity;

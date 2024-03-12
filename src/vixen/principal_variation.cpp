@@ -23,7 +23,7 @@ void PrincipalVariation::StorePVEntry(const PVEntry &entry)
     hashTable[entry.positionKey] = begin(elements);
 }
 
-PVEntry PrincipalVariation::GetPVEntry(PositionKey key)
+PVEntry PrincipalVariation::GetPVEntry(PositionKey key) const
 {
     const auto entry = hashTable.find(key);
 
