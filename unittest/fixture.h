@@ -27,7 +27,7 @@ struct Fixture
 
     Fixture &operator=(Fixture &&) = delete;
 
-    bool CheckMoveList(const std::vector<Representation> &expectedMoveList) const
+    bool CheckMoveList(const std::vector<Representation> &expectedMoveList)
     {
         const auto moveList = board.GetMoveList<MoveTypes::ALL_MOVE>();
 

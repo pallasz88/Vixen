@@ -1,4 +1,5 @@
 #include "move_generator.hpp"
+#include "board.hpp"
 #include "defs.hpp"
 
 #include <iostream>
@@ -231,9 +232,8 @@ template <Colors sideToMove> constexpr void MoveGenerator::GenerateCastlingMoves
                                       &castleEmptySquareLookUp](CastlingRights castlingRight) {
         const unsigned castlingRightBB = static_cast<uint8_t>(castlingRight);
         return (currentCastlingRights & castlingRightBB) &&
-               castleEmptySquareLookUp[Constants::castlingLookUp[castlingRight]] &&
-               !Check::IsInCheck<sideToMove>(board) &&
-               !Check::IsSquareAttacked<sideToMove>(Constants::rookSquareAfterCastling[castlingRight], board);
+               castleEmptySquareLookUp[Constants::castlingLookUp[castlingRight]] && !board.IsInCheck<sideToMove>() &&
+               !board.IsSquareAttacked<sideToMove>(Constants::rookSquareAfterCastling[castlingRight]);
     };
 
     if constexpr (sideToMove == Colors::WHITE)

@@ -4,7 +4,7 @@
 #include <array>
 #include <utility>
 
-template <class T, std::size_t Capacity = 218> class FixedList
+template <class T, std::size_t Capacity = 256> class FixedList
 {
 
   public:
@@ -42,7 +42,7 @@ template <class T, std::size_t Capacity = 218> class FixedList
         _list[_size++] = value_type(std::forward<Args>(args)...);
     }
 
-    constexpr size_t size() const noexcept
+    constexpr std::size_t size() const noexcept
     {
         return _size;
     }
@@ -75,6 +75,11 @@ template <class T, std::size_t Capacity = 218> class FixedList
     constexpr value_type operator[](size_type position) const
     {
         return _list[position];
+    }
+
+    constexpr void clear() noexcept
+    {
+        _size = 0;
     }
 
   private:

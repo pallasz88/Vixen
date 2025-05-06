@@ -3,6 +3,7 @@
 #include <iostream>
 #include <utility>
 
+#include "board.hpp"
 #include "defs.hpp"
 #include "move.hpp"
 #include "move_generator.hpp"
@@ -104,7 +105,7 @@ std::pair<int, Move> Search::Root(int depth, Board &board, SearchInfo &info)
 
     const auto pvEntry = pv.GetPVEntry(board.GetHash());
 
-    const bool inCheck = Check::IsInCheck<Colors::WHITE>(board) || Check::IsInCheck<Colors::BLACK>(board);
+    const bool inCheck = board.IsInCheck<Colors::WHITE>() || board.IsInCheck<Colors::BLACK>();
     if (inCheck)
         ++depth;
 
@@ -193,7 +194,7 @@ int Search::NegaMax(int depth, int alpha, int beta, Board &board, SearchInfo &in
     if (board.IsRepetition() || board.GetFiftyMoveCounter() >= 100)
         return 0;
 
-    const bool inCheck = Check::IsInCheck<Colors::WHITE>(board) || Check::IsInCheck<Colors::BLACK>(board);
+    const bool inCheck = board.IsInCheck<Colors::WHITE>() || board.IsInCheck<Colors::BLACK>();
     if (inCheck)
         ++depth;
 
@@ -309,18 +310,18 @@ int Search::Quiescence(int alpha, int beta, Board &board, SearchInfo &info)
 int Search::Evaluate(const Board &board)
 {
     int score = board.GetMaterialBalance();
-
     auto occupied = ~board.GetBitBoard(Constants::ALL_EMPTY_INDEX);
+    const auto &pieceList = board.GetPieceList();
+
+    const int colorMultiplier = 1 | ((board.IsWhiteToMove() - 1) << 1);
+
+    // Unroll loop completely - no branching needed
     while (occupied)
     {
-        const auto position = GetPosition(occupied);
-        const auto piece = board.GetPieceList()[position];
-        if (piece <= Constants::BLACK_KING_INDEX)
-        {
-            score += arrayLookUp[piece][position];
-        }
+        const auto pos = GetPosition(occupied);
+        score += arrayLookUp[pieceList[pos]][pos];
     }
 
-    return board.IsWhiteToMove() ? score : -score;
+    return score * colorMultiplier;
 }
 } // namespace vixen

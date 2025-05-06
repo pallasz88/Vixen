@@ -1,14 +1,16 @@
 #ifndef SRC_VIXEN_BOARD_HPP_
 #define SRC_VIXEN_BOARD_HPP_
+
 #include "defs.hpp"
 #include "fixed_list.hpp"
 #include "hash.hpp"
 #include "move.hpp"
+#include "move_generator.hpp"
+#include "anti_slider.hpp"
+#include "slider.hpp"
 
 namespace vixen
 {
-
-class MoveGenerator;
 
 /**
  * Used for recovering previous positions to start position.
@@ -213,12 +215,50 @@ class VIXEN_API Board
      * Returns a generator of pseudo-legal moves from given position.
      * @return pseudo-legal moves
      */
-    template <MoveTypes moveType> [[nodiscard]] FixedList<Move> GetMoveList() const noexcept;
+    template <MoveTypes moveType> [[nodiscard]] FixedList<Move> GetMoveList() noexcept;
 
     [[nodiscard]] constexpr bool IsRepetition() const noexcept
     {
         return std::find(begin(history) + historyPly - fiftyMoves, begin(history) + historyPly, hashBoard.GetHash()) !=
                begin(history) + historyPly;
+    }
+
+    template <Colors sideToMove> constexpr bool IsSquareAttacked(unsigned int square) const noexcept
+    {
+        assert(square <= static_cast<unsigned>(vixen::Constants::MAX_SQUARE_INDEX));
+        const auto blockers = ~GetBitBoard(Constants::ALL_EMPTY_INDEX);
+        const auto pawns = sideToMove == Colors::WHITE ? GetBitBoard(Constants::BLACK_PAWN_INDEX)
+                                                       : GetBitBoard(Constants::WHITE_PAWN_INDEX);
+        const auto knights = sideToMove == Colors::WHITE ? GetBitBoard(Constants::BLACK_KNIGHT_INDEX)
+                                                         : GetBitBoard(Constants::WHITE_KNIGHT_INDEX);
+        const auto bishops = sideToMove == Colors::WHITE ? GetBitBoard(Constants::BLACK_BISHOP_INDEX)
+                                                         : GetBitBoard(Constants::WHITE_BISHOP_INDEX);
+        const auto rooks = sideToMove == Colors::WHITE ? GetBitBoard(Constants::BLACK_ROOK_INDEX)
+                                                       : GetBitBoard(Constants::WHITE_ROOK_INDEX);
+        const auto queens = sideToMove == Colors::WHITE ? GetBitBoard(Constants::BLACK_QUEEN_INDEX)
+                                                        : GetBitBoard(Constants::WHITE_QUEEN_INDEX);
+        const auto kings = sideToMove == Colors::WHITE ? GetBitBoard(Constants::BLACK_KING_INDEX)
+                                                       : GetBitBoard(Constants::WHITE_KING_INDEX);
+
+        return anti_slider_utils::pawnAttack[static_cast<int>(sideToMove)][square] & pawns ||
+               anti_slider_utils::knightAttack[square] & knights ||
+               slider_utils::GetBishopAttack(square, blockers) & (bishops | queens) ||
+               slider_utils::GetRookAttack(square, blockers) & (rooks | queens) ||
+               anti_slider_utils::kingAttack[square] & kings;
+    }
+
+    /**
+     * This function returns if king is in check.
+     * @tparam sideToMove
+     * @param board
+     * @return Check on board
+     */
+    template <Colors sideToMove> constexpr bool IsInCheck() const noexcept
+    {
+        const auto kingBoard = sideToMove == Colors::WHITE ? GetBitBoard(Constants::WHITE_KING_INDEX)
+                                                           : GetBitBoard(Constants::BLACK_KING_INDEX);
+        const auto kingSquare = TrailingZeroCount(kingBoard);
+        return IsSquareAttacked<sideToMove>(kingSquare);
     }
 
   private:
@@ -229,6 +269,8 @@ class VIXEN_API Board
     std::array<std::array<unsigned, Constants::SQUARE_NUMBER>, Constants::SQUARE_NUMBER> historyHeuristic{};
 
     std::array<PieceType, Constants::SQUARE_NUMBER> pieceList;
+
+    MoveGenerator moveGenerator;
 
     BitBoards bitBoards{};
 

@@ -3,14 +3,14 @@
 
 #include <cassert>
 
-#include "anti_slider.hpp"
-#include "board.hpp"
 #include "defs.hpp"
+#include "move.hpp"
 #include "fixed_list.hpp"
-#include "slider.hpp"
 
 namespace vixen
 {
+
+class Board;
 /**
  * Generates all pseudo-legal moves from Board class position.
  */
@@ -34,6 +34,15 @@ class VIXEN_API MoveGenerator
      * @param board
      */
     template <Colors sideToMove, MoveTypes moveType> void GenerateMoves(const Board &board) noexcept;
+    
+    /**
+     * @brief Clears the move list.
+     * 
+     */
+    constexpr void clear() noexcept
+    {
+        moveList.clear();
+    }
 
   private:
     FixedList<Move> moveList;
@@ -57,47 +66,6 @@ class VIXEN_API MoveGenerator
 
     template <Colors sideToMove> constexpr void GenerateCastlingMoves(const Board &board) noexcept;
 };
-
-namespace Check
-{
-template <Colors sideToMove> constexpr bool IsSquareAttacked(unsigned int square, const Board &board) noexcept
-{
-    assert(square <= static_cast<unsigned>(vixen::Constants::MAX_SQUARE_INDEX));
-    const auto blockers = ~board.GetBitBoard(Constants::ALL_EMPTY_INDEX);
-    const auto pawns = sideToMove == Colors::WHITE ? board.GetBitBoard(Constants::BLACK_PAWN_INDEX)
-                                                   : board.GetBitBoard(Constants::WHITE_PAWN_INDEX);
-    const auto knights = sideToMove == Colors::WHITE ? board.GetBitBoard(Constants::BLACK_KNIGHT_INDEX)
-                                                     : board.GetBitBoard(Constants::WHITE_KNIGHT_INDEX);
-    const auto bishops = sideToMove == Colors::WHITE ? board.GetBitBoard(Constants::BLACK_BISHOP_INDEX)
-                                                     : board.GetBitBoard(Constants::WHITE_BISHOP_INDEX);
-    const auto rooks = sideToMove == Colors::WHITE ? board.GetBitBoard(Constants::BLACK_ROOK_INDEX)
-                                                   : board.GetBitBoard(Constants::WHITE_ROOK_INDEX);
-    const auto queens = sideToMove == Colors::WHITE ? board.GetBitBoard(Constants::BLACK_QUEEN_INDEX)
-                                                    : board.GetBitBoard(Constants::WHITE_QUEEN_INDEX);
-    const auto kings = sideToMove == Colors::WHITE ? board.GetBitBoard(Constants::BLACK_KING_INDEX)
-                                                   : board.GetBitBoard(Constants::WHITE_KING_INDEX);
-
-    return anti_slider_utils::pawnAttack[static_cast<int>(sideToMove)][square] & pawns ||
-           anti_slider_utils::knightAttack[square] & knights ||
-           slider_utils::GetBishopAttack(square, blockers) & (bishops | queens) ||
-           slider_utils::GetRookAttack(square, blockers) & (rooks | queens) ||
-           anti_slider_utils::kingAttack[square] & kings;
-}
-
-/**
- * This function returns if king is in check.
- * @tparam sideToMove
- * @param board
- * @return Check on board
- */
-template <Colors sideToMove> constexpr bool IsInCheck(const Board &board) noexcept
-{
-    const auto kingBoard = sideToMove == Colors::WHITE ? board.GetBitBoard(Constants::WHITE_KING_INDEX)
-                                                       : board.GetBitBoard(Constants::BLACK_KING_INDEX);
-    const auto kingSquare = TrailingZeroCount(kingBoard);
-    return IsSquareAttacked<sideToMove>(kingSquare, board);
-}
-} // namespace Check
 
 namespace Test
 {

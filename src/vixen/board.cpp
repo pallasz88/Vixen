@@ -1,6 +1,5 @@
 #include "board.hpp"
 
-#include <bitset>
 #include <charconv>
 #include <iostream>
 #include <regex>
@@ -286,7 +285,7 @@ bool Board::MakeMove(vixen::Move move)
     whiteToMove = !whiteToMove;
     hashBoard.HashSide();
 
-    if (whiteToMove ? Check::IsInCheck<Colors::BLACK>(*this) : Check::IsInCheck<Colors::WHITE>(*this))
+    if (whiteToMove ? IsInCheck<Colors::BLACK>() : IsInCheck<Colors::WHITE>())
     {
         TakeBack();
         return false;
@@ -412,9 +411,9 @@ constexpr void Board::AddPiece(unsigned int position, PieceType pieceType)
     hashBoard.HashPiece(position, static_cast<uint8_t>(pieceType));
 }
 
-template <MoveTypes moveType> FixedList<Move> Board::GetMoveList() const noexcept
+template <MoveTypes moveType> FixedList<Move> Board::GetMoveList() noexcept
 {
-    MoveGenerator moveGenerator;
+    moveGenerator.clear();
     if (whiteToMove)
         moveGenerator.GenerateMoves<Colors::WHITE, moveType>(*this);
     else
@@ -455,8 +454,8 @@ bool Board::MakeMove(std::string_view notation)
     return false;
 }
 
-template VIXEN_API FixedList<Move> Board::GetMoveList<MoveTypes::CAPTURE>() const noexcept;
+template VIXEN_API FixedList<Move> Board::GetMoveList<MoveTypes::CAPTURE>() noexcept;
 
-template VIXEN_API FixedList<Move> Board::GetMoveList<MoveTypes::ALL_MOVE>() const noexcept;
+template VIXEN_API FixedList<Move> Board::GetMoveList<MoveTypes::ALL_MOVE>() noexcept;
 
 } // namespace vixen
