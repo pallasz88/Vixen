@@ -100,6 +100,11 @@ class VIXEN_API Search
         0, 0, 5, 10, 10, 5, 0, 0, 0, 0, 5, 10, 10, 5, 0, 0, 0,  0,  5,  10, 10, 5,  0,  0,  0, 0, 5, 10, 10, 5, 0, 0,
         0, 0, 5, 10, 10, 5, 0, 0, 0, 0, 5, 10, 10, 5, 0, 0, 25, 25, 25, 25, 25, 25, 25, 25, 0, 0, 5, 10, 10, 5, 0, 0};
 
+    static constexpr std::array QueenTable = {
+        -20, -10, -10, -5,  -5,  -10, -10, -20, -10, 0,  0, 0,   0,   0,   0,   -10, -10, 0,   5,   5,  5, 5,
+        0,   -10, -5,  0,   5,   5,   5,   5,   0,   -5, 0, 0,   5,   5,   5,   5,   0,   -5,  -10, 5,  5, 5,
+        5,   5,   0,   -10, -10, 0,   5,   0,   0,   0,  0, -10, -20, -10, -10, -5,  -5,  -10, -10, -20};
+
     static constexpr std::array<int, Constants::SQUARE_NUMBER> emptyTable{0};
 
     static constexpr std::array mvvlvaTable = Utility::InitMvvLvaTable();
@@ -112,8 +117,10 @@ class VIXEN_API Search
 
     static constexpr std::array rookTable = Utility::MirrorTable(RookTable);
 
-    static constexpr std::array arrayLookUp = {PawnTable, KnightTable, BishopTable, RookTable, emptyTable, emptyTable,
-                                               pawnTable, knightTable, bishopTable, rookTable, emptyTable, emptyTable};
+    static constexpr std::array queenTable = Utility::MirrorTable(QueenTable);
+
+    static constexpr std::array arrayLookUp = {PawnTable, KnightTable, BishopTable, RookTable, QueenTable, emptyTable,
+                                               pawnTable, knightTable, bishopTable, rookTable, queenTable, emptyTable};
 
     static int Evaluate(const Board &board);
 
