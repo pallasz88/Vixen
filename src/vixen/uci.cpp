@@ -5,6 +5,7 @@
 #include <thread>
 
 #include "board.hpp"
+#include "defs.hpp"
 #include "engine.hpp"
 
 namespace vixen
@@ -22,11 +23,11 @@ Uci::~Uci()
 
 void Uci::LogUci(const SearchInfo &info, const std::pair<int, Move> &result, int depth, const FixedList<Move> &bestLine)
 {
-    if (result.first > Search::MATE - info.maxDepth)
-        std::cout << "info score mate " << (Search::MATE - result.first) / 2;
+    if (result.first > Constants::MATE - info.maxDepth)
+        std::cout << "info score mate " << (Constants::MATE - result.first) / 2;
 
-    else if (result.first < -Search::MATE + info.maxDepth)
-        std::cout << "info score mate " << (-Search::MATE - result.first) / 2;
+    else if (result.first < -Constants::MATE + info.maxDepth)
+        std::cout << "info score mate " << (-Constants::MATE - result.first) / 2;
 
     else
         std::cout << "info score cp " << result.first;

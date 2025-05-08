@@ -18,26 +18,26 @@ BOOST_AUTO_TEST_CASE(StorePVEntryTest)
     constexpr vixen::Move move4(6, 7, moveTpye);
 
     // Test storing an entry with a new position key
-    vixen::PVEntry entry1{move1, 1};
+    vixen::TranspositionTableEntry entry1{1, move1, 0, 0, 0};
     pv.StorePVEntry(entry1);
     BOOST_CHECK_EQUAL(pv.GetPVEntry(1).positionKey, 1);
     BOOST_CHECK_EQUAL(pv.GetPVEntry(1).moveEntry, move1);
 
     // Test storing an entry with an existing position key
-    vixen::PVEntry entry2{move2, 1};
+    vixen::TranspositionTableEntry entry2{1, move2, 0, 0, 0};
     pv.StorePVEntry(entry2);
     BOOST_CHECK_EQUAL(pv.GetPVEntry(1).positionKey, 1);
     BOOST_CHECK_EQUAL(pv.GetPVEntry(1).moveEntry, move2);
 
     // Test storing an entry when the capacity is reached
-    vixen::PVEntry entry3{move3, 2};
+    vixen::TranspositionTableEntry entry3{2, move3, 0, 0, 0};
     pv.StorePVEntry(entry3);
     BOOST_CHECK_EQUAL(pv.GetPVEntry(1).positionKey, 1);
     BOOST_CHECK_EQUAL(pv.GetPVEntry(1).moveEntry, move2);
     BOOST_CHECK_EQUAL(pv.GetPVEntry(2).positionKey, 2);
     BOOST_CHECK_EQUAL(pv.GetPVEntry(2).moveEntry, move3);
 
-    vixen::PVEntry entry4{move4, 3};
+    vixen::TranspositionTableEntry entry4{3, move4, 0, 0, 0};
     pv.StorePVEntry(entry4);
     BOOST_CHECK_EQUAL(pv.GetPVEntry(1).positionKey, 1);
     BOOST_CHECK_EQUAL(pv.GetPVEntry(1).moveEntry, move2);
@@ -57,16 +57,16 @@ BOOST_AUTO_TEST_CASE(GetPVEntry_test)
     constexpr vixen::Move move2(2, 3, moveTpye);
     constexpr vixen::Move move3(4, 5, moveTpye);
 
-    const vixen::PVEntry entry1{move1, 1};
-    const vixen::PVEntry entry2{move2, 2};
-    const vixen::PVEntry entry3{move3, 3};
+    const vixen::TranspositionTableEntry entry1{1, move1, 0, 0, 0};
+    const vixen::TranspositionTableEntry entry2{2, move2, 0, 0, 0};
+    const vixen::TranspositionTableEntry entry3{3, move3, 0, 0, 0};
 
     pv.StorePVEntry(entry1);
     pv.StorePVEntry(entry2);
     pv.StorePVEntry(entry3);
 
     // Check that the entry with position key 1 is not in the table
-    BOOST_CHECK(pv.GetPVEntry(1) == vixen::PVEntry{});
+    BOOST_CHECK(pv.GetPVEntry(1) == vixen::TranspositionTableEntry{});
 
     // Test retrieving an entry that exists in the hash table
     BOOST_CHECK_EQUAL(pv.GetPVEntry(2).moveEntry, entry2.moveEntry);

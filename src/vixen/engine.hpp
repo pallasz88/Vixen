@@ -72,10 +72,6 @@ class VIXEN_API Search
   public:
     static void IterativeDeepening(Board &board, SearchInfo &info);
 
-    static constexpr int MATE = 2999999;
-
-    static constexpr int STALE_MATE = 0;
-
   private:
     static constexpr int megaByte = 1ULL << 20ULL;
 
@@ -136,7 +132,7 @@ class VIXEN_API Search
 
     static void OrderNonPVMoves(int depth, const Board &board, Move &move);
 
-    static bool IsPVMove(const PVEntry &pvEntry, const Move &move);
+    static bool IsPVMove(const TranspositionTableEntry &pvEntry, const Move &move);
 
     /**
      * @brief Return move as best move if bestMove is a null move

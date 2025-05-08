@@ -16,7 +16,7 @@ class Move
   public:
     constexpr Move() = default;
 
-    explicit Move(unsigned move) : representation(move)
+    constexpr explicit Move(unsigned move) : representation(move)
     {
     }
 
@@ -133,6 +133,8 @@ class Move
 
     unsigned score{0U};
 };
+
+static constexpr Move INVALID_MOVE{0ULL};
 
 } // namespace vixen
 

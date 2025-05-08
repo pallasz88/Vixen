@@ -165,6 +165,10 @@ using CastleHashKeys = std::array<BitBoard, CASTLING_STATE_NUMBER>;
 
 struct Constants
 {
+    static constexpr int MATE = 2999999;
+
+    static constexpr int STALE_MATE = 0;
+
     static constexpr unsigned MAX_MOVELIST_SIZE = 256U;
 
     static constexpr unsigned MAX_SQUARE_INDEX = 63U;

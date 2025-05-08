@@ -18,7 +18,6 @@ set(SOURCE_FILES
         move_generator.hpp
         move_generator.cpp
         principal_variation.hpp
-        principal_variation.cpp
         random.hpp
         slider.cpp
         slider.inl
@@ -67,6 +66,6 @@ if (ENABLE_COVERAGE)
     target_link_libraries(Engine PRIVATE --coverage)
 endif()
 
-target_compile_features(Engine PRIVATE cxx_std_20)
+target_compile_features(Engine PRIVATE cxx_std_23)
 
 install(TARGETS Engine DESTINATION bin)
