@@ -20,16 +20,16 @@ Uci::~Uci()
     info.reset();
 }
 
-void Uci::LogUci(const SearchInfo &info, const std::pair<int, Move> &result, int depth, const FixedList<Move> &bestLine)
+void Uci::LogUci(const SearchInfo &info, const int score, int depth, const FixedList<Move> &bestLine)
 {
-    if (result.first > Search::MATE - info.maxDepth)
-        std::cout << "info score mate " << (Search::MATE - result.first) / 2;
+    if (score > Search::MATE - info.maxDepth)
+        std::cout << "info score mate " << (Search::MATE - score) / 2;
 
-    else if (result.first < -Search::MATE + info.maxDepth)
-        std::cout << "info score mate " << (-Search::MATE - result.first) / 2;
+    else if (score < -Search::MATE + info.maxDepth)
+        std::cout << "info score mate " << (-Search::MATE - score) / 2;
 
     else
-        std::cout << "info score cp " << result.first;
+        std::cout << "info score cp " << score;
 
     std::cout << " depth " << depth << " nodes " << info.nodesCount << " pv ";
 
