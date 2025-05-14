@@ -34,8 +34,7 @@ class VIXEN_API Uci
 
     void benchmark() const;
 
-    static void LogUci(const SearchInfo &info, const std::pair<int, Move> &result, int depth,
-                       const FixedList<Move> &bestLine);
+    static void LogUci(const SearchInfo &info, const int score, int depth, const FixedList<Move> &bestLine);
 
   private:
     std::unique_ptr<Board> board;

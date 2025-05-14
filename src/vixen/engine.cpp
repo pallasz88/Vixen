@@ -1,7 +1,6 @@
 #include "engine.hpp"
 
 #include <iostream>
-#include <utility>
 
 #include "board.hpp"
 #include "defs.hpp"
@@ -49,15 +48,15 @@ void Search::IterativeDeepening(Board &board, SearchInfo &info)
     Move bestMove{};
     for (int depth = 1; depth <= info.maxDepth; ++depth)
     {
-        const auto result = Search::Root(depth, board, info);
+        const auto bestScore = Search::NegaMax(depth, -MATE, MATE, board, info);
         const auto bestLine = GetPV(depth, board);
-        bestMove = bestLine[0];
+        bestMove = bestLine[0] != 0U ? bestLine[0] : bestMove;
         if (info.stopped)
         {
             info.stopped = false;
             break;
         }
-        Uci::LogUci(info, result, depth, bestLine);
+        Uci::LogUci(info, bestScore, depth, bestLine);
     }
     std::cout << "bestmove " << bestMove << std::endl;
 }
@@ -91,74 +90,6 @@ void CheckTime(SearchInfo &info)
 bool IsTimeCheckNeeded(const SearchInfo &info)
 {
     return info.isTimeSet && !(info.nodesCount & 2047);
-}
-
-std::pair<int, Move> Search::Root(int depth, Board &board, SearchInfo &info)
-{
-    if (IsTimeCheckNeeded(info))
-        CheckTime(info);
-
-    auto moveList = board.GetMoveList<MoveTypes::ALL_MOVE>();
-    int alpha = -MATE;
-    int beta = MATE;
-    Move bestMove{0U};
-
-    const auto pvEntry = pv.GetPVEntry(board.GetHash());
-
-    const bool inCheck = board.IsInCheck<Colors::WHITE>() || board.IsInCheck<Colors::BLACK>();
-    if (inCheck)
-        ++depth;
-
-    for (auto &move : moveList)
-    {
-        if (IsPVMove(pvEntry, move))
-            move.SetScore(2000000U);
-
-        else
-            OrderNonPVMoves(depth, board, move);
-    }
-
-    for (auto it = begin(moveList); it != end(moveList); ++it)
-    {
-        const Move &move = PickBest(it, end(moveList));
-        if (!board.MakeMove(move))
-            continue;
-
-        ++info.currentDepth;
-        const int score = -NegaMax(depth - 1, -beta, -alpha, board, info);
-        --info.currentDepth;
-
-        board.TakeBack();
-
-        if (info.stopped)
-        {
-            bestMove = vixen::GetBestMove(bestMove, move);
-            pv.StorePVEntry(PVEntry{bestMove, board.GetHash()});
-            return {score, move};
-        }
-
-        if (score >= beta)
-        {
-            if ((move.GetMoveType() & static_cast<uint8_t>(MoveTypes::CAPTURE)) !=
-                static_cast<uint8_t>(MoveTypes::CAPTURE))
-                board.UpdateKillers(move, depth);
-
-            return {beta, move}; //  fail hard beta-cutoff
-        }
-
-        if (score > alpha)
-        {
-            if ((move.GetMoveType() & static_cast<uint8_t>(MoveTypes::CAPTURE)) !=
-                static_cast<uint8_t>(MoveTypes::CAPTURE))
-                board.IncreaseHistoryValue(depth, move.GetFromSquare(), move.GetToSquare());
-
-            alpha = score; // alpha acts like max in MiniMax
-            bestMove = move;
-            pv.StorePVEntry(PVEntry{bestMove, board.GetHash()});
-        }
-    }
-
-    return {alpha, bestMove};
 }
 
 bool Search::IsPVMove(const PVEntry &pvEntry, const Move &move)
@@ -211,11 +142,16 @@ int Search::NegaMax(int depth, int alpha, int beta, Board &board, SearchInfo &in
     }
 
     auto moveList = board.GetMoveList<MoveTypes::ALL_MOVE>();
-    unsigned legalMoveCount = 0;
+
+    const auto pvEntry = pv.GetPVEntry(board.GetHash());
 
     for (auto &move : moveList)
-        OrderNonPVMoves(depth, board, move);
+        if (IsPVMove(pvEntry, move))
+            move.SetScore(2000000U);
+        else
+            OrderNonPVMoves(depth, board, move);
 
+    unsigned legalMoveCount = 0;
     for (auto it = begin(moveList); it != end(moveList); ++it)
     {
         const Move &move = PickBest(it, end(moveList));
