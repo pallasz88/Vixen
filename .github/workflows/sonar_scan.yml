@@ -32,7 +32,7 @@ jobs:
           pip install lxml
           pip install gcovr==5.0 # 5.1 is not supported
       - name: Install sonar-scanner and build-wrapper
-        uses: SonarSource/sonarcloud-github-c-cpp@v2
+        uses: SonarSource/sonarqube-scan-action@v7.0.0
       - name: Run build-wrapper
         run: |
           mkdir build
