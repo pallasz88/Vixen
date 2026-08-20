@@ -2,6 +2,7 @@
 #define VIXEN_UCI_HPP_INCLUDED
 
 #include <memory>
+#include <thread>
 
 #include "defs.hpp"
 #include "fixed_list.hpp"
@@ -40,6 +41,10 @@ class VIXEN_API Uci
     std::unique_ptr<Board> board;
 
     std::unique_ptr<SearchInfo> info;
+
+    std::jthread searchThread;
+
+    void StopSearch();
 
     void UpdateSearchInfo(std::istringstream &is, std::string &token);
 };
