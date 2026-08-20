@@ -76,7 +76,7 @@ void Search::IterativeDeepening(Board &board, SearchInfo &info)
         }
         Uci::LogUci(info, bestScore, depth, bestLine);
     }
-    std::cout << "bestmove " << bestMove << '\n';
+    std::cout << "bestmove " << bestMove << std::endl;
 }
 
 void Search::OrderCapture(const Board &board, Move &move)
