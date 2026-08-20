@@ -19,6 +19,7 @@ set(SOURCE_FILES
         move_generator.cpp
         principal_variation.hpp
         principal_variation.cpp
+        transposition_table.hpp
         random.hpp
         slider.cpp
         slider.inl
@@ -29,9 +30,9 @@ set(SOURCE_FILES
         userinterface.hpp
         userinterface.cpp)
 
-find_package(Threads)
+find_package(Threads REQUIRED)
 add_library(Engine SHARED ${SOURCE_FILES})
-target_link_libraries(Engine PRIVATE ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(Engine PRIVATE Threads::Threads)
 target_include_directories(Engine PRIVATE ${CMAKE_SOURCE_DIR}/src/container/inl)
 
 if (MSVC)

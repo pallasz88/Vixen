@@ -72,7 +72,12 @@ template <class T, std::size_t Capacity = 256> class FixedList
         return _list.begin() + _size;
     }
 
-    constexpr value_type operator[](size_type position) const
+    constexpr reference operator[](size_type position) noexcept
+    {
+        return _list[position];
+    }
+
+    constexpr const_reference operator[](size_type position) const noexcept
     {
         return _list[position];
     }

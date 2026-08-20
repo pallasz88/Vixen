@@ -11,6 +11,7 @@
 #include "fixed_list.hpp"
 #include "move.hpp"
 #include "principal_variation.hpp"
+#include "transposition_table.hpp"
 
 namespace vixen
 {
@@ -72,6 +73,8 @@ class VIXEN_API Search
   public:
     static void IterativeDeepening(Board &board, SearchInfo &info);
 
+    static void ClearTables();
+
     static constexpr int MATE = 2999999;
 
     static constexpr int STALE_MATE = 0;
@@ -80,6 +83,8 @@ class VIXEN_API Search
     static constexpr int megaByte = 1ULL << 20ULL;
 
     static PrincipalVariation pv;
+
+    static TranspositionTable transpositionTable;
 
     static constexpr std::array PawnTable = {0,  0,  0,  0,  0,  0,  0,  0,  10, 10, 0,  -10, -10, 0,  10, 10,
                                              5,  0,  0,  5,  5,  0,  0,  5,  0,  0,  10, 20,  20,  10, 0,  0,

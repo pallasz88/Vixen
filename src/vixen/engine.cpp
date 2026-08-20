@@ -12,6 +12,13 @@
 namespace vixen
 {
 PrincipalVariation Search::pv(megaByte / sizeof(PVEntry));
+TranspositionTable Search::transpositionTable(1U << 20U);
+
+void Search::ClearTables()
+{
+    pv = PrincipalVariation(megaByte / sizeof(PVEntry));
+    transpositionTable.Clear();
+}
 
 FixedList<Move> Search::GetPV(int depth, Board &board)
 {
@@ -44,6 +51,7 @@ void Search::IterativeDeepening(Board &board, SearchInfo &info)
     ++info.nodesCount;
     board.ResetKillers();
     board.ResetHistory();
+    transpositionTable.Clear();
 
     Move bestMove{};
     for (int depth = 1; depth <= info.maxDepth; ++depth)
@@ -58,15 +66,15 @@ void Search::IterativeDeepening(Board &board, SearchInfo &info)
         }
         Uci::LogUci(info, bestScore, depth, bestLine);
     }
-    std::cout << "bestmove " << bestMove << std::endl;
+    std::cout << "bestmove " << bestMove << '\n';
 }
 
 void Search::OrderCapture(const Board &board, Move &move)
 {
     if ((move.GetMoveType() & static_cast<uint8_t>(MoveTypes::ENPASSANT)) != static_cast<uint8_t>(MoveTypes::ENPASSANT))
     {
-        const auto attackerIndex = board.GetPieceList()[move.GetFromSquare()];
-        const auto victimIndex = board.GetPieceList()[move.GetToSquare()];
+        const auto attackerIndex = board.GetPiece(move.GetFromSquare());
+        const auto victimIndex = board.GetPiece(move.GetToSquare());
         move.SetScore(mvvlvaTable[attackerIndex][victimIndex] + 1000000U);
     }
     else
@@ -125,6 +133,18 @@ int Search::NegaMax(int depth, int alpha, int beta, Board &board, SearchInfo &in
     if (board.IsRepetition() || board.GetFiftyMoveCounter() >= 100)
         return 0;
 
+    const int originalAlpha = alpha;
+    const auto tableEntry = transpositionTable.Probe(board.GetHash());
+    if (tableEntry.has_value() && tableEntry->depth >= depth)
+    {
+        if (tableEntry->bound == Bound::EXACT)
+            return tableEntry->score;
+        if (tableEntry->bound == Bound::LOWER && tableEntry->score >= beta)
+            return tableEntry->score;
+        if (tableEntry->bound == Bound::UPPER && tableEntry->score <= alpha)
+            return tableEntry->score;
+    }
+
     const bool inCheck = board.IsInCheck<Colors::WHITE>() || board.IsInCheck<Colors::BLACK>();
     if (inCheck)
         ++depth;
@@ -146,7 +166,9 @@ int Search::NegaMax(int depth, int alpha, int beta, Board &board, SearchInfo &in
     const auto pvEntry = pv.GetPVEntry(board.GetHash());
 
     for (auto &move : moveList)
-        if (IsPVMove(pvEntry, move))
+        if (tableEntry.has_value() && tableEntry->move == move)
+            move.SetScore(2000001U);
+        else if (IsPVMove(pvEntry, move))
             move.SetScore(2000000U);
         else
             OrderNonPVMoves(depth, board, move);
@@ -174,6 +196,7 @@ int Search::NegaMax(int depth, int alpha, int beta, Board &board, SearchInfo &in
                 static_cast<uint8_t>(MoveTypes::CAPTURE))
                 board.UpdateKillers(move, depth);
 
+            transpositionTable.Store(board.GetHash(), move, beta, depth, Bound::LOWER);
             return beta; //  fail hard beta-cutoff
         }
 
@@ -197,6 +220,8 @@ int Search::NegaMax(int depth, int alpha, int beta, Board &board, SearchInfo &in
             return STALE_MATE;
     }
 
+    const auto bound = alpha <= originalAlpha ? Bound::UPPER : Bound::EXACT;
+    transpositionTable.Store(board.GetHash(), pv.GetPVEntry(board.GetHash()).moveEntry, alpha, depth, bound);
     return alpha;
 }
 

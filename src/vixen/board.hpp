@@ -62,9 +62,14 @@ class VIXEN_API Board
      * Returns piece square list.
      * @return
      */
-    [[nodiscard]] constexpr auto GetPieceList() const noexcept
+    [[nodiscard]] constexpr const std::array<PieceType, Constants::SQUARE_NUMBER> &GetPieceList() const noexcept
     {
         return pieceList;
+    }
+
+    [[nodiscard]] constexpr PieceType GetPiece(unsigned square) const noexcept
+    {
+        return pieceList[square];
     }
 
     /**

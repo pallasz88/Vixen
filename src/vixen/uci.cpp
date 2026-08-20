@@ -16,8 +16,18 @@ Uci::Uci() : board(std::make_unique<Board>()), info(std::make_unique<SearchInfo>
 
 Uci::~Uci()
 {
+    StopSearch();
     board.reset();
     info.reset();
+}
+
+void Uci::StopSearch()
+{
+    if (searchThread.joinable())
+    {
+        info->stopped = true;
+        searchThread.join();
+    }
 }
 
 void Uci::LogUci(const SearchInfo &info, const int score, int depth, const FixedList<Move> &bestLine)
@@ -114,13 +124,18 @@ void Uci::loop()
         }
 
         else if (token == "ucinewgame")
+        {
+            StopSearch();
+            Search::ClearTables();
             board->SetBoard(Constants::START_POSITION);
+        }
 
         else if (token == "isready")
             std::cout << "readyok\n";
 
         else if (token == "position") // position [fen  | startpos ]  moves  ....
         {
+            StopSearch();
             std::string fen;
 
             is >> token;
@@ -151,13 +166,16 @@ void Uci::loop()
 
         else if (token == "go")
         {
+            StopSearch();
             UpdateSearchInfo(is, token);
-            std::jthread t(&Search::IterativeDeepening, std::ref(*board), std::ref(*info));
-            t.detach();
+            searchThread = std::jthread(&Search::IterativeDeepening, std::ref(*board), std::ref(*info));
         }
 
         else if (token == "quit")
+        {
+            StopSearch();
             return;
+        }
 
         else if (token == "stop")
         {
