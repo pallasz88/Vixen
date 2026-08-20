@@ -54,6 +54,16 @@ void Search::IterativeDeepening(Board &board, SearchInfo &info)
     transpositionTable.Clear();
 
     Move bestMove{};
+    for (const auto move : board.GetMoveList<MoveTypes::ALL_MOVE>())
+    {
+        if (board.MakeMove(move))
+        {
+            bestMove = move;
+            board.TakeBack();
+            break;
+        }
+    }
+
     for (int depth = 1; depth <= info.maxDepth; ++depth)
     {
         const auto bestScore = Search::NegaMax(depth, -MATE, MATE, board, info);
@@ -97,7 +107,7 @@ void CheckTime(SearchInfo &info)
 
 bool IsTimeCheckNeeded(const SearchInfo &info)
 {
-    return info.isTimeSet && !(info.nodesCount & 2047);
+    return info.isTimeSet && !(info.nodesCount & 255);
 }
 
 bool Search::IsPVMove(const PVEntry &pvEntry, const Move &move)
