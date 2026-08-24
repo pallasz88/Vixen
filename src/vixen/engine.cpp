@@ -133,6 +133,8 @@ void Search::OrderNonPVMoves(int depth, const Board &board, Move &move)
 
 int Search::NegaMax(int depth, int alpha, int beta, Board &board, SearchInfo &info)
 {
+    using enum Bound;
+
     if (depth <= 0)
         return Quiescence(alpha, beta, board, info);
 
@@ -148,11 +150,11 @@ int Search::NegaMax(int depth, int alpha, int beta, Board &board, SearchInfo &in
     const auto tableEntry = transpositionTable.Probe(board.GetHash());
     if (tableEntry.has_value() && tableEntry->depth >= depth)
     {
-        if (tableEntry->bound == Bound::EXACT)
+        if (tableEntry->bound == EXACT)
             return tableEntry->score;
-        if (tableEntry->bound == Bound::LOWER && tableEntry->score >= beta)
+        if (tableEntry->bound == LOWER && tableEntry->score >= beta)
             return tableEntry->score;
-        if (tableEntry->bound == Bound::UPPER && tableEntry->score <= alpha)
+        if (tableEntry->bound == UPPER && tableEntry->score <= alpha)
             return tableEntry->score;
     }
 
@@ -207,7 +209,7 @@ int Search::NegaMax(int depth, int alpha, int beta, Board &board, SearchInfo &in
                 static_cast<uint8_t>(MoveTypes::CAPTURE))
                 board.UpdateKillers(move, depth);
 
-            transpositionTable.Store(board.GetHash(), move, beta, depth, Bound::LOWER);
+            transpositionTable.Store(board.GetHash(), move, beta, depth, LOWER);
             return beta; //  fail hard beta-cutoff
         }
 
@@ -231,7 +233,7 @@ int Search::NegaMax(int depth, int alpha, int beta, Board &board, SearchInfo &in
             return STALE_MATE;
     }
 
-    const auto bound = alpha <= originalAlpha ? Bound::UPPER : Bound::EXACT;
+    const auto bound = alpha <= originalAlpha ? UPPER : EXACT;
     transpositionTable.Store(board.GetHash(), pv.GetPVEntry(board.GetHash()).moveEntry, alpha, depth, bound);
     return alpha;
 }
