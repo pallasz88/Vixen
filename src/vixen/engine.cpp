@@ -67,13 +67,14 @@ void Search::IterativeDeepening(Board &board, SearchInfo &info)
     for (int depth = 1; depth <= info.maxDepth; ++depth)
     {
         const auto bestScore = Search::NegaMax(depth, -MATE, MATE, board, info);
-        const auto bestLine = GetPV(depth, board);
-        bestMove = bestLine[0] != 0U ? bestLine[0] : bestMove;
         if (info.stopped)
         {
             info.stopped = false;
             break;
         }
+
+        const auto bestLine = GetPV(depth, board);
+        bestMove = bestLine[0] != 0U ? bestLine[0] : bestMove;
         Uci::LogUci(info, bestScore, depth, bestLine);
     }
     std::cout << "bestmove " << bestMove << std::endl;
