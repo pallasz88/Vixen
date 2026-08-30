@@ -70,3 +70,45 @@ BOOST_AUTO_TEST_CASE(user_interface_helpers_cover_common_commands)
     std::cout.rdbuf(listOutputStream);
     BOOST_CHECK(listOutput.str().find(",") != std::string::npos);
 }
+
+BOOST_AUTO_TEST_CASE(missing_piece_material_returns_empty_optional)
+{
+    BOOST_CHECK(!vixen::GetPieceMaterial(9999));
+}
+
+BOOST_AUTO_TEST_CASE(missing_promotion_type_returns_empty_optional)
+{
+    BOOST_CHECK(!vixen::GetPromotionType('x'));
+}
+
+BOOST_AUTO_TEST_CASE(invalid_side_to_move_fen_is_ignored_without_crashing)
+{
+    vixen::Board board;
+    std::ostringstream errorOutput;
+    auto *oldError = std::cerr.rdbuf(errorOutput.rdbuf());
+    board.SetBoard("8/8/8/8/8/8/8/8 x KQkq - 0 1");
+    std::cerr.rdbuf(oldError);
+    BOOST_CHECK(board.GetPieceList().size() == 64U);
+}
+
+BOOST_AUTO_TEST_CASE(invalid_castling_fen_is_ignored_without_crashing)
+{
+    vixen::Board board;
+    std::ostringstream errorOutput;
+    auto *oldError = std::cerr.rdbuf(errorOutput.rdbuf());
+    board.SetBoard("8/8/8/8/8/8/8/8 w x - 0 1");
+    std::cerr.rdbuf(oldError);
+    BOOST_CHECK(board.GetPieceList().size() == 64U);
+}
+
+BOOST_AUTO_TEST_CASE(invalid_move_syntax_throws)
+{
+    vixen::Board board;
+    BOOST_CHECK_THROW(board.MakeMove("invalid"), std::runtime_error);
+}
+
+BOOST_AUTO_TEST_CASE(illegal_move_returns_false)
+{
+    vixen::Board board;
+    BOOST_CHECK(!board.MakeMove("a1a2"));
+}
