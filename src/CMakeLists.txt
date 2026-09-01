@@ -19,3 +19,8 @@ endif()
 target_include_directories(Vixen_0_0_5 PRIVATE ${CMAKE_SOURCE_DIR}/src/container/inl)
 
 install(TARGETS Vixen_0_0_5 DESTINATION bin)
+
+if (ENABLE_COVERAGE)
+    add_test(NAME vixen_main COMMAND Vixen_0_0_5)
+    add_test(NAME vixen_benchmark COMMAND Vixen_0_0_5 --benchmark)
+endif()

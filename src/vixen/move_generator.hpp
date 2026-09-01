@@ -26,7 +26,7 @@ class VIXEN_API MoveGenerator
         return moveList;
     }
 
-    [[nodiscard]] auto GetLegalMoveList(Board &board) const noexcept;
+    [[nodiscard]] FixedList<Move> GetLegalMoveList(Board &board) const noexcept;
 
     /**
      * Fills moveList by generating all pseudo moves.
