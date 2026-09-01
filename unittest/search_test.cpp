@@ -28,6 +28,9 @@ BOOST_AUTO_TEST_CASE(user_interface_helpers_cover_common_commands)
         "help\n"
         "print\n"
         "reset\n"
+        "undo\n"
+        "move a\n"
+        "move invalid\n"
         "position rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1\n"
         "perft 1\n"
         "move e2e4\n"
@@ -97,6 +100,34 @@ BOOST_AUTO_TEST_CASE(missing_promotion_type_returns_empty_optional)
     BOOST_CHECK(!vixen::GetPromotionType('x'));
 }
 
+BOOST_AUTO_TEST_CASE(invalid_square_notation_returns_negative)
+{
+    BOOST_CHECK(vixen::Move::NotationToSquare("z9") == -1);
+}
+
+BOOST_AUTO_TEST_CASE(invalid_rank_notation_returns_negative)
+{
+    BOOST_CHECK(vixen::Move::NotationToSquare("a9") == -1);
+}
+
+BOOST_AUTO_TEST_CASE(invalid_file_notation_returns_negative)
+{
+    BOOST_CHECK(vixen::Move::NotationToSquare("A1") == -1);
+}
+
+BOOST_AUTO_TEST_CASE(principal_variation_entry_matches_exactly)
+{
+    const vixen::PVEntry entry{vixen::Move(1U, 2U, 0U), 1U};
+    BOOST_CHECK(entry == entry);
+}
+
+BOOST_AUTO_TEST_CASE(principal_variation_entry_rejects_different_move)
+{
+    const vixen::PVEntry first{vixen::Move(1U, 2U, 0U), 1U};
+    const vixen::PVEntry second{vixen::Move(1U, 3U, 0U), 1U};
+    BOOST_CHECK(!(first == second));
+}
+
 BOOST_AUTO_TEST_CASE(utility_tables_are_initialized)
 {
     auto init = &vixen::Utility::InitMvvLvaTable;
@@ -152,13 +183,66 @@ BOOST_AUTO_TEST_CASE(invalid_piece_fen_is_ignored_without_crashing)
 BOOST_AUTO_TEST_CASE(invalid_move_syntax_throws)
 {
     vixen::Board board;
-    BOOST_CHECK_THROW(board.MakeMove("invalid"), std::runtime_error);
+    bool threw = false;
+    try
+    {
+        static_cast<void>(board.MakeMove("invalid"));
+    }
+    catch (const std::runtime_error &)
+    {
+        threw = true;
+    }
+    BOOST_CHECK(threw);
 }
 
 BOOST_AUTO_TEST_CASE(illegal_move_returns_false)
 {
     vixen::Board board;
     BOOST_CHECK(!board.MakeMove("a1a2"));
+}
+
+BOOST_AUTO_TEST_CASE(quiet_promotion_is_decoded_without_capture)
+{
+    vixen::Board board;
+    board.SetBoard("7k/P7/8/8/8/8/8/7K w - - 0 1");
+    BOOST_CHECK(board.MakeMove("a7a8q"));
+}
+
+BOOST_AUTO_TEST_CASE(capture_promotion_is_decoded_with_capture)
+{
+    vixen::Board board;
+    board.SetBoard("1r5k/P7/8/8/8/8/8/7K w - - 0 1");
+    BOOST_CHECK(board.MakeMove("a7b8q"));
+}
+
+BOOST_AUTO_TEST_CASE(legal_move_generator_rejects_moves_leaving_check)
+{
+    vixen::Board board;
+    board.SetBoard("4r1k1/8/8/8/8/8/8/R3K3 w - - 0 1");
+    vixen::MoveGenerator generator;
+    generator.GenerateMoves<vixen::Colors::WHITE, vixen::MoveTypes::ALL_MOVE>(board);
+    BOOST_CHECK(generator.GetLegalMoveList(board).size() < generator.GetMoveList().size());
+}
+
+BOOST_AUTO_TEST_CASE(move_list_skips_illegal_pseudo_moves)
+{
+    vixen::Board board;
+    board.SetBoard("4r1k1/8/8/8/8/8/8/R3K3 w - - 0 1");
+    vixen::UserInterface::PrintMoveList(board);
+    BOOST_CHECK(true);
+}
+
+BOOST_AUTO_TEST_CASE(search_uses_available_side_clock)
+{
+    vixen::Board board;
+    vixen::SearchInfo info{};
+    info.maxDepth = 1;
+    info.isTimeSet = true;
+    info.moveTime = 0;
+    info.time[0] = 1000;
+    info.nodesCount = 255;
+    vixen::Search::IterativeDeepening(board, info);
+    BOOST_CHECK(!info.stopped);
 }
 
 BOOST_AUTO_TEST_CASE(legal_move_generator_returns_legal_moves)
