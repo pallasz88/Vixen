@@ -3,6 +3,7 @@
 #include <boost/test/included/unit_test.hpp>
 
 #include "move.hpp"
+#include "board.hpp"
 #include "principal_variation.hpp"
 
 BOOST_AUTO_TEST_CASE(StorePVEntryTest)
@@ -71,4 +72,14 @@ BOOST_AUTO_TEST_CASE(GetPVEntry_test)
     // Test retrieving an entry that exists in the hash table
     BOOST_CHECK_EQUAL(pv.GetPVEntry(2).moveEntry, entry2.moveEntry);
     BOOST_CHECK_EQUAL(pv.GetPVEntry(3).moveEntry, entry3.moveEntry);
+}
+
+BOOST_AUTO_TEST_CASE(GetMoveList_rejects_stale_move)
+{
+    vixen::Board board;
+    board.SetBoard("4r1k1/8/8/8/8/8/8/R3K3 w - - 0 1");
+    vixen::PrincipalVariation pv{1};
+    pv.StorePVEntry(vixen::PVEntry{vixen::Move(3U, 11U, 0U), board.GetHash()});
+
+    BOOST_CHECK(pv.GetMoveList(1, board).empty());
 }

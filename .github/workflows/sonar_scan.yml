@@ -43,7 +43,8 @@ jobs:
         working-directory: build
       - name: Collect coverage into one XML report
         run: |
-          gcovr --sonarqube --gcov-ignore-parse-errors > coverage.xml
+          gcovr --sonarqube --gcov-ignore-parse-errors \
+            --exclude-throw-branches --exclude-unreachable-branches > coverage.xml
       - name: Run sonar-scanner
         uses: SonarSource/sonarqube-scan-action@v7
         env:
