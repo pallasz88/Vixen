@@ -32,6 +32,11 @@ BOOST_AUTO_TEST_CASE(user_interface_helpers_cover_common_commands)
         "perft 1\n"
         "move e2e4\n"
         "undo\n"
+        "move invalid\n"
+        "move a1a2\n"
+        "move\n"
+        "undo\n"
+        "unknown\n"
         "list\n"
         "quit\n"};
     std::ostringstream output;
@@ -71,6 +76,17 @@ BOOST_AUTO_TEST_CASE(user_interface_helpers_cover_common_commands)
     BOOST_CHECK(listOutput.str().find(",") != std::string::npos);
 }
 
+BOOST_AUTO_TEST_CASE(user_interface_prints_promotion_moves)
+{
+    vixen::Board board;
+    board.SetBoard("7k/P7/8/8/8/8/8/7K w - - 0 1");
+    std::ostringstream output;
+    auto *oldOutput = std::cout.rdbuf(output.rdbuf());
+    vixen::UserInterface::PrintMoveList(board);
+    std::cout.rdbuf(oldOutput);
+    BOOST_CHECK(output.str().find("q") != std::string::npos);
+}
+
 BOOST_AUTO_TEST_CASE(missing_piece_material_returns_empty_optional)
 {
     BOOST_CHECK(!vixen::GetPieceMaterial(9999));
@@ -79,6 +95,28 @@ BOOST_AUTO_TEST_CASE(missing_piece_material_returns_empty_optional)
 BOOST_AUTO_TEST_CASE(missing_promotion_type_returns_empty_optional)
 {
     BOOST_CHECK(!vixen::GetPromotionType('x'));
+}
+
+BOOST_AUTO_TEST_CASE(utility_tables_are_initialized)
+{
+    auto init = &vixen::Utility::InitMvvLvaTable;
+    const auto table = init();
+    BOOST_CHECK(table[0][0] == 105U);
+}
+
+BOOST_AUTO_TEST_CASE(utility_tables_can_be_mirrored_at_runtime)
+{
+    std::array<int, 64> table{};
+    table[0] = 1;
+    const auto mirrored = vixen::Utility::MirrorTable(table);
+    BOOST_CHECK(mirrored[63] == -1);
+}
+
+BOOST_AUTO_TEST_CASE(principal_variation_entries_compare_unequally)
+{
+    const vixen::PVEntry first{vixen::Move(1U, 2U, 0U), 1U};
+    const vixen::PVEntry second{vixen::Move(1U, 2U, 0U), 2U};
+    BOOST_CHECK(!(first == second));
 }
 
 BOOST_AUTO_TEST_CASE(invalid_side_to_move_fen_is_ignored_without_crashing)
@@ -101,6 +139,16 @@ BOOST_AUTO_TEST_CASE(invalid_castling_fen_is_ignored_without_crashing)
     BOOST_CHECK(board.GetPieceList().size() == 64U);
 }
 
+BOOST_AUTO_TEST_CASE(invalid_piece_fen_is_ignored_without_crashing)
+{
+    vixen::Board board;
+    std::ostringstream errorOutput;
+    auto *oldError = std::cerr.rdbuf(errorOutput.rdbuf());
+    board.SetBoard("8/8/8/8/8/8/8/X7 w - - 0 1");
+    std::cerr.rdbuf(oldError);
+    BOOST_CHECK(board.GetPieceList().size() == 64U);
+}
+
 BOOST_AUTO_TEST_CASE(invalid_move_syntax_throws)
 {
     vixen::Board board;
@@ -111,4 +159,86 @@ BOOST_AUTO_TEST_CASE(illegal_move_returns_false)
 {
     vixen::Board board;
     BOOST_CHECK(!board.MakeMove("a1a2"));
+}
+
+BOOST_AUTO_TEST_CASE(legal_move_generator_returns_legal_moves)
+{
+    vixen::Board board;
+    vixen::MoveGenerator generator;
+    generator.GenerateMoves<vixen::Colors::WHITE, vixen::MoveTypes::ALL_MOVE>(board);
+    BOOST_CHECK(generator.GetLegalMoveList(board).size() == 20U);
+}
+
+BOOST_AUTO_TEST_CASE(stalemate_search_returns_stalemate_score)
+{
+    vixen::Board board;
+    board.SetBoard("7k/5Q2/6K1/8/8/8/8/8 b - - 0 1");
+    vixen::SearchInfo info{};
+    info.maxDepth = 1;
+    vixen::Search::IterativeDeepening(board, info);
+    BOOST_CHECK(info.nodesCount > 0U);
+}
+
+BOOST_AUTO_TEST_CASE(fifty_move_search_is_drawn)
+{
+    vixen::Board board;
+    board.SetBoard("7k/5Q2/6K1/8/8/8/8/7K w - - 100 1");
+    vixen::SearchInfo info{};
+    info.maxDepth = 1;
+    vixen::Search::IterativeDeepening(board, info);
+    BOOST_CHECK(info.nodesCount > 0U);
+}
+
+BOOST_AUTO_TEST_CASE(time_limited_search_stops_cleanly)
+{
+    vixen::Board board;
+    vixen::SearchInfo info{};
+    info.maxDepth = 2;
+    info.isTimeSet = true;
+    info.moveTime = 0;
+    vixen::Search::IterativeDeepening(board, info);
+    BOOST_CHECK(!info.stopped);
+}
+
+BOOST_AUTO_TEST_CASE(periodic_time_check_stops_search)
+{
+    vixen::Board board;
+    vixen::SearchInfo info{};
+    info.maxDepth = 1;
+    info.isTimeSet = true;
+    info.moveTime = 0;
+    info.nodesCount = 254;
+    vixen::Search::IterativeDeepening(board, info);
+    BOOST_CHECK(!info.stopped);
+}
+
+BOOST_AUTO_TEST_CASE(quiescence_time_check_stops_search)
+{
+    vixen::Board board;
+    vixen::SearchInfo info{};
+    info.maxDepth = 1;
+    info.isTimeSet = true;
+    info.moveTime = 0;
+    info.nodesCount = 253;
+    vixen::Search::IterativeDeepening(board, info);
+    BOOST_CHECK(!info.stopped);
+}
+
+BOOST_AUTO_TEST_CASE(time_check_uses_side_clock_when_available)
+{
+    vixen::Board board;
+    board.SetBoard("4k3/8/8/8/8/8/8/4K3 b - - 0 1");
+    vixen::SearchInfo info{};
+    info.maxDepth = 1;
+    info.isTimeSet = true;
+    info.time[1] = 1000;
+    info.nodesCount = 254;
+    vixen::Search::IterativeDeepening(board, info);
+    BOOST_CHECK(!info.stopped);
+}
+
+BOOST_AUTO_TEST_CASE(perft_depth_zero_returns_one)
+{
+    vixen::Board board;
+    BOOST_CHECK(vixen::Test::PerftTest(0, board) == 1U);
 }

@@ -267,7 +267,7 @@ template <Colors sideToMove, MoveTypes moveType> void MoveGenerator::GenerateMov
     GenerateQuietMoves<sideToMove>(board);
 }
 
-auto MoveGenerator::GetLegalMoveList(Board &board) const noexcept
+FixedList<Move> MoveGenerator::GetLegalMoveList(Board &board) const noexcept
 {
     FixedList<Move> allLegalMoves;
     const auto addLegal = [&board, &allLegalMoves](Move move) {
