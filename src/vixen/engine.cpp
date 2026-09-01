@@ -20,29 +20,6 @@ void Search::ClearTables()
     transpositionTable.Clear();
 }
 
-FixedList<Move> Search::GetPV(int depth, Board &board)
-{
-    FixedList<Move> moveList{};
-    int ply = 0;
-
-    while (ply < depth)
-    {
-        if (const auto bestMove = pv.GetPVEntry(board.GetHash()).moveEntry; bestMove != 0U && board.MakeMove(bestMove))
-        {
-            ++ply;
-            moveList.emplace_back(bestMove);
-        }
-
-        else
-            break;
-    }
-
-    for (int j = 0; j < ply; ++j)
-        board.TakeBack();
-
-    return moveList;
-}
-
 void Search::IterativeDeepening(Board &board, SearchInfo &info)
 {
     info.stopped = false;
@@ -73,7 +50,7 @@ void Search::IterativeDeepening(Board &board, SearchInfo &info)
             break;
         }
 
-        const auto bestLine = GetPV(depth, board);
+        const auto bestLine = pv.GetMoveList(depth, board);
         bestMove = bestLine[0] != 0U ? bestLine[0] : bestMove;
         Uci::LogUci(info, bestScore, depth, bestLine);
     }

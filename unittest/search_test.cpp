@@ -115,6 +115,16 @@ BOOST_AUTO_TEST_CASE(invalid_file_notation_returns_negative)
     BOOST_CHECK(vixen::Move::NotationToSquare("A1") == -1);
 }
 
+BOOST_AUTO_TEST_CASE(invalid_file_above_board_returns_negative)
+{
+    BOOST_CHECK(vixen::Move::NotationToSquare("i1") == -1);
+}
+
+BOOST_AUTO_TEST_CASE(invalid_rank_below_board_returns_negative)
+{
+    BOOST_CHECK(vixen::Move::NotationToSquare("a0") == -1);
+}
+
 BOOST_AUTO_TEST_CASE(principal_variation_entry_matches_exactly)
 {
     const vixen::PVEntry entry{vixen::Move(1U, 2U, 0U), 1U};
@@ -240,6 +250,19 @@ BOOST_AUTO_TEST_CASE(search_uses_available_side_clock)
     info.isTimeSet = true;
     info.moveTime = 0;
     info.time[0] = 1000;
+    info.nodesCount = 255;
+    vixen::Search::IterativeDeepening(board, info);
+    BOOST_CHECK(!info.stopped);
+}
+
+BOOST_AUTO_TEST_CASE(search_uses_move_time_when_side_clock_is_unset)
+{
+    vixen::Board board;
+    vixen::SearchInfo info{};
+    info.maxDepth = 1;
+    info.isTimeSet = true;
+    info.moveTime = 1000;
+    info.time[0] = -1;
     info.nodesCount = 255;
     vixen::Search::IterativeDeepening(board, info);
     BOOST_CHECK(!info.stopped);

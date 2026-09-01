@@ -133,8 +133,6 @@ class VIXEN_API Search
 
     static int NegaMax(int depth, int alpha, int beta, Board &board, SearchInfo &info);
 
-    static FixedList<Move> GetPV(int, Board &);
-
     static void OrderCapture(const Board &board, Move &move);
 
     static void OrderNonPVMoves(int depth, const Board &board, Move &move);

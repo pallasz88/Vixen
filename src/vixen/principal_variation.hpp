@@ -5,10 +5,12 @@
 #include <unordered_map>
 
 #include "defs.hpp"
+#include "fixed_list.hpp"
 #include "move.hpp"
 
 namespace vixen
 {
+class Board;
 
 struct PVEntry
 {
@@ -41,6 +43,8 @@ class VIXEN_API PrincipalVariation
     void StorePVEntry(const PVEntry &);
 
     PVEntry GetPVEntry(PositionKey) const;
+
+    FixedList<Move> GetMoveList(int depth, Board &board) const;
 
   private:
     size_t capacity;
