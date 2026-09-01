@@ -16,6 +16,12 @@ BOOST_AUTO_TEST_CASE(empty_table_is_ignored)
     BOOST_CHECK(!table.Probe(1).has_value());
 }
 
+BOOST_AUTO_TEST_CASE(uninitialized_entry_is_ignored)
+{
+    vixen::TranspositionTable table{1};
+    BOOST_CHECK(!table.Probe(0).has_value());
+}
+
 BOOST_AUTO_TEST_CASE(entries_are_stored_and_cleared)
 {
     vixen::TranspositionTable table{4};
